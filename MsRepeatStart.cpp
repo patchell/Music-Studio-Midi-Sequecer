@@ -37,7 +37,7 @@ void CMsRepeatStart::Draw(CDC *pDC, int event, int maxevent)
 	CPen Light,Heavy,*pOld;
 	COLORREF oldcolor;
 	LOGBRUSH Lb;
-
+	CString csCount;
 	if (IsSelected())
 	{
 		oldcolor = pDC->SetTextColor(RGB(255, 0, 0));
@@ -66,8 +66,11 @@ void CMsRepeatStart::Draw(CDC *pDC, int event, int maxevent)
 	pDC->MoveTo(x-6,STAVE_OFFSET);
 	pDC->LineTo(x-6,STAVE_OFFSET+STAVE_HEIGHT);
 	char *s = new char[16];
-	sprintf_s(s,16,"%d",m_Count);
-	pDC->TextOut(x,STAVE_OFFSET-16,LPCTSTR(s),strlen(s));
+	if (GetSong()->IsPlaying())
+		csCount.Format(_T("%d"), m_CountDown);
+	else
+		csCount.Format(_T("%d"), m_Count);
+	pDC->TextOutW(x - 20, STAVE_OFFSET - 16, csCount);
 	delete[] s;
 	pDC->SelectObject(pOld);
 	pDC->SetTextColor(oldcolor);
