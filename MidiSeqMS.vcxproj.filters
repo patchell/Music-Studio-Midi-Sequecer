@@ -1,0 +1,964 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ChildFrmStaff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildViewStaff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboBitmap.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboDropDown.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboDropUp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuList.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboBoxItem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayStatic.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EnterStringDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMidiPatchNames.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyScrollBar.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiInfo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiSeqMS.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsBar.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsEndBar.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsEvent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsEventChain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsFlat.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsKeySignature.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsLoudness.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsNatural.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsNote.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsRepeatEnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsStackObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsRepeatStart.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsSharp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsSong.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsTempo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsTimeSig.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsTrack.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyBitmap.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyComboBox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyListBox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyRgn.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NoteComboBox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NotePropertiesDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="NumEdit.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ParamDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SelDurDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectMidi.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectorDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectStringDlg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticBitmap.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticStatus.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyButton.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboDropDownToggle.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgMidiInfo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSelectMidiOut.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiOutDevice.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiOutTable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticCheckBitmap.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyEvent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiInDevice.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiInTable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiInMessageDispatcher.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgMidiInDispatchEditor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSelectMidiIn.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiControllerObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildViewLaunchControlXL.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrameLaunchControlXL.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrameBase.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildViewYamahaTX816.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrameYamahaTX816.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildViewBase.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyOwnSlider.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Polygon.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyOwnCheckBox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SysExTX816.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MMtimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMMtimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsPortamentoStart.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsPortamentoEnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsGlisandoStart.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsGlisandoEnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicStudioFileFormat.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsChord.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsChordNote.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsStack.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChildFrmStaff.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildViewStaff.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboBitmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboBoxDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboBoxItem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboDropDown.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboDropUp.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextMenuList.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextMenuObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayStatic.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="EnterStringDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyScrollBar.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiInfo.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiSeqMS.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsBar.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsEndBar.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsEvent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsEventChain.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsFlat.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsKeySignature.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsLoudness.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsNatural.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsNote.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsRepeatEnd.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsStackObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsRepeatStart.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsSharp.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsSong.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsTempo.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsTimeSig.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsTrack.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyBitmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyComboBox.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicStudioFileFormat.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyListBox.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyRgn.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="NoteComboBox.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="NotePropertiesDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="NumEdit.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ParamDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SelDurDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectMidi.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectorDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectStringDlg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticBitmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticStatus.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowMessages.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyButton.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboDropDownToggle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgMidiInfo.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSelectMidiOut.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiOutDevice.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiOutTable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticCheckBitmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyEvent.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiInDevice.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiInTable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiInMessageDispatcher.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgMidiInDispatchEditor.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSelectMidiIn.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LaunchKey25.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiControllerObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildViewLaunchControlXL.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrameLaunchControlXL.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrameBase.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildViewYamahaTX816.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrameYamahaTX816.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildViewBase.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyOwnSlider.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Polygon.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyOwnCheckBox.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SysExTX816.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MMtimer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMMtimer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsPortamentoStart.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsPortamentoEnd.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsGlisandoStart.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsGlisandoEnd.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsChord.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsChordNote.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsStack.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bmStaff_QuarterRest.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_changeDur.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_chngInst.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_copy.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_decrease.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_in.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_increase.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_mi.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_move.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\block_repeat.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\blockdown.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\blockup.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestEigth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestHalf.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestQuarter.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestSixteenth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestThirtySecond.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_RestWhole.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_2_2.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_TIMESIG_2_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_3_2.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_3_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_4_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_5_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Timesig_6_8.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\dot.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_RestEighth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_AccidentalFlat.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_InstChange.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_Loudness.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_MeasureBar.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\MidiSeqMS.ico">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_AccidentalNatural.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_NoteEigth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Note_Half.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Note_Quarter.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Note_Sixteenth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Note_ThirtySecond.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Note_Whole.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_NoteTie.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_QuarterNotesPerMinute.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Rest_Sixteenth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_Tempo.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Rest_ThirtySecond.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_2_2.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_2_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_3_2.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_3_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_4_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_5_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmStaff_Timesig_6_8.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_ButtOut.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_ButtonPlay_In.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtomUp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="bmButtonStopUp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="bmButtonStopDown.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtonStopDown.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtonStopUp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtonPlayUpbmp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_Accent_SEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB)Decorations_Accent_NOTSEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_Dotted_NOTSEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_Dotted_SEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_NONE.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_Triplet_NOTSEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_Triplet_SEL.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Accidental_Flat.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Accidental_InKey.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Accidental_Natural.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Accidentals_Sharp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="bmCB_KEY_Cmajor.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="bmCB_KEY_Gmajor.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_KEY_Dmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_Amaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_Emaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_Bmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_FSmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_CSmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_Fmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_BFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_EFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_AFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_DFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_GFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Key_CFmaj.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_Bass_Cleff.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_Treble_Clef.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_KEY_Cmajor.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_KEY_Gmajor.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Decorations_NONE_sel.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="bmCB_Misc_EndBar.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmCB_Misc_EndBar.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="IDR_TX816_EDIT.ico">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\IDR_TX816_EDIT.ico">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\iconTXED816doc.ico">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\iconMusicEdit.ico">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg01.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg02.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg03.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg04.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg5.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg06.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg07.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg8.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg9.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg10.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg11.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg12.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg13.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg14.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg15.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg16.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg17.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg18.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg19.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg20.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg21.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg22.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg23.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg24.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg25.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg26.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg27.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg28.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg29.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg30.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg31.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmDX7Alg32.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LRF_TRI_0.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_SAWDOWN_1.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_TRI_0.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_SAWUP_2.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_SQUARE_3.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_SINE_4.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bm_TX816_LFO_SAMPLE_HOLD_5.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{f7701985-b819-46c4-978c-7b6e8452df47}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{8ebce28e-28ca-4b5b-89cb-f581dc6554bb}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resorces">
+      <UniqueIdentifier>{667ea6a8-8c46-4a12-897d-766dc6d72772}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{cb5bb290-0ee1-48ed-aaa0-e93528172203}</UniqueIdentifier>
+      <Extensions>lib;dll</Extensions>
+    </Filter>
+    <Filter Include="bin">
+      <UniqueIdentifier>{64accd9d-c37d-4811-ae6e-1b580ed68c3b}</UniqueIdentifier>
+      <Extensions>exe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MidiSeqMS.rc">
+      <Filter>Resorces</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\MidiSeqMS.rc2">
+      <Filter>Resorces</Filter>
+    </None>
+    <None Include="bin\TheMusicStudio.exe">
+      <Filter>bin</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="WinMM.Lib">
+      <Filter>Libraries</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
