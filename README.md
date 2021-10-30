@@ -14,3 +14,9 @@ Thire is also going to be some stuff for the Launch Pad Pro, Launch Key 25, and 
 
 Also, I hope, newbies will find this code helpful in learning to program desktop applications using Visual Studio and 
 the MFC library.  The program just keeps growing and growing.  Almost like the "Blob".
+
+October 29, 2021
+
+This is a newer version of what I used to have here.  Somehow, I goofed 
+things up wirh the original repo, so now I have created a new one.  Still
+a long road ahead yet.
