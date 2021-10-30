@@ -366,7 +366,10 @@
     <ResourceCompile Include="MidiSeqMS.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\TheMusicStudio.exe" />
+    <None Include="bin\TheMusicStudio.exe">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+    </None>
     <None Include="res\MidiSeqMS.rc2" />
   </ItemGroup>
   <ItemGroup>
