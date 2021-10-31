@@ -786,3 +786,4 @@ unsigned CMidiSeqMSApp::GetUniqueID()
 	return ++m_UniqueID;
 }
 
+

@@ -75,6 +75,11 @@ CChildViewStaff::CChildViewStaff()
 	m_pSelectedObjectTail = 0;
 	m_EscapeFlag = 0;
 	m_ReadyToDraw = 0;
+	//------ Inirialize Key States -----------------
+	m_AltKeyDown = 0;
+	m_CtrlKeyDown = 0;
+	m_ShiftKeyDown = 0;
+
 }
 
 CChildViewStaff::~CChildViewStaff()
@@ -811,17 +816,18 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 
 void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-void CChildViewStaff::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
 	CMsNote* pN;
 	CMsObject* pTemp;
 	int Dur, Trip, Dot;
 
 	switch (nChar)
 	{
+	case VK_MENU:
+		break;
+	case VK_SHIFT:
+		break;
+	case VK_CONTROL:
+		break;
 	case 'R':	//toggle REST mode.
 		if (DRAWMODE_NOTE != m_nDrawMode)
 		{
@@ -1023,7 +1029,7 @@ void CChildViewStaff::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_Status.SetText(CString(""));
 		printf("################ Escape Key\n");
 		m_EscapeFlag = 1;
-//		Invalidate();
+		//		Invalidate();
 		break;
 	case VK_SPACE:	//flip note
 		if (m_pDrawObject)
@@ -1035,6 +1041,22 @@ void CChildViewStaff::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Invalidate();
 			}
 		}
+		break;
+	default:
+		CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+		break;
+	}
+}
+
+void CChildViewStaff::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	switch (nChar)
+	{
+	case VK_MENU:
+		break;
+	case VK_SHIFT:
+		break;
+	case VK_CONTROL:
 		break;
 	default:
 		CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
@@ -3370,3 +3392,30 @@ else
 // do mouse things for various
 // Draw modes.
 */
+
+BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
+{
+	switch (pMsg->message)
+	{
+	case WM_SYSKEYDOWN:
+		switch (pMsg->wParam)
+		{
+		case VK_MENU:
+			OnKeyDown(pMsg->wParam, 1, 0);
+			return TRUE;
+			break;
+		}
+		break;
+	case WM_SYSKEYUP:
+		switch (pMsg->wParam)
+		{
+		case VK_MENU:
+			OnKeyUp(pMsg->wParam, 1, 0);
+			return TRUE;
+			break;
+		}
+		break;
+	}
+	return CChildViewBase::PreTranslateMessage(pMsg);
+}
+

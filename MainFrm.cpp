@@ -163,3 +163,17 @@ void CMainFrame::UpdateColors()
 		pCV = pCV->GetNext();
 	}
 }
+
+
+BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
+{
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+		break;
+	default:
+		break;
+	}
+
+	return CMDIFrameWnd::PreTranslateMessage(pMsg);
+}

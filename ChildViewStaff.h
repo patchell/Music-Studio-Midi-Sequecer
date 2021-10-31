@@ -48,6 +48,10 @@ class CChildViewStaff : public CChildViewBase
 	BOOL m_EscapeFlag;
 	UINT m_TimerID;
 	UINT m_DragFlag;
+	UINT m_AltKeyDown;
+	UINT m_CtrlKeyDown;
+	UINT m_ShiftKeyDown;
+
 	CRect m_UpperSelRect;
 	CRect m_LowerSelRect;
 	//---------- View Colors -------------
@@ -156,7 +160,8 @@ public:
 	void SetAccidental(UINT NA) { GetNoteData().SetAccidental(NA); }
 	int GetUpSideDown() { return GetNoteData().GetUpsideDown(); }
 	void SetUpSideDown(int USD) { GetNoteData().SetUpsideDown(USD); }
-
+	UINT GetHeadFlipped() { return GetNoteData().GetHeadFlipped(); }
+	void SetHeadFlipped(UINT flipped) { GetNoteData().SetHeadFlipped(flipped); }
 	UINT GetDrawEvent() { return m_nDrawEvent; }
 	void IncDrawEvent() {
 		m_nDrawEvent++;
@@ -249,4 +254,5 @@ protected:
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

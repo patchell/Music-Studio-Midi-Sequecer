@@ -35,6 +35,7 @@ class NoteData {
 	UINT m_Stacato;
 	UINT m_Legato;
 	UINT m_UpsideDown;
+	UINT m_HeadFlipped;
 	UINT m_Velocity;
 	UINT m_NoteOffTick;		// Number of ticks for NOTEOFF
 	UINT m_Accidental;
@@ -56,6 +57,7 @@ public:
 		m_Velocity = 100;
 		m_NoteOffTick = 2;		// Number of ticks for NOTEOFF
 		m_UpsideDown = 0;
+		m_HeadFlipped = 0;
 		m_Accidental = 0;
 		m_Track = COMBO_INST_7;
 		m_Duration = COMBO_NOTE_QUARTER;
@@ -85,6 +87,7 @@ public:
 		m_Velocity = source.GetVelocity();
 		m_NoteOffTick = source.GetNoteOffTick();		// Number of ticks for NOTEOFF
 		m_UpsideDown = source.GetUpsideDown();
+		m_HeadFlipped = source.GetHeadFlipped();
 		m_Accidental = source.GetAccidental();
 		m_Track = source.GetTrack();
 		m_Duration = source.GetDuration();
@@ -130,6 +133,9 @@ public:
 	void SetUpsideDown(int v) { m_UpsideDown = v; }
 	int GetUpsideDown() { return m_UpsideDown; }
 
+	void SetHeadFlipped(UINT HdFlipped) { m_HeadFlipped = HdFlipped; }
+	UINT GetHeadFlipped() { return m_HeadFlipped; }
+
 	void SetAccidental(int v) { m_Accidental = v; }
 	int GetAccidental(){return m_Accidental;}
 
@@ -159,6 +165,7 @@ public:
 		fprintf_s(pO, "Velocty = %d\n", nd->m_Velocity);
 		fprintf_s(pO, "Note Off Tick Mark = %d\n", nd->m_NoteOffTick);
 		fprintf_s(pO, "Upside Down = %d\n", nd->m_UpsideDown);
+		fprintf_s(pO, "Head Flipped = %d\n", nd->m_HeadFlipped);
 		fprintf_s(pO, "Accidental = %d\n", nd->m_Accidental);
 		fprintf_s(pO, "Track = %d\n", nd->m_Track);
 		fprintf_s(pO, "Duration = %d\n", nd->m_Duration);
@@ -234,6 +241,9 @@ public:
 	UINT IsUpsideDown(void) { return GetData().GetUpsideDown(); }
 	void SetUpsideDown(int u) { GetData().SetUpsideDown(u); }
 	int GetUpsideDown(void) { return GetData().GetUpsideDown(); }
+
+	void SetHeadFlipped(UINT HdFlipped) { GetData().SetHeadFlipped(HdFlipped); }
+	UINT GetHeadFlipped() { return GetData().GetHeadFlipped(); }
 
 	void SetDotted(int d) { GetData().SetDotted(d); }
 	int GetDotted() { return GetData().GetDotted(); }

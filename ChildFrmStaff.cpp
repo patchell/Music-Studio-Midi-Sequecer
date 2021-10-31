@@ -84,3 +84,4 @@ int CChildFrameStaff::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
+
