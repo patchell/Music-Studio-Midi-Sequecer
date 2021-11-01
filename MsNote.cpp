@@ -189,7 +189,7 @@ UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 	Oct = m_Data.GetPitch() / 12;
 	if (mode == 0)
 		csString.Format(
-			_T("NOTE:%4S%d%c Track %d Sel %d"),
+			_T("NOTE:%4lS%d%c Track %d Sel %d"),
 			NoteLUT[Note].GetString(),
 			Oct,
 			AccidentalLUT[GetAccidental()],
@@ -199,7 +199,7 @@ UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 	else if (mode == 1)
 	{
 		csString.Format(
-			_T("NOTE:%4S%d%c Track:%2d Tie:%c:%c <%s> <%s>"),
+			_T("NOTE:%4lS%d%c Track:%2d Tie:%c:%c <%s> <%s>"),
 			NoteLUT[Note].GetString(),
 			Oct,
 			AccidentalLUT[GetAccidental()],
@@ -240,7 +240,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 	CPen pen,*oldpen,redpen;
 	CBrush brush,*oldbrush;
 	COLORREF color;
-	int i,n,f;
+	int i,f;
 	int notev;
 	int pitch;
 
@@ -324,40 +324,48 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 	}
 	else	///draw note on staff
 	{
+		UINT rectX1, rectY1, rectX2, rectY2;
+
 		notev = NoteToPosition();
-		r.SetRect(EVENT_OFFSET+EVENT_WIDTH*event,notev,EVENT_OFFSET+EVENT_WIDTH*event+10,notev+8);
+		rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
+		rectY1 = notev;
+		rectX2 = rectX1 + NOTE_HEAD_WIDTH;
+		rectY2 = notev + NOTE_HEAD_HIEGTH;
+		r.SetRect(rectX1, rectY1, rectX2, rectY2);
 		pDC->Ellipse(&r);
-		if((n = NeedsLine()) )
+		if(NeedsLine())
 		{
 			int y;
-			if(n < 0)
+			int NeesALine = NeedsLine();
+			if(NeesALine < 0)
 			{
 				f = -1;
-				n = -n;
+				NeesALine = -NeesALine;
 			}
 			else
 				f = 1;
-			for(i=0;i<n;++i)
+			for(i=0;i< NeesALine;++i)
 			{
 				if(IsOnLine())
 					y = notev+i*8*f;
 				else
 					y = notev+4+i*8*f;
-				pDC->MoveTo(28 +EVENT_WIDTH*event,y);
+				pDC->MoveTo(28 + EVENT_WIDTH*event,y);
 				pDC->LineTo(44+EVENT_WIDTH*event,y);
 			}
 		}
 		if(NeedsTail())
 		{
+			int n;
 			if(GetUpsideDown())
 			{
-				pDC->MoveTo(EVENT_OFFSET+EVENT_WIDTH*event,notev+4);
-				pDC->LineTo(EVENT_OFFSET+EVENT_WIDTH*event,notev+28);
+				pDC->MoveTo(rectX2,notev+4);
+				pDC->LineTo(rectX2,notev+28);
 			}
 			else
 			{
-				pDC->MoveTo(EVENT_OFFSET+EVENT_WIDTH*event+9,notev+4);
-				pDC->LineTo(EVENT_OFFSET+EVENT_WIDTH*event+9,notev-20);
+				pDC->MoveTo(rectX1 +9,notev+4);
+				pDC->LineTo(rectX1 +9,notev-20);
 			}
 			if((n=NeedsFlags()))
 			{
@@ -729,14 +737,6 @@ CMsObject * CMsNote::Copy()
 	if (m_BitmapFlag)
 		pN->GetBitmap()->LoadBitmapW(RestBmIdsTypes[GetShape()]);
 	return pN;
-}
-
-CMsObject* CMsNote::MakeANewObject()
-{
-//	printf("Make a new Note\n");
-	CMsNote* pNote;
-	pNote = new CMsNote;
-	return pNote;
 }
 
 void CMsNote::Save(FILE *pO)

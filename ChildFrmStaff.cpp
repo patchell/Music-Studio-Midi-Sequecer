@@ -72,16 +72,14 @@ int CChildFrameStaff::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	static int count = 0;
-	char* s = new char[16];
-	sprintf_s(s, 16, "Song%d", ++count);
-	CEnterStringDlg Dlg;
-	CString SongName = CString(s);
-	Dlg.SetString(SongName);
-	Dlg.DoModal();
-	SongName = Dlg.GetString();
-	SetWindowTextW(SongName);
-	delete[] s;
+	CString csSongName;
 
+	csSongName.Format(_T("Song%d"), ++count);
+	CEnterStringDlg Dlg;
+	Dlg.SetString(csSongName);
+	Dlg.DoModal();
+	csSongName = Dlg.GetString();
+	SetWindowTextW(csSongName);
 	return 0;
 }
 

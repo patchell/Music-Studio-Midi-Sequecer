@@ -36,7 +36,7 @@ BOOL CEnterStringDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	m_Edit_String.SetWindowTextW(m_S);
+	m_Edit_String.SetWindowTextW(m_csS);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -44,6 +44,6 @@ BOOL CEnterStringDlg::OnInitDialog()
 
 void CEnterStringDlg::OnOK()
 {
-	m_Edit_String.GetWindowTextW(m_S);
+	m_Edit_String.GetWindowTextW(m_csS);
 	CDialogEx::OnOK();
 }

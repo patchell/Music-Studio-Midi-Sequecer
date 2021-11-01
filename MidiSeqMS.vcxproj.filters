@@ -25,9 +25,6 @@
     <ClCompile Include="ComboBoxItem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="DisplayStatic.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="EnterStringDlg.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -274,9 +271,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ContextMenuObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DisplayStatic.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="EnterStringDlg.h">

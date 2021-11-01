@@ -101,33 +101,32 @@ void CDlgMidiInfo::UpdateControls(int InstID)
 
 afx_msg LRESULT CDlgMidiInfo::OnMyscrollbarMsg(WPARAM ControlID, LPARAM Position)
 {
-	char* s = new char[32];
+	CString csString;
 
 	switch (ControlID)
 	{
 	case IDC_VSB_INST_SELECT:
-		sprintf_s(s, 32, "%d", Position);
-		m_Static_InstBitmap.SetTextString(s);
+		csString.Format(_T("%d"), Position);
+		m_Static_InstBitmap.SetTextString(csString);
 		m_CurrentInstrument = Position;
 		UpdateControls(m_CurrentInstrument);
 		break;
 	case IDC_HSB_PATCH:
 		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetPatch(Position);
-		sprintf_s(s, 32, "%d", Position);
-		m_Static_PatchValue.SetWindowTextW(CString(s));
+		csString.Format(_T("%d"), Position);
+		m_Static_PatchValue.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_RANGE:
 		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetPitchRange(Position);
-		sprintf_s(s, 32, "%d", Position);
-		m_Static_RangeValue.SetWindowTextW(CString(s));
+		csString.Format(_T("%d"), Position);
+		m_Static_RangeValue.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_CHANNEL:
 		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetChanel(Position - 1);
-		sprintf_s(s, 32, "%d", Position);
-		m_Static_ChannelValue.SetWindowTextW(CString(s));
+		csString.Format(_T("%d"), Position);
+		m_Static_ChannelValue.SetWindowTextW(csString);
 		break;
 	}
-	delete[] s;
 	return 0;
 }
 

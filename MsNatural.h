@@ -10,5 +10,4 @@ public:
 	CMsNatural();
 	virtual ~CMsNatural();
 	void Draw(CDC *pDC, COLORREF c, int x, int y);
-
 };

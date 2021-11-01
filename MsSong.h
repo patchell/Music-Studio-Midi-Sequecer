@@ -114,7 +114,6 @@ public:
 	// //indicates that the song is playing
 	int IsPlaying() { return m_nIsPlaying; }
 	void SetIsPlaying(int v) { m_nIsPlaying = v; }
-	void SongHasStopped();
 	//---------------- Play --------------
 	BOOL Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------
@@ -122,22 +121,12 @@ public:
 	int Parse(char *pSongData);
 	void Print(FILE *pO);
 	// ------------ Note Managment ------------------
-	bool IsNoteInThisEvent(int Note, int Event);
-	CMsNote * GetNoteAtEvent(int Note, int Event);
 	CMsNote* CheckForNotePresence(int Event, int Note);
 	//-----------Object Managment --------------------
 	int AddObjectToSong(int event, CMsObject* pO);
 	UINT AddMoreEvenrsAtEnd(UINT NewEndEvent);
 	CMsObject* GetMsObject(int ObjType, CMsEvent* pStartEventObject, int Direction);
-	CMsObject* GetRepeatObject(UINT nEvent, UINT DesiredType);
-	CMsObject* FindMatchingRepeatObject(CMsObject* pRepeatObject, int nEvent, int* pnMatchingEvent);
 	CMsObject* GetObjectTypeInEvent(int nType, int nEvent);
-	CMsObject* IsObjectInEvent(int nEvent, int nObjectType, int& flag);
-	int IsRepeatInThisEvent(int nEvent);
-	int IsKeySigInThisEvent(int nEvent);
-	int IsTimeSigInThisEvent(int nEvent);
-	int IsTempoInThisEvent(int nEvent);
-	int IsLoudnessInThisEvent(int nEvent);
 	//---------- Event Management -------------------------
 	CMsEvent* GetEventListHead(void) { return m_pEventListHead; }
 	void SetEventListHead(CMsEvent* pEV) { m_pEventListHead = pEV; }

@@ -199,7 +199,7 @@ public:
 	virtual void Print(FILE* pO);
 	virtual void Save(FILE* pO);
 	virtual CMsObject* Copy(void);
-	virtual CMsObject* MakeANewObject();
+
 	void SetNoteOffTick(UINT NOT) { GetData().SetNoteOffTick(NOT); }
 	UINT GetNoteOffTick() { return GetData().GetNoteOffTick(); }
 
@@ -310,5 +310,6 @@ public:
 	virtual BOOL AddToQueue();
 	virtual UINT Process();
 	virtual BOOL RemoveFromQueue();
+	//-------------------------------------------
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 };

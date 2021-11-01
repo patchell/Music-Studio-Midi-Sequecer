@@ -284,7 +284,6 @@ void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 
 int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 {
-//	printf("***** Add Object To Song %d\n", pObjectToAdd->GetType());;
 	CMsEvent *pEventList = m_pEventListHead;
 	CMsObject* pObjectToRemove;;
 	int loop = 1;
@@ -693,71 +692,6 @@ void CMsSong::Save(FILE *pO)
 	}
 }
 
-//-------------------------------------------------
-// Finds out if there is a note below the cursor
-//-----------------------------------------------
-bool CMsSong::IsNoteInThisEvent(int Note, int Event)
-{
-	bool rV = false;
-	CMsObject *pObj;
-	CMsNote *pN;
-	CMsEvent *pEv = GetEventObject(Event);
-	if (pEv)
-	{
-		pObj = pEv->GetEventObjectHead();
-		int loop = 1;
-		while (pObj && loop)
-		{
-			if (pObj->GetType() == MSOBJ_NOTE)
-			{
-				pN = (CMsNote *)pObj;
-				if (Note == pN->GetPitch())
-				{
-					rV = true;
-					loop = 0;
-				}
-				else
-					pObj = pObj->GetNext();
-			}
-			else
-				pObj = pObj->GetNext();
-		}
-	}
-	return rV;
-}
-
-//--------------------------------------------------------
-// Gets a pointer to the note at the given event position
-//-------------------------------------------------------
-CMsNote * CMsSong::GetNoteAtEvent(int Note, int Event)
-{
-	CMsNote *rV = 0;
-	CMsObject *pObj;
-	CMsNote *pN;
-	CMsEvent *pEv = GetEventObject(Event);
-	if (pEv)
-	{
-		pObj = pEv->GetEventObjectHead();
-		int loop = 1;
-		while (pObj && loop)
-		{
-			if (pObj->GetType() == MSOBJ_NOTE)
-			{
-				pN = (CMsNote *)pObj;
-				if (Note == pN->GetPitch())
-				{
-					rV = pN;
-					loop = 0;
-				}
-				else
-					pObj = pObj->GetNext();
-			}
-			else
-				pObj = pObj->GetNext();
-		}
-	}
-	return rV;
-}
 
 //--------------------------------
 // Removes an event from the song
@@ -804,193 +738,11 @@ CMsEvent* CMsSong::MakeNewEvent()
 	return pEV;
 }
 
-
-void CMsSong::SongHasStopped()
-{
-
-}
-
-int CMsSong::IsRepeatInThisEvent(int nEvent)
-{
-	int rV = 0;
-	CMsEvent *pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		CMsObject *pObj = pEV->GetEventObjectHead();
-		while (pObj && !rV)
-		{
-			int type;
-			type = pObj->GetType();
-			if (type == MSOBJ_REPEATSTART || type == MSOBJ_REPEATEND)
-				rV = 1;
-			else
-				pObj = pObj->GetNext();
-		}
-	}
-	return rV;
-}
-
-CMsObject * CMsSong::GetRepeatObject(UINT nEvent,UINT DesiredType)
-{
-	CMsEvent *pEV = GetEventObject(nEvent);
-	CMsObject *pObj = pEV->GetEventObjectHead();
-	UINT Loop = 1;
-
-	while (pObj && Loop)
-	{
-		int type;
-		type = pObj->GetType();
-		if (type == DesiredType)
-			Loop = 0;
-		else
-			pObj = pObj->GetNext();
-	}
-	return pObj;
-}
-
-CMsObject * CMsSong::FindMatchingRepeatObject(CMsObject * pRepeatObject, int nEvent, int * pnMatchingEvent)
-{
-	//-------------------------------
-	// FindMatchingRepeatObject
-	//		This is not quite as easy
-	// as it sounds.  Repeats can
-	// be nested, so as we scan we
-	// need to keep track of the nesting
-	//
-	// parameters:
-	//	pRepeatObject...find match to this object
-	//	nEvent..........Event above object is in
-	//	pnMatchingEvent.pointer to event where match is
-	// Return Value:
-	//		Returns 0 on fail
-	//		Returns pointer of match on success
-	//-------------------------------
-	int Type = pRepeatObject->GetType();
-	CMsEvent *pEV = GetEventObject(nEvent);
-	int loop = 1;
-	int Nesting = 0;
-	CMsObject *pObj=0;
-
-	if (MSOBJ_REPEATEND == Type) pEV = pEV->GetPrev();
-	else if (MSOBJ_REPEATSTART == Type) pEV = pEV->GetNext();
-	while (loop && pEV)
-	{
-		if ((pObj = pEV->ContainsRepeatObject()) != nullptr)
-		{
-			if (MSOBJ_REPEATSTART == Type)
-			{
-				if (MSOBJ_REPEATEND == pObj->GetType())
-				{
-					if (Nesting == 0)
-						loop = 0;
-					else
-						Nesting--;
-				}
-				else
-				{
-					Nesting++;
-				}
-			}
-			else  //MSOBJ_REPEATEND
-			{
-				if (MSOBJ_REPEATSTART == pObj->GetType())
-				{
-					if (Nesting == 0)
-						loop = 0;
-					else
-						Nesting--;
-				}
-				else
-				{
-					Nesting++;
-				}
-
-			}
-		}
-		else
-		{
-			if (MSOBJ_REPEATEND == Type) pEV = pEV->GetPrev();
-			else if (MSOBJ_REPEATSTART == Type) pEV = pEV->GetNext();
-		}
-	}
-	return pObj;
-}
-
-int CMsSong::IsKeySigInThisEvent(int nEvent)
-{
-	CMsEvent *pEV;
-	int rV = 0;
-
-	pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		if (pEV->ContainsObjectType(MSOBJ_KEYSIG)) rV = 1;
-	}
-	return rV;
-}
-
-int CMsSong::IsTimeSigInThisEvent(int nEvent)
-{
-	CMsEvent *pEV;
-	int rV = 0;
-
-	pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		if(pEV->ContainsObjectType(MSOBJ_TIMESIG)) rV = 1;
-	}
-	return rV;
-}
-
 CMsObject * CMsSong::GetObjectTypeInEvent(int nType, int nEvent)
 {
 	CMsEvent *pEV = GetEventObject(nEvent);
 	CMsObject *pObj = 0;
 	if (pEV) pObj = pEV->ContainsObjectType(nType);
-	return pObj;
-}
-
-int CMsSong::IsTempoInThisEvent(int nEvent)
-{
-	CMsEvent *pEV;
-	int rV = 0;
-
-	pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		if (pEV->ContainsObjectType(MSOBJ_TEMPO)) rV = 1;
-	}
-	return rV;
-}
-
-int CMsSong::IsLoudnessInThisEvent(int nEvent)
-{
-	CMsEvent *pEV;
-	int rV = 0;
-
-	pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		if (pEV->ContainsObjectType(MSOBJ_LOUDNESS)) rV = 1;
-	}
-	return rV;
-}
-
-
-CMsObject * CMsSong::IsObjectInEvent(int nEvent, int nObjectType, int &flag)
-{
-	CMsEvent *pEV;
-	CMsObject *pObj = 0;
-	int rV = 0;
-
-	pEV = GetEventObject(nEvent);
-	if (pEV)
-	{
-		pObj = pEV->ContainsObjectType(nObjectType);
-		if (pObj) flag = 1;
-		else flag = 0;
-	}
-	else flag = 0;
 	return pObj;
 }
 
@@ -1047,7 +799,6 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 	CMsEvent* pEV;
 
 	pEV = GetEventObject(EventDest);
-//	printf("AddEventChain #1 to Event %d\n", EventDest);
 	if (pEV == 0)
 	{
 		// Add Chain to end

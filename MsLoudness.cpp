@@ -47,19 +47,18 @@ void CMsLoudness::ObjectRectangle(CRect& rect, UINT Event)
 
 void CMsLoudness::Draw(CDC *pDC, int event, int maxevent)
 {
-	char *s = new char[16];
 	int x,y;
-	int l;
 	CFont* oldFont;
+	CString csText;
 
 	oldFont = pDC->SelectObject(GETAPP->GetFont());
 	x = EVENT_OFFSET+EVENT_WIDTH*event;
 	y = STAVE_OFFSET-16;
-	pDC->TextOut(x,y-12,_T("V="),2);
-	l = sprintf_s(s, 16,"%d",m_Loudness);
-	pDC->TextOut(x,y,CString(s),l);
+	csText.Format(_T("V="));
+	pDC->TextOut(x,y-12, csText);
+	csText.Format(_T("%d"), m_Loudness);
+	pDC->TextOut(x,y, csText);
 	pDC->SelectObject(oldFont);
-	delete[] s;
 }
 
 CMsObject * CMsLoudness::Copy()

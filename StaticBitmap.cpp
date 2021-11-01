@@ -12,7 +12,6 @@ CStaticBitmap::CStaticBitmap()
 	m_Color = RGB(0, 0, 121);
 	m_Msg = 0;
 	m_WMsg = 0;
-	for (int i = 0; i < 10; ++i) m_aTextString[i] = 0;
 }
 
 CStaticBitmap::~CStaticBitmap()
@@ -63,10 +62,10 @@ void CStaticBitmap::OnPaint()
 
 	br.CreateSolidBrush(m_Color);
 	dc.FillRect(&rect,&br);
-	if (strlen(m_aTextString))
+	if (m_csTextString.GetLength())
 	{
 		oldFont = dc.SelectObject(&m_Textfont);
-		csTextSize = dc.GetTextExtent(CString(m_aTextString));
+		csTextSize = dc.GetTextExtent(m_csTextString);
 		int X, Y;
 		X = rect.Size().cx - csTextSize.cx;
 		X /= 2;
@@ -74,7 +73,7 @@ void CStaticBitmap::OnPaint()
 		Y /= 2;
 		oldcolor = dc.SetBkColor(m_Color);
 		oldTextColor = dc.SetTextColor(m_Color ^ 0x00ffffff);
-		dc.TextOutW(X, Y, CString(m_aTextString));
+		dc.TextOutW(X, Y, m_csTextString);
 		dc.SetBkColor(oldcolor);
 		dc.SetTextColor(oldTextColor);
 	}

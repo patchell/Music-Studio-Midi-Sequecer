@@ -199,7 +199,6 @@
     <ClInclude Include="ComboDropUp.h" />
     <ClInclude Include="ContextMenuList.h" />
     <ClInclude Include="ContextMenuObject.h" />
-    <ClInclude Include="DisplayStatic.h" />
     <ClInclude Include="DlgMidiInDispatchEditor.h" />
     <ClInclude Include="DlgMidiInfo.h" />
     <ClInclude Include="DlgSelectMidiIn.h" />
@@ -287,7 +286,6 @@
     <ClCompile Include="ComboDropUp.cpp" />
     <ClCompile Include="ContextMenuList.cpp" />
     <ClCompile Include="ContextMenuObject.cpp" />
-    <ClCompile Include="DisplayStatic.cpp" />
     <ClCompile Include="DlgMidiInDispatchEditor.cpp" />
     <ClCompile Include="DlgMidiInfo.cpp" />
     <ClCompile Include="DlgSelectMidiIn.cpp" />

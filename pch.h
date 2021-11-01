@@ -160,7 +160,6 @@ extern int IsChannelStatus(int StatusID);
 #include "MsSharp.h"
 #include "MsTempo.h"
 #include "MsChord.h"
-#include "DisplayStatic.h"
 #include "MsTimeSig.h"
 #include "ChildViewBase.h"
 #include "ChildFrameBase.h"

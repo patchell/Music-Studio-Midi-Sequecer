@@ -13,14 +13,14 @@ class CStaticBitmap : public CStatic
 	int m_Msg;		// Message Parameter
 	int m_WMsg;		// Windows Message command
 	CFont m_Textfont;
-	char m_aTextString[10];
+	CString m_csTextString;
 	// Construction
 public:
 	CStaticBitmap();
 	virtual ~CStaticBitmap();
-	void SetColorAndText(const char* t, COLORREF c) {
-		SetColor(c);
-		SetTextString(t);
+	void SetColorAndText(CString& csText, COLORREF crColor) {
+		SetColor(crColor);
+		SetTextString(csText);
 		Invalidate();
 	}
 	void SetColor(COLORREF c){m_Color = c;Invalidate();}
@@ -30,8 +30,8 @@ public:
 	void SetTheMaster(CWnd *W){m_pMaster = W;}
 	void SetMsgValue(int m) { m_Msg = m; }
 	void SetWMsgValue(int m){m_WMsg = m;}
-	void SetTextString(const char* pS) {
-		strcpy_s(m_aTextString, 9, pS);
+	void SetTextString(CString& csString) {
+		m_csTextString = csString;
 		Invalidate();
 	}
 	void Init();

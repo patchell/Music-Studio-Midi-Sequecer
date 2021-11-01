@@ -26,7 +26,7 @@ constexpr auto STAVE_OFFSET = 132;	//DISTANCE from top of client rect;
 									// to the top of the treble stave
 constexpr auto STAVE_LINE_SPACING = 8;
 constexpr auto STAFF_HEIGHT = (19 * STAVE_LINE_SPACING);
-constexpr auto EVENT_WIDTH = 32;	// width of each event5;
+constexpr auto EVENT_WIDTH = 40;	// width of each event5;
 constexpr auto EVENT_OFFSET = 32;	// distance from left edge;
 									// of the client rect to
 									// where the first event is
@@ -41,6 +41,8 @@ constexpr auto CENTER_OF_TREBEL = (STAVE_OFFSET);
 constexpr auto CENTER_OF_BASS = (STAVE_OFFSET + 48);
 
 constexpr auto NOTE_LINE_OFFSET = EVENT_WIDTH / 2;
+constexpr auto NOTE_HEAD_WIDTH = 10;
+constexpr auto NOTE_HEAD_HIEGTH = 8;
 
 constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
 constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
