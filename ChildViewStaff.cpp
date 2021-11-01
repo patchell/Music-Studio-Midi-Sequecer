@@ -253,36 +253,6 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 		Invalidate();
 		break;
 	}
-
-			/*
-			pEvent = m_pSong->GetEventObject(Event);
-			if (pEvent)
-				pObject = pEvent->GetEventObjectHead();
-			else
-				pObject = 0;
-			if (pObject)
-			{
-				while (pObject && Loop)
-				{
-					if (pObject->MouseOverObject(pointMouse) && pObject->IsSelected())
-					{
-						if(pObject->IsSelected())
-						{ 
-							pObject->SetSelected(0);	// toggle selection
-							RemoveSelectedObject(pObject);
-							Loop = 0;
-						}
-					}
-					else if (pObject->Select(TRUE, pointMouse))
-					{
-						CString csMsgString, csScratch;
-						Loop = 0;
-						AddSelectedObject(pObject);
-					}
-					else
-						pObject = pObject->GetNext();
-				}
-			} */
 	CWnd::OnLButtonDown(nFlags, pointMouse);
 }
 
@@ -580,7 +550,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	CString StatusString,csTemp;
 	BOOL Loop = FALSE;
 
-//	printf("xxxxxxxxxxxxxx Mouse Move xxxxxxxxxxxxxx\n");
 	m_nDrawEvent = XtoEventIndex(pointMouse.x);
 	Region = MouseInRegion(pointMouse);
 	switch (Region)
@@ -710,7 +679,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					}
 					else
 					{
-//						printf("Set m_pHighLightedObject\n");
 						m_pHighLightedObject = pObj;
 					}
 				}
@@ -2315,7 +2283,6 @@ afx_msg LRESULT CChildViewStaff::OnStaffDispEvent(WPARAM Event, LPARAM cmd)
 	return 0;
 }
 
-
 void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 {
 	CMsNote* pN;
@@ -2338,7 +2305,6 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	pN->SetRest(RestFlag);
 }
 
-
 int CChildViewStaff::IsEventDisplayed(CMsEvent* pEV)
 {
 	int rV = 0;
@@ -2349,39 +2315,6 @@ int CChildViewStaff::IsEventDisplayed(CMsEvent* pEV)
 		rV = -1;
 	return rV;
 }
-
-int CChildViewStaff::MouseOverObject(int nEvent, int nObjectType, CMsObject** ppObjectSelected)
-{
-	CMsObject* pObj = 0;
-	int flag = 0;
-
-	pObj = m_pSong->IsObjectInEvent(nEvent, nObjectType, flag);
-	if (pObj)
-	{
-		if (*ppObjectSelected && (pObj != *ppObjectSelected))
-		{
-			(*ppObjectSelected)->SetSelected(0);
-			*ppObjectSelected = pObj;
-			(*ppObjectSelected)->SetSelected(1);
-			Invalidate();
-		}
-		else if (!*ppObjectSelected)
-		{
-			pObj->SetSelected(1);
-			*ppObjectSelected = pObj;
-			Invalidate();
-		}
-	}
-	else if (*ppObjectSelected)
-	{
-		(*ppObjectSelected)->SetSelected(0);
-		*ppObjectSelected = 0;
-		Invalidate();
-	}
-	return flag;
-}
-
-
 
 BOOL CChildViewStaff::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
@@ -3012,12 +2945,6 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 	return 0;
 }
 
-//----------------------------------------------
-void CChildViewStaff::CreateNote(NoteData &data)
-{
-	data.CopyData(GetNoteData());
-}
-
 //---------------- Combo Boxes ---------------
 
 void CChildViewStaff::DoBlockOps(int Op)
@@ -3214,7 +3141,6 @@ void CChildViewStaff::UpdateColors()
 	}
 }
 
-
 afx_msg LRESULT CChildViewStaff::OnChildviewPlayerthread(WPARAM SubCommand, LPARAM Data)
 {
 
@@ -3259,7 +3185,10 @@ void CChildViewStaff::OnTimer(UINT_PTR nIDEvent)
 void CChildViewStaff::MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag)
 {
 	CMsObject* pKeySig, * pLoudness;
-	CMsEvent* pEV = GetSong()->GetEventObject(GetDrawEvent());
+	UINT DrawEvent = GetDrawEvent();
+	if (DrawEvent < 1)
+		DrawEvent = 2;
+	CMsEvent* pEV = GetSong()->GetEventObject(DrawEvent);
 	pKeySig = GetSong()->GetMsObject(
 		MSOBJ_KEYSIG,
 		pEV,
@@ -3274,124 +3203,14 @@ void CChildViewStaff::MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag)
 	{
 		if (NoteOnFlag)
 		{
-			printf("NoteOn %d\n", pNote->GetPitch());
 			pNote->NoteOn((CMsKeySignature*)pKeySig, 100);
 		}
 		else
 		{
-			printf("NoteOff %d\n", pNote->GetPitch());
 			pNote->NoteOff((CMsKeySignature*)pKeySig, 100);
 		}
 	}
-	else
-	{
-		printf("????\n");
-	}
 }
-
-/*
-//-----------------------------------
-// check to see if mouse is over
-// a Tempo Object
-//-----------------------------------
-MouseOverObject(m_nDrawEvent, MSOBJ_TEMPO, &m_pTempoSelected);
-//-----------------------------------
-// Check to see if the mouse is over
-// a Loudness Object.
-//-----------------------------------
-MouseOverObject(m_nDrawEvent, MSOBJ_LOUDNESS, &m_pLoudnessSelected);
-//------------------------------------
-// check to see if the mouse is over
-// a key signature object
-//-----------------------------------
-MouseOverObject(m_nDrawEvent, MSOBJ_KEYSIG, &m_pKeySigSelected);
-//-----------------------------------
-// check to see if the mouse is over
-// a time signature object
-//-----------------------------------
-MouseOverObject(m_nDrawEvent, MSOBJ_TIMESIG, &m_pTimeSigSelected);
-//-----------------------------------
-// Check to see if the mouse is over
-// a repeat symbol
-//-----------------------------------
-if (m_pSong->IsRepeatInThisEvent(m_nDrawEvent))	//OnMouseMove
-{
-	int matchingEvent;
-
-	pObj = m_pSong->GetRepeatObject(m_nDrawEvent);
-	if (MSOBJ_REPEATSTART == pObj->GetType())
-	{
-		m_pRepeatStartSelected = (CMsRepeatStart*)pObj;
-		m_pRepeatStartSelected->SetSelected(1);
-		m_pRepeatEndSelected = (CMsRepeatEnd*)m_pSong->FindMatchingRepeatObject(m_pRepeatStartSelected, m_nDrawEvent, &matchingEvent);
-		if (m_pRepeatEndSelected)m_pRepeatEndSelected->SetSelected(1);
-		Invalidate();
-	}
-	else
-	{
-		m_pRepeatEndSelected = (CMsRepeatEnd*)pObj;
-		m_pRepeatEndSelected->SetSelected(1);
-		m_pRepeatStartSelected = (CMsRepeatStart*)m_pSong->FindMatchingRepeatObject(m_pRepeatEndSelected, m_nDrawEvent, &matchingEvent);
-		if (m_pRepeatStartSelected)m_pRepeatStartSelected->SetSelected(1);
-		Invalidate();
-	}
-}
-else            //OnMouseMove
-{
-	if (m_pRepeatEndSelected)
-	{
-		m_pRepeatEndSelected->SetSelected(0);
-		m_pRepeatEndSelected = 0;
-	}
-	if (m_pRepeatStartSelected)
-	{
-		m_pRepeatStartSelected->SetSelected(0);
-		m_pRepeatStartSelected = 0;
-		Invalidate();
-	}
-}
-//--------------------------------------
-// Check to see if the mouse cursor is
-// over a Note.
-//--------------------------------------
-if (m_pSong->IsNoteInThisEvent(note, m_nDrawEvent))
-{
-	printf("01 Note %d is in Event %d\n", note, m_nDrawEvent);
-	//--------------------------------------
-	// deselect last selected note, if any
-	//--------------------------------------
-	if (m_pLastSelNote)
-	{
-		CString csNote;
-		m_pLastSelNote->NoteToString(csNote);
-		printf("02 Deselect Last Selected Note %S\n", csNote.GetString());
-		m_pLastSelNote->SetSelected(0);
-	}
-	CMsNote* pN = m_pSong->GetNoteAtEvent(note, m_nDrawEvent);
-	if (pN)
-	{
-		CString csNote;
-		pN->NoteToString(csNote);
-		printf("03 Set Selected for Note %S\n", csNote.GetString());
-		pN->SetSelected(1);
-	}
-	m_pLastSelNote = pN;
-	Invalidate();
-}
-else
-{
-	if (m_pLastSelNote)
-	{
-		m_pLastSelNote->SetSelected(0);
-		m_pLastSelNote = 0;
-		Invalidate();
-	}
-}
-
-//--------------------------------
-// do mouse things for various
-// Draw modes.
-*/
 
 BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 {

@@ -202,14 +202,12 @@ public:
 	void IncreaseDuration(void);
 	//----------------------------------
 	int CalcMaxEvents(void);
-	void CreateNote(NoteData& data);
 	void GetEventRect(int Event, CRect& rect);
 	UINT GetRawEventNumber(int x);
 	CSize GetSelectionRegionSize() { return m_szSelectRect; }
 	int GetSelectionRegionTop() { return m_SelectRectTop; }
 	int IsEventDisplayed(CMsEvent* pEV);
 	int MouseInRegion(CPoint p);
-	int MouseOverObject(int nEvent, int nObjectType, CMsObject** ppObjectSelected);
 	//	int NoteToY(int Note);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
