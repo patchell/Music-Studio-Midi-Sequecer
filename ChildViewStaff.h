@@ -4,6 +4,7 @@
 #pragma once
 
 constexpr auto STAFFVIEW_MIDI_IN_DISPATCH_NUMENTRIES = 4;
+constexpr auto INVALID_PITCH = -1;
 
 // Regions that the mouse can be in
 enum {
@@ -41,7 +42,6 @@ enum {
 };
 
 // CChildViewStaff window
-//class CStaticStatus;
 
 class CChildViewStaff : public CChildViewBase
 {
@@ -85,7 +85,7 @@ class CChildViewStaff : public CChildViewBase
 	//-------------------------------------
 	int m_nDrawState;
 	int m_ExitEditRegion;
-	int m_lastpitch;
+	INT m_LastPitch;
 	CMsNote* pLastNote;
 	int m_nDrawEvent;
 	int m_nRawEvent;
@@ -133,13 +133,25 @@ public:
 	void UpdateComboBoxes();
 	void UpdateNoteDrawObject();
 	void UpdateColors();
+	CStaticStatus* GetStatusBar() { return &m_Status; }
 	//------------ Draw Screen ----------------------
+	BOOL IsMouseInEditRegion() { return m_MouseInEditRegion; }
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void OnDraw(CDC* pDC);
 	void DrawControls(CDC* pDC);
 	//---- Get/Set Data Member Access Methods -----
 	NoteData& GetNoteData() { return m_CurrentNoteData; }
+	INT GetLastPitch() { return m_LastPitch; }
+	BOOL LastPitchIsValid() {
+		BOOL rv = FALSE;
+		if (m_LastPitch >= 0)
+		{
+			rv = TRUE;
+		}
+		return rv;
+	}
+	void SetLastPitch(INT lastPitch) { m_LastPitch = lastPitch; }
 	int GetSongScrollPosition() { return m_SongScrollPos; }
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
 	int GetPitch() { return GetNoteData().GetPitch(); }
@@ -201,6 +213,8 @@ public:
 	void IncrPitch(void);
 	void IncreaseDuration(void);
 	//----------------------------------
+	CMsObject* GetDrawObject() { return m_pDrawObject; }
+	void SetDrawObject(CMsObject* pDObj) { m_pDrawObject = pDObj; }
 	int CalcMaxEvents(void);
 	void GetEventRect(int Event, CRect& rect);
 	UINT GetRawEventNumber(int x);

@@ -1,9 +1,17 @@
 #pragma once
 
 enum {
+	DRAWSTATE_SET_ATTRIBUTES,
+	DRAWSTATE_WAITFORMOUSE_DOWN,
+	DRAWSTATE_MOVE_OBJECT_AROUND,
+	DRAWSTATE_PLACE
+};
+
+enum {
 	SEARCH_REVERSE,
 	SEARCH_FORWARD
 };
+
 //*************************************
 // Midi Messages
 //*************************************

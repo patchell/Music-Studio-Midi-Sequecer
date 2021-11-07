@@ -12,7 +12,6 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSelDurDlg dialog
 
-extern int NoteDurLut[];
 
 CSelDurDlg::CSelDurDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSelDurDlg::IDD, pParent)
@@ -86,7 +85,7 @@ void CSelDurDlg::OnOK()
 {
 	UpdateData();
 	m_nDurSel = m_Combo_SelDur.GetCurSel();
-	m_nDuration = NoteDurLut[m_nDurSel];
+	m_nDuration = CMsNote::NoteDurLut[m_nDurSel];
 	if (m_Radio_Sel == 1) m_nDuration += 2;	//dotted
 	else if(m_Radio_Sel == 2) m_nDuration -= 2;	//tripplet
 	CDialog::OnOK();

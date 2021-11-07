@@ -146,6 +146,21 @@ void CMsObject::SetParentEvent(UINT ParrentEvent)
 	}
 }
 
+int CMsObject::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsObject::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsObject::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsObject::DebugDump()
 {
 	/*

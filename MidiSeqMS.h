@@ -178,6 +178,20 @@ public:
 	afx_msg void OnNewNewlaunchcontroledit();
 	int FontPixelsToLogicalUnits(CDC* pDC, int heightInPixels);
 	unsigned GetUniqueID();
+	//---------------------------------------------------
+	static int  KeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1];
+	static int TimeSigCBbMIDs[APP_NUM_TIMESIG];
+	static int TimeSigBmIds[APP_NUM_TIMESIG];
+	static int RestBmIdsTypes[APP_NUM_RESTTYPES];
+	static int NoteBmIdsTypes[APP_NUM_NOTETYPES];
+	static int RestComboBoxTypes[APP_NUM_RESTTYPES];
+	static int DecorationsBmIds[APP_NUM_DECORATIONS];
+	static int DecorationsBmCbIdsSel[APP_NUM_DECORATIONS];
+	static int DecorationsBmCbIdsNotSel[APP_NUM_DECORATIONS];
+	static int BlockOpBmIdsTypes[APP_NUM_BLOCKOPTYPES];
+	static int AccidentalBmIdsTypes[APP_NUM_ACCIDENTALTYPES];
+	static int AccidentalBmCBIdsTypes[APP_NUM_ACCIDENTALTYPES];
+	static int MisStuffTypes[APP_NUM_MISC];
 };
 //----------- function prototypes -------------
 extern char* WcharToChar(char* pcDest, WCHAR* pwSrc, int len);

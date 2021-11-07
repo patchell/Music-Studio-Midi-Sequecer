@@ -21,6 +21,7 @@ class CMsGlisandoStart;
 class CMsGlisandoEnd;
 class CMsSong;
 class CMsEvent;
+class CChildViewStaff;
 
 constexpr auto STAVE_OFFSET = 132;	//DISTANCE from top of client rect;
 									// to the top of the treble stave
@@ -122,6 +123,9 @@ public:
 	virtual void SetParentEvent(UINT ParrentEvent);
 	virtual CMsEvent* GetParentEvent() { return m_pParentEvent; }
 	virtual CMsObject* MakeANewObject() { return nullptr; }
+	virtual int MouseLButtonDown( int DrawState, CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
 	virtual void DebugDump();
 //-------------------------------------------------
 	// Attribute Methods

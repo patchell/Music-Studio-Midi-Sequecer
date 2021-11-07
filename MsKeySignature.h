@@ -27,4 +27,6 @@ public:
 	void SetKeySigCorrection();
 	CMsObject * Copy();
 	int NoteToPosition(int Note);
+	//--------------------------------------------------
+	static CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1];
 };

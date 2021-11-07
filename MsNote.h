@@ -135,6 +135,7 @@ public:
 
 	void SetHeadFlipped(UINT HdFlipped) { m_HeadFlipped = HdFlipped; }
 	UINT GetHeadFlipped() { return m_HeadFlipped; }
+	BOOL IsHeadFlipped() { return m_HeadFlipped; }
 
 	void SetAccidental(int v) { m_Accidental = v; }
 	int GetAccidental(){return m_Accidental;}
@@ -199,6 +200,11 @@ public:
 	virtual void Print(FILE* pO);
 	virtual void Save(FILE* pO);
 	virtual CMsObject* Copy(void);
+	//----------- Draw Funcrions ----------------------
+	virtual int MouseLButtonDown(int DrawState,CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	CChildViewStaff* GetStaffView() { return  GetSong()->GetStaffChildView(); }
 
 	void SetNoteOffTick(UINT NOT) { GetData().SetNoteOffTick(NOT); }
 	UINT GetNoteOffTick() { return GetData().GetNoteOffTick(); }
@@ -244,6 +250,7 @@ public:
 
 	void SetHeadFlipped(UINT HdFlipped) { GetData().SetHeadFlipped(HdFlipped); }
 	UINT GetHeadFlipped() { return GetData().GetHeadFlipped(); }
+	BOOL IsHeadFlipped() { return GetData().IsHeadFlipped();}
 
 	void SetDotted(int d) { GetData().SetDotted(d); }
 	int GetDotted() { return GetData().GetDotted(); }
@@ -267,6 +274,7 @@ public:
 	//--------------------------------------
 	// returns true for various attributes
 	//-------------------------------------
+	CMsNote* IsSecondInterval( );
 	bool IsDotted();
 	bool IsSolid(void) { return DurTab[GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
@@ -312,4 +320,17 @@ public:
 	virtual BOOL RemoveFromQueue();
 	//-------------------------------------------
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
+	//---------------------------------
+	// accidental encoding
+	//---------------------------------
+	enum {
+		MSFF_ACCIDENTAL_INKEY,
+		MSFF_ACCIDENTAL_NATURAL,
+		MSFF_ACCIDENTAL_SHARP,
+		MSFF_ACCIDNETAL_FLAT,
+	};
+	static int AccedentalsLUT[APP_NUM_ACCIDENTALTYPES];
+
+	static int NoteDurLut[APP_NUM_NOTETYPES];
 };
+

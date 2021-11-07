@@ -4,6 +4,27 @@
 
 #include "pch.h"
 
+
+CString CMsKeySignature::KeySigStringTab[APP_NUM_KEYSIGNATURES + 1] = {
+	_T("ERROR"),	//5
+	_T("C MAJ"),	//1X
+	_T("G MAJ"),	//2X
+	_T("D MAJ"),	//3X
+	_T("A MAJ"),	//4X
+	_T("E MAJ"),	//5X
+	_T("B MAJ"),	//6X
+	_T("F# MAJ"),	//7X
+	_T("C# MAJ"),	//8X
+	_T("F MAJ"),	//9X
+	_T("Bb MAJ"),	//10X
+	_T("Eb MAJ"),	//11X
+	_T("Ab MAJ"),	//12X
+	_T("Db MAJ"),	//13X
+	_T("Gb MAJ"),	//14X
+	_T("Cb MAJ")	//15X
+};
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -22,7 +43,7 @@ CMsKeySignature::~CMsKeySignature()
 
 void CMsKeySignature::Print(FILE *pO)
 {
-//	fprintf(pO,"Key Signature:%s\n",KeySigStringTab[m_KeySignature]);
+//	fprintf(pO,"Key Signature:%s\n",CMsKeySignature::KeySigStringTab[m_KeySignature]);
 }
 
 void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
@@ -169,15 +190,15 @@ UINT CMsKeySignature::GetKeySigCorrection(UINT note, UINT accidental)
 	UINT n = note % 12;
 	switch(accidental)
 	{
-		case MSFF_ACCIDENTAL_INKEY:	//default
+		case CMsNote::MSFF_ACCIDENTAL_INKEY:	//default
 			note += m_KeySigCorrection[n];
 			break;
-		case MSFF_ACCIDENTAL_NATURAL:
+		case CMsNote::MSFF_ACCIDENTAL_NATURAL:
 			break;
-		case MSFF_ACCIDENTAL_SHARP:
+		case CMsNote::MSFF_ACCIDENTAL_SHARP:
 			note += 1;
 			break;
-		case MSFF_ACCIDNETAL_FLAT:
+		case CMsNote::MSFF_ACCIDNETAL_FLAT:
 			note -= 1;
 			break;
 	}

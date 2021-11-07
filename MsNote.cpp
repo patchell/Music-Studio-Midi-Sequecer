@@ -4,7 +4,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "MsNote.h"
 
 void PrintRecPtSz(const char* pTit, CRect rec)
 {
@@ -16,6 +15,21 @@ void PrintRecPtSz(const char* pTit, CRect rec)
 }
 
 
+int CMsNote::AccedentalsLUT[APP_NUM_ACCIDENTALTYPES] = {
+	MSFF_ACCIDENTAL_INKEY,
+	MSFF_ACCIDENTAL_SHARP,
+	MSFF_ACCIDNETAL_FLAT,
+	MSFF_ACCIDENTAL_NATURAL
+};
+
+int CMsNote::NoteDurLut[APP_NUM_NOTETYPES] = {
+	MSFF_WHOLE_NOTE,
+	MSFF_HALF_NOTE,
+	MSFF_QUARTER_NOTE,
+	MSFF_EIGTH_NOTE,
+	MSFF_SIXTEENTH_NOTE,
+	MSFF_THIRTYSEC_NOTE
+};
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -180,7 +194,6 @@ void CMsNote::Print(FILE *pO)
 
 }
 
-
 UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 {
 	int Note, Oct;
@@ -325,14 +338,37 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 	else	///draw note on staff
 	{
 		UINT rectX1, rectY1, rectX2, rectY2;
-
-		notev = NoteToPosition();
-		rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
-		rectY1 = notev;
-		rectX2 = rectX1 + NOTE_HEAD_WIDTH;
-		rectY2 = notev + NOTE_HEAD_HIEGTH;
-		r.SetRect(rectX1, rectY1, rectX2, rectY2);
-		pDC->Ellipse(&r);
+		CMsNote* pSecInterval;
+		//---------------------------------------------
+		// Draw Note Head
+		//--------------------------------------------
+		if ((pSecInterval = IsSecondInterval()) != NULL)
+		{
+			if (IsHeadFlipped())
+				pSecInterval->SetHeadFlipped(0);
+			else
+				pSecInterval->SetHeadFlipped(1);
+		}
+		if (IsHeadFlipped())
+		{
+			notev = NoteToPosition();
+			rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
+			rectY1 = notev;
+			rectX2 = rectX1 + NOTE_HEAD_WIDTH;
+			rectY2 = notev + NOTE_HEAD_HIEGTH;
+			r.SetRect(rectX1, rectY1, rectX2, rectY2);
+			pDC->Ellipse(&r);
+		}
+		else        //Note Head Normal
+		{
+			notev = NoteToPosition();
+			rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET - NOTE_HEAD_WIDTH;
+			rectY1 = notev;
+			rectX2 = rectX1 + NOTE_HEAD_WIDTH;
+			rectY2 = notev + NOTE_HEAD_HIEGTH;
+			r.SetRect(rectX1, rectY1, rectX2, rectY2);
+			pDC->Ellipse(&r);
+		}
 		if(NeedsLine())
 		{
 			int y;
@@ -357,15 +393,16 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 		if(NeedsTail())
 		{
 			int n;
-			if(GetUpsideDown())
+			UINT x = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
+			if(IsUpsideDown())
 			{
-				pDC->MoveTo(rectX2,notev+4);
-				pDC->LineTo(rectX2,notev+28);
+				pDC->MoveTo(x,notev+4);
+				pDC->LineTo(x,notev+28);
 			}
 			else
 			{
-				pDC->MoveTo(rectX1 +9,notev+4);
-				pDC->LineTo(rectX1 +9,notev-20);
+				pDC->MoveTo(x,notev+4);
+				pDC->LineTo(x,notev-20);
 			}
 			if((n=NeedsFlags()))
 			{
@@ -735,8 +772,171 @@ CMsObject * CMsNote::Copy()
 	pN->SetParentEvent(GetParentEvent()->GetIndex());
 
 	if (m_BitmapFlag)
-		pN->GetBitmap()->LoadBitmapW(RestBmIdsTypes[GetShape()]);
+		pN->GetBitmap()->LoadBitmapW(CMidiSeqMSApp::RestBmIdsTypes[GetShape()]);
 	return pN;
+}
+
+int CMsNote::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	//-------------------------------------------------------
+	//	MouseDown
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse button goes down.
+	//
+	//	parameters:
+	//		DrawState.Current state of drawing process
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+
+	switch (DrawState)
+	{
+	case DRAWSTATE_SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE_WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE_PLACE:
+		break;
+	}
+	GetStaffView()->Invalidate();
+	return DrawState;
+}
+
+int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	//-------------------------------------------------------
+	// MouseUp
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse button goes up.
+	//
+	//	parameters:
+	//		DrawState.Current state of drawing process
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+	CNotePropertiesDlg Dlg;
+	int Id;
+	CString csText;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE_SET_ATTRIBUTES:
+		csText.Format(_T("Configure Note Prameters"));
+		GetStaffView()->GetStatusBar()->SetText(csText);
+		Dlg.SetNoteToEdit(this);
+		if ((Id = Dlg.DoModal()) == IDOK)
+		{
+			DrawState = DRAWSTATE_WAITFORMOUSE_DOWN;
+			GetStaffView()->Invalidate();
+		}
+		break;
+	case DRAWSTATE_WAITFORMOUSE_DOWN:
+//		m_P1 = m_P2 = pASV->m_SnapPos;
+//		pASV->EnableAutoScroll(1);
+//		DrawState = DRAWSTATE_PLACE;;
+		GetStaffView()->Invalidate();
+		break;
+	case DRAWSTATE_PLACE:
+		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
+		{
+			CMsNote* pN = new CMsNote;
+			CMsNote* pNote = (CMsNote * )GetStaffView()->GetDrawObject();
+
+			SetPitch(pNote->GetPitch());
+			if (IsRest())
+				pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetStaffView()->GetDrawEvent());	// Create Rest
+			else
+				pN->Create(0, GetSong(), GetStaffView()->GetDrawEvent());	// Create Note
+			pNote->SetParentEvent(GetStaffView()->GetDrawEvent());
+			//-----------------------------
+			// Copy attributes
+			//------------------------------
+			pN->GetData().CopyData(GetStaffView()->GetNoteData());
+			GetStaffView()->SetDrawObject(pN);
+			GetStaffView()->CheckAndDoScroll(pointMouse);
+		}
+		DrawState = DRAWSTATE_WAITFORMOUSE_DOWN;
+		GetStaffView()->Invalidate();
+		break;
+	}
+	return DrawState;
+}
+
+int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
+{
+	//-------------------------------------------------------
+	// MouseMove
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse is moved.
+	//
+	//	parameters:
+	//		pointMouse..Current Mouse Position
+	//		DrawState...Current state of drawing process
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+	INT note = -1;
+	CString csStatusString, csTemp;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE_SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE_WAITFORMOUSE_DOWN:
+		note = GetStaffView()->YtoNote(pointMouse.y);
+
+//		pNote = (CMsNote*)GetStaffView()->GetDrawObject();
+//		printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
+		if (GetStaffView()->GetLastPitch())
+		{
+			if (GetStaffView()->GetLastPitch() != note)
+			{
+				SetPitch(note);
+				if (!IsRest())
+				{
+					printf("    Note Off %d\n", GetPitch());
+					GetStaffView()->MidiPlayNote(this, 0);// Note Off
+				}
+				SetPitch(note);
+				if (!IsRest())
+				{
+					printf("    Note On %d\n", GetPitch());
+					GetStaffView()->MidiPlayNote(this, 1);// Note On
+				}
+				GetStaffView()->SetLastPitch(note);
+				if (IsRest())
+				{
+					csStatusString.Format(_T("Draw Rest at Event %d"), GetStaffView()->GetDrawEvent());
+				}
+				else
+				{
+					ObjectToString(csTemp);
+					csStatusString.Format(_T("%lS at Event %d: "), csTemp.GetString(), GetStaffView()->GetDrawEvent());
+				}
+			}
+		}
+		else if (!GetStaffView()->LastPitchIsValid() && GetStaffView()->IsMouseInEditRegion())
+		{
+			SetPitch(note);
+			if (!IsRest())
+				GetStaffView()->MidiPlayNote(this, 1);// Note On
+			GetStaffView()->SetLastPitch(note);
+		}
+		GetStaffView()->Invalidate();
+		break;
+	case DRAWSTATE_MOVE_OBJECT_AROUND:
+		break;
+	case DRAWSTATE_PLACE:
+		break;
+	}
+	GetSong()->GetStaffChildView()->Invalidate();
+	return DrawState;
 }
 
 void CMsNote::Save(FILE *pO)
@@ -927,4 +1127,46 @@ void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 	rect.SetRect(EVENT_OFFSET + EVENT_WIDTH * Event, noteVerticalPos, EVENT_OFFSET + EVENT_WIDTH * Event + 10, noteVerticalPos + 8);
 }
 
+
+CMsNote* CMsNote::IsSecondInterval()
+{
+	/// <summary>
+	/// This function is used to figure out if
+	/// the note that is about to be drawn is
+	/// a half step or a whole step away from
+	/// another note in the same event so that
+	/// one of the notge heads can be flipped
+	/// </summary>
+	/// <returns>A pointer to a note that is
+	/// One half or whole step from this note</returns>
+	CMsNote* pWholeStep = 0;
+	CMsEvent* pCurrentEvent = GetParentEvent();
+	CMsObject* pCurrentSongObject;
+	INT pitchDiff;
+	UINT Loop = 1;
+	
+	if ((pCurrentSongObject = pCurrentEvent->ContainsObjectType(MSOBJ_NOTE)) != NULL)
+	{
+		while (pCurrentSongObject && Loop)
+		{
+			if (pCurrentSongObject->GetType() == MSOBJ_NOTE)
+			{
+				CMsNote* pN = (CMsNote*)pCurrentSongObject;
+				pitchDiff = pN->GetPitch() - GetPitch();
+				if ((pitchDiff <= 2) && (0 < pitchDiff))	//can these be a second?
+				{
+					pWholeStep = pN;
+					Loop = 0;
+				}
+				else
+					pCurrentSongObject = pCurrentSongObject->GetNext();
+			}
+			else
+			{
+				pCurrentSongObject = pCurrentSongObject->GetNext();
+			}
+		}
+	}
+	return pWholeStep;
+}
 

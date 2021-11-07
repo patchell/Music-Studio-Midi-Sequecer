@@ -110,7 +110,7 @@ BOOL CNotePropertiesDlg::OnInitDialog()
 	CString csNote;
 
 	m_pNote->ObjectToString(csNote);
-	csCaption.Format(_T("Note Properties %S ID=%d"), csNote.GetString(), m_pNote->GetObjectID());
+	csCaption.Format(_T("Note Properties %lS ID=%d"), csNote.GetString(), m_pNote->GetObjectID());
 	SetWindowText(csCaption);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -122,14 +122,12 @@ void CNotePropertiesDlg::OnRadioNone()
 {
 }
 
-extern int NoteDurLut[6];
-
 void CNotePropertiesDlg::OnOK()
 {
 	UpdateData(true);
 	m_pNote->SetRest(m_Check_Rest.GetCheck());
 	m_pNote->SetAccent(m_Check_Accent.GetCheck());
-	int d = NoteDurLut[m_Combo_Duration.GetCurSel()];
+	int d = CMsNote::NoteDurLut[m_Combo_Duration.GetCurSel()];
 	if (m_Radio_None == PROP_DOTTED && !m_Check_Rest.GetCheck())
 		d += 2;
 	else if (m_Radio_None == PROP_TRIPLET && !m_Check_Rest.GetCheck())

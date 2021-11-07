@@ -47,7 +47,7 @@ CChildViewStaff::CChildViewStaff()
 	pLastNote = 0;				// pointer to the last note placed
 	m_MouseInEditRegion = 0;	// flag indicating pointer in edit region
 	m_ExitEditRegion = 0;		// flag indicates that edit region exited
-	m_lastpitch = 0;
+	m_LastPitch = INVALID_PITCH;	//last pitch is invalid
 	m_LastSelectedEventIndex = -1;
 	m_FirstSelectedEvent = -1;
 	m_SongScrollPos = 0;
@@ -377,7 +377,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				CMsNote* pN = new CMsNote;
 				SetPitch(pNote->GetPitch());
 				if (GetRest())
-					pN->Create(RestBmIdsTypes[pNote->GetShape()], GetSong(), m_nDrawEvent);	// Create Rest
+					pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), m_nDrawEvent);	// Create Rest
 				else
 					pN->Create(0, GetSong(), m_nDrawEvent);	// Create Note
 				pNote->SetParentEvent(m_nDrawEvent);
@@ -572,12 +572,12 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		switch (m_nDrawMode)
 		{
 		case DRAWMODE_NOTE:		//OnMouseMove
-			if (m_lastpitch && m_ExitEditRegion)
+			if (GetLastPitch() && m_ExitEditRegion)
 			{
 				pN = (CMsNote*)m_pDrawObject;
 				if(pN)
 					MidiPlayNote(pN, 0);// Note Off
-				m_lastpitch = 0;
+				SetLastPitch(INVALID_PITCH);
 			}
 			break;
 		}	//end of switch(m_nDrawMode) in case MOUSE_INUPPERSEL
@@ -592,14 +592,15 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		switch (m_nDrawMode)	//OnMouseMove
 		{
 		case DRAWMODE_NOTE:
-			if (m_lastpitch && m_ExitEditRegion)
+			if (LastPitchIsValid() && m_ExitEditRegion)
 			{
 				pN = (CMsNote*)m_pDrawObject;
 				if (pN)
 				{
 					MidiPlayNote(pN, 0);	//NoteOff
 				}
-				m_lastpitch = 0;
+				SetLastPitch(-1);
+				SetLastPitch(INVALID_PITCH);
 				Invalidate();
 			}
 			break;
@@ -690,10 +691,10 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 			// Move a note around the screen
 			//--------------------------------
 			pN = (CMsNote*)m_pDrawObject;
-			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", m_lastpitch, note);
-			if (m_lastpitch)
+			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
+			if (LastPitchIsValid())
 			{
-				if (m_lastpitch != note)
+				if (GetLastPitch() != note)
 				{
 					SetPitch(note);
 					if (!pN->IsRest())
@@ -707,7 +708,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 						printf("    Note On %d\n", pN->GetPitch());
 						MidiPlayNote(pN, 1);// Note On
 					}
-					m_lastpitch = note;
+					SetLastPitch(note);
 					if (pN->IsRest())
 					{
 						StatusString.Format(_T("Draw Rest at Event %d"), m_nDrawEvent);
@@ -719,12 +720,12 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					}
 				}
 			}
-			else if (!m_lastpitch && m_MouseInEditRegion)
+			else if (!LastPitchIsValid() && IsMouseInEditRegion())
 			{
 				pN->SetPitch(note);
 				if (!pN->IsRest())
 					MidiPlayNote(pN, 1);// Note On
-				m_lastpitch = note;
+				SetLastPitch(note);
 			}
 			Invalidate();
 			break;
@@ -791,10 +792,13 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	switch (nChar)
 	{
 	case VK_MENU:
+		m_AltKeyDown = 1;
 		break;
 	case VK_SHIFT:
+		m_ShiftKeyDown = 1;
 		break;
 	case VK_CONTROL:
+		m_CtrlKeyDown = 1;
 		break;
 	case 'R':	//toggle REST mode.
 		if (DRAWMODE_NOTE != m_nDrawMode)
@@ -817,7 +821,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			// from the duration
 			//--------------------------------------
 			Dur = pN->GetDuration();
-			Dur = NoteDurLut[DurTab[Dur].NoteShapIndex];
+			Dur = CMsNote::NoteDurLut[DurTab[Dur].NoteShapIndex];
 			pN->SetDuration(Dur);
 			pN->SetRest(1);
 		}
@@ -966,7 +970,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		switch (m_nDrawMode)
 		{
 		case DRAWMODE_NOTE:
-			if (m_lastpitch)
+			if (LastPitchIsValid())
 			{
 				//------------------------------
 				// If the draw object is a NOTE,
@@ -975,7 +979,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				//------------------------------
 				pN = (CMsNote*)m_pDrawObject;
 				MidiPlayNote(pN, 0);// Note Off
-				m_lastpitch = 0;
+				SetLastPitch(INVALID_PITCH);
 			}
 			break;
 		}	//end of switch(m_nDrawMode) in case MOUSE_INUPPERSEL
@@ -1005,8 +1009,18 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (m_pDrawObject->GetType() == MSOBJ_NOTE)
 			{
 				CMsNote* pN = (CMsNote*)m_pDrawObject;
-				pN->SetUpsideDown(pN->GetUpsideDown() ^ 1);
+				if (m_CtrlKeyDown)
+					pN->SetHeadFlipped(pN->GetHeadFlipped() ^ 1);
+				else
+				{
+					pN->SetUpsideDown(pN->GetUpsideDown() ^ 1);
+					if (pN->IsUpsideDown())
+						pN->SetHeadFlipped(1);
+					else
+						pN->SetHeadFlipped(0);
+				}
 				Invalidate();
+				pN->Print(stdout);
 			}
 		}
 		break;
@@ -1021,10 +1035,13 @@ void CChildViewStaff::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	switch (nChar)
 	{
 	case VK_MENU:
+		m_AltKeyDown = 0;
 		break;
 	case VK_SHIFT:
+		m_ShiftKeyDown = 0;
 		break;
 	case VK_CONTROL:
+		m_CtrlKeyDown = 0;
 		break;
 	default:
 		CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
@@ -1189,7 +1206,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					Dlg.SetNumStrings(GETAPP->GetNumKeySigs() );
 					for (int i = 0; i < (GETAPP->GetNumKeySigs()); i++)
 					{
-						Dlg.SetSelectionString(i,KeySigStringTab[i + 1]);
+						Dlg.SetSelectionString(i, CMsKeySignature::KeySigStringTab[i + 1]);
 					}
 					Dlg.m_nSelection = Obj.pKey->GetKeySignature() - 1;
 					if (IDOK == Dlg.DoModal())
@@ -1213,7 +1230,8 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 				case MSOBJ_NOTE:	//OnContextMenu
 				{
 					CNotePropertiesDlg Dlg;
-					Dlg.m_pNote = Obj.pNote;
+
+					Dlg.SetNoteToEdit(Obj.pNote);
 					Dlg.DoModal();
 				}
 				break;
@@ -1275,16 +1293,12 @@ int NoteLut[7] = {
 	11	//B
 };
 
-int NoteToY(int Note)
-{
-	int rV = 0;
-	return rV;
-}
 
-int CChildViewStaff::YtoNote(int y)
+int CChildViewStaff::YtoNote(int mouseY)
 {
-	int r;
-	int o = 0;
+	int NoteIndex;
+	int Octave = 0;
+	int Note;
 	//----------------------------
 	// Notes place on staff will
 	// start at HIGHC_OFFSET and
@@ -1296,28 +1310,35 @@ int CChildViewStaff::YtoNote(int y)
 	// C8 from the mouse Y coordiant
 	// so that we know where to draw
 	//----------------------------------
-	y -= HIGHC_OFFSET;
+	mouseY -= HIGHC_OFFSET;
 	//----------------------------------
 	// quantize the y coordiant so that
 	// the note will only be drawn either
 	// in the space, or on the line.  We do
 	// not quantize the mouse pointer
 	//-----------------------------------
-	y = QuantizeY(y);
-	y = QUANTIZED_STAFF_HEIGHT - y;	//invert y
-	y -= STAVE_LINE_SPACING / 2;	//center
+	mouseY = QuantizeY(mouseY);
+	mouseY = QUANTIZED_STAFF_HEIGHT - mouseY;	//invert y
+	mouseY -= STAVE_LINE_SPACING / 2;	//center
 	//------------------------------------
 	// Limit the range that y can take
 	//------------------------------------
-	if (y < 0) y = 0;
-	r = y % 7;
-	int n = NoteLut[r];
-	o += (y / 7) * 12;	/// calculate octave
-	n = n + o + 0x24;
-	if (n > 0x60)
-		n = 0x60;
-	return n;
+	if (mouseY < 0) mouseY = 0;
+	NoteIndex = mouseY % 7;
+	Note = NoteLut[NoteIndex];
+	Octave += (mouseY / 7) * 12;	/// calculate octave
+	Note = Note + Octave + 0x24;
+	if (Note > 0x60)
+		Note = 0x60;	// limit max value of Note
+	return Note;
 }
+
+int NoteToY(int Note)
+{
+	int rV = 0;
+	return rV;
+}
+
 
 UINT CChildViewStaff::GetRawEventNumber(int x)
 {
@@ -1388,7 +1409,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		{
 			int Shape;
 			Shape = pN->GetShape();
-			int Id = RestBmIdsTypes[Shape];
+			int Id = CMidiSeqMSApp::RestBmIdsTypes[Shape];
 			pN->Create(Id, GetSong(), m_nDrawEvent);
 		}
 		else
@@ -1897,7 +1918,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				note -= adj;
 				note += 12 * (Note / 12);
 				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-				CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
+				CMsNote* pN = pEv->FindNote(note, adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
 				if (pN) 
 					MidiPlayNote(pN, 0);// Note Off
 				if (m_nMidiNotesOn == 0)
@@ -1984,7 +2005,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 //					note -= adj;
 //					note += 12 * (Note / 12);
 					CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-					CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
+					CMsNote* pN = pEv->FindNote(note, adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
 					if (pN) 
 						MidiPlayNote(pN, 0);// Note Off
 					if (m_nMidiNotesOn == 0)
@@ -2015,7 +2036,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				pN->Create(0, GetSong(), m_nDrawEvent);
 				pN->SetDuration(m_nMidiInputNoteSetup & DRAW_NOTE_DURATION);
 				pN->SetAccent((m_nMidiInputNoteSetup >> DRAW_NOTE_ACCENT_SHIFT) & 0x01);
-				pN->SetAccidental(adj ? (int)MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
+				pN->SetAccidental(adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
 				pN->SetTrack((m_nMidiInputNoteSetup >> DRAW_NOTE_TRACK_SHIFT) & 0x0f);
 				pN->SetRest((m_nMidiInputNoteSetup >> DRAW_NOTE_REST_SHIFT) & 1);
 				pN->SetPitch(note);
@@ -2300,7 +2321,7 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	pN->GetData().CopyData(GetNoteData());
 
 	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;
-	Dur = NoteDurLut[DurTab[pN->GetDuration()].NoteShapIndex];
+	Dur = CMsNote::NoteDurLut[DurTab[pN->GetDuration()].NoteShapIndex];
 	pN->SetDuration(Dur);
 	pN->SetRest(RestFlag);
 }
@@ -2480,7 +2501,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize decorations combo box
 	//--------------------------------------------
 	n = GETAPP->GetNumDecorations();
-	itemSize = GetBmDimensions(DecorationsBmCbIdsSel[COMBO_DECORATION_ACCENT]);
+	itemSize = GetBmDimensions(CMidiSeqMSApp::DecorationsBmCbIdsSel[COMBO_DECORATION_ACCENT]);
 	itemSize += CSize(8, 8);
 	m_Combo_Decorations.Create(
 		n,
@@ -2493,8 +2514,8 @@ void CChildViewStaff::OnInitialUpdate()
 	);
 	for (i = 0; i < n; ++i)
 	{
-		m_Combo_Decorations.AddNotSelBitmapID(DecorationsBmCbIdsNotSel[i]);
-		m_Combo_Decorations.AddSelBitmapID(DecorationsBmCbIdsSel[i]);
+		m_Combo_Decorations.AddNotSelBitmapID(CMidiSeqMSApp::DecorationsBmCbIdsNotSel[i]);
+		m_Combo_Decorations.AddSelBitmapID(CMidiSeqMSApp::DecorationsBmCbIdsSel[i]);
 		m_Combo_Decorations.SetItemFlags(i, CBDecorationFlags[i]);
 	}
 	ControlX += m_Combo_Decorations.GetTotalWidth();
@@ -2502,7 +2523,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize accidental combo box
 	//---------------------------------------
 	n = GETAPP->GetNumAccidentalTypes();
-	itemSize = GetBmDimensions(AccidentalBmCBIdsTypes[COMBO_ACCIDENTAL_INKEY]);
+	itemSize = GetBmDimensions(CMidiSeqMSApp::AccidentalBmCBIdsTypes[COMBO_ACCIDENTAL_INKEY]);
 	itemSize += CSize(8, 4);
 	m_Combo_Accidentals.Create(
 		n,
@@ -2634,7 +2655,7 @@ void CChildViewStaff::OnInitialUpdate()
 	m_Combo_Decorations.SetCurSel(COMBO_DECORATION_NONE);
 
 	m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
-	SetAccidental(MSFF_ACCIDENTAL_INKEY);
+	SetAccidental(CMsNote::MSFF_ACCIDENTAL_INKEY);
 
 	m_Combo_Rests.SetCurSel(BM_REST_INDEX_QUARTER);
 
@@ -2728,7 +2749,7 @@ void CChildViewStaff::DrawControls(CDC* pDC)
 // This function is used to update the combo box selection variables.
 void CChildViewStaff::UpdateComboBoxes()
 {
-	SetAccidental(AccedentalsLUT[m_Combo_Accidentals.GetCurSel()]);
+	SetAccidental(CMsNote::AccedentalsLUT[m_Combo_Accidentals.GetCurSel()]);
 	int sel;
 	SetAccent(m_Combo_Decorations.GetItemValue(COMBO_DECOR_ACCENT));
 	sel = m_Combo_Decorations.GetCurSel();
@@ -2753,7 +2774,7 @@ void CChildViewStaff::UpdateComboBoxes()
 	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId(Track);
 	int Channel = GETMIDIINFO->GetChannel(Track);
 	GETMIDIOUTDEVICE(DeviceID).PgmChange(Channel, Patch);
-	SetDuration(NoteDurLut[m_Combo_NoteType.GetCurSel()]);
+	SetDuration(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
 }
 
 LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
@@ -2818,7 +2839,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		SetupDrawMode(mode, v);
 		break;
 	case IDC_COMBO_NOTETYPES:
-		v = NoteDurLut[nSelection];
+		v = CMsNote::NoteDurLut[nSelection];
 		if (GetTriplet()) v -= 2;
 		else if (GetDotted()) v += 2;
 		SetDuration(v);
@@ -2853,13 +2874,13 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		m_Combo_Decorations.EnableWindow(0);
 		m_Combo_Accidentals.ShowWindow(SW_HIDE);
 		m_Combo_Decorations.ShowWindow(SW_HIDE);
-		SetDuration(NoteDurLut[nSelection]);
+		SetDuration(CMsNote::NoteDurLut[nSelection]);
 		SetFocus();
 		SetRest(1);
 		if (m_pDrawObject)
 			delete m_pDrawObject;
 		pNote = new CMsNote;
-		pNote->Create((COMBO_REST_HALF < nSelection) ? RestBmIdsTypes[nSelection] : 0, GetSong(), m_nDrawEvent);
+		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::RestBmIdsTypes[nSelection] : 0, GetSong(), m_nDrawEvent);
 		m_pDrawObject = pNote;
 		m_nDrawMode = DRAWMODE_NOTE;
 		UpdateNoteDrawObject();
@@ -2888,7 +2909,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		OnButtonStop();
 		break;
 	case IDC_COMBO_ACCIDENTALS:
-		SetAccidental(AccedentalsLUT[nSelection] );
+		SetAccidental(CMsNote::AccedentalsLUT[nSelection] );
 		UpdateNoteDrawObject();
 		break;
 	case IDC_COMBO_DECORATIONS:
@@ -2906,7 +2927,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 				{
 					SetTriplet(0);
 					SetDotted(0);
-					SetDuration(NoteDurLut[DurTab[GetDuration()].NoteShapIndex]);
+					SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex]);
 				}
 				break;
 			case COMBO_DECORATION_DOT:
@@ -2917,7 +2938,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 				}
 				else
 					SetDotted(ToggleMSG.value);
-				SetDuration(NoteDurLut[DurTab[GetDuration()].NoteShapIndex] + 2);
+				SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex] + 2);
 				break;
 			case COMBO_DECORATION_TRIPLET:
 				if (ToggleMSG.value)
@@ -2929,7 +2950,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 					SetTriplet(ToggleMSG.value);
 				SetDotted(0);
 
-				SetDuration(NoteDurLut[DurTab[GetDuration()].NoteShapIndex] - 2);
+				SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex] - 2);
 				break;
 			}	//end of switch (ToggleMSG.index)
 			break;
@@ -3042,7 +3063,7 @@ void CChildViewStaff::DoBlockOps(int Op)
 		break;
 	case COMBO_BLOCK_MIDIINPUT:	//Insert notes via midi
 //		mode = DRAW_DRAWNOTESVIAMIDI;
-//		SetNoteDur(NoteDurLut[m_Combo_NoteType.GetCurSel()]);
+//		SetNoteDur(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
 //		SetNoteRest(0);
 //		v = CreateNote();
 		break;
@@ -3152,26 +3173,26 @@ afx_msg LRESULT CChildViewStaff::OnChildviewPlayerthread(WPARAM SubCommand, LPAR
 		// song that is playing stops at
 		// the end on its own.
 		//
-		// Call the methode in the button
-		// that sort of acts like it was
-		// pushed, but doesn't send a
-		// notification that the button
-		// was pressed.
-		//-------------------------------
-		m_Button_Stop.LikeA_ButtonPush();
-		//----------------------------------
-		// Disable stop button,
-		// Enable Play Button
-		//----------------------------------
-		m_Button_Stop.EnableWindow(0);
-		m_Button_Play.EnableWindow(1);
-		//---------------------------------
-		// delete the event queue
-		//---------------------------------
-		GetSong()->SetIsPlaying(0);
-		GETAPP->PlayerThreadDeleteSong(GetSong());
-		GetSong()->GetDelSongCompleteEV().Pend();
-		break;
+// Call the methode in the button
+// that sort of acts like it was
+// pushed, but doesn't send a
+// notification that the button
+// was pressed.
+//-------------------------------
+m_Button_Stop.LikeA_ButtonPush();
+//----------------------------------
+// Disable stop button,
+// Enable Play Button
+//----------------------------------
+m_Button_Stop.EnableWindow(0);
+m_Button_Play.EnableWindow(1);
+//---------------------------------
+// delete the event queue
+//---------------------------------
+GetSong()->SetIsPlaying(0);
+GETAPP->PlayerThreadDeleteSong(GetSong());
+GetSong()->GetDelSongCompleteEV().Pend();
+break;
 	}
 	return 0;
 }
@@ -3237,4 +3258,3 @@ BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 	}
 	return CChildViewBase::PreTranslateMessage(pMsg);
 }
-

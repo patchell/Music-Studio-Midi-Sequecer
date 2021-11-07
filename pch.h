@@ -37,28 +37,6 @@ constexpr auto APP_TX816_NUM_LFO_WAVES = 6;
 constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 //-----------------------------------------
 
-extern int RestComboBoxTypes[APP_NUM_RESTTYPES];
-extern char* NoteRange[6];
-extern CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1];
-extern int AccedentalsLUT[APP_NUM_ACCIDENTALTYPES];
-extern int NoteDurLut[APP_NUM_NOTETYPES];
-extern int DecorationsBmCbIdsSel[APP_NUM_DECORATIONS];
-extern int DecorationsBmCbIdsNotSel[APP_NUM_DECORATIONS];
-//-----------------------------------------------
-// Bitmap IDs
-//-----------------------------------------------
-
-extern int TimeSigCBbMIDs[APP_NUM_TIMESIG];
-extern int TimeSigBmIds[APP_NUM_TIMESIG];
-extern int RestBmIdsTypes[APP_NUM_RESTTYPES];
-extern int ComboBoxRestTypes[APP_NUM_RESTTYPES];
-extern int NoteBmIdsTypes[APP_NUM_NOTETYPES];
-extern int DecorationsBmIds[APP_NUM_DECORATIONS];
-extern int AccidentalBmIdsTypes[APP_NUM_ACCIDENTALTYPES];
-extern int AccidentalBmCBIdsTypes[APP_NUM_ACCIDENTALTYPES];
-extern int BlockOpBmIdsTypes[APP_NUM_BLOCKOPTYPES];
-extern int MisStuffTypes[APP_NUM_MISC];
-extern int KeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1];
 //-----------------------------------------------------------
 // TX816 Editor Bitmap IDs
 //-----------------------------------------------------------

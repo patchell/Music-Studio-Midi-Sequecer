@@ -67,6 +67,7 @@ enum TimeSig {
 
 //-----------------------------------------------------
 // values for creating note dur from combo boxes
+//-----------------------------------------------------
 
 constexpr auto  MSFF_WHOLE_NOTE = 18;
 constexpr auto  MSFF_HALF_NOTE = 15;
@@ -174,15 +175,6 @@ enum Notes{
 	MSFF_NOTE_B
 };
 
-//---------------------------------
-// accidental encoding
-//---------------------------------
-enum Accidentals {
-	MSFF_ACCIDENTAL_INKEY,
-	MSFF_ACCIDENTAL_NATURAL,
-	MSFF_ACCIDENTAL_SHARP,
-	MSFF_ACCIDNETAL_FLAT,
-};
 
 constexpr auto MSFF_REST_THIRTYSECOND = 3;
 constexpr auto MSFF_REST_SIXTEENTH = 6;
