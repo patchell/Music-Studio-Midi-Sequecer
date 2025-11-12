@@ -13,7 +13,7 @@ CSelectorDlg::CSelectorDlg(CWnd* pParent /*=NULL*/)
 {
 	m_pBitmaps = 0;
 	m_nBitmaps = 0;
-	m_nSelection = 0;
+	m_nSelection = COMBO_TIMESIG_2_2;
 }
 
 CSelectorDlg::~CSelectorDlg()
@@ -40,7 +40,7 @@ BOOL CSelectorDlg::OnInitDialog()
 
 	for (int i = 0; i < m_nBitmaps; ++i)
 		m_Combo_Selector.AddBitmap(m_pBitmaps++, CString(""));
-	m_Combo_Selector.SetCurSel(m_nSelection);
+	m_Combo_Selector.SetCurSel((int)m_nSelection);
 	SetWindowText(m_csCaption);
 	return TRUE;  
 }

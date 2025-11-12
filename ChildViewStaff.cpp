@@ -31,11 +31,13 @@ CChildViewStaff::CChildViewStaff()
 	, m_nMidiInputNoteSetup(0)	//setup using midi to enter notes
 	, m_pPgmChng(NULL)			// window to send patch change?
 	, m_nLastSongPosition(0)	// Like it says
-	, m_nMouseState(0)			// Mouse state machine
 	, m_pRepeatEndSelected(0)	// End of a repeat
 	, m_pRepeatStartSelected(0)	// Start of a repeat
+	, m_UpperSelRect(0, 0, 0, 0)
+	, m_LowerSelRect(0, 0, 0, 0)
 {
 	EnableActiveAccessibility();
+	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEUP;			// Mouse state machine
 	m_pFirstTieNote = 0;		// pointer to first tie note
 	m_pSecondTieNote = 0;		// Pointer to second tie note
 	m_nDrawState = 0;			// draw state machine
@@ -79,6 +81,7 @@ CChildViewStaff::CChildViewStaff()
 	m_AltKeyDown = 0;
 	m_CtrlKeyDown = 0;
 	m_ShiftKeyDown = 0;
+	m_TimerID = 0;
 
 }
 
@@ -232,7 +235,7 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	if (this->GetFocus() != this)
 		SetFocus();
 
-	m_nMouseState = STAFFVIEW_MOUSEDOWN;
+	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEDOWN;
 	Region = MouseInRegion(pointMouse);
 	switch (Region)
 	{
@@ -262,7 +265,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 	CMsEvent* pEv;
 	CMsNote* pNote;
 
-	m_nMouseState = STAFFVIEW_MOUSEUP;
+	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
 	Region = MouseInRegion(pointMouseLButtUp);
 	switch (Region)
@@ -298,7 +301,8 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 					m_FirstSelectedEvent = -1;
 					m_LastSelectedEventIndex = -1;
 				}
-				m_Status.SetText(CString(""));
+				CString csBlank(_T(""));
+				m_Status.SetText(csBlank);
 			}
 			else//select events		//OnLButtonUp
 			{
@@ -445,14 +449,14 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			///------------------------------------------
 			switch (m_nDrawState)
 			{
-			case DRAWSTATE_TIE_FIRSTNOTE:		//OnLButtonUp
+			case (int)DrawState::DRAWSTATE_TIE_FIRSTNOTE:		//OnLButtonUp
 			{
 				int note = YtoNote(pointMouseLButtUp.y);
 				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
 				if (pN)
 				{
 					m_pFirstTieNote = pN;
-					m_nDrawState = DRAWSTATE_TIE_SECONDNOTE;
+					m_nDrawState = DrawState::DRAWSTATE_TIE_SECONDNOTE;
 					m_TieStartPoint = pointMouseLButtUp + CSize(0, 4);
 					CString s,csTemp;
 					s = CString("First Note ");
@@ -464,7 +468,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				}
 			}
 			break;
-			case DRAWSTATE_TIE_SECONDNOTE:		//OnLButtonUp
+			case (int)DrawState::DRAWSTATE_TIE_SECONDNOTE:		//OnLButtonUp
 			{
 				int note = YtoNote(pointMouseLButtUp.y);
 				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
@@ -617,7 +621,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 			if (pEV)
 			{
 				pObj = pEV->GetEventObjectHead();
-				if (m_nMouseState == STAFFVIEW_MOUSEDOWN)
+				if (m_nMouseState == StaffViewMouseState::STAFFVIEW_MOUSEDOWN)
 				{
 					CMsObject* pSelectedObjects = NULL;
 					Loop = TRUE;
@@ -787,7 +791,10 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CMsNote* pN;
 	CMsObject* pTemp;
-	int Dur, Trip, Dot;
+	int Trip, Dot;
+	INT Dur;
+	CString csBlank(_T(""));
+	CString csTemp;
 
 	switch (nChar)
 	{
@@ -821,7 +828,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			// from the duration
 			//--------------------------------------
 			Dur = pN->GetDuration();
-			Dur = CMsNote::NoteDurLut[DurTab[Dur].NoteShapIndex];
+			Dur = CMsNote::NoteDurLut[DurTab[(int)Dur].NoteShapIndex];
 			pN->SetDuration(Dur);
 			pN->SetRest(1);
 		}
@@ -830,7 +837,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			pN = (CMsNote*)m_pDrawObject;
 			pN->SetRest(pN->IsRest() ^ 1);
 		}
-		m_Status.SetText(CString("Draw Rest"));
+		csTemp = CString("Draw Rest");
+		m_Status.SetText(csTemp);
 		break;
 	case 'N':
 		m_nDrawMode = DRAWMODE_NOTE;
@@ -845,25 +853,44 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// decode message word
 		//------------------------------
 		pN->GetData().CopyData(GetNoteData());
-		m_Status.SetText(CString("Draw Note"));
-		break;
+		csTemp = CString("Draw Note");
+		m_Status.SetText(csTemp);
+		break; 
 	case 'B':
 		m_nDrawMode = DRAWMODE_BAR;
 		if (m_pDrawObject) delete m_pDrawObject;
 		m_pDrawObject = new CMsBar;
 		((CMsBar*)m_pDrawObject)->Create(GetSong(), m_nDrawEvent);
-		m_Status.SetText(CString("Draw Measure Bar"));
+		csTemp = CString("Draw Measure Bar");
+		m_Status.SetText(csTemp);
 		break;
 	case VK_OEM_PERIOD:	//dotted note toggle
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
-			if (Dot) Dur -= 2;	//undot
-			else if (Trip) Dur += 4;	//untrip and dot
-			else Dur += 2;	//Dot
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;	//undot
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 4;	//untrip and dot
+				Dur = DurTemp;
+			}
+			else
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;	//Dot
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -871,13 +898,30 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case '3':	//triplet toggle
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
-			if (Dot) Dur -= 4;	//undot and trip
-			else if (Trip) Dur += 2;	//untrip
-			else Dur -= 2;	//Tripplet
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 4;	//undot and trip
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;	//untrip
+				Dur = DurTemp;
+			}
+			else
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;	//Tripplet
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -885,13 +929,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'T':	// change to thirty second note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_THIRTYSEC_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -899,13 +955,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'S':	// change to Sixteenth  note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_SIXTEENTH_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -913,13 +981,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'E':	// change to eight note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_EIGTH_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -927,13 +1007,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'Q':	//change to quarter note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_QUARTER_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -941,13 +1033,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'H':	//change to half note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_HALF_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -955,13 +1059,25 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'W':	//change to whole note
 		if (DRAWMODE_NOTE == m_nDrawMode)
 		{
+			int DurTemp;
+
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[Dur].Dotted;
-			Trip = DurTab[Dur].Triplet;
+			Dot = DurTab[(int)Dur].Dotted;
+			Trip = DurTab[(int)Dur].Triplet;
 			Dur = MSFF_WHOLE_NOTE;
-			if (Dot) Dur += 2;
-			else if (Trip) Dur -= 2;
+			if (Dot)
+			{
+				DurTemp = (int)Dur;
+				DurTemp += 2;
+				Dur = DurTemp;
+			}
+			else if (Trip)
+			{
+				DurTemp = (int)Dur;
+				DurTemp -= 2;
+				Dur = DurTemp;
+			}
 			pN->SetDuration(Dur);
 			Invalidate();
 		}
@@ -998,7 +1114,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		pTemp = m_pDrawObject;
 		m_pDrawObject = 0;
 		delete pTemp;
-		m_Status.SetText(CString(""));
+
+		m_Status.SetText(csBlank);
 		printf("################ Escape Key\n");
 		m_EscapeFlag = 1;
 		//		Invalidate();
@@ -1163,7 +1280,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 
 		Dlg.SetBitmaps((GETAPP->bmGetIntrument(0)));
 		Dlg.SetNumberOfBitmaps(GETAPP->GetNumInstruments());
-		Dlg.SetSelection(((m_nMidiInputNoteSetup >> DRAW_NOTE_TRACK_SHIFT) & 0x0f)-1);
+		Dlg.SetSelection((int)((m_nMidiInputNoteSetup >> DRAW_NOTE_TRACK_SHIFT) & 0x0f)-1);
 		Dlg.SetCaption(CString( "Select New Instrument"));
 		if (IDOK == Dlg.DoModal())
 		{
@@ -1268,12 +1385,12 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 				case MSOBJ_TIMESIG:	//OnContextMenu
 				{
 					CSelectorDlg Dlg;
-					Dlg.SetBitmaps(GETAPP->bmGetCbTimeSig(0));
+					Dlg.SetBitmaps(GETAPP->bmGetCbTimeSig(COMBO_TIMESIG_2_2));
 					Dlg.SetNumberOfBitmaps(GETAPP->GetNumTimeSig());
-					Dlg.SetSelection(Obj.pTime->GetTimeSignature() - 1);
+					Dlg.SetSelection((int)Obj.pTime->GetTimeSignature());
 					Dlg.SetCaption(CString("Change Time Signature"));
 					if (IDOK == Dlg.DoModal())
-						Obj.pTime->SetTimeSignature(Dlg.GetSelection() + 1);
+						Obj.pTime->SetTimeSignature((Dlg.GetSelection() + 1));
 				}
 				break;
 				}//end of switch(Obj.pObj->GetType()
@@ -1380,6 +1497,7 @@ int CChildViewStaff::QuantizeY(int y)
 void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 {
 	CString csStatus,csTemp;
+	CString csBlank(_T(""));
 	int From, To;
 	//------------------------
 	// Decode sub message
@@ -1390,7 +1508,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		if (m_pDrawObject) delete m_pDrawObject;
 		m_pDrawObject = 0;
 		m_nDrawMode = DRAWMODE_NOP;
-		m_Status.SetText(CString(""));
+		m_Status.SetText(csBlank);
 		break;
 	case DRAW_NOTE:
 	{
@@ -1429,7 +1547,8 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 			m_nDrawMode = DRAWMODE_ENDBAR;
 			m_pDrawObject = pEB;
 		}
-		m_Status.SetText(CString("Draw Measure End Bar"));		break;
+		csTemp = CString("Draw Measure End Bar");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_BAR:
 	{
@@ -1438,7 +1557,8 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_nDrawMode = DRAWMODE_BAR;
 		m_pDrawObject = pB;
 	}
-	m_Status.SetText(CString("Draw Measure Bar"));
+	csTemp = CString("Draw Measure Bar");
+	m_Status.SetText(csTemp);
 	break;
 	case DRAW_TIE:
 		if (m_pDrawObject) delete m_pDrawObject;
@@ -1447,21 +1567,24 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_nDrawState = DRAWSTATE_TIE_FIRSTNOTE;
 		m_pFirstTieNote = 0;
 		m_pSecondTieNote = 0;
-		m_Status.SetText(CString("Draw Tie"));
+		csTemp = CString("Draw Tie");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_COPY:
 		m_nDrawMode = DRAWMODE_COPY;
-		m_Status.SetText(CString("Copy Block"));
+		csTemp = CString("Copy Block");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_MOVE:
 		m_nDrawMode = DRAWMODE_MOVE;
 		csStatus.Format(_T("Move Block To Event %d"), m_nDrawEvent);
-			m_Status.SetText(csStatus);
+		m_Status.SetText(csStatus);
 		break;
 	case DRAW_REPEAT:
 		AddRepeat(v);
 		Invalidate();
-		m_Status.SetText(CString("Add Repeat"));
+		csTemp = CString("Add Repeat");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_TEMPO:
 	{
@@ -1470,16 +1593,18 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_nDrawMode = DRAWMODE_TEMPO;
 		m_pDrawObject = pMT;
 	}
-	m_Status.SetText(CString("Add Tempo"));
+	csTemp = CString("Add Tempo");
+	m_Status.SetText(csTemp);
 	break;
 	case DRAW_TIMESIG:
 	{
 		CMsTimeSignature* pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), GetDrawEvent(), BM_TIMESIG_4_4);
+		pTS->Create(GetSong(), GetDrawEvent(), COMBO_TIMESIG_4_4);
 		m_nDrawMode = DRAWMODE_TIMESIG;
 		m_pDrawObject = pTS;
 	}
-	m_Status.SetText(CString("Add Time Signature"));
+	csTemp = CString("Add Time Signature");
+	m_Status.SetText(csTemp);
 	break;
 	case DRAW_KEYSIG:
 	{
@@ -1488,7 +1613,8 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_nDrawMode = DRAWMODE_KKEYSIG;
 		m_pDrawObject = pKS;
 	}
-	m_Status.SetText(CString("Add Key Signature"));
+	csTemp = CString("Add Key Signature");
+	m_Status.SetText(csTemp);
 	break;
 	case DRAW_LOUDNESS:
 	{
@@ -1497,50 +1623,63 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_nDrawMode = DRAWMODE_LOUDNESS;
 		m_pDrawObject = pLD;
 	}
-	m_Status.SetText(CString("Add Loudness"));
+	csTemp = CString("Add Loudness");
+	m_Status.SetText(csTemp);
 	break;
 	case DRAW_INSTCHANGE:
 		From = v & 0xf;
 		To = (v >> 4) & 0x0f;
-		ChangeInst(From, To);
+		ChangeInst(
+			From, 
+			To
+		);
 		Invalidate();
-		m_Status.SetText(CString("Change Instrument in Selection"));
+		csTemp = CString("Change Instrument in Selection");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_CHANGEDUR:
 		From = v & 0x1f;
 		To = (v >> 5) & 0x1f;
 		ChangeDuration(From, To);
 		Invalidate();
-		m_Status.SetText(CString("Change Duration in Selection"));
+		csTemp = CString("Change Duration in Selection");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_INCREASEDUR:
 		IncreaseDuration();
-		m_Status.SetText(CString("Increase Duration in Selection"));
+		csTemp = CString("Increase Duration in Selection");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_DECREASEDUR:
-		m_Status.SetText(CString("Decrease Duration in Selection"));
+		//		DecreaseDuration();  ToDo Add this function
+		csTemp = CString("Decrease Duration in Selection");
+		m_Status.SetText(csTemp);
 		break;
 	case DRAW_INCRPITCH:
 		IncrPitch();
-		m_Status.SetText(CString("Increase Pitch In Selection"));
+		csTemp = CString("Increase Pitch In Selection");
+		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
 	case DRAW_DECRPITCH:
 		DecrPitch();
-		m_Status.SetText(CString("Decrease Pitch in Selection"));
+		csTemp = CString("Decrease Pitch in Selection");
+		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
 	case DRAW_INSERTBLOCK:
 		InsertBlock();
 		// ToDo Might need more code here
 		SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
-		m_Status.SetText(CString("Insert Event"));
+		csTemp = CString("Insert Event");
+		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
 	case DRAW_DRAWNOTESVIAMIDI:
 		m_nDrawMode = DRAWMODE_MIDINOTEIN;
 		m_nMidiInputNoteSetup = v;
-		m_Status.SetText(CString("Step Input Notes Via MIDI"));
+		csTemp = CString("Step Input Notes Via MIDI");
+		m_Status.SetText(csTemp);
 		break;
 	}
 }
@@ -1653,7 +1792,7 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 	}
 }
 
-void CChildViewStaff::ChangeInst(int From, int To)
+void CChildViewStaff::ChangeInst(INT From, INT To)
 {
 	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
@@ -1668,7 +1807,7 @@ void CChildViewStaff::ChangeInst(int From, int To)
 				if (MSOBJ_NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
-					if (pN->GetTrack() == (unsigned)From)
+					if (pN->GetTrack() == From)
 						pN->SetTrack(To);
 				}
 				pOb = pOb->GetNext();
@@ -1678,7 +1817,7 @@ void CChildViewStaff::ChangeInst(int From, int To)
 	}
 }
 
-void CChildViewStaff::ChangeDuration(int From, int To)
+void CChildViewStaff::ChangeDuration(INT From, INT To)
 {
 	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
@@ -1748,6 +1887,7 @@ void CChildViewStaff::MoveBlock(int dest)
 {
 	CMsEvent* pDest = 0;
 	CMsEventChain EventChain;
+	CString csTemp;
 	int n;
 
 	n = dest - GetSong()->GetEventListTail()->GetIndex() - 1;
@@ -1757,7 +1897,10 @@ void CChildViewStaff::MoveBlock(int dest)
 	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
 	else if ((dest >= m_FirstSelectedEvent) && (dest <= m_LastSelectedEventIndex))
-		m_Status.SetText(CString("Error:Move:Dest cannot Include Selected Events"));
+	{
+		csTemp = CString("Error:Move:Dest cannot Include Selected Events");
+		m_Status.SetText(csTemp);
+	}
 	else
 	{
 		pDest = m_pSong->GetEventObject(dest);
@@ -1918,7 +2061,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				note -= adj;
 				note += 12 * (Note / 12);
 				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-				CMsNote* pN = pEv->FindNote(note, adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
+				CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
 				if (pN) 
 					MidiPlayNote(pN, 0);// Note Off
 				if (m_nMidiNotesOn == 0)
@@ -2005,7 +2148,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 //					note -= adj;
 //					note += 12 * (Note / 12);
 					CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-					CMsNote* pN = pEv->FindNote(note, adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
+					CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
 					if (pN) 
 						MidiPlayNote(pN, 0);// Note Off
 					if (m_nMidiNotesOn == 0)
@@ -2034,10 +2177,10 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				m_nMidiNotesOn++;
 				CMsNote* pN = new CMsNote();
 				pN->Create(0, GetSong(), m_nDrawEvent);
-				pN->SetDuration(m_nMidiInputNoteSetup & DRAW_NOTE_DURATION);
+				pN->SetDuration((m_nMidiInputNoteSetup & DRAW_NOTE_DURATION));
 				pN->SetAccent((m_nMidiInputNoteSetup >> DRAW_NOTE_ACCENT_SHIFT) & 0x01);
-				pN->SetAccidental(adj ? CMsNote::MSFF_ACCIDENTAL_SHARP : CMsNote::MSFF_ACCIDENTAL_INKEY);
-				pN->SetTrack((m_nMidiInputNoteSetup >> DRAW_NOTE_TRACK_SHIFT) & 0x0f);
+				pN->SetAccidental(adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
+				pN->SetTrack(((m_nMidiInputNoteSetup >> DRAW_NOTE_TRACK_SHIFT) & 0x0f));
 				pN->SetRest((m_nMidiInputNoteSetup >> DRAW_NOTE_REST_SHIFT) & 1);
 				pN->SetPitch(note);
 				CMsObject* pO;
@@ -2321,7 +2464,7 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	pN->GetData().CopyData(GetNoteData());
 
 	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;
-	Dur = CMsNote::NoteDurLut[DurTab[pN->GetDuration()].NoteShapIndex];
+	Dur = CMsNote::NoteDurLut[DurTab[(int)pN->GetDuration()].NoteShapIndex];
 	pN->SetDuration(Dur);
 	pN->SetRest(RestFlag);
 }
@@ -2346,11 +2489,6 @@ BOOL CChildViewStaff::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWOR
 	ShowScrollBar(SB_HORZ);
 	return rV;
 }
-
-enum {
-	EVENT_TEMPO_TIMESIG,
-	EVENT_LOUDNESS_KEYSIG
-};
 
 void CChildViewStaff::OnInitialUpdate()
 {
@@ -2391,7 +2529,7 @@ void CChildViewStaff::OnInitialUpdate()
 	pTM->Create(GetSong(), GetDrawEvent(),100);
 	GetSong()->AddObjectToSong(GetDrawEvent(), pTM);
 	CMsTimeSignature* pTS = new CMsTimeSignature();
-	pTS->Create(GetSong(), GetDrawEvent(), TIMESIG_4_4);
+	pTS->Create(GetSong(), GetDrawEvent(), COMBO_TIMESIG_4_4);
 	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pTS);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
@@ -2445,7 +2583,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize time signature combo box
 	//-----------------------------------------
 	n = GETAPP->GetNumTimeSig();
-	itemSize = GETAPP->bmGetCbTimeSig(0)->GetBmDim();
+	itemSize = GETAPP->bmGetCbTimeSig(COMBO_TIMESIG_2_2)->GetBmDim();
 	itemSize += CSize(8, 4);
 	m_Combo_TimeSig.Create(
 		4,
@@ -2638,28 +2776,28 @@ void CChildViewStaff::OnInitialUpdate()
 	// Set combo boxes to their defaul
 	// Selectopm
 	//----------------------------------
-	m_Combo_Instrument.SetCurSel(GetTrack());
+	m_Combo_Instrument.SetCurSel((int)GetTrack());
 
 	m_Combo_BlockOps.SetCurSel(COMBO_BLOCK_COPY);
 
 	m_Combo_Misc.SetCurSel(COMBO_MISC_MEASUREBAR);
 
-	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_KEYSIG, EVENT_LOUDNESS_KEYSIG);
+	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_KEYSIG, (int)EventObjectSignatureTypes::EVENT_LOUDNESS_KEYSIG);
 	if(pKS)
 		m_Combo_KeySig.SetCurSel(pKS->GetKeySignature() - 1);
 
-	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_TIMESIG, EVENT_TEMPO_TIMESIG);
+	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_TIMESIG,  (int)EventObjectSignatureTypes::EVENT_TEMPO_TIMESIG);
 	if(pTS)
-		m_Combo_TimeSig.SetCurSel(pTS->GetTimeSignature() - 1);
+		m_Combo_TimeSig.SetCurSel((int)pTS->GetTimeSignature() - 1);
 
 	m_Combo_Decorations.SetCurSel(COMBO_DECORATION_NONE);
 
 	m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
-	SetAccidental(CMsNote::MSFF_ACCIDENTAL_INKEY);
+	SetAccidental(MSFF_ACCIDENTAL_INKEY);
 
-	m_Combo_Rests.SetCurSel(BM_REST_INDEX_QUARTER);
+	m_Combo_Rests.SetCurSel(COMBO_REST_QUARTER);
 
-	m_Combo_NoteType.SetCurSel(BM_NOTE_INDEX_QUARTER);
+	m_Combo_NoteType.SetCurSel(COMBO_NOTE_QUARTER);
 	m_ReadyToDraw = 1;
 //	GETMIDI->SetMessageDestWind(this);
 }
@@ -2769,10 +2907,10 @@ void CChildViewStaff::UpdateComboBoxes()
 		break;
 	}
 	SetTrack(m_Combo_Instrument.GetCurSel() );		//Instrument number needs +1
-	int Track = GetTrack();
-	int Patch = GETMIDIINFO->GetPatch(Track);
-	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId(Track);
-	int Channel = GETMIDIINFO->GetChannel(Track);
+	INT Track = GetTrack();
+	int Patch = GETMIDIINFO->GetPatch((int)Track);
+	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId((int)Track);
+	int Channel = GETMIDIINFO->GetChannel((int)Track);
 	GETMIDIOUTDEVICE(DeviceID).PgmChange(Channel, Patch);
 	SetDuration(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
 }

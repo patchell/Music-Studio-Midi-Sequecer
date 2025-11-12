@@ -746,7 +746,10 @@ CMsObject * CMsSong::GetObjectTypeInEvent(int nType, int nEvent)
 	return pObj;
 }
 
-CMsObject * CMsSong::GetMsObject(int ObjType, CMsEvent * pStartObject, int Direction)
+CMsObject * CMsSong::GetMsObject(
+	INT ObjType,
+	CMsEvent * pStartObject, 
+	INT Direction)
 {
 	CMsEvent *pEV;
 	CMsObject *pRetObj = NULL;

@@ -3,7 +3,7 @@
 
 #include "pch.h"
 
-char *NoteLut[8] = {
+const char *NoteLut[8] = {
 	"C",
 	"D",
 	"E",

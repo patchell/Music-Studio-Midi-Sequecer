@@ -229,7 +229,7 @@ void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 		if (m_State == DROP_DOWN_NOTSELECTED)
 		{
 			m_pWndLastFocus = SetFocus();
-			m_State = DROP_UP_SELECTED;
+			m_State = DROP_DOWN_SELECTED;
 			Expand();
 			GetParent()->Invalidate();
 		}

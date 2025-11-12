@@ -20,7 +20,7 @@ CMsTimeSignature::~CMsTimeSignature()
 
 }
 
-void CMsTimeSignature::Create(CMsSong* pSong, UINT ParentEvent, UINT TS)
+void CMsTimeSignature::Create(CMsSong* pSong, UINT ParentEvent, INT TS)
 {
 	m_TimeSig = TS;
 	CMsObject::Create(pSong, ParentEvent);
@@ -41,7 +41,7 @@ void CMsTimeSignature::ObjectRectangle(CRect& rect, UINT Event)
 {
 }
 
-static char *TimeSigLut[] = {
+static const char *TimeSigLut[] = {
 	"NA",		//0
 	"2/2",		//1
 	"3/2",		//2
@@ -61,36 +61,14 @@ void CMsTimeSignature::Print(FILE *pO)
 void CMsTimeSignature::Draw(CDC *pDC, int event, int maxevent)
 {
 	int x;
-
+	CBitmap* oldBitmap;
 	CDC dc;
 	dc.CreateCompatibleDC(pDC);
 	x = EVENT_OFFSET+EVENT_WIDTH*event;
-	switch(m_TimeSig)
-	{
-		case TIMESIG_2_2:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_2_2));
-			break;
-		case TIMESIG_3_2:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_3_2));
-			break;
-		case TIMESIG_2_4:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_2_4));
-			break;
-		case TIMESIG_3_4:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_3_4));
-			break;
-		case TIMESIG_4_4:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_4_4));
-			break;
-		case TIMESIG_5_4:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_5_4));
-			break;
-		case TIMESIG_6_8:
-			dc.SelectObject(GETAPP->bmGetTimeSig(BM_TIMESIG_6_8));
-			break;
-	}
+	oldBitmap = dc.SelectObject(GETAPP->bmGetTimeSig(m_TimeSig));
 	pDC->BitBlt(x,CENTER_OF_TREBEL,16,33,&dc,0,0,SRCAND);
 	pDC->BitBlt(x,CENTER_OF_BASS,16,33,&dc,0,0,SRCAND);
+	dc.SelectObject(oldBitmap);
 }
 
 CMsObject * CMsTimeSignature::Copy()
@@ -105,5 +83,5 @@ CMsObject * CMsTimeSignature::Copy()
 void CMsTimeSignature::Save(FILE *pO)
 {
 	fputc(MSFF_TOKEN_TIME_SIGNATURE,pO);	//token
-	fputc(m_TimeSig,pO);			//value
+	fputc((int)m_TimeSig,pO);			//value
 }

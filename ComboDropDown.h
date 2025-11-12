@@ -1,6 +1,8 @@
 #pragma once
 
-enum { DROP_DOWN_NOTSELECTED, DROP_DOWN_SELECTED };
+constexpr auto DROP_DOWN_NOTSELECTED = 0;
+constexpr auto DROP_DOWN_SELECTED = 1;
+
 
 // CComboDropDown
 
@@ -74,7 +76,7 @@ class CComboDropDown : public CWnd
 	CMyRgn	m_rgnLowerArrow;
 	//------- Slider Variables -------
 	int m_Pos;	//thumb position
-	int m_State;
+	INT m_State;
 	int m_LButtonDown;
 	int m_nItems;
 	int m_nTotalItems;

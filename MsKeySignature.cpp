@@ -185,20 +185,20 @@ void CMsKeySignature::SetKeySigCorrection(void)
 	}
 }
 
-UINT CMsKeySignature::GetKeySigCorrection(UINT note, UINT accidental)
+UINT CMsKeySignature::GetKeySigCorrection(UINT note, INT accidental)
 {
 	UINT n = note % 12;
 	switch(accidental)
 	{
-		case CMsNote::MSFF_ACCIDENTAL_INKEY:	//default
+		case MSFF_ACCIDENTAL_INKEY:	//default
 			note += m_KeySigCorrection[n];
 			break;
-		case CMsNote::MSFF_ACCIDENTAL_NATURAL:
+		case MSFF_ACCIDENTAL_NATURAL:
 			break;
-		case CMsNote::MSFF_ACCIDENTAL_SHARP:
+		case MSFF_ACCIDENTAL_SHARP:
 			note += 1;
 			break;
-		case CMsNote::MSFF_ACCIDNETAL_FLAT:
+		case MSFF_ACCIDENTAL_FLAT:
 			note -= 1;
 			break;
 	}

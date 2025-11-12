@@ -1,5 +1,9 @@
 #pragma once
 
+constexpr auto DROP_DOWN_TOGGLE_NOTSELECTED = 0;
+constexpr auto DROP_DOWN_TOGGLE_SELECTED = 1;
+
+
 // CComboDropDownToggle
 
 class CComboDropDownToggle : public CWnd
@@ -75,7 +79,7 @@ class CComboDropDownToggle : public CWnd
 	CMyRgn	m_rgnLowerArrow;
 	//------- Slider Variables -------
 	int m_Pos;	//thumb position
-	int m_State;
+	INT m_State;
 	int m_LButtonDown;
 	int m_nItems;
 	int m_nTotalItems;

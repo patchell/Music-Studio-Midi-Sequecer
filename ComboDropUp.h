@@ -2,7 +2,6 @@
 
 
 // CComboDropUp
-enum {DROP_UP_NOTSELECTED, DROP_UP_SELECTED};
 
 class CComboDropUp : public CWnd
 {
@@ -128,6 +127,10 @@ protected:
 public:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	void Reset(){ m_nBitmapsAdded = 0; }
+	enum class DropUpItemState {
+		DROP_UP_NOTSELECTED,
+		DROP_UP_SELECTED
+	};
 };
 
 

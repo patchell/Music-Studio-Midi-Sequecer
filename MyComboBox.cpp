@@ -149,7 +149,10 @@ void CMyComboBox::OutputBitmap(LPDRAWITEMSTRUCT lpDIS)
 		if ((lpDIS->itemID != -1) && !(lpDIS->itemState & ODS_COMBOBOXEDIT))
 			GetLBText(lpDIS->itemID, string);
 		if (string.IsEmpty())
-			DrawBitmap(pDC, pBM, CRect(lpDIS->rcItem));
+		{
+			CRect rect(lpDIS->rcItem);
+			DrawBitmap(pDC, pBM, rect);
+		}
 		else
 		{
 			CPoint point;

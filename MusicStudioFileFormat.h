@@ -13,7 +13,7 @@ struct DUR {
 	UINT Flags;
 	UINT Tail;
 	UINT DurTime;	// clock ticks
-	char* pName;
+	const char* pName;
 };
 
 //----------------------------------
@@ -55,7 +55,7 @@ constexpr auto  MSFF_SONGDATA_OFFSET = 520;
 // time Signature Values
 //-------------------------------------------
 
-enum TimeSig {
+enum class TimeSignatureToken {
 	TIMESIG_2_2 = 1,
 	TIMESIG_3_2,
 	TIMESIG_2_4,
@@ -91,7 +91,7 @@ constexpr auto  MSFF_NOTE_C3 = 0x30;
 // Key Signatures
 //-----------------------------------------------------
 
-enum KeySig {
+enum KeySigToken {
 	MSFF_CMAJ = 1,
 	MSFF_GMAJ,
 	MSFF_DMAJ,

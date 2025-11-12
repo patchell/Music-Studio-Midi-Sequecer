@@ -15,10 +15,10 @@ void PrintRecPtSz(const char* pTit, CRect rec)
 }
 
 
-int CMsNote::AccedentalsLUT[APP_NUM_ACCIDENTALTYPES] = {
+INT CMsNote::AccedentalsLUT[APP_NUM_ACCIDENTALTYPES] = {
 	MSFF_ACCIDENTAL_INKEY,
 	MSFF_ACCIDENTAL_SHARP,
-	MSFF_ACCIDNETAL_FLAT,
+	MSFF_ACCIDENTAL_FLAT,
 	MSFF_ACCIDENTAL_NATURAL
 };
 
@@ -498,7 +498,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 					sharp.Draw(pDC,color,EVENT_OFFSET+EVENT_WIDTH*event-8,notev);
 				}
 				break;
-			case MSFF_ACCIDNETAL_FLAT:
+			case MSFF_ACCIDENTAL_FLAT:
 				{
 					CMsFlat flat;
 					flat.Draw(pDC,color,EVENT_OFFSET+EVENT_WIDTH*event-8,notev);
@@ -793,11 +793,11 @@ int CMsNote::MouseLButtonDown(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case DRAWSTATE_SET_ATTRIBUTES:
+	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
 		break;
-	case DRAWSTATE_WAITFORMOUSE_DOWN:
+	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
 		break;
-	case DRAWSTATE_PLACE:
+	case CChildViewStaff::DRAWSTATE_PLACE:
 		break;
 	}
 	GetStaffView()->Invalidate();
@@ -824,23 +824,23 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case DRAWSTATE_SET_ATTRIBUTES:
+	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
 		csText.Format(_T("Configure Note Prameters"));
 		GetStaffView()->GetStatusBar()->SetText(csText);
 		Dlg.SetNoteToEdit(this);
 		if ((Id = Dlg.DoModal()) == IDOK)
 		{
-			DrawState = DRAWSTATE_WAITFORMOUSE_DOWN;
+			DrawState = CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN;
 			GetStaffView()->Invalidate();
 		}
 		break;
-	case DRAWSTATE_WAITFORMOUSE_DOWN:
+	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
 //		m_P1 = m_P2 = pASV->m_SnapPos;
 //		pASV->EnableAutoScroll(1);
 //		DrawState = DRAWSTATE_PLACE;;
 		GetStaffView()->Invalidate();
 		break;
-	case DRAWSTATE_PLACE:
+	case CChildViewStaff::DRAWSTATE_PLACE:
 		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
 		{
 			CMsNote* pN = new CMsNote;
@@ -859,7 +859,7 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 			GetStaffView()->SetDrawObject(pN);
 			GetStaffView()->CheckAndDoScroll(pointMouse);
 		}
-		DrawState = DRAWSTATE_WAITFORMOUSE_DOWN;
+		DrawState = CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN;
 		GetStaffView()->Invalidate();
 		break;
 	}
@@ -886,9 +886,9 @@ int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case DRAWSTATE_SET_ATTRIBUTES:
+	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
 		break;
-	case DRAWSTATE_WAITFORMOUSE_DOWN:
+	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
 		note = GetStaffView()->YtoNote(pointMouse.y);
 
 //		pNote = (CMsNote*)GetStaffView()->GetDrawObject();
@@ -930,12 +930,12 @@ int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
 		}
 		GetStaffView()->Invalidate();
 		break;
-	case DRAWSTATE_MOVE_OBJECT_AROUND:
+	case CChildViewStaff::DRAWSTATE_MOVE_OBJECT_AROUND:
 		break;
-	case DRAWSTATE_PLACE:
+	case CChildViewStaff::DRAWSTATE_PLACE:
 		break;
 	}
-	GetSong()->GetStaffChildView()->Invalidate();
+	GetStaffView()->Invalidate();
 	return DrawState;
 }
 
@@ -1130,15 +1130,15 @@ void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 
 CMsNote* CMsNote::IsSecondInterval()
 {
-	/// <summary>
-	/// This function is used to figure out if
-	/// the note that is about to be drawn is
-	/// a half step or a whole step away from
-	/// another note in the same event so that
-	/// one of the notge heads can be flipped
-	/// </summary>
-	/// <returns>A pointer to a note that is
-	/// One half or whole step from this note</returns>
+	// <summary>
+	// This function is used to figure out if
+	// the note that is about to be drawn is
+	// a half step or a whole step away from
+	// another note in the same event so that
+	// one of the notge heads can be flipped
+	// </summary>
+	// <returns>A pointer to a note that is
+	// One half or whole step from this note</returns>
 	CMsNote* pWholeStep = 0;
 	CMsEvent* pCurrentEvent = GetParentEvent();
 	CMsObject* pCurrentSongObject;

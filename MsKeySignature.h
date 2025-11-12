@@ -3,6 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
+class CMsNote;
+
 class CMsKeySignature : public CMsObject  
 {
 	UINT m_KeySigCorrection[12];
@@ -23,7 +25,7 @@ public:
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	int GetKeySignature(){return m_KeySignature;}
 	void SetKeySignature(UINT k){m_KeySignature = k;}
-	UINT GetKeySigCorrection(UINT note, UINT accidental);
+	UINT GetKeySigCorrection(UINT note, INT accidental);
 	void SetKeySigCorrection();
 	CMsObject * Copy();
 	int NoteToPosition(int Note);

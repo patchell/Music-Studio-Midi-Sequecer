@@ -77,7 +77,7 @@ enum MidiStatusIDs {
 
 extern int MidiStatusToMidiID(int status);
 extern int IsChannelStatus(int StatusID);
-
+extern const char* GenMidiPatchNames[128];
 //------------------------------------------
 #include "ComboBoxDefines.h"
 #include "MusicStudioFileFormat.h"
@@ -129,10 +129,10 @@ extern int IsChannelStatus(int StatusID);
 #include "MsBar.h"
 #include "MsEndBar.h"
 #include "MsFlat.h"
-#include "MsKeySignature.h"
 #include "MsLoudness.h"
 #include "MsNatural.h"
 #include "MsNote.h"
+#include "MsKeySignature.h"
 #include "MsChordNote.h"
 #include "MsRepeatEnd.h"
 #include "MsSharp.h"

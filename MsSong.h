@@ -4,6 +4,17 @@
 #pragma once
 
 
+constexpr int SEARCH_FORWARD = 0;
+constexpr int SEARCH_REVERSE = 1;
+
+constexpr auto SONG_NOT_PLAYING = 0;
+constexpr auto SONG_IS_PLAYING = 1;
+constexpr auto SONG_STOP = 2;	// This Status means we need
+								// to wait for the events
+								// in the playlist queue
+								// to time out.
+
+
 class CMsSong
 {
 	//--- Data for Song Editor View ----
@@ -125,7 +136,7 @@ public:
 	//-----------Object Managment --------------------
 	int AddObjectToSong(int event, CMsObject* pO);
 	UINT AddMoreEvenrsAtEnd(UINT NewEndEvent);
-	CMsObject* GetMsObject(int ObjType, CMsEvent* pStartEventObject, int Direction);
+	CMsObject* GetMsObject(INT ObjType, CMsEvent* pStartEventObject, INT Direction);
 	CMsObject* GetObjectTypeInEvent(int nType, int nEvent);
 	//---------- Event Management -------------------------
 	CMsEvent* GetEventListHead(void) { return m_pEventListHead; }
@@ -204,5 +215,8 @@ public:
 	CMsSong* GetSongListPrev() { return m_pPrevSong; }
 	void SetSongListPrev(CMsSong* pSong) { m_pPrevSong = pSong; }
 	CMsNote* FindNoteInPlayList(CMsNote* pNote); 
+	//----------------------------------
+	// Song Playing State Defines
+	// --------------------------------
 };
 

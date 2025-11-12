@@ -6,45 +6,89 @@
 constexpr auto STAFFVIEW_MIDI_IN_DISPATCH_NUMENTRIES = 4;
 constexpr auto INVALID_PITCH = -1;
 
+
+constexpr auto	BM_NOTE_INDEX_WHOLE = 0;
+constexpr auto	BM_NOTE_INDEX_HALF = 1;
+constexpr auto	BM_NOTE_INDEX_QUARTER = 2;
+constexpr auto	BM_NOTE_INDEX_EIGTH = 3;
+constexpr auto	BM_NOTE_INDEX_SIXTEENTH = 4;
+constexpr auto	BM_NOTE_INDEX_THIRTYSECOND = 5;
+
+
 // Regions that the mouse can be in
-enum {
-	MOUSE_OUTSIDE,
-	MOUSE_INEDITREG,
-	MOUSE_INUPPERSEL,
-	MOUSE_INLOWERSEL
-};
 
-// different draw mode
-enum {
-	DRAWMODE_NOP,
-	DRAWMODE_NOTE,
-	DRAWMODE_BAR,
-	DRAWMODE_ENDBAR,
-	DRAWMODE_KKEYSIG,
-	DRAWMODE_TIMESIG,
-	DRAWMODE_TIE,
-	DRAWMODE_LOUDNESS,
-	DRAWMODE_TEMPO,
-	DRAWMODE_COPY,
-	DRAWMODE_MOVE,
-	DRAWMODE_MIDINOTEIN
-};
 
-// State for drawing automiton
-enum {
-	DRAWSTATE_TIE_FIRSTNOTE,
-	DRAWSTATE_TIE_SECONDNOTE
-};
-
-enum {
-	STAFFVIEW_MOUSEUP,
-	STAFFVIEW_MOUSEDOWN
-};
 
 // CChildViewStaff window
 
 class CChildViewStaff : public CChildViewBase
 {
+public:
+	enum DrawState {
+		DRAWSTATE_SET_ATTRIBUTES,
+		DRAWSTATE_WAITFORMOUSE_DOWN,
+		DRAWSTATE_MOVE_OBJECT_AROUND,
+		DRAWSTATE_PLACE,
+		DRAWSTATE_TIE_FIRSTNOTE,
+		DRAWSTATE_TIE_SECONDNOTE
+	};
+	enum MouseRegions {
+		MOUSE_OUTSIDE,
+		MOUSE_INEDITREG,
+		MOUSE_INUPPERSEL,
+		MOUSE_INLOWERSEL
+	};
+	// different draw mode
+	enum DrawModes {
+		DRAWMODE_NOP,
+		DRAWMODE_NOTE,
+		DRAWMODE_BAR,
+		DRAWMODE_ENDBAR,
+		DRAWMODE_KKEYSIG,
+		DRAWMODE_TIMESIG,
+		DRAWMODE_TIE,
+		DRAWMODE_LOUDNESS,
+		DRAWMODE_TEMPO,
+		DRAWMODE_COPY,
+		DRAWMODE_MOVE,
+		DRAWMODE_MIDINOTEIN
+	};
+
+	enum class EventObjectSignatureTypes {
+		EVENT_TEMPO_TIMESIG,
+		EVENT_LOUDNESS_KEYSIG
+	};
+
+	enum class StaffViewMouseState {
+		STAFFVIEW_MOUSEUP,
+		STAFFVIEW_MOUSEDOWN
+	};
+
+	//-------------------------------
+	// rest bitmap indexes
+	//------------------------------
+
+	enum class RestBitmapIndex {
+		BM_REST_INDEX_WHOLE,
+		BM_REST_INDEX_HALF,
+		BM_REST_INDEX_QUARTER,
+		BM_REST_INDEX_EIGTH,
+		BM_REST_INDEX_SIXTEENTH,
+		BM_REST_INDEX_THIRTYSECOND
+	};
+	//---------------------------
+	// Note bitmap indexes
+	//---------------------------
+
+
+	enum class MiscBitmapIndex {
+		BM_MISC_INDEX_MEASUREBAR,
+		BM_MISC_INDEX_NOTETIE,
+		BM_MISC_INDEX_LOUDNESS,
+		BM_MISC_INDEX_TEMPO,
+		BM_MISC_INDEX_INSTUMENT_CHANGE
+	};
+private:
 	BOOL m_EscapeFlag;
 	UINT m_TimerID;
 	UINT m_DragFlag;
@@ -105,7 +149,7 @@ class CChildViewStaff : public CChildViewBase
 	CMsRepeatEnd* m_pRepeatEndSelected;
 //	CMsKeySignature* m_pKeySig;
 //-------------- Mouse ---------------------
-	int m_nMouseState;
+	StaffViewMouseState m_nMouseState;
 //--------- View Regions -------------------
 	CMyRgn m_rgnUpper;
 	CMyRgn m_rgnEdit;
@@ -156,10 +200,10 @@ public:
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
 	int GetPitch() { return GetNoteData().GetPitch(); }
 	void SetPitch(int p) { GetNoteData().SetPitch(p); }
-	int GetDuration() { return GetNoteData().GetDuration(); }
-	void SetDuration(int nd) { GetNoteData().SetDuration(nd); }
-	int GetTrack() { return GetNoteData().GetTrack(); }
-	void SetTrack(int T) { GetNoteData().SetTrack(T); }
+	INT GetDuration() { return GetNoteData().GetDuration(); }
+	void SetDuration(INT nd) { GetNoteData().SetDuration(nd); }
+	INT GetTrack() { return GetNoteData().GetTrack(); }
+	void SetTrack(INT T) { GetNoteData().SetTrack(T); }
 	int GetAccent() { return GetNoteData().GetAccent(); }
 	void SetAccent(int A) { GetNoteData().SetAccent(A); }
 	int GetDotted() { return GetNoteData().GetDotted(); }
@@ -168,8 +212,8 @@ public:
 	void SetTriplet(UINT nT) { GetNoteData().SetTriplet(nT); }
 	UINT GetRest() { return GetNoteData().GetRest(); }
 	void SetRest(UINT NR) { GetNoteData().SetRest(NR); }
-	UINT GetAccidental() { return GetNoteData().GetAccidental(); }
-	void SetAccidental(UINT NA) { GetNoteData().SetAccidental(NA); }
+	INT GetAccidental() { return GetNoteData().GetAccidental(); }
+	void SetAccidental(INT NA) { GetNoteData().SetAccidental(NA); }
 	int GetUpSideDown() { return GetNoteData().GetUpsideDown(); }
 	void SetUpSideDown(int USD) { GetNoteData().SetUpsideDown(USD); }
 	UINT GetHeadFlipped() { return GetNoteData().GetHeadFlipped(); }
@@ -205,8 +249,8 @@ public:
 	void DoBlockOps(int Op);
 	void MoveBlock(int dest);
 	void CopyBlock(int dest);
-	void ChangeDuration(int From, int To);
-	void ChangeInst(int From, int To);
+	void ChangeDuration(INT From, INT To);
+	void ChangeInst(INT From, INT To);
 	void AddRepeat(UINT n);
 	void InsertBlock(void);
 	void DecrPitch();
@@ -267,4 +311,5 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
 };

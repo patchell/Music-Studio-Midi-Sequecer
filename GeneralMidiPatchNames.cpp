@@ -1,13 +1,14 @@
 #include "pch.h"
 
-///-------------------------------
-/// This file is pretty much self
-/// explanitory.  It is a list of
-/// the names of paTCHEs that are
-/// used in a synth that conforms
-/// to the General Midi standard
-///-------------------------------
-char * GenMidPatchNames[128] = {
+//-------------------------------
+// This file is pretty much self
+// explanitory.  It is a list of
+// the names of paTCHEs that are
+// used in a synth that conforms
+// to the General Midi standard
+//-------------------------------
+
+const char * GenMidiPatchNames[128] = {
 	"Acoustic Grand Piano",		//0
 	"Bright Acoustic Piano",	//1
 	"Electric Grand Piano",		//2

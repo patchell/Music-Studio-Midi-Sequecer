@@ -16,7 +16,7 @@ class CSelDurDlg : public CDialog
 // Construction
 public:
 	int m_nDurSel;
-	char * m_pPrompt;
+	const char * m_pPrompt;
 	CSelDurDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data

@@ -3,6 +3,15 @@
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
+	//--------------------------------
+	// States for something
+	//--------------------------------
+
+constexpr auto MSOBJ_PLAY_KEEP_TICKING = 0;
+constexpr auto MSOBJ_PLAY_DONE = 1;
+constexpr auto MSOBJ_PLAY_DONE_BUT_DO_NOT_REMOVE = 2;
+
+
 extern CString csObjectTypeString[];
 
 class CMsBar;
@@ -48,6 +57,22 @@ constexpr auto NOTE_HEAD_HIEGTH = 8;
 constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
 constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
 
+constexpr auto MSOBJ_BAR = 0;
+constexpr auto MSOBJ_ENDBAR = 1;
+constexpr auto MSOBJ_KEYSIG = 2;
+constexpr auto MSOBJ_LOUDNESS = 3;
+constexpr auto MSOBJ_NOTE = 4;
+constexpr auto MSOBJ_REPEATEND = 5;
+constexpr auto MSOBJ_REPEATSTART = 6;
+constexpr auto MSOBJ_TEMPO = 7;
+constexpr auto MSOBJ_TIMESIG = 8;
+constexpr auto MSOBJ_PORTAMENTO_START = 9;
+constexpr auto MSOBJ_PORTAMENTO_STOP = 10;
+constexpr auto MSOBJ_GLISANDO_START = 11;
+constexpr auto MSOBJ_GLISANDO_END = 12;
+constexpr auto MSOBJ_CHORD = 13;
+constexpr auto MSOBJ_CHORD_NOTE = 14;
+
 union ObjectTypes{
 	CMsBar *pBar;
 	CMsEndBar *pEnd;
@@ -65,32 +90,10 @@ union ObjectTypes{
 	CMsGlisandoStart* pGlisStart;
 };
 
-
-enum MusicScoreOpbjects{
-	MSOBJ_BAR,
-	MSOBJ_ENDBAR,
-	MSOBJ_KEYSIG,
-	MSOBJ_LOUDNESS,
-	MSOBJ_NOTE,
-	MSOBJ_REPEATEND,
-	MSOBJ_REPEATSTART,
-	MSOBJ_TEMPO,
-	MSOBJ_TIMESIG,
-	MSOBJ_PORTAMENTO_START,
-	MSOBJ_PORTAMENTO_STOP,
-	MSOBJ_GLISANDO_START,
-	MSOBJ_GLISANDO_END,
-	MSOBJ_CHORD,
-	MSOBJ_CHORD_NOTE
-};
-
-enum {
-	MSOBJ_PLAY_KEEP_TICKING,
-	MSOBJ_PLAY_DONE,
-	MSOBJ_PLAY_DONE_BUT_DO_NOT_REMOVE
-};
 class CMsObject  
 {
+public:
+private:
 	UINT m_ObjectID;
 	BOOL m_Selected;	//object is selected
 	BOOL m_HighLight;
@@ -103,7 +106,7 @@ class CMsObject
 	CMsEvent* m_pParentEvent;
 	CMsSong* m_pSong;		// pointer to song for this obje4ct
 protected:
-	UINT m_ObjType;
+	INT m_ObjType;
 public:
 	CMsObject();
 	virtual ~CMsObject();
@@ -130,8 +133,8 @@ public:
 //-------------------------------------------------
 	// Attribute Methods
 	//-------------------------------------------------
-	void SetType(int t){m_ObjType = t;}
-	int GetType(void){return m_ObjType;}
+	void SetType(INT t){m_ObjType = t;}
+	INT GetType(void){return m_ObjType;}
 	void GetTypeString(CString& csType);
 	void SetSelected(BOOL s) { m_Selected = s; }
 	BOOL IsSelected(void) { return m_Selected; }

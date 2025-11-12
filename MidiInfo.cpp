@@ -12,9 +12,6 @@ CMidiInfo::~CMidiInfo()
     //dtor
 }
 
-extern char * GenMidPatchNames[];
-
-
 int Patch[16] = {
 	-1,		// Not used
 	23,		//1	Harmonica
@@ -76,15 +73,17 @@ void CMidiInfo::Create(CDC* pDC)
 {
 	for (int InstID = 1; InstID < 16; ++InstID)	//from instrument 1 to 15
 	{
-		char* pName;
+		const char* pName;
+		CRect rect(0, 0, 24, 24);
+
 		if (9 == Channel[InstID])
 			pName = "Percussion";
 		else
-			pName = GenMidPatchNames[Patch[InstID]];
+			pName = GenMidiPatchNames[Patch[InstID]];
 		GetTrack(InstID).Create(
 			pDC,
 			InstID,
-			CRect(0,0,24,24),
+			rect,
 			0,
 			Range[InstID],
 			Channel[InstID],

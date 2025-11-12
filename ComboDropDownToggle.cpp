@@ -234,16 +234,16 @@ void CComboDropDownToggle::OnLButtonUp(UINT nFlags, CPoint point)
 	m_rgnSelectionBox.GetRgnBox(&rect);
 	if (m_rgnSelectionBox.PtInRegion(point))
 	{
-		if (m_State == DROP_DOWN_NOTSELECTED)
+		if (m_State == DROP_DOWN_TOGGLE_NOTSELECTED)
 		{
 			m_pWndLastFocus = SetFocus();
-			m_State = DROP_UP_SELECTED;
+			m_State = DROP_DOWN_TOGGLE_SELECTED;
 			Expand();
 			GetParent()->Invalidate();
 		}
 		else       //Selected
 		{
-			m_State = DROP_DOWN_NOTSELECTED;
+			m_State = DROP_DOWN_TOGGLE_NOTSELECTED;
 			Colapse();
 			m_pWndLastFocus->SetFocus();
 			GetParent()->Invalidate();
@@ -287,7 +287,7 @@ void CComboDropDownToggle::OnLButtonUp(UINT nFlags, CPoint point)
 			if (item >= 0)
 			{
 				m_nCurSel = item;
-				m_State = DROP_DOWN_NOTSELECTED;
+				m_State = DROP_DOWN_TOGGLE_NOTSELECTED;
 				if (m_pToggleFlags[m_nCurSel] & COMBOTOGGLE_TOGGLE_ENABLE)
 				{
 					if ((m_pToggleFlags[m_nCurSel] & COMBOTOGGLE_TOGGLE_CHECKED) &&
@@ -452,7 +452,7 @@ void CComboDropDownToggle::OnDraw(CDC* pDC)
 	GetClientRect(&rect);
 	oldOrg = pDC->SetViewportOrg(m_rectThisControl.TopLeft());
 	oldPen = pDC->SelectObject(&Draw);
-	if (m_State == DROP_UP_SELECTED)	//selected
+	if (m_State == DROP_DOWN_TOGGLE_SELECTED)	//selected
 	{
 		pDC->FillRect(&m_rectDropArrow, &Brush_DropArrowBG);
 		pDC->FillRect(&m_rectSelectionBox, &Brush_SelectionBG);
@@ -690,9 +690,9 @@ void CComboDropDownToggle::Expand()
 void CComboDropDownToggle::OnKillFocus(CWnd* pNewWnd)
 {
 	CWnd::OnKillFocus(pNewWnd);
-	if (m_State == DROP_DOWN_SELECTED)
+	if (m_State == DROP_DOWN_TOGGLE_SELECTED)
 	{
-		m_State = DROP_DOWN_NOTSELECTED;
+		m_State = DROP_DOWN_TOGGLE_NOTSELECTED;
 		Colapse();
 	}
 }

@@ -27,7 +27,14 @@ constexpr auto NOTE_TICKS_WHOLE = 192;
 constexpr auto NOTE_TICKS_WHOLE_DOTTED = 288;
 
 
+constexpr auto MSFF_ACCIDENTAL_INKEY = 0;
+constexpr auto MSFF_ACCIDENTAL_NATURAL = 1;
+constexpr auto MSFF_ACCIDENTAL_SHARP = 2;
+constexpr auto MSFF_ACCIDENTAL_FLAT = 3;
+
+
 class NoteData {
+
 	UINT m_Rest;	//Note 0 - Rest 1
 	UINT m_TieBeg;
 	UINT m_TieEnd;
@@ -38,10 +45,10 @@ class NoteData {
 	UINT m_HeadFlipped;
 	UINT m_Velocity;
 	UINT m_NoteOffTick;		// Number of ticks for NOTEOFF
-	UINT m_Accidental;
+	INT m_Accidental;
 	UINT m_Dotted;
-	UINT m_Track;	//value is 1->15, 0 is not used
-	UINT m_Duration;
+	INT m_Track;		//value is 1->15, 0 is not used
+	INT m_Duration;
 	UINT m_Pitch;
 	UINT m_Triplet;
 	int m_MidiOutID;
@@ -58,8 +65,8 @@ public:
 		m_NoteOffTick = 2;		// Number of ticks for NOTEOFF
 		m_UpsideDown = 0;
 		m_HeadFlipped = 0;
-		m_Accidental = 0;
-		m_Track = COMBO_INST_7;
+		m_Accidental = MSFF_ACCIDENTAL_INKEY;
+		m_Track = COMBO_Index_INST_7;
 		m_Duration = COMBO_NOTE_QUARTER;
 		m_Pitch = 0;
 		m_Dotted = 0;
@@ -137,14 +144,14 @@ public:
 	UINT GetHeadFlipped() { return m_HeadFlipped; }
 	BOOL IsHeadFlipped() { return m_HeadFlipped; }
 
-	void SetAccidental(int v) { m_Accidental = v; }
-	int GetAccidental(){return m_Accidental;}
+	void SetAccidental(INT v) { m_Accidental = v; }
+	INT GetAccidental() const {return m_Accidental;}
 
-	void SetTrack(int v) { m_Track = v; }
-	int GetTrack() { return m_Track;}
+	void SetTrack(INT v) { m_Track = v; }
+	INT GetTrack() { return m_Track;}
 
-	void SetDuration(int v) {m_Duration = v;}
-	int GetDuration() { return m_Duration; }
+	void SetDuration(INT v) {m_Duration = v;}
+	INT GetDuration() { return m_Duration; }
 
 	void SetPitch(int v) { m_Pitch = v; }
 	int GetPitch() { return m_Pitch; }
@@ -170,7 +177,7 @@ public:
 		fprintf_s(pO, "Accidental = %d\n", nd->m_Accidental);
 		fprintf_s(pO, "Track = %d\n", nd->m_Track);
 		fprintf_s(pO, "Duration = %d\n", nd->m_Duration);
-		fprintf_s(pO, "Duration: %s\n", DurTab[nd->m_Duration].pName);
+		fprintf_s(pO, "Duration: %s\n", DurTab[(int)nd->m_Duration].pName);
 		fprintf_s(pO, "Pitch = %d\n", nd->m_Pitch);;
 		fprintf_s(pO, "Dotted = %d\n", nd->m_Dotted);
 		fprintf_s(pO, "Triplet = %d\n", nd->m_Triplet);
@@ -232,14 +239,14 @@ public:
 	UINT IsLegato(void) { return GetData().GetLegato(); }
 	void SetLegato(UINT v) { GetData().SetLegato(v); }
 
-	UINT GetAccidental(void) { return GetData().GetAccidental(); }
-	void SetAccidental(UINT k) { GetData().SetAccidental(k); }
+	INT GetAccidental(void) { return GetData().GetAccidental(); }
+	void SetAccidental(INT k) { GetData().SetAccidental(k); }
 
-	UINT GetTrack(void) { return GetData().GetTrack(); }
-	void SetTrack(UINT t) { GetData().SetTrack(t); }
+	INT GetTrack(void) { return GetData().GetTrack(); }
+	void SetTrack(INT t) { GetData().SetTrack(t); }
 
-	int GetDuration(void) { return GetData().GetDuration(); }
-	void SetDuration(int d) { GetData().SetDuration(d); }
+	INT GetDuration(void) { return GetData().GetDuration(); }
+	void SetDuration(INT d) { GetData().SetDuration(d); }
 
 	int GetPitch(void) { return GetData().GetPitch(); }
 	void SetPitch(int p) { GetData().SetPitch(p); }
@@ -256,7 +263,7 @@ public:
 	int GetDotted() { return GetData().GetDotted(); }
 
 	int GetMidiOutID(int Track) { return GETMIDIINFO->GetMidiOutDeviceId(Track); }
-	int GetShape() { return  DurTab[GetDuration()].NoteShapIndex; }
+	int GetShape() { return  DurTab[(int)GetDuration()].NoteShapIndex; }
 
 	int NearestLine();
 	int IsOnLine() {
@@ -276,10 +283,10 @@ public:
 	//-------------------------------------
 	CMsNote* IsSecondInterval( );
 	bool IsDotted();
-	bool IsSolid(void) { return DurTab[GetDuration()].Solid ? true : false; }
+	bool IsSolid(void) { return DurTab[(int)GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
-	int NeedsFlags(void) { return DurTab[GetDuration()].Flags; }
-	bool NeedsTail(void) { return DurTab[GetDuration()].Tail ? true : false; }
+	int NeedsFlags(void) { return DurTab[(int)GetDuration()].Flags; }
+	bool NeedsTail(void) { return DurTab[(int)GetDuration()].Tail ? true : false; }
 	int NeedsLine(void);
 	//----------------
 	// Send to Midi
@@ -323,13 +330,7 @@ public:
 	//---------------------------------
 	// accidental encoding
 	//---------------------------------
-	enum {
-		MSFF_ACCIDENTAL_INKEY,
-		MSFF_ACCIDENTAL_NATURAL,
-		MSFF_ACCIDENTAL_SHARP,
-		MSFF_ACCIDNETAL_FLAT,
-	};
-	static int AccedentalsLUT[APP_NUM_ACCIDENTALTYPES];
+	static INT AccedentalsLUT[APP_NUM_ACCIDENTALTYPES];
 
 	static int NoteDurLut[APP_NUM_NOTETYPES];
 };

@@ -1,16 +1,5 @@
 #pragma once
 
-enum {
-	DRAWSTATE_SET_ATTRIBUTES,
-	DRAWSTATE_WAITFORMOUSE_DOWN,
-	DRAWSTATE_MOVE_OBJECT_AROUND,
-	DRAWSTATE_PLACE
-};
-
-enum {
-	SEARCH_REVERSE,
-	SEARCH_FORWARD
-};
 
 //*************************************
 // Midi Messages
@@ -37,17 +26,6 @@ union MidiMsg {
 	}
 };
 
-//----------------------------------
-// Song Playing State Defines
-// --------------------------------
-enum SongPlayingStates {
-	SONG_NOT_PLAYING,
-	SONG_IS_PLAYING,
-	SONG_STOP	// This Status means we need
-				// to wait for the events
-				// in the playlist queue
-				// to time out.
-};
 
 //------------------------------
 // Midi In Dispatcher Midi
@@ -181,21 +159,6 @@ enum {
 	CHILD_VIEW_PLAYERTHREAD_SONGDONE
 };
 
-enum SongObjectIDs{
-	PLAYER_SONG_BAR,
-	PLAYER_SONG_END,
-	PLAYER_SONG_ERROR,
-	PLAYER_SONG_REPEAT,
-	PLAYER_SONG_REPEAT_END,
-	PLAYER_SONG_TEMPO,
-	PLAYER_SONG_NOTE,
-	PLAYER_SONG_PATCHCHNG,
-	PLAYER_SONG_TICKDEBUG,
-	PLAYER_SONG_EVENTEND,
-	PLAYER_SONG_DISPEVENT,
-	PLAYER_SONG_PLAYBUTTON,
-	PLAYER_SONG_NOTEONOFF,
-};
 
 //--------------------------------------
 // Subfunctions for WM_MIDI_EDIT

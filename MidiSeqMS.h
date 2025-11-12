@@ -99,8 +99,8 @@ public:
 	//------------ Bitmap Symbols -------------------
 	inline CMyBitmap* bmGetQNoteEqQNPM() { return &m_BmQuarterNoteEqQNPM; }
 	inline int GetNumTimeSig() { return APP_NUM_TIMESIG; }
-	inline CMyBitmap* bmGetTimeSig(int TimeSig) { return &m_aBmTimeSig[TimeSig]; }
-	inline CMyBitmap* bmGetCbTimeSig(int TimSig) { return &m_aBmCbTimeSig[TimSig]; }
+	inline CMyBitmap* bmGetTimeSig(INT TimeSig) { return &m_aBmTimeSig[TimeSig]; }
+	inline CMyBitmap* bmGetCbTimeSig(INT TimSig) { return &m_aBmCbTimeSig[TimSig]; }
 	inline int GetNumInstruments() { return APP_NUM_INSTRUMENTS; }
 	inline CMyBitmap* bmGetIntrument(int Inst) { return &m_aBmInst[Inst]; }
 	inline int GetNumNoteTypes() { return APP_NUM_NOTETYPES; }

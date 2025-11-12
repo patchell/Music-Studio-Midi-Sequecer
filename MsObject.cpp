@@ -177,7 +177,7 @@ void CMsObject::DebugDump()
 
 void CMsObject::GetTypeString(CString& csType)
 {
-	csType = csObjectTypeString[GetType()];
+	csType = csObjectTypeString[(int)GetType()];
 }
 
 void CMsObject::Draw(CDC *pDC, int event, int maxevent)

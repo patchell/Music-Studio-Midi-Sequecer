@@ -7,11 +7,11 @@
 
 class CMsTimeSignature : public CMsObject
 {
-	UINT m_TimeSig;
+	INT m_TimeSig;
 public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
-	void Create(CMsSong* pSong, UINT ParentEvent, UINT TS);
+	void Create(CMsSong* pSong, UINT ParentEvent, INT TS);
 	virtual UINT Process();
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
@@ -19,7 +19,8 @@ public:
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Print(FILE *pO);
-	UINT GetTimeSignature(void){return m_TimeSig;}
-	void SetTimeSignature(UINT t){m_TimeSig = t;}
+	INT GetTimeSignature(void){return m_TimeSig;}
+	void SetTimeSignature(INT t){m_TimeSig = t;}
+
 };
 

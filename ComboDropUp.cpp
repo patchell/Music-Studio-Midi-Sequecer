@@ -117,10 +117,10 @@ void CComboDropUp::OnDraw(CDC* pDC)
 	GetClientRect(&rect);
 	oldOrg = pDC->SetViewportOrg(m_rectThisControl.TopLeft());
 	oldPen = pDC->SelectObject(&Draw);
-	if (m_State == DROP_UP_SELECTED)	//selected
+	if (m_State == int(DropUpItemState::DROP_UP_SELECTED))	//selected
 	{
-		pDC->FillRect(&m_arectDropArrow[DROP_UP_SELECTED], &Brush_DropArrowBG);
-		pDC->FillRect(&m_arectSelectBox[DROP_UP_SELECTED], &Brush_SelectionBG);
+		pDC->FillRect(&m_arectDropArrow[int(DropUpItemState::DROP_UP_SELECTED)], &Brush_DropArrowBG);
+		pDC->FillRect(&m_arectSelectBox[int(DropUpItemState::DROP_UP_SELECTED)], &Brush_SelectionBG);
 		int i;
 		CBitmap* oldBM;
 
@@ -153,11 +153,11 @@ void CComboDropUp::OnDraw(CDC* pDC)
 		pDC->FillRect(&m_rectThumb, &Black);
 		pDC->FillRect(&rect, &Brush_Thumb);
 		// drop arrow
-		pDC->MoveTo(m_aptDropCorner[DROP_UP_SELECTED].x + 2, m_aptDropCorner[DROP_UP_SELECTED].y+2);
-		pDC->LineTo(m_aptDropCorner[DROP_UP_SELECTED].x + m_szDropArrow.cx / 2, m_aptDropCorner[DROP_UP_SELECTED].y + m_szDropArrow.cy - 2);
-		pDC->LineTo(m_aptDropCorner[DROP_UP_SELECTED].x + m_szDropArrow.cx - 2, m_aptDropCorner[DROP_UP_SELECTED].y + 2);
+		pDC->MoveTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].x + 2, m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].y+2);
+		pDC->LineTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].x + m_szDropArrow.cx / 2, m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].y + m_szDropArrow.cy - 2);
+		pDC->LineTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].x + m_szDropArrow.cx - 2, m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].y + 2);
 		//---------Current Selection -----
-		bmr = m_arectSelectBox[DROP_UP_SELECTED];
+		bmr = m_arectSelectBox[int(DropUpItemState::DROP_UP_SELECTED)];
 		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
 		pDC->BitBlt(
 			bmr.left + 1,
@@ -172,9 +172,9 @@ void CComboDropUp::OnDraw(CDC* pDC)
 	{
 //		PrintRec("DropUp Selection Box", m_arectSelectBox[DROP_UP_NOTESELECTED]);
 //		PrintRec("DropUp Arrow Box", m_arectDropArrow[DROP_UP_NOTESELECTED]);
-		pDC->FillRect(&m_arectDropArrow[DROP_UP_NOTSELECTED], &Brush_DropArrowBG);
-		pDC->FillRect(&m_arectSelectBox[DROP_UP_NOTSELECTED], &Brush_SelectionBG);
-		bmr = &m_arectSelectBox[DROP_UP_NOTSELECTED];
+		pDC->FillRect(&m_arectDropArrow[int(DropUpItemState::DROP_UP_NOTSELECTED)], &Brush_DropArrowBG);
+		pDC->FillRect(&m_arectSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)], &Brush_SelectionBG);
+		bmr = &m_arectSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)];
 		pDC->FillRect(&bmr, &Brush_DropArrowBG);
 
 		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
@@ -186,9 +186,9 @@ void CComboDropUp::OnDraw(CDC* pDC)
 			&bmdc,
 			0, 0, SRCCOPY);
 
-		pDC->MoveTo(m_aptDropCorner[DROP_UP_NOTSELECTED].x + 2, m_szDropArrow.cy - 2);
-		pDC->LineTo(m_aptDropCorner[DROP_UP_NOTSELECTED].x + m_szDropArrow.cx /2, 2);
-		pDC->LineTo(m_aptDropCorner[DROP_UP_NOTSELECTED].x + m_szDropArrow.cx - 2, m_szDropArrow.cy - 2);
+		pDC->MoveTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_NOTSELECTED)].x + 2, m_szDropArrow.cy - 2);
+		pDC->LineTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_NOTSELECTED)].x + m_szDropArrow.cx /2, 2);
+		pDC->LineTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_NOTSELECTED)].x + m_szDropArrow.cx - 2, m_szDropArrow.cy - 2);
 	}
 	pDC->SelectObject(oldPen);
 	pDC->SetViewportOrg(oldOrg);
@@ -215,23 +215,23 @@ BOOL CComboDropUp::Create(
 	// This is the arrow you press to
 	// to expand the combo box
 	//-----------------------------------
-	m_aptDropCorner[DROP_UP_NOTSELECTED] = CPoint(szItemSize.cx,0);
-	m_aptDropCorner[DROP_UP_SELECTED] = CPoint(szItemSize.cx, nItems * szItemSize.cy);
+	m_aptDropCorner[int(DropUpItemState::DROP_UP_NOTSELECTED)] = CPoint(szItemSize.cx,0);
+	m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)] = CPoint(szItemSize.cx, nItems * szItemSize.cy);
 	m_szDropArrow = szDropArrowSize;
-	m_arectDropArrow[DROP_UP_NOTSELECTED] = CRect(m_aptDropCorner[DROP_UP_NOTSELECTED], m_szDropArrow);
-	m_arectDropArrow[DROP_UP_SELECTED] = CRect(m_aptDropCorner[DROP_UP_SELECTED], m_szDropArrow);
+	m_arectDropArrow[int(DropUpItemState::DROP_UP_NOTSELECTED)] = CRect(m_aptDropCorner[int(DropUpItemState::DROP_UP_NOTSELECTED)], m_szDropArrow);
+	m_arectDropArrow[int(DropUpItemState::DROP_UP_SELECTED)] = CRect(m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)], m_szDropArrow);
 //	PrintRec("Drop Arrow NS", m_arectDropArrow[DROP_UP_NOTESELECTED]);
 //	m_argnDropArrow[DROP_UP_NOTESELECTED].CreateRectRgn(m_arectDropArrow[DROP_UP_NOTESELECTED]);
-	m_argnDropArrow[DROP_UP_SELECTED].CreateRectRgn(m_arectDropArrow[DROP_UP_SELECTED]);
+	m_argnDropArrow[int(DropUpItemState::DROP_UP_SELECTED)].CreateRectRgn(m_arectDropArrow[int(DropUpItemState::DROP_UP_SELECTED)]);
 	//---------- Selection Box -----------------
 	// This is the box that the selection
 	// shows up in.
 	//---------------------------------------
 	m_szSelectBox = szItemSize;
-	m_arectSelectBox[DROP_UP_NOTSELECTED] = CRect(CPoint(0, 0), m_szSelectBox);
-	m_arectSelectBox[DROP_UP_SELECTED] = CRect(CPoint(0, nItems * szItemSize.cy), m_szSelectBox);
-	m_argnSelectBox[DROP_UP_NOTSELECTED].CreateRectRgn(m_arectSelectBox[DROP_UP_NOTSELECTED]);
-	m_argnSelectBox[DROP_UP_SELECTED].CreateRectRgn(m_arectSelectBox[DROP_UP_SELECTED]);
+	m_arectSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)] = CRect(CPoint(0, 0), m_szSelectBox);
+	m_arectSelectBox[int(DropUpItemState::DROP_UP_SELECTED)] = CRect(CPoint(0, nItems * szItemSize.cy), m_szSelectBox);
+	m_argnSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)].CreateRectRgn(m_arectSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)]);
+	m_argnSelectBox[int(DropUpItemState::DROP_UP_SELECTED)].CreateRectRgn(m_arectSelectBox[int(DropUpItemState::DROP_UP_SELECTED)]);
 
 	//------ Window Not Selected ---------------
 	// Items that define the window when
@@ -344,20 +344,20 @@ void CComboDropUp::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (m_argnSelectBox[m_State].PtInRegion(point))
 	{
-		if (m_State == DROP_UP_NOTSELECTED)
+		if (m_State == int(DropUpItemState::DROP_UP_NOTSELECTED))
 		{
 			m_pPrevFocus = SetFocus();
-			m_State = DROP_UP_SELECTED;
+			m_State = int(DropUpItemState::DROP_UP_SELECTED);
 			Expand();
 		}
 		else       //Selected
 		{
-			m_State = DROP_UP_NOTSELECTED;
+			m_State = int(DropUpItemState::DROP_UP_NOTSELECTED);
 			m_pPrevFocus->SetFocus();
 			Colapse();
 		}
 	}
-	else if (m_State == DROP_UP_SELECTED)
+	else if (m_State == int(DropUpItemState::DROP_UP_SELECTED))
 	{
 		if (m_rgnLowerArrow.PtInRegion(point))
 		{
@@ -395,7 +395,7 @@ void CComboDropUp::OnLButtonUp(UINT nFlags, CPoint point)
 			{
 				m_nCurSel = item;
 				GetParent()->Invalidate();
-				m_State = DROP_UP_NOTSELECTED;
+				m_State = int(DropUpItemState::DROP_UP_NOTSELECTED);
 				Colapse();
 				m_pPrevFocus->SetFocus();
 			}
@@ -557,9 +557,9 @@ void CComboDropUp::Expand()
 void CComboDropUp::OnKillFocus(CWnd* pNewWnd)
 {
 	CWnd::OnKillFocus(pNewWnd);
-	if (m_State == DROP_DOWN_SELECTED)
+	if (m_State == int(DropUpItemState::DROP_UP_SELECTED))
 	{
-		m_State = DROP_DOWN_NOTSELECTED;
+		m_State = int(DropUpItemState::DROP_UP_NOTSELECTED);
 		Colapse();
 	}
 }
