@@ -46,7 +46,7 @@ void CStaticStatus::SetColors(COLORREF bGnd, COLORREF text, COLORREF Border)
 	GetParent()->Invalidate();
 }
 
-BOOL CStaticStatus::Create(const CRect& rect, CWnd* pParentWnd, UINT nID)
+bool CStaticStatus::Create(const CRect& rect, CWnd* pParentWnd, UINT nID)
 {
 	m_ptUpperLeft = rect.TopLeft();
 	m_szRectSize = rect.Size();
@@ -56,7 +56,7 @@ BOOL CStaticStatus::Create(const CRect& rect, CWnd* pParentWnd, UINT nID)
 
 BOOL CStaticStatus::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 

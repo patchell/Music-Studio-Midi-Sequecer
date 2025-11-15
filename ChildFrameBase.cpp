@@ -34,7 +34,7 @@ BOOL CChildFrameBase::PreCreateWindow(CREATESTRUCT& cs)
 	cs.style &= ~WS_SIZEBOX;
 	cs.style &= ~FWS_ADDTOTITLE;
 	if (!CMDIChildWnd::PreCreateWindow(cs))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }

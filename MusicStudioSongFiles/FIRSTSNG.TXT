@@ -1,0 +1,54 @@
+
+   Entering Music...
+A. Start with a Blank Staff by Selecting 'ERASE SONG' from the FILE Menu.
+   Menu will Pop-Up when you move above Staffs.  Hold LEFT Button and only
+   release it when the item you desire is Highlighted (drag UP and DOWN).
+B. Select the starting Key Signature by LEFT Clicking the Key Signature
+   Column next to the Bass & Treble Clefs, or use 'SET KEY SIGN' from the
+   EDIT Menu.
+C. SET the TIME SIGnature under the EDIT Menu and then set a suitable TEMPO.
+D. Now is a good time to give the Song a TITLE.  Use CHANGE TITLE (EDIT Menu).
+E. Decide what COLORS to use for various PARTS and set up a few initial Voices
+   on the Midi Parameters Screen.  LEFT Click the 'M' Box next to the LOUD Box
+   to jump to the Midi Parameters Screen.  Set up the Midi Channel, Preset#,
+   Octave Range, Velocity and Accents as needed.  Leave Banks at (1) for now.
+F. On the Main Screen, select a Voice Color (set above) from the POP-UP pallet.
+   Move just above the Staffs and the Pallet will Pop-Up.  LEFT Click a Color.
+   You may listen to the Voice by Holding RIGHT Mouse Button and dragging the
+   Mouse UP and DOWN the Staffs, or just use the RIGHT Button like a Piano Key.
+G. Select the required NOTE DURATION and MODIFIERS (Dot, Sharp, Flat, Etc.).
+   LEFT Click a Note from Lower Pallet.  A RIGHT Click 'drops' any Modifiers.
+H. Move back to the Staffs and Place Notes to match the Song you are entering.
+   LEFT Click to Add or Delete a Note.  RIGHT Click to hear it.  If you place a
+   wrong Note, Click it again to Delete it.  You must move away from the Note
+   and back to it for Delete to work, but you probably did this anyway!
+I. Select Measure BAR or Note TIEs at ends of Color Pallet to add them to
+   your song.  LEFT Click to add Bars or Ties, RIGHT Click to return last Note
+   or Rest you were using.  Short cut: RIGHT Click on Whole or Half Rest!
+J. Continue adding Notes, Rests, Bars, etc. until you have a Measure or two
+   of music.  You may PLAY what you have at anytime, to get an idea of how it
+   will sound and make Voice, Velocity, or Tempo adjustments.  Either press
+   the SpaceBar or LEFT Click the Play Box (a speaker and 2 notes).  Click
+   any Button or Press SpaceBar again to Stop.  You may also PLAY from the
+   Midi Parameters Screen while you make adjustments.  Your music will keep
+   repeating on this screen automatically.
+K. When you need to SCROLL the music on the Edit Screen, to add more Columns
+   or locate any group, move to the far Right or Left of the Staffs until the
+   Green Scroll Arrows appear.  Hold any combination of Mouse Buttons to Scroll.
+   LEFT is Slow, RIGHT is Fastest, BOTH gives medium Speed Scrolling.  As the
+   song increases in size, you may want to JUMP within the song without using
+   Scrolling.  With NO Buttons pressed, move the Mouse back and forth in the
+   Message Box (between the Current Column Number and Last Column Number).
+   Watch the Current Column change and LEFT Click to JUMP there.  A RIGHT Click
+   in this Box will take you to the End of Song, or the Start of a Block if
+   one is Selected (Shaded).
+L. It is a VERY GOOD idea to SAVE your work often, just in case the Power Co.
+   deprives you of Juice, or Heaven forbid, the program crashes!  If the program
+   bombs, it will try to save a file called ERROR.SNG if possible.  This would
+   be approximately a 32k file.  You may be able to get your work back if it
+   was successful.  Just Load ERROR.SNG when you reboot the program.  If you
+   can repeat the 'Crash' sequence and will notify me, I will try to TRAP the
+   cause in future releases.  The only Crashes I have experienced were Bad
+   Song or Midi Files and/or I was trying to Crash the system and succeeded!
+
+

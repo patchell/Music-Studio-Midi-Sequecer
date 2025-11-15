@@ -62,18 +62,18 @@ BOOL CSelDurDlg::OnInitDialog()
 	m_Combo_SelDur.AddBitmap(&m_BmSixteenth, CString(""));
 	m_BmThirtySec.LoadBitmap(IDB_NOTE_THIRTYSECOND);
 	m_Combo_SelDur.AddBitmap(&m_BmThirtySec, CString(""));
-	m_nDurSel = DurTab[m_nDuration].NoteShapIndex;
+	m_nDurSel = CMsNote::GetDurationTable()[m_nDuration].NoteShapeIndex;
 	m_Combo_SelDur.SetCurSel(m_nDurSel);
-	if (DurTab[m_nDuration].Dotted)
+	if (CMsNote::GetDurationTable()[m_nDuration].Dotted)
 		m_Radio_Sel = 1;
-	else if (DurTab[m_nDuration].Triplet)
+	else if (CMsNote::GetDurationTable()[m_nDuration].Triplet)
 		m_Radio_Sel = 2;
 	else
 		m_Radio_Sel = 0;
 	UpdateData(0);
 	if(m_pPrompt) m_Static_Promt.SetWindowText(CString(m_pPrompt));
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return false
 }
 
 void CSelDurDlg::OnSelchangeComboSelDuratuion() 

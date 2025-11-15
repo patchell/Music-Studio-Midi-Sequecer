@@ -104,7 +104,7 @@ protected:
 public:
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	virtual BOOL Create(
+	virtual bool Create(
 		int nItems,
 		int nTotalItems,
 		CSize szItemSize,

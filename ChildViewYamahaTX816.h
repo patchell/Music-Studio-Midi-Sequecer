@@ -386,7 +386,7 @@ class CChildViewYamahaTX816 : public CChildViewBase
 
 //	CMyOwnSlider m_sliderAlgoRithmSelect;	//IS NOT REALLY NEEDED
 	CMyOwnSlider m_sliderFeedback;	//0->7
-	CMyOwnCheckBox m_checkOscillatorKeySync;	//TRUE FALSE
+	CMyOwnCheckBox m_checkOscillatorKeySync;	//true false
 	CMyOwnSlider m_sliderLFOSpeed;	//0->99
 	CMyOwnSlider m_sliderLFODelay;	//0->99
 	CMyOwnSlider m_sliderLFOPitchModulationDepth;	//0->99

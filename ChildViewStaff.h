@@ -89,7 +89,7 @@ public:
 		BM_MISC_INDEX_INSTUMENT_CHANGE
 	};
 private:
-	BOOL m_EscapeFlag;
+	bool m_EscapeFlag;
 	UINT m_TimerID;
 	UINT m_DragFlag;
 	UINT m_AltKeyDown;
@@ -179,45 +179,56 @@ public:
 	void UpdateColors();
 	CStaticStatus* GetStatusBar() { return &m_Status; }
 	//------------ Draw Screen ----------------------
-	BOOL IsMouseInEditRegion() { return m_MouseInEditRegion; }
+	bool IsMouseInEditRegion() { return m_MouseInEditRegion; }
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void OnDraw(CDC* pDC);
 	void DrawControls(CDC* pDC);
 	//---- Get/Set Data Member Access Methods -----
 	NoteData& GetNoteData() { return m_CurrentNoteData; }
-	INT GetLastPitch() { return m_LastPitch; }
-	BOOL LastPitchIsValid() {
-		BOOL rv = FALSE;
+	INT GetLastPitch() const { return m_LastPitch; }
+	bool LastPitchIsValid() const {
+		bool rv = false;
 		if (m_LastPitch >= 0)
 		{
-			rv = TRUE;
+			rv = true;
 		}
 		return rv;
 	}
 	void SetLastPitch(INT lastPitch) { m_LastPitch = lastPitch; }
 	int GetSongScrollPosition() { return m_SongScrollPos; }
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
+
 	int GetPitch() { return GetNoteData().GetPitch(); }
 	void SetPitch(int p) { GetNoteData().SetPitch(p); }
-	INT GetDuration() { return GetNoteData().GetDuration(); }
-	void SetDuration(INT nd) { GetNoteData().SetDuration(nd); }
+
+	INT GetNoteDuration() { return GetNoteData().GetDuration(); }
+	void SetNoteDuration(INT nd) { GetNoteData().SetDuration(nd); }
+
 	INT GetTrack() { return GetNoteData().GetTrack(); }
 	void SetTrack(INT T) { GetNoteData().SetTrack(T); }
+
 	int GetAccent() { return GetNoteData().GetAccent(); }
 	void SetAccent(int A) { GetNoteData().SetAccent(A); }
+
 	int GetDotted() { return GetNoteData().GetDotted(); }
 	void SetDotted(UINT D) { GetNoteData().SetDotted(D); }
+
 	UINT GetTriplet() { return GetNoteData().GetTriplet(); }
 	void SetTriplet(UINT nT) { GetNoteData().SetTriplet(nT); }
+
 	UINT GetRest() { return GetNoteData().GetRest(); }
 	void SetRest(UINT NR) { GetNoteData().SetRest(NR); }
+
 	INT GetAccidental() { return GetNoteData().GetAccidental(); }
 	void SetAccidental(INT NA) { GetNoteData().SetAccidental(NA); }
-	int GetUpSideDown() { return GetNoteData().GetUpsideDown(); }
-	void SetUpSideDown(int USD) { GetNoteData().SetUpsideDown(USD); }
+
+	bool GetStemDown() { return GetNoteData().GetStemDown(); }
+	void SetUpSideDown(bool USD) { GetNoteData().SetStemDown(USD); }
+
 	UINT GetHeadFlipped() { return GetNoteData().GetHeadFlipped(); }
 	void SetHeadFlipped(UINT flipped) { GetNoteData().SetHeadFlipped(flipped); }
+
 	UINT GetDrawEvent() { return m_nDrawEvent; }
 	void IncDrawEvent() {
 		m_nDrawEvent++;

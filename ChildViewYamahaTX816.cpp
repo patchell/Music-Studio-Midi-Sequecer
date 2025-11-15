@@ -2291,16 +2291,12 @@ int CChildViewYamahaTX816::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  Add your specialized creation code here
-
 	return 0;
 }
 
 
 BOOL CChildViewYamahaTX816::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
-	// TODO: Add your specialized code here and/or call the base class
-
 	return CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 
@@ -2440,7 +2436,7 @@ BOOL CChildViewYamahaTX816::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	return TRUE;
+	return true;
 }
 
 
@@ -2768,7 +2764,7 @@ void CChildViewYamahaTX816::DrawAlg(CDC* pDC, int alg)
 				bkColor = AlgDrawData[alg][ObjIndex++];
 				break;
 			default:
-				printf("Boo-Boo\n");
+//				printf("Boo-Boo\n");
 				break;
 		}
 	}
@@ -2922,7 +2918,7 @@ void CChildViewYamahaTX816::DrawCommonControls(CDC* pDC)
 	m_sliderEGPitchLevel_3.Draw(pDC);	//0->99
 	m_sliderEGPitchLevel_4.Draw(pDC);	//0->99
 	m_sliderFeedback.Draw(pDC);	//0->7
-	m_checkOscillatorKeySync.Draw(pDC);	//TRUE FALSE
+	m_checkOscillatorKeySync.Draw(pDC);	//true false
 	m_sliderLFOSpeed.Draw(pDC);	//0->99
 	m_sliderLFODelay.Draw(pDC);	//0->99
 	m_sliderLFOPitchModulationDepth.Draw(pDC);	//0->99
@@ -2977,7 +2973,7 @@ void CChildViewYamahaTX816::EnableCommonControls(int enableflag)
 	m_sliderEGPitchLevel_3.EnableWindow(enableflag);	//0->99
 	m_sliderEGPitchLevel_4.EnableWindow(enableflag);	//0->99
 	m_sliderFeedback.EnableWindow(enableflag);	//0->7
-	m_checkOscillatorKeySync.EnableWindow(enableflag);	//TRUE FALSE
+	m_checkOscillatorKeySync.EnableWindow(enableflag);	//true false
 	m_sliderLFOSpeed.EnableWindow(enableflag);	//0->99
 	m_sliderLFODelay.EnableWindow(enableflag);	//0->99
 	m_sliderLFOPitchModulationDepth.EnableWindow(enableflag);	//0->99
@@ -3001,9 +2997,9 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,
@@ -3018,9 +3014,9 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,
@@ -3572,7 +3568,7 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 	CString csFreqRatio = _T("Freq Ratio");
 	//-------------- Oscilator ------------------
 	m_checkboxOscillatorMode.Create(
-		csFreqFixed,	//String to display when checked (TRUE)
+		csFreqFixed,	//String to display when checked (true)
 		csFreqRatio,	//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_3 + 60, 10 + 5 * DX7_SLIDER_SPACING), CSize(80, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4117,8 +4113,8 @@ void CChildViewYamahaTX816::InitializeCommonOperatorControls()
 	//---------------------------------------------
 	CString csOscKeySyncTrue = CString(_T("OSC Key Sync"));
 	CString csOscKeySyncFalse = CString(_T("OSC not KSync"));
-	m_checkOscillatorKeySync.Create(	//TRUE FALSE
-		csOscKeySyncTrue,	//String to display when checked (TRUE)
+	m_checkOscillatorKeySync.Create(	//true false
+		csOscKeySyncTrue,	//String to display when checked (true)
 		csOscKeySyncFalse,//String to display when unchecked (false)
 		CRect(
 			CPoint(
@@ -4290,7 +4286,7 @@ void CChildViewYamahaTX816::InitializeCommonOperatorControls()
 	CString csLFOKeySyncTrue = CString(_T("LFO Key Sync"));
 	CString csLFOKeySyncFalse = CString(_T("LFO not K Sync"));
 	m_checkboxLFOKeySync.Create(		//true false
-		csLFOKeySyncTrue,	//String to display when checked (TRUE)
+		csLFOKeySyncTrue,	//String to display when checked (true)
 		csLFOKeySyncFalse,	//String to display when unchecked (false)
 		CRect(
 			CPoint(
@@ -4712,7 +4708,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	CString csPoly = CString(_T("Poly"));
 	CString csMono = CString(_T("Mono"));
 	m_checkPolyMono.Create(	// mono poly
-		csPoly,	//String to display when checked (TRUE)
+		csPoly,	//String to display when checked (true)
 		csMono,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_1, DX7_ROW_3), CSize(80, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4838,7 +4834,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	CString csGlisando = CString(_T("Glisando"));
 	CString csPortamento = CString(_T("Portamento"));
 	m_checkPortamentoGlisando.Create(	//on-off
-		csGlisando,	//String to display when checked (TRUE)
+		csGlisando,	//String to display when checked (true)
 		csPortamento,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_3, DX7_ROW_6), CSize(100, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4853,7 +4849,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	CString csFollow = CString(_T("Pitch Follow"));
 	CString csRelative = CString(_T("Pitch Relative"));
 	m_checkPortamentoMode.Create(		//retain follow
-		csFollow,	//String to display when checked (TRUE)
+		csFollow,	//String to display when checked (true)
 		csRelative,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_3, DX7_ROW_7), CSize(100, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4904,7 +4900,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	//---------------------------------------------------------
 	CString csBlank = csBlank;
 	m_checkModulationWheelAssignEGBias.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_EG_BIAS, DX7_ROW_4), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4917,7 +4913,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-----------------------------------------------------
 	m_checkModulationWheelAssignAmplitude.Create(//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_AMPLITUDE, DX7_ROW_4), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4930,7 +4926,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//------------------------------------------------------
 	m_checkModulationWheelAssignPitch.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_PITCH, DX7_ROW_4), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4980,7 +4976,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//----------------------------------------------------
 	m_checkFootControllerAssignEGBias.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,	//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_EG_BIAS, DX7_ROW_5), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -4993,7 +4989,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-------------------------------------------------------
 	m_checkFootControllerAssignAmplitude.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,	//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_AMPLITUDE, DX7_ROW_5), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5006,7 +5002,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-----------------------------------------------------
 	m_checkFootControllerAssignPitch.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_PITCH, DX7_ROW_5), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5056,7 +5052,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//---------------------------------------------------
 	m_checkAfterTouchAssignEGBias.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_EG_BIAS, DX7_ROW_6), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5069,7 +5065,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-----------------------------------------------------
 	m_checkAfterTouchAssignAmplitude.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_AMPLITUDE, DX7_ROW_6), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5082,7 +5078,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-----------------------------------------------------
 	m_checkAfterTouchAssignPitch.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_PITCH, DX7_ROW_6), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5132,7 +5128,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//------------------------------------------------------------
 	m_checkBreathControllerAssignEGBias.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_EG_BIAS, DX7_ROW_7), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5145,7 +5141,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//-----------------------------------------------------------
 	m_checkBreathControllerAssignAmplitude.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_AMPLITUDE, DX7_ROW_7), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
@@ -5158,7 +5154,7 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 	);
 	//---------------------------------------------------------
 	m_checkBreathControllerAssignPitch.Create(	//on-off
-		csBlank,	//String to display when checked (TRUE)
+		csBlank,	//String to display when checked (true)
 		csBlank,//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_PITCH, DX7_ROW_7), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control

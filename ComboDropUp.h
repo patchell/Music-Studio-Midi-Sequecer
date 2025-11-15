@@ -98,7 +98,7 @@ public:
 	CComboDropUp();
 	virtual ~CComboDropUp();
 public:
-	virtual BOOL Create(
+	virtual bool Create(
 		int nItems,		//number of items to display
 		int nTotalItems,	//total number of items
 		CSize szItemSize,	//size of an item

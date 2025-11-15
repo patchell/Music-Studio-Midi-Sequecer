@@ -30,7 +30,7 @@ END_MESSAGE_MAP()
 BOOL CChildViewBase::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if (!CWnd::PreCreateWindow(cs))
-		return FALSE;
+		return false;
 
 	cs.dwExStyle |= WS_EX_CLIENTEDGE;
 	cs.style &= ~WS_BORDER;

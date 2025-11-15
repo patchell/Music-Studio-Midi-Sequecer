@@ -1,0 +1,56 @@
+ 2.  Standard Midi File player is now 64 Tracks!  This should allow for
+     the lengthiest file to be loaded and played.  Also the Midi Buffer
+     has been increased to 200K to accomodate long files.  The EVENT
+     LIST screen has been updated to allow 64 tracks and you can select
+     which you would like to view, as well as apply a channel filter,
+     which is needed for Format 0 one track files.
+
+     Pressing the HELP key brings up help text which actually allows you
+     to Click on the items it refers to so you can see them work while
+     the HELP text is displayed.  Of course if you scroll or redraw the
+     screen, then the text will be moved or gone!  When the EVENT LIST
+     is displayed for the first time after the program is started, a one
+     time Dialogue comes up to give Quick Info about the LISTER.  You
+     can press any key or button, or go directly to HELP for more info.
+
+     Read the HELP text to get the details on the EVENT LIST operation.
+     You can filter channels/tracks to be viewed by clicking the CHAN
+     word just under the file length digits.  You will get a fairly
+     large Dialogue Box (64 tracks!) which allows you to turn off any
+     Tracks or Channels you want to hide.  Move the cursor with the
+     mouse and left click a number to hide it (grey) or show it (black).
+     If you right click any number, all of the numbers of the group,
+     (Tracks or Channels) will be reversed: those on will go off and
+     visa versa.
+
+     If the Tracks selection changes from what it was, the EVENT LIST
+     will automatically be restarted and redraw from the start.  The
+     Channels selection will not do this, and you can continue to scroll
+     if desired or manually redraw/restart by pressing the RETURN key
+     or clicking at the bottom between GOTO and DELETE anywhere.  You
+     must click the DONE button in the Dialogue Box to close it.
+
+     There is a NEW key (not shown in the HELP text) for filtering
+     different types of META events.  The word META at the bottom of the
+     screen turns all META events on/off except TEXT which has its own
+     control word.  If you press the "H" key for Hide then another big
+     Dialogue Box allows hiding nine (9) different types of META Events.
+     The UNKNOWN group (item 9) covers events that were UNKNOWN when
+     the first MIDI FILE SPEC was circulated.  I don't have INFO on some
+     NEW events I am seeing, so they won't have a descriptor under the
+     column "EVENT TYPE" and any bytes of data will just be displayed as
+     HEX digits to the right of that column.
+
+     The need for the Hide function resulted from the "clutter" of META
+     events in many new files I am receiving.  Also, you may want to
+     view or not view the TEMPO changes for example, especially when
+     there are many!  Of course by turning off NOTES, NOTE OFF, CTRL,
+     PCHG, etc. and filtering META for only TEMPO events, you will see
+     the TEMPO MAP for the file!
+
+     You can play the file from the EVENT LIST now and even have it
+     follow in realtime while scrolling.  It may lag behind if the song
+     is to fast or has too many events.  Filter tracks/channels or event
+     types to ease its job!  Read the HELP text for more info.
+
+

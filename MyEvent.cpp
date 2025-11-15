@@ -14,11 +14,11 @@ CMyEvent::~CMyEvent()
 	::CloseHandle(m_hHandle);
 }
 
-BOOL CMyEvent::Create(const CString& name)
+bool CMyEvent::Create(const CString& name)
 {
-	BOOL rV = FALSE;
-	m_hHandle = ::CreateEventW(NULL, FALSE, FALSE, name);
-	if (m_hHandle) rV = TRUE;
+	bool rV = false;
+	m_hHandle = ::CreateEventW(NULL, false, false, name);
+	if (m_hHandle) rV = true;
 	return rV;
 }
 
@@ -28,8 +28,8 @@ BOOL CMyEvent::Create(const CString& name)
 //	the object to the signaled state.
 //
 // return value
-//	TRUE if succesfull
-//	FALSE on fail
+//	true if succesfull
+//	false on fail
 //--------------------------------------
 bool CMyEvent::Post()
 {

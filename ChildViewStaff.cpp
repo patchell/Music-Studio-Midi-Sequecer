@@ -177,7 +177,7 @@ CMsObject* CChildViewStaff::MatchMouseToObjectInEvent(UINT Event, CPoint MousePo
 	Loop = 1;
 	while (pObjFound && Loop)
 	{
-		if (pObjFound && pObjFound->Select(TRUE, MousePointer))
+		if (pObjFound && pObjFound->Select(true, MousePointer))
 		{
 			CString csMsgString, csScratch;
 			Loop = 0;
@@ -552,7 +552,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	int Region;
 	int note;
 	CString StatusString,csTemp;
-	BOOL Loop = FALSE;
+	bool Loop = false;
 
 	m_nDrawEvent = XtoEventIndex(pointMouse.x);
 	Region = MouseInRegion(pointMouse);
@@ -624,7 +624,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 				if (m_nMouseState == StaffViewMouseState::STAFFVIEW_MOUSEDOWN)
 				{
 					CMsObject* pSelectedObjects = NULL;
-					Loop = TRUE;
+					Loop = true;
 
 					if (m_DragFlag)
 					{
@@ -662,13 +662,13 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					// highlight objects and
 					// other nonsense
 					//---------------------------
-					Loop = TRUE;
+					Loop = true;
 					while (pObj && Loop)
 					{
-						if (pObj->HighLight(TRUE, pointMouse))
+						if (pObj->HighLight(true, pointMouse))
 						{
 //							printf("Highligt Set'\n");
-							Loop = FALSE;
+							Loop = false;
 						}
 						else
 						{
@@ -679,7 +679,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					{
 //						printf("No Object Found, Clear Highlight\n");
 						if (m_pHighLightedObject)
-							m_pHighLightedObject->SetHighLight(FALSE);
+							m_pHighLightedObject->SetHighLight(false);
 						m_pHighLightedObject = NULL;
 					}
 					else
@@ -695,7 +695,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 			// Move a note around the screen
 			//--------------------------------
 			pN = (CMsNote*)m_pDrawObject;
-			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
+//			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
 			if (LastPitchIsValid())
 			{
 				if (GetLastPitch() != note)
@@ -703,13 +703,13 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					SetPitch(note);
 					if (!pN->IsRest())
 					{
-						printf("    Note Off %d\n", pN->GetPitch());
+//						printf("    Note Off %d\n", pN->GetPitch());
 						MidiPlayNote(pN, 0);// Note Off
 					}
 					pN->SetPitch(note);
 					if (!pN->IsRest())
 					{
-						printf("    Note On %d\n", pN->GetPitch());
+//						printf("    Note On %d\n", pN->GetPitch());
 						MidiPlayNote(pN, 1);// Note On
 					}
 					SetLastPitch(note);
@@ -828,7 +828,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			// from the duration
 			//--------------------------------------
 			Dur = pN->GetDuration();
-			Dur = CMsNote::NoteDurLut[DurTab[(int)Dur].NoteShapIndex];
+			Dur = CMsNote::NoteDurLut[CMsNote::GetDurationTable()[Dur].NoteShapeIndex];
 			pN->SetDuration(Dur);
 			pN->SetRest(1);
 		}
@@ -871,8 +871,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			if (Dot)
 			{
 				DurTemp = (int)Dur;
@@ -902,8 +902,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			if (Dot)
 			{
 				DurTemp = (int)Dur;
@@ -933,8 +933,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_THIRTYSEC_NOTE;
 			if (Dot)
 			{
@@ -949,6 +949,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(3); // set thirty second flag
 			Invalidate();
 		}
 		break;
@@ -959,8 +960,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_SIXTEENTH_NOTE;
 			if (Dot)
 			{
@@ -975,6 +976,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(2); // set sixteenth note flag
 			Invalidate();
 		}
 		break;
@@ -985,8 +987,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_EIGTH_NOTE;
 			if (Dot)
 			{
@@ -1001,6 +1003,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(1); // set eighth note flag
 			Invalidate();
 		}
 		break;
@@ -1011,8 +1014,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_QUARTER_NOTE;
 			if (Dot)
 			{
@@ -1027,6 +1030,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(0); // set quarter note flag
 			Invalidate();
 		}
 		break;
@@ -1037,8 +1041,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_HALF_NOTE;
 			if (Dot)
 			{
@@ -1053,6 +1057,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(0); // set half note flag
 			Invalidate();
 		}
 		break;
@@ -1063,8 +1068,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			pN = (CMsNote*)m_pDrawObject;
 			Dur = pN->GetDuration();
-			Dot = DurTab[(int)Dur].Dotted;
-			Trip = DurTab[(int)Dur].Triplet;
+			Dot = CMsNote::GetDurationTable()[(int)Dur].Dotted;
+			Trip = CMsNote::GetDurationTable()[(int)Dur].Triplet;
 			Dur = MSFF_WHOLE_NOTE;
 			if (Dot)
 			{
@@ -1079,6 +1084,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				Dur = DurTemp;
 			}
 			pN->SetDuration(Dur);
+			pN->SetFlags(0); // set whole note flag	
 			Invalidate();
 		}
 		break;
@@ -1116,7 +1122,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		delete pTemp;
 
 		m_Status.SetText(csBlank);
-		printf("################ Escape Key\n");
+//		printf("################ Escape Key\n");
 		m_EscapeFlag = 1;
 		//		Invalidate();
 		break;
@@ -1130,8 +1136,8 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					pN->SetHeadFlipped(pN->GetHeadFlipped() ^ 1);
 				else
 				{
-					pN->SetUpsideDown(pN->GetUpsideDown() ^ 1);
-					if (pN->IsUpsideDown())
+					pN->SetStemDown(pN->GetStemDown() ^ 1);
+					if (pN->IsStemDown())
 						pN->SetHeadFlipped(1);
 					else
 						pN->SetHeadFlipped(0);
@@ -1943,7 +1949,7 @@ void CChildViewStaff::UpdateScrollbarInfo(int TotalEvents, const char *Title)
 	si.nPage = (m_MaxEvents - 1) / 2;
 	si.cbSize = sizeof(SCROLLINFO);
 
-	CWnd::SetScrollInfo(SB_HORZ, &si, TRUE);
+	CWnd::SetScrollInfo(SB_HORZ, &si, true);
 }
 
 
@@ -2464,7 +2470,7 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	pN->GetData().CopyData(GetNoteData());
 
 	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;
-	Dur = CMsNote::NoteDurLut[DurTab[(int)pN->GetDuration()].NoteShapIndex];
+	Dur = CMsNote::NoteDurLut[CMsNote::GetDurationTable()[(int)pN->GetDuration()].NoteShapeIndex];
 	pN->SetDuration(Dur);
 	pN->SetRest(RestFlag);
 }
@@ -2603,7 +2609,6 @@ void CChildViewStaff::OnInitialUpdate()
 	n = GETAPP->GetNumNoteTypes ();
 	itemSize = GETAPP->bmGetNoteType(0)->GetBmDim();
 	itemSize += CSize(4, 4);
-	n = GETAPP->GetNumNoteTypes();
 	m_Combo_NoteType.Create(
 		n - 2, // Number of items to display
 		n, // Total Items
@@ -2718,7 +2723,7 @@ void CChildViewStaff::OnInitialUpdate()
 		CRect(CPoint(x, y),CSize(clientRect.Width(), 25)),
 		this,
 		IDC_STATIC_STATUSDISP);
-	m_Status.ShowWindow(TRUE);
+	m_Status.ShowWindow(true);
 	//----- Create Regions ---------
 	CRect EditRect;
 	CPoint ptRectUL;
@@ -2865,7 +2870,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 
 BOOL CChildViewStaff::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 void CChildViewStaff::DrawControls(CDC* pDC)
@@ -2912,7 +2917,7 @@ void CChildViewStaff::UpdateComboBoxes()
 	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId((int)Track);
 	int Channel = GETMIDIINFO->GetChannel((int)Track);
 	GETMIDIOUTDEVICE(DeviceID).PgmChange(Channel, Patch);
-	SetDuration(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
+	SetNoteDuration(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
 }
 
 LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
@@ -2980,7 +2985,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		v = CMsNote::NoteDurLut[nSelection];
 		if (GetTriplet()) v -= 2;
 		else if (GetDotted()) v += 2;
-		SetDuration(v);
+		SetNoteDuration(v);
 		m_Combo_Decorations.ShowWindow(SW_SHOW);
 		m_Combo_Accidentals.ShowWindow(SW_SHOW);
 		m_Combo_Decorations.EnableWindow(1);
@@ -3012,7 +3017,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		m_Combo_Decorations.EnableWindow(0);
 		m_Combo_Accidentals.ShowWindow(SW_HIDE);
 		m_Combo_Decorations.ShowWindow(SW_HIDE);
-		SetDuration(CMsNote::NoteDurLut[nSelection]);
+		SetNoteDuration(CMsNote::NoteDurLut[nSelection]);
 		SetFocus();
 		SetRest(1);
 		if (m_pDrawObject)
@@ -3065,7 +3070,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 				{
 					SetTriplet(0);
 					SetDotted(0);
-					SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex]);
+					SetNoteDuration(CMsNote::NoteDurLut[CMsNote::GetDurationTable()[GetNoteDuration()].NoteShapeIndex]);
 				}
 				break;
 			case COMBO_DECORATION_DOT:
@@ -3076,7 +3081,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 				}
 				else
 					SetDotted(ToggleMSG.value);
-				SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex] + 2);
+				SetNoteDuration(CMsNote::NoteDurLut[CMsNote::GetDurationTable()[GetNoteDuration()].NoteShapeIndex] + 2);
 				break;
 			case COMBO_DECORATION_TRIPLET:
 				if (ToggleMSG.value)
@@ -3088,7 +3093,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 					SetTriplet(ToggleMSG.value);
 				SetDotted(0);
 
-				SetDuration(CMsNote::NoteDurLut[DurTab[GetDuration()].NoteShapIndex] - 2);
+				SetNoteDuration(CMsNote::NoteDurLut[CMsNote::GetDurationTable()[GetNoteDuration()].NoteShapeIndex] - 2);
 				break;
 			}	//end of switch (ToggleMSG.index)
 			break;
@@ -3337,7 +3342,7 @@ break;
 
 void CChildViewStaff::OnTimer(UINT_PTR nIDEvent)
 {
-	printf("***************** One Minute ***************************\n");
+//	printf("***************** One Minute ***************************\n");
 	CChildViewBase::OnTimer(nIDEvent);
 }
 
@@ -3380,7 +3385,7 @@ BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 		{
 		case VK_MENU:
 			OnKeyDown(pMsg->wParam, 1, 0);
-			return TRUE;
+			return true;
 			break;
 		}
 		break;
@@ -3389,7 +3394,7 @@ BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 		{
 		case VK_MENU:
 			OnKeyUp(pMsg->wParam, 1, 0);
-			return TRUE;
+			return true;
 			break;
 		}
 		break;

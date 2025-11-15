@@ -1,0 +1,67 @@
+All about TEMPO
+
+   The TEMPO range is 24 to 240 beats per minute.  A Quarter Note gets one
+beat.  Press & HOLD the LEFT Button and Drag the Mouse UP or DOWN while
+pointing at the number under 'TEMPO'.  The RIGHT Button is the Coarse adjust-
+ment.  After Selecting a Column where you would like to Insert a TEMPO CHANGE,
+LEFT Click the TEMPO WORD, instead of the Number.  Answer the DIALOGUE BOX
+to complete the operation.
+
+   To SELECT a Song COLUMN, move Mouse Cursor (Pointing Hand), to just above
+the Message Box and Note Pallet, where it will become a Square Brown Box.
+Watch the message displayed.  Click the LEFT Button when you are on the
+Column desired and it will be Shaded (Selected).  To Un-Select Column(s),
+Click one that is Shaded.
+
+   To FIND all the TEMPO CHANGES in a Song (one at a time), RIGHT Click the
+WORD TEMPO.  The search starts with the 'CURRENT' Column displayed.  If a
+TEMPOCHANGE is found the display will update showing the TEMPOCHANGE in the
+LeftMost Column.
+
+   NOTE: If the Song is to be played at only one TEMPO, then it is not
+necessary to Insert a TEMPO CHANGE in the Music.  The Player will use the
+TEMPO displayed, which is also Saved as part of a .SNG file.  On Songs with
+at least one TEMPOCHG you should Insert the Starting TEMPO as the First
+Column in the Song.  This will ensure the correct beginning TEMPO.  The
+Displayed TEMPO is updated whenever the Tempo Changes in a Song (Manually or
+by Inserted Tempo Columns).
+
+   The TEMPO may be CHANGED WHILE PLAYING.  Use the <S> and <F> keys to make
+the Coarse Adjustment or the LEFT/RIGHT SHIFT KEYS for Fine.  TEMPO Changes
+in Music will over-ride any manual changes made.  TEMPO will update or change
+on the next Column played, so there may be delays when Long Column Timeouts
+occur.  Opposite occurs if the Song is Fast with Short Column Durations with
+the Fine (Shift Key) adjustment.  Even a Quick Tap of the Shift Keys may over
+shoot the desired TEMPO!
+
+   A TEMPO Column may be Deleted by using the Delete Block function found
+under the BLOCK Menu.  To Change the Displayed Value of an Inserted Tempo
+Column, just Select the Column as detailed above.  Adjust the TEMPO at lower
+Left, then LEFT-Click the Word TEMPO as you would to Insert a TEMPO CHANGE.
+A Dialogue will ask if you want to CHANGE the TEMPO.  Answer OK to Change it.
+
+   When you have finished a Song and have Inserted Tempos to get just the
+right effect, you may want to try the AUTO TEMPO feature.  This function will
+attempt to Insert TEMPO Changes every Quarter Beat using a maximum Random
+offset entered when it Prompts for Input.  The TEMPOS Inserted will Range
+above and below TEMPO Values Inserted in the Music.  Whenever it Finds a
+TEMPO CHANGE it will skip the measure it is in to Preserve YOUR changes.
+
+   It will then use that Value as the Base Value for its RANDOM generated
+TEMPOS.  You may Input a number from Two to Twenty (2-20) as the Maximum
+Offset it will use.  Three to Five seems to produce the best results.  You
+will want to be sure you have Saved the Original Song and only work on a Copy
+(in Memory).  To Enable the AUTO feature Press the <T> key.  A Dialogue will
+tell you to use the Song Timing Check Function.  When you do, it will ask for
+the Maximum Offset Desired.  Enter the Number and Press Return.  It will
+start the Timing Check (hopefully you have already checked it and know it is
+OK!).
+
+   There will be a Delay as it Inserts TEMPO Columns in your Song which will
+also increase the number of physical columns in the Song.  It will Disable
+itself when DONE, or if you change your mind before starting the Timing
+Check, you may Press the <T> key again to Toggle off the feature. If it
+speeds up or slows down too much, you can change or delete the Inserted Tempos
+as desired.  Hopefully the Random Tempo Changes will soften the Exactness of
+Computer Music.
+

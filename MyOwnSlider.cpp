@@ -189,11 +189,11 @@ void CMyOwnSlider::OnPaint()
 
 BOOL CMyOwnSlider::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 
-BOOL CMyOwnSlider::Create(
+bool CMyOwnSlider::Create(
 	CPoint ptControlOrigin,//upper left corner 1
 	int SliderHeight,	//slider height 2
 	int SliderArrowWidth,	// width of arrows 3
@@ -233,7 +233,7 @@ BOOL CMyOwnSlider::Create(
 {
 	int x, y;
 	int cx, cy;
-	BOOL boolRV;
+	bool boolRV;
 	CDC* pDC;
 
 	m_DisplayOffset = DisplayOffset;
@@ -338,9 +338,9 @@ BOOL CMyOwnSlider::Create(
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,
@@ -358,9 +358,9 @@ BOOL CMyOwnSlider::Create(
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,

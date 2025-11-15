@@ -68,7 +68,7 @@ CComboDropDown::~CComboDropDown()
 }
 
 
-BOOL CComboDropDown::Create(
+bool CComboDropDown::Create(
 	int nItems,			//Number of items to display
 	int nTotalItems,	//Total number of items in control
 	CSize szItemSize,	//Size of the item
@@ -78,7 +78,7 @@ BOOL CComboDropDown::Create(
 	UINT nID			//Control ID
 )
 {
-	BOOL rV;
+	bool rV;
 
 	LPCTSTR lpszClassName = _T("BitmapComboBox");
 	LPCTSTR lpszWindowName = nullptr;
@@ -182,7 +182,7 @@ BOOL CComboDropDown::Create(
 		nID,
 		pContext
 	);
-	if (rV == FALSE)
+	if (rV == false)
 		printf("Could not create DropDown\n");
 	return rV;
 }
@@ -207,7 +207,7 @@ void CComboDropDown::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (m_rgnThumb.PtInRegion(point))
 		{
-			m_nDragThumb = TRUE;
+			m_nDragThumb = true;
 		m_nDragLastY = point.y;
 		}
 	}
@@ -218,7 +218,7 @@ void CComboDropDown::OnLButtonDown(UINT nFlags, CPoint point)
 void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	m_LButtonDown = 0;
-	m_nDragThumb = FALSE;
+	m_nDragThumb = false;
 	static int count = 0;
 	int i;
 	CRect rect;
@@ -344,7 +344,7 @@ void CComboDropDown::OnPaint()
 
 BOOL CComboDropDown::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 
@@ -364,7 +364,7 @@ void CComboDropDown::OnDraw(CDC* pDC)
 	CPoint oldOrg;
 	CPoint oldOrgSliderDraw;
 	CRect rect;
-	BOOL bFlag = FALSE;
+	bool bFlag = false;
 	CPen Draw, * oldPen;
 	CRect bmr;
 	CDC bmdc;

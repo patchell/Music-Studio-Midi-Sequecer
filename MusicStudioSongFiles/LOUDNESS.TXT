@@ -1,0 +1,56 @@
+
+ 1.  Loudness has been implemented.  The number under the word "LOUD"
+     is still the velocity of notes/chords being auditioned on the
+     edit screen.  However, if you right click the number and then
+     move to the Grand Staff, you will see that you have the "EXPR"
+     cursor.  You will also see the message "Insert Loudness" in the
+     message/scroll box, and a number to the left above the half note.
+
+     On the Grand Staff, right click/drag to set the value desired.
+     When it is that which is desired, left click in the column where
+     you desire to have the change take effect.  A column similar to a
+     Tempo Change column will be inserted which will show "LOUD" and
+     its value.
+
+     When a Song starts playing, you will notice that the number under
+     the word LOUD changes to 127 (normal), unless you have put a 
+     LOUDNESS Change in the first column of the Song.  When the Song
+     reaches a LOUDNESS Change in the Song it will update the display.
+     Loudness is the "final" computation made when computing any
+     velocity before it is sent.  It is Global which means it affects
+     all voices/channels/colors playing.  Anything less than 127 will
+     subtract the difference between 127 and the value.  For instance
+     126 will subtract one (1), 124 will subtract three (3), etc.
+
+     The value of zero (0) is not useable although it displays in the
+     message box.  You can't enter a LOUD Change if you try.  This is
+     because the actual value is written to the Song File, and all
+     zero bytes are considered Blank Columns!  Besides, when you get
+     below 40 or so for LOUDNESS, you are subtracting 87 from the
+     velocity, and most notes will start to shut off as you continue
+     down.  By the time you reach one (1), no notes will be playing
+     and you will have "faded out" the Song!
+
+     The algorhythm for Velocities output works like this: One of four
+     Velocities is retrieved from those set for the color on the MIDI
+     PARAMETERS screen (VEL AC1 AC2 AC3).  Which one depends on whether
+     an Accent is being used.  The default with no accent would be the
+     value under VEL.  Then any active FORTE marking for the color is
+     added/subtracted.  Finally, the LOUDNESS factor is subtracted.
+     Of course if LOUDNESS is 127 then no change takes place.  At any
+     stage in our computation, if the Velocity goes above 127 or below
+     zero (0) then it will be clipped to remain 'legal'!
+
+     Fade Ins and Fade Outs may be implemented with the LOUD function.
+     It is also usefull for crescendos and decrescendos providing you
+     start at a lower value so that you can run it up when desired!
+     I have noticed that several sequenced songs are faded out with the
+     use of velocities instead of controllers, I assume because not all
+     synths respond to Volume or Expression Controllers.
+
+     To delete a LOUDNESS column, use DELETE BLOCK from the BLOCK pull
+     down menu, and delete the column like any other.  It cannot be
+     editted by shading it like the Tempos can.  If the value is not
+     correct, delete the column, and re-insert the correct LOUD value.
+
+

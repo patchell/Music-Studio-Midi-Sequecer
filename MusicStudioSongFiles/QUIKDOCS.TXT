@@ -1,0 +1,417 @@
+Quick Docs for XMARK64K.PRG  by Mark Feaver  Written in GFA Basic & Assembler.
+------------------------------------------------------------------------------
+Note: The Song Editor is a much improved 'take off' of the older Music Studio
+      Program published by Activision/Audio Light.  The layout is different
+      and easier to use.  Plus numerous features are available to take full
+      advantage of Midi which Music Studio didn't do.  The program does not
+      support the poor Atari Sound generator, only Midi.  You will not hear
+      any sound without external Midi gear connected.  Besides the Song Editor
+      the program will also create and/or play Standard Midi Files of up to
+      64 tracks and 200k length.  It will even play and display words from
+      the Karaoke Midi Files available today!  See Playing Midi Files...
+
+      All the demo songs supplied are voiced for the Sound Canvas SC55 from
+      Roland which conforms to GM standard.  Voicing could be manually changed
+      for other sound modules or keyboards.  Pressing the <G> key on the Main
+      Edit Screen or either Midi File Player Screen will send a 'GS RESET'
+      SYS EX message to unit #1 (as a convenience to the user).  On the Midi
+      File Player Screens, the <A> key can be used to toggle an automatic
+      GS RESET before each .MID file is played.  Very handy for those impolite
+      souls who create Midi Files that turn Volume and Expression controllers
+      down (but not back up!).  This would make the next file seem to not
+      play, unless the file contains a GS RESET message, or all controllers
+      are reset in it.  The program automatically sends all notes off on every
+      channel when any song is stopped, as well as releasing damper pedal, etc.
+-------------------------------------------------------------------------------
+1.  Start the Program.
+
+    A. The Program requires Atari ST with 1 meg ram and a Color Monitor.
+
+    B. The Program runs in Low Resolution (16 color mode) only, although it
+       will internally switch resolution to Medium when needed, for example
+       on the Midi Event List or Midi Configuration Screens. 
+
+    C. Double Click the Program Name: XMARK64K.PRG to Load and Run it.
+       Four files: XMARK64K.PRG  XMARK64K.RSC  DEFAULT.CFG  DEFAULT.KIT
+       are needed to run program.  If you don't want voice names or drum
+       patterns (kit), you could run without .CFG/.KIT but why?  All of
+       these should be in the same directory.
+
+2.  Main Screen (Song Editor)
+
+    A. The Message Box and Song Position Display
+       Just above the Note Duration Palette is a rectangular area used to
+       display 'help' messages as the mouse is moved around.  It is also used
+       to show the Song Position indicator (green square) when mouse is in
+       the rectangle, or at either end of the Grand Staff (scroll areas).
+       Watch this Message Box for helpful hints on Icon/Button functions.
+
+    B. Functions and Left/Right Mouse Buttons
+       The Left & Right Mouse Buttons are used extensively to select from
+       alternate choices in most areas of screen, staff, palettes, etc.
+       If you watch the Message Box (A above), often two functions are listed
+       separated by a '/'.  The Left function is for a Left Click and the
+       Right function is for a Right Click.  Example: Left Click the speaker
+       icon with 2 notes (play button) to Play a Song (from the beginning).
+       Right Click the same to start playing from the leftmost measure that
+       is currently displayed on the Staff (Cue and Play).
+
+    C. Pop-Up Menu and Color Palette
+       If the mouse or note cursor is moved above the staff towards the Song
+       Title, a MENU BAR and Color Palette will 'pop-up'.  The Palette is for
+       selecting Note Colors (Voices).  The custom MENU BAR has 6 Main Items
+       each with a 'drop down' list of choices.  Left Click/Hold Mouse Button
+       on any of the six Main Items (FILE EDIT BLOCK etc.), and drag down/up
+       while still Holding Button.  Release the button when your selection is
+       highlighted, or go back to top (no highlights), or drag past bottom.
+
+       When the Menu/Palette is not showing, the Current Key Signature and the
+       current Time Signature are shown to the left and right of Song Title.
+       To change Title, use EDIT\CHANGE TITLE from the Menu Bar.  Likewise,
+       the Key and Time Signatures can also be set from the EDIT Menu. 
+
+    D. Editting or Entering a Song
+       Much of the 'interface' is intuitive and operates very similar to the
+       old MStudio program.  Select note duration, modifiers, a color from
+       the palette, and left click to drop note on staff.  Right click to
+       hear the sound of voice you have selected while dragging mouse up or
+       down.  To delete a note, add any note on top of it.  To actually place
+       notes (of differing color) on top of each other use 'PLAY\TRACKS ON'.
+       When on, the upper 3rd of each palette color is a toggle switch to
+       'turn off' the display and playing of that color.  To add a green note
+       over a black one, first place the black one, then 'turn off' the black
+       color and select the green color to place its note at same position.
+       Turn black color back on to 'hear' both parts.  To edit/delete stacked
+       notes, TRACKS must be used (just as in MStudio).
+
+    E. To adjust Tempo, click/hold/drag the tempo number (bottom left).  The
+       left and right buttons select a coarse/fine adjust mode (course uses
+       the tempo 'increments' of the old MStudio, while fine allows any tempo
+       from 24 to 240 to be set.  If no tempos are set into song (on staff)
+       this will be the default tempo saved with song.  To insert tempos in
+       a song, select the column where tempo is to change, adjust tempo number
+       and click the word 'TEMPO'.  A dialog will ask if you want to insert
+       the tempo in the music.  Delete tempos with 'BLOCK\DELETE BLOCK'.
+       If an existing tempo column is shaded (selected), when a new tempo is
+       inserted, it will overwrite/update the old one after an Alert Message.
+
+3.  File Selector Screen
+
+    A. CAUTION!   Do not select or click on a Drive Letter (A or B) without
+       a Disk in the drive!  Program doesn't know how to recover from a GEM
+       error dialog if CANCEL is selected!  RETRY works provided you insert
+       a Diskette.  If CANCEL is selected, expect to CRASH to the DESKTOP! 
+
+    B. Call the File Selector from the Main Song Edit Screen either by a
+       Left/Right Click on the word 'LOUD' (bottom right) or use the FILE
+       MENU which will pop-up when Mouse Cursor is moved above the Grand
+       Staff.  If the word 'LOUD' is clicked (short cut), the Left Button
+       LOADs a file and the Right Button would SAVE a song file.  You can
+       CANCEL either operation from the File Selector.
+
+    C. The program will load and play all Music Studio files (after changing
+       them to my format).  The .SNG file will no longer be compatible with
+       Music Studio (so you may not want to save over original!).  When an
+       older MStudio file is loaded, a Dialog displays 'converting file'.
+
+    D. Load a Song by DoubleClicking on its highlighted name or SingleClick it
+       and then Click OK Box/Button.  Select a New Drive from the 3 Letters
+       provided (which can be changed to any drive available).  Click the
+       word 'DRIVE' to get the disk freespace in bytes.  The FileName Box to
+       the left of OK Button defaults to showing file lengths as the mouse is
+       moved around the File Name area.  The <B> key toggles this off/on if it
+       is undesired.  The Arrow Button to the left shows Next Page if there
+       are too many Files for one screen.  The 'Disk' Button calls the misc.
+       function dialog for renaming, deleting, copying etc.  Rename/Delete
+       require a Name in the FileName Box first.  Make Folder will use the
+       FileName Box for an 8 character Name.  A default extension of .SNG or
+       .MID will be appended.  You will be in the newly created Folder.
+
+    E. Left Click the 'Path = A:\*.SNG' area to call up path and drive edit
+       dialog.  Right Click same area to 'back out' of any Folders you have
+       entered.  Folders will have a different background color in the File
+       Name area, and will always be listed first.  The Edit Path Dialog
+       shows available drives, has Auto Extension Buttons, and the editable
+       path line.  Use should be self explanatory, except the 'short cut' to
+       back out of folders, just like above, only Right Click the Path Line
+       in the dialog.  Very little checking is done for accuracy on a manually
+       editted Path, so use care to avoid problems.  If in doubt, exit with
+       the CANCEL Button.  Remember the above Caution in item 'A'!
+
+    F. If the wild card '*.*' is used in the pathname, all the files on the
+       current drive will show.  Then the extensions will show as well, and
+       fewer File Names will show on screen (3 instead of 4 columns).
+
+    G. To re-read current Drive after a disk swap, click the drive letter!
+
+    H. The Selector has not been tried on a Hard Drive, so may have 'bugs' if
+       one is used.  I personally use a large RamDisk and two floppies.  I
+       think it will work OK if there are no more than 150 filenames in any
+       Folder or in the Root Directory.  If there are more, use the default
+       .SNG and .MID extensions to limit the directory search to those types.
+       Thought I read somewhere that GEMDOS had a limit of 112 files???
+
+4.  Playing Songs (assuming you have loaded one!)
+
+    A. Left or Right Click the Speaker Icon with 2 Notes.  Left Click will
+       start at the beginning of Song or a Block if one is selected.  Right
+       Click will start playing from the leftmost Measure displayed on the
+       Staff (if no Block is selected).  SpaceBar duplicates a Left Click.
+       Return or Enter key duplicates a Right Click (Cue and Play from left
+       most measure).  <P> key toggles Pause while playing.  <F><S> keys can
+       be used to change tempo on the fly, but Song Tempos will override.
+       Click again to stop or press SpaceBar.  During MEDLEY PLAY of a Song
+       List, Right button or Enter key skips to next song, while SpaceBar or
+       Left Click ends MEDLEY PLAY and stops current song.
+
+    B. Two Display Screens are possible, with variations.  Normally, Note
+       Columns will Scroll by as song plays.  This may be disabled in the
+       PLAY menu (Scroll On/Off).  The second Display is selected in same
+       menu with PIANO On/Off.  With the PIANO ON, when the Song is Played,
+       the Grand Staff area is overdrawn with 4 Player Piano Keyboards.
+       The 16 Midi Channels will be divided among the keyboards.  Channels
+       1 to 4 would each be on a different keyboard.  5 to 8 would use the
+       same 4 keyboards (Notes are in different colors though).  Hence, the
+       top keyboard has channels 1,5,9,13.  The second: 2,6,10,14.  Etc.
+
+       The PIANO MODES entry under the PLAY menu allows hiding any Midi Chan.
+       (default is Chan. 10 which is usually drums).  The Voice Names that
+       show during play can be hidden.  Finally, two different note playing
+       modes are available.  1. Color PBOX's (default)  2. Simulated Player
+       Piano key movement.  Voice Names do not appear until the actual Note
+       Color is used by the Song.  Because the same Midi channel may be used
+       for different voices (not at same time in same column though), Voice
+       Names will change to reflect the current voice playing and its color.
+
+    C. You may play a list of songs from any one directory, in any order with
+       the MEDLEY PLAY function from the PLAY menu.  MEDLEY AUTO toggles the
+       Repeat List (AUTO) or Play Once (ONCE) function.  MEDLEY PLAY takes
+       you to the File Selector which is now in a special mode.  Clicking on
+       a filename 'numbers' it and places it in 'the list'.  Another click
+       would unselect it.  Click the FileName Box (next to OK) to clear all
+       selections and start over (or go to another drive or directory).  If
+       no names are selected (numbered) and OK is clicked, all the files will
+       be played in the order displayed.  During play, the Right Mouse Button
+       skips to next song (Enter key also), the Left Button or SpaceBar stops
+       medley play and returns to normal mode.
+
+5.  Moving around in Editor
+
+    A. Scrolling the Grand Staff
+       Move the cursor (mouse) to the far right or left of Grand Staff until
+       the GREEN Scroll Arrows appear.  Use the Left, Right, or Both Buttons
+       to Scroll at Slow/Fast/Medium speed.  On a long Song you may want to
+       use the 'Jump to Column' function below.
+
+    B. Jumping to any Song Column
+       Move cursor within the 'Message Box' and the green Song Position square
+       will appear.  Don't try to drag square.  Instead, watch the Song Column
+       number to the left as mouse is moved (left/right) in the box.  When the
+       Column Number is close to desired area, left click to Jump there.  A
+       short-cut to go to the end of song is a Right Click.  If a Block is
+       selected, a Right Click takes you to the start of the Block. 
+
+    C. Selecting a Block of Columns to Play or Edit
+       Move the cursor just above the Message Box until it becomes a Brown
+       Square (Block Select Cursor).  If you go too high, the cursor becomes
+       the current Note or other Icon selected.  While the Brown Square is
+       displayed (you may move left or right), Left Click to select (shade)
+       any column.  Move to another column and Left Click again to select it
+       and all those in between.  Click any shaded column to un-select Block.
+       If the Right Button is 'accidentally' used, a 'Hack Column' display or
+       hex dump is shown.  Right Click again to close it.  (Advanced feature)
+
+6.  Setting Midi Parameters for Voices (by Note Color)
+
+    A. Left Click the 'M' Icon under the Play Icon (Speaker w/Notes) to
+       show the Midi Parameters Screen.  Note: RightClick = Chord Composer.
+       Alternately choose 'MIDI\EDIT BANKS' from Pop-Up and Drop-Down Menu.
+
+    B. Play can be started with PLAY Button or press the SpaceBar.  Do it
+       again to Stop Playing.  Playing will loop continuously until stopped
+       or DONE Button is used to exit back to Main Screen.  To 'Voice' a
+       section of the song, select a block of columns (preferably measures)
+       before going to Midi Parameters Screen.  Known BUG!  Example: If one
+       column is selected with long and short duration notes in it (half and
+       eighth), the column will repeat (loop), but the half notes will not
+       'time out' and eventually overrun the 'note on' buffer, which leads
+       to a crash!  Not likely to happen on a full measure or on columns that
+       don't have mixed durations.  Actually I may have fixed this...
+
+    C. When Mouse is moved up to Data/Value area, items that are adjustable
+       are reverse video highlighted.  Left Click/Hold/Drag Mouse Up/Down to
+       adjust.  If Right Button is used on the PRG (Program Number) column,
+       the Voice Names will be automatically set according to the current
+       Midi Configuration that is selected (Function keys 1-10 or L/R Click
+       'Midi Instruments:' box at top of screen).  Voice Name Banks may be
+       set up for your Sound Modules or Keyboards with the 'MIDI CONFIG' item
+       from the 'MIDI' menu on main song edit screen.  It has its own HELP.
+       Additionally, if Right Button is used as above on the Drum Channel,
+       usually 10, Drum Kit names will show (if they are included in CONFIG).
+
+    D. Click a Voice Name for the Color desired to manually edit/enter any
+       name.  Set the Midi Chan.  Set the Program Change.  RB: R=Octave Range
+       B=Bank (1 or 2).  Set the basic velocity (VEL) (no Accent default).
+       Set Accents 1,2,3 (AC1,AC2,AC3) as desired.  If an old Music Studio
+       file is loaded, these values will be defaulted as MStudio did not
+       support Velocity Adjustable accents (except in fixed steps it called
+       Fortes).  This program supports TRUE fortes, global level or loudness,
+       and individual note velocities with up to 3 different Accents!
+
+7.  Special Features
+
+    A. Adding Controllers, Bender, Fortes.  Special Effects Selector is called
+       by Right Clicking the Quarter Rest.  Fortes may be 'setup' by Right
+       Clicking any of them.  Left Clicking selects the 'effect' (Forte or
+       Controller etc), and closes selector so you can add effect to music
+       just like a note or rest.  On controllers, while on staff, RightClick/
+       Hold/Drag to adjust the Value number (in message box).  Left Click to
+       paste onto staff.  Delete just like a note/rest, by clicking on the
+       pasted item again.  Tracks works here, but may not be adviseable (to
+       place 'effects' on top of each other).  Other details are too numerous
+       for mention in this Quick Doc.
+
+    B. Switching to a second Bank of Voices.  Normally, you have 15 colors or
+       voices to work with.  The Bank 1-4 Icon can select another set of 15
+       colors (one at a time by color) with different Patches, Midi Chans, etc.
+       Only Banks 1 and 2 are supported at this time.  Example: On Midi Param.
+       screen the Orange color is a violin on chan 4 (Bank 1).  Adjust the
+       B column of RB to '2' for the orange color.  Setup the voice etc. you
+       want to use, and now you have two voices defined for one color.  Back
+       on the Main Screen, insert an Orange Bank1 Icon in the music to play
+       the First voice from that point on, or insert an Orange Bank2 Icon to
+       switch to the Second voice.  This is only a quick example.
+
+    C. Besides the Automatic output of Program Changes (by color), two added
+       Icons CH:P: and PCHG are available for special purposes.  All other
+       standard controllers are also available, plus a 'custom' editable one.
+       Bender can also be added.  Even drum machine Start/Stop is available,
+       which is supported when Midi Clock output sync is enabled.  AutoBend,
+       and FadeIn/Out is only at experimental stage (incomplete).
+
+    D. A Chord Composer feature allows the selection and insertion of complete
+       chords including a bass note on a different channel/voice.  RightClick
+       the 'M' Icon under speaker to call up the dialog.  Too involved to
+       explain in Quick Docs, but when mouse is moved above Composer, Chord
+       Icon can be pasted above the staff in one of 15 positions.  The notes
+       will be automatically entered unless the MODE is set to Name, which
+       only changes or erases the Name.  The chord voice is selected with
+       the normal Color Palette on Main Screen (Left Click a Color), while
+       the Bass note (if used) is selected with a RightClick on the Palette.
+       Chord Durations are selected with the normal Note Palette below.
+
+       While above the staff the Chord dialog will disappear, but will return
+       for another selection when mouse is moved back down.  The Speaker Icon
+       in the dialog is used to 'audition' the sound of the chord.  Right
+       Clicking Chord Names or Types (Eb F m7 etc) causes a pseudo OpenHarmony
+       inversion of the chord notes, for a varied sound effect.  Octave Range
+       on the Midi Parameters Screen affects note placement and pitch also,
+       and some experimentation may be involved to get it right.  RightClick
+       the 'M' Icon again to put away chord composer.
+  
+    E. Creating and Saving a Standard Midi File.  Use the FILE\SONG->.MID entry
+       in the Main Menu to save a Format 0 (one track) Midi File of any song
+       currently in the editor.  When dialog pops up for 'Save Yes/No', you
+       can CANCEL and save later if desired.  The MidiFile Buffer is shared
+       by the main screen UNDO function, so don't change anything or go to
+       Midi Parameters screen, or you'll have to re-create MidiFile.  As long
+       as a valid Midi File is still in buffer, you can go to the PLAY .MID
+       screen(s) from the MIDI menu, and check out your work (before saving).
+       If you ever go to the Midi Player screens and no File is loaded or in
+       the buffer, the top box will show 'NO_SONG' with a length of '0'.
+
+8.  Playing Standard Midi Files (up to 64 tracks and 200k length)
+
+    A. Choose MIDI\PLAY .MID from Main Menu in Song Editor.  This takes you
+       to one of two MidiFile Player Screens.  If PIANO was on, you get the
+       Piano Type MIDI Screen, otherwise a screen that looks similar to the
+       Midi Parameters Screen for a Song.  While not playing, you may toggle
+       to the other type of screen with the <S> key.
+
+    B. Use the LOAD Button to load a MidiFile (.MID), (right button SAVES).
+       Left Click PLAY Button to play from beginning, or adjust Bar:Beat:
+       Click to desired point, and Right Click to 'Cue and Play' from that
+       point.  SpaceBar=LeftClick Enter=RightClick simulation.  The slider
+       at the bottom left indicates Song Position and Knob may be dragged.
+       Actual Bar:Beat:Click display numbers may be adjusted also.
+
+    C. Controllers and Program Changes are 'chased' and output before Song
+       is started (if not from beginning).  On the Piano Type Screen, the
+       rectangles above keyboards will show Preset Names or Numbers or the
+       realtime activity of any controller you select to view.  PresetNames
+       is the default.  <N> key toggles Names or Numbers.  <V> key toggles
+       Preset or View Controller.  The current controller is displayed above
+       the Song Position Slider.  It is 'selected' with the left/right Arrow
+       keys.  Only controllers 'named' in the MIDI CONFIG are displayed or
+       are 'selectable'.  Selection can be changed anytime (stopped or play-
+       ing).
+
+    D. On the Piano Screen, Bender and Presets are 2 added options available.
+       On the other screen, Bender display is unavailable, and Presets show
+       both the Number and Name, so these 'entries' are replaced by TRANSPOSE
+       and VELOCITY.  On this screen, the Preset, Vol, Pan, Rev, Chorus, and
+       'USER' column 'data' can be adjusted (like Midi Parameters Screen).
+       The USER column is the 'selected' controller or Transpose or Velocity.
+
+    E. HELP key will bring up a couple pages of Help Info about HOTKEYS and
+       Button functions.  The same HELP is shown regardless of Screen Type.
+
+    F. The Midi File Player can rechannelize, transpose, shift velocities, and
+       add missing controllers or preset data in a new track.  These and other
+       features are too complex to explain in this quick documentation.  This
+       is only intended as an overview.
+
+    G. On the Piano type screen, the <K> key toggles 'Karaoke' mode on/off.
+       When ON, the WORDS are displayed and highlighted as if sung, when a
+       Karaoke file is played.  Try the SINGING.MID and STD_B_Y.MID files
+       supplied as demos.  On Standard Karaoke files the Melody is on chan.
+       one and displays on the single piano keyboard.  On non-standard files
+       (an amateur added a Karaoke track to any Midi File), the melody may
+       not display on the keyboard.  Professional Karaoke files are usually
+       'copy protected' with missing midi status bytes, and won't play with-
+       out hanging notes or creating other Midi messes!  The program doesn't
+       'fix' files yet although I have fixed all the ones I have, so the two
+       demos will play correctly.  They ARE copyrighted, and should not be
+       distributed.  Go to the Midi Event List (LIST EVENTS) to see the
+       copyright and other 'events'.  Also, I have optimized the Karaoke
+       text display for the Atari.  A non-editted file will still play and
+       lines will 'wrap' as needed, but not be as 'pretty'.  Of course the
+       files can be played without Karaoke turned ON, just like any other
+       Midi File.
+------------------------------------------------------------------------------
+I am a 'hobbiest' programmer, and have no local support.  The entire program
+was written and coded by myself, and new or improved features have been added
+over the course of several years of 'having fun' with Midi and Music.  The
+Pianos and Scrolling note graphics are all done in Assembler and draw to the
+screen in realtime.  All midi play functions were also done in assembler, and
+full 'running status' is implemented to minimize the data stream.  The RSC
+file is non standard and has .TNY format graphics as well as custom Assembler
+routines in it which are loaded in at boot time.  There are HOOKS for various
+features I am still working on, and several unfinished features that have not
+been high on my priority list (the drummer for example).
+
+The program is usable for sophisticated song entry and playing, plus the
+playback of Midi Files.  It is 'far' enough along that others might enjoy
+playing with it.  I don't know if it will ever really be 'finished' as I find
+myself overloaded with trying to learn 'Windows' programming on the PC.  If
+this 'mini doc' is any example, I don't write documentation well either!  I
+have thought about posting it on a bulletin board so other Atari Midi
+enthusiasts might benefit by it.
+
+The program and all documentation I have is being released over the Internet.
+Additional documentation will be sent to all regular users, as it becomes
+available, if they are on my 'emailing list' as wanting to receive it!
+My apoligies to new users (I only had one other than myself!) for the cryptic
+and lacking documentation.  I had and have no one helping me, and had no
+reason to document what I knew already.  I am doing my best to fill this
+void, with the clutter of small text files included.  If you can't wait for
+additional docs to become available, email me with your questions or problem
+and I will try to help you along.  Remember, this program cost you nothing
+but your time.  I hope you enjoy it and derive benefit from it.  Please do
+not redistribute it without giving me, the author credit for it!
+
+Until and unless I change providers, my Email address as of 11-11-95 is:
+
+    mfeaver@s3.sonnet.com      I live in the state of California - USA.
+
+End of QuikDocs

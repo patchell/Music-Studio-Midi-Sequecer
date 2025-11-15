@@ -214,12 +214,12 @@ BOOL CMidiSeqMSApp::InitInstance()
 	if (!AfxOleInit())
 	{
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
-		return FALSE;
+		return false;
 	}
 
 	AfxEnableControlContainer();
 
-	EnableTaskbarInteraction(FALSE);
+	EnableTaskbarInteraction(false);
 	//------------------------------------------------------------------
 	// AfxInitRichEdit2() is required to use RichEdit control
 	// AfxInitRichEdit2();
@@ -248,9 +248,9 @@ BOOL CMidiSeqMSApp::InitInstance()
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,
@@ -261,13 +261,13 @@ BOOL CMidiSeqMSApp::InitInstance()
 	LoadSettings();
 	CMainFrame* pFrame = new CMainFrame;
 	if (!pFrame)
-		return FALSE;
+		return false;
 	m_pMainWnd = (CMDIFrameWnd*) pFrame;
 	//---------------------------------------
 	// create main MDI frame window
 	//---------------------------------------
 	if (!pFrame->LoadFrame(IDR_MAINFRAME))
-		return FALSE;
+		return false;
 	//---------------------------------------
 	// try to load shared MDI menus and accelerator table
 	//add additional member variables and load calls for
@@ -322,7 +322,7 @@ BOOL CMidiSeqMSApp::InitInstance()
 	m_MMtimer.SetTempo(CalculateTempo(68));
 	//------------ Select midi In/Out -----------------
 	OnMenuSetupSelmidi();
-	return TRUE;
+	return true;
 }
 
 int CMidiSeqMSApp::ExitInstance()
@@ -335,7 +335,7 @@ int CMidiSeqMSApp::ExitInstance()
 	KillPlayerThead();
 
 	fprintf(m_pLog, "------ Exit MidiSeqMS-------\n");
-	AfxOleTerm(FALSE);
+	AfxOleTerm(false);
 	fclose(m_pLog);
 	fclose(pConsol);
 	return CWinApp::ExitInstance();
@@ -346,9 +346,9 @@ int CMidiSeqMSApp::ExitInstance()
 
 // CMidiSeqMSApp message handlers
 
-BOOL CMidiSeqMSApp::RegisterBitmapComboBoxClass()
+bool CMidiSeqMSApp::RegisterBitmapComboBoxClass()
 {
-	BOOL rV = TRUE;
+	bool rV = true;
 	WNDCLASS windowclass;
 
 	windowclass.lpfnWndProc = ::DefWindowProc;
@@ -364,7 +364,7 @@ BOOL CMidiSeqMSApp::RegisterBitmapComboBoxClass()
 
 	if (!AfxRegisterClass(&windowclass))
 	{
-		rV = FALSE;
+		rV = false;
 		printf("!!!!!!!!! Could Not Register Drop Down !!!!!!!!!!\n");
 	}
 	return rV;
@@ -660,7 +660,7 @@ UINT CMidiSeqMSApp::DoPlayThread()
 	DWORD TempoQNperS;
 	char* s = new char[256];
 	int count = 0;
-	BOOL bF;	//message loop flag
+	bool bF;	//message loop flag
 	MSG msg;
 	int TimerEnable = 0;
 	int Total = 0;
@@ -680,7 +680,7 @@ UINT CMidiSeqMSApp::DoPlayThread()
 	//---------------------------------------
 	// Execute main part of thread
 	//---------------------------------------
-	while ((bF = GetMessage(&msg, NULL, 0, 0)) != FALSE)
+	while ((bF = GetMessage(&msg, NULL, 0, 0)) != false)
 	{
 		switch (msg.message)
 		{

@@ -96,7 +96,7 @@ void CComboDropUp::OnDraw(CDC* pDC)
 	CPoint oldOrg;
 	CPoint oldOrgSliderDraw;
 	CRect rect;
-	BOOL b;
+	bool b;
 	CPen Draw,*oldPen;
 	CRect bmr;
 	CDC bmdc;
@@ -194,7 +194,7 @@ void CComboDropUp::OnDraw(CDC* pDC)
 	pDC->SetViewportOrg(oldOrg);
 }
 
-BOOL CComboDropUp::Create(
+bool CComboDropUp::Create(
 	int nItems,			// Number of Items Displayed
 	int nTotalItems,	// TOTAL items in control
 	CSize szItemSize,	// size of single item to be selected
@@ -203,7 +203,7 @@ BOOL CComboDropUp::Create(
 	CWnd* pParentWnd,
 	UINT nID)			//control ID
 {
-	BOOL rV;
+	bool rV;
 
 	LPCTSTR lpszClassName = _T("BitmapComboBox");
 	LPCTSTR lpszWindowName = nullptr;
@@ -328,7 +328,7 @@ void CComboDropUp::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 		if (m_rgnThumb.PtInRegion(point))
 		{
-			m_nDragThumb = TRUE;
+			m_nDragThumb = true;
 			m_nDragLastY = point.y;
 		}
 		}
@@ -339,7 +339,7 @@ void CComboDropUp::OnLButtonDown(UINT nFlags, CPoint point)
 void CComboDropUp::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	m_LButtonDown = 0;
-	m_nDragThumb = FALSE;
+	m_nDragThumb = false;
 	int i;
 
 	if (m_argnSelectBox[m_State].PtInRegion(point))

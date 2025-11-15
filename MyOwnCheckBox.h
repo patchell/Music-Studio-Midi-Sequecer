@@ -23,8 +23,8 @@ protected:
 public:
 	CMyOwnCheckBox();
 	virtual ~CMyOwnCheckBox();
-	virtual BOOL Create(
-		CString& stringTrueCaption,	//String to display when checked (TRUE)
+	virtual bool Create(
+		CString& stringTrueCaption,	//String to display when checked (true)
 		CString& stringFalseCaption,//String to display when unchecked (false)
 		const CRect& rect,	//outline rectangle of control
 		CWnd* pParentWnd,	//parent of the control

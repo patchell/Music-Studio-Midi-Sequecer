@@ -14,7 +14,7 @@ class CMyEvent
 public:
 	CMyEvent();
 	virtual ~CMyEvent();
-	virtual BOOL Create(const CString& name);
+	virtual bool Create(const CString& name);
 	bool Post();
 	int Pend(DWORD timeout = INFINITE);
 };

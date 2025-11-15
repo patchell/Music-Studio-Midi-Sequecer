@@ -86,7 +86,7 @@ void CMsTrack::SaveSettings()
 
 }
 
-BOOL CMsTrack::Create(
+bool CMsTrack::Create(
 	CDC* pDC,
 	int TrackID,
 	CRect& rect,
@@ -121,9 +121,9 @@ BOOL CMsTrack::Create(
 		0,
 		0,
 		FW_DONTCARE,
-		FALSE,
-		FALSE,
-		FALSE,
+		false,
+		false,
+		false,
 		ANSI_CHARSET,
 		OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS,
@@ -139,7 +139,7 @@ BOOL CMsTrack::Create(
 	m_csText = CString(s);
 	delete[] s;
 	Draw( pDC);
-	return TRUE;
+	return true;
 }
 
 void CMsTrack::Draw(CDC* pDC)

@@ -43,7 +43,7 @@ void CMyPolygon::Create(int Count, CPoint* ptArray)
 	}
 }
 
-BOOL CMyPolygon::PointEnclosed(CPoint nP)
+bool CMyPolygon::PointEnclosed(CPoint nP)
 {
 	/*****************************************
 	** PointEnclosed
@@ -52,11 +52,11 @@ BOOL CMyPolygon::PointEnclosed(CPoint nP)
 	**
 	** parameters:
 	**	nP....point to test
-	** Returns: TRUE if point inside
-	**          FALSE if point is outside
+	** Returns: true if point inside
+	**          false if point is outside
 	*****************************************/
 	int   i, j= m_nVertexCount -1 ;
-	BOOL  Enclosed=0      ;
+	bool  Enclosed=0      ;
 	int Xintercept;
 
 	//--------------------------------------------

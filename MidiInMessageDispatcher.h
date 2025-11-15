@@ -4,10 +4,10 @@ class CChildViewBase;
 
 class CMidiInMessageDispatcher
 {
-	BOOL m_DestWindowSet : 1;
-	BOOL m_WM_MessageSet : 1;
-	BOOL m_MidiMessageSet : 1;
-	BOOL m_MidiChannelSet : 1;
+	bool m_DestWindowSet : 1;
+	bool m_WM_MessageSet : 1;
+	bool m_MidiMessageSet : 1;
+	bool m_MidiChannelSet : 1;
 	CChildViewBase* m_pDestWindow;
 	unsigned m_DestWindowID;
 	DWORD m_idDestThread;
@@ -25,11 +25,11 @@ class CMidiInMessageDispatcher
 public:
 	CMidiInMessageDispatcher();
 	~CMidiInMessageDispatcher();
-	BOOL DispatchMidiInMessage(int data1, int data2);
-	BOOL DestWindowISset() { return m_DestWindowSet; }
-	BOOL WMmessageISset() { return m_WM_MessageSet; }
-	BOOL MidiStatusByteISset() { return m_MidiMessageSet; }
-	BOOL MidiChannelISset() { return m_MidiChannelSet; }
+	bool DispatchMidiInMessage(int data1, int data2);
+	bool DestWindowISset() { return m_DestWindowSet; }
+	bool WMmessageISset() { return m_WM_MessageSet; }
+	bool MidiStatusByteISset() { return m_MidiMessageSet; }
+	bool MidiChannelISset() { return m_MidiChannelSet; }
 	int GetMidiData1Max() { return m_MidiData1Max; }
 	int GetMidiData1Min() { return m_MidiData1Min; }
 	void SetMidiData1Max(int max) { m_MidiData1Max = max; }
@@ -46,19 +46,19 @@ public:
 	int GetMidiChannel() { return m_MidiChannel; }
 	void SetMidiChannel(int chan) { 
 		m_MidiChannel = chan; 
-		m_MidiChannelSet = TRUE;
+		m_MidiChannelSet = true;
 	}
 	void SetDestinationWindow(CChildViewBase* pWnd, int ID) 
 	{ 
 		m_pDestWindow = pWnd; 
 		m_DestWindowID = ID;
-		m_DestWindowSet = TRUE;
+		m_DestWindowSet = true;
 	}
 	unsigned GetDestinationID() { return m_DestWindowID; }
 	CChildViewBase* GetDestinationWindow() { return m_pDestWindow; }
 	void SetWindowMessageID(unsigned WM_messID) { 
 		m_WM_MessageID = WM_messID;
-		m_WM_MessageSet = TRUE;
+		m_WM_MessageSet = true;
 	}
 	unsigned GetWindowMessageID() { return m_WM_MessageID; }
 	int GetMidiDeviceID() { return m_MidiDeviceID; }

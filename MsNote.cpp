@@ -7,29 +7,13 @@
 
 void PrintRecPtSz(const char* pTit, CRect rec)
 {
-	printf("---------------rect---------------------\n");
-	printf("RECT : %s\n",pTit);
-	PrintPoint("Upper Left",rec.TopLeft());
-	PrintSize("Dimensions", rec.Size());
-	printf("---------------end----------------------\n");
+//	printf("---------------rect---------------------\n");
+//	printf("RECT : %s\n",pTit);
+//	PrintPoint("Upper Left",rec.TopLeft());
+//	PrintSize("Dimensions", rec.Size());
+//	printf("---------------end----------------------\n");
 }
 
-
-INT CMsNote::AccedentalsLUT[APP_NUM_ACCIDENTALTYPES] = {
-	MSFF_ACCIDENTAL_INKEY,
-	MSFF_ACCIDENTAL_SHARP,
-	MSFF_ACCIDENTAL_FLAT,
-	MSFF_ACCIDENTAL_NATURAL
-};
-
-int CMsNote::NoteDurLut[APP_NUM_NOTETYPES] = {
-	MSFF_WHOLE_NOTE,
-	MSFF_HALF_NOTE,
-	MSFF_QUARTER_NOTE,
-	MSFF_EIGTH_NOTE,
-	MSFF_SIXTEENTH_NOTE,
-	MSFF_THIRTYSEC_NOTE
-};
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -38,7 +22,7 @@ int CMsNote::NoteDurLut[APP_NUM_NOTETYPES] = {
 CMsNote::CMsNote() :CMsObject()
 {
 	m_ObjType = MSOBJ_NOTE;
-	m_BitmapFlag = FALSE;
+	m_BitmapFlag = false;
 	m_Ticks = 0;
 	m_NoteTieNext = 0; //pointer to note object is the next tied note
 	m_NoteTiePrev = 0;	//pointer to previous note that is tied
@@ -57,10 +41,10 @@ void CMsNote::LoadRestBitmap(int Selection)
 		if(GetBitmap()->GetSafeHandle())
 			GetBitmap()->DeleteObject();
 		GetBitmap()->LoadBitmapW(GETAPP->GetRestTypeID(Selection));
-		m_BitmapFlag = TRUE;
+		m_BitmapFlag = true;
 	}
 	else
-		m_BitmapFlag = FALSE;
+		m_BitmapFlag = false;
 }
 
 void CMsNote::Create(int BitmapID, CMsSong* pSong, UINT ParentEvent)
@@ -68,54 +52,13 @@ void CMsNote::Create(int BitmapID, CMsSong* pSong, UINT ParentEvent)
 	if (BitmapID)
 	{
 		m_RestBitmap.LoadBitmapW(BitmapID);
-		m_BitmapFlag = TRUE;
+		m_BitmapFlag = true;
 	}
 	else
-		m_BitmapFlag = FALSE;
+		m_BitmapFlag = false;
 	CMsObject::Create(pSong, ParentEvent);
 }
 
-//----------------------------------
-// Note Duration Data
-// shape,dot,triplet,solid,flags,tail,durationtime
-// Shape	=	0	->Whole Note
-//			=	1	->Half Note
-//			=	2	->Quarter Note
-//			=	3	->Eigth Note
-//			=	4	->Sixteenth Note
-//			=	5	->Thirty Second Note
-//			=	-1	->Does not apply
-//
-// Dot		=	True/False
-// Triplet	=	True/False
-// Solid	=	True/False Inside of note is solid
-// flags	=	Number of flags on the note tail
-// tail		=	True/False Needs a tail or stem
-// DurationTime	= Clock ticks
-//------------------------------------------
-DUR DurTab[21] = {
-	-1,0,0,1,0,0,0,"NA",				//0
-	5,0,1,1,3,1,NOTE_TICKS_32nd_TRIPLET,"32nd Trip",			//1
-	-1,0,0,1,0,0,0,"NA",				//2
-	5,0,0,1,3,1,NOTE_TICKS_32nd,"32nd",		//3 thirty second
-	4,0,1,1,2,1,NOTE_TICKS_16th_TRIPLET,"16th Trip",			//4
-	5,1,0,1,3,1,NOTE_TICKS_32nd_DOTTED,"Dotted 32nd",			//5 Dotted Thirty Second
-	4,0,0,1,2,1,NOTE_TICKS_16th,"16th",			//6 sixteenth
-	3,0,1,1,1,1,NOTE_TICKS_8th_TRIPLET,"8th Trip",			//7
-	4,1,0,1,2,1,NOTE_TICKS_16th_DOTTED,"Dotted 16th",	//8	Dotted Sixteenth
-	3,0,0,1,1,1,NOTE_TICKS_8th,"Eighth",			//9 eighth
-	2,0,1,1,0,1,NOTE_TICKS_QUARTER_TRIPLET,"1/4 Trip",			//10
-	3,1,0,1,1,1,NOTE_TICKS_8th_DOTTED,"Dotted Eighth",		//11 Dotted Eighth
-	2,0,0,1,0,1,NOTE_TICKS_QUARTER,"Quarter",			//12 quarter
-	1,0,1,0,0,1,NOTE_TICKS_HALF_TRIPLET,"1/2 Trip",			//13
-	2,1,0,1,0,1,NOTE_TICKS_QUARTER_DOTTED,"Dotted Quarter",	//14 Dotted Quarter Note
-	1,0,0,0,0,1,NOTE_TICKS_HALF,"Half",				//15 half
-	0,0,1,0,0,0,NOTE_TICKS_WHOLE_TRIPLET,"Whole Trip",		//16
-	1,1,0,0,0,1,NOTE_TICKS_HALF_DOTTED,"Dptted Half",		//17 Dotted Halfe
-	0,0,0,0,0,0,NOTE_TICKS_WHOLE,"Whole",			//18 whole
-	-1,0,0,0,0,0,0,"NA",				//19
-	0,1,0,0,0,0,NOTE_TICKS_WHOLE_DOTTED,"Dotted Whole"		//20 dotted whole
-};
 
 CString NoteLUT[12] = {
 	_T("C"),
@@ -251,6 +194,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 {
 	CPoint End,Start;
 	CPen pen,*oldpen,redpen;
+	CPen penLines;
 	CBrush brush,*oldbrush;
 	COLORREF color;
 	int i,f;
@@ -262,6 +206,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 		color ^= 0x00ffffff;
 	redpen.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	pen.CreatePen(PS_SOLID,1,color);
+	penLines.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 	oldpen = pDC->SelectObject(&pen);
 
 	if(IsSolid() || IsRest())
@@ -331,26 +276,17 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 			
 			break;
 		default:
-			printf("Opps Dur=%d\n", GetDuration());
+//			printf("Opps Dur=%d\n", GetDuration());
 			break;
 		}
 	}
-	else	///draw note on staff
+	else	//draw note on staff
 	{
 		UINT rectX1, rectY1, rectX2, rectY2;
 		CMsNote* pSecInterval;
-		//---------------------------------------------
-		// Draw Note Head
-		//--------------------------------------------
-		if ((pSecInterval = IsSecondInterval()) != NULL)
-		{
-			if (IsHeadFlipped())
-				pSecInterval->SetHeadFlipped(0);
-			else
-				pSecInterval->SetHeadFlipped(1);
-		}
 		if (IsHeadFlipped())
 		{
+//			printf("Flipped Note Head\n");
 			notev = NoteToPosition();
 			rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
 			rectY1 = notev;
@@ -361,6 +297,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 		}
 		else        //Note Head Normal
 		{
+//			printf("Normal Note Head\n");
 			notev = NoteToPosition();
 			rectX1 = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET - NOTE_HEAD_WIDTH;
 			rectY1 = notev;
@@ -380,21 +317,25 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 			}
 			else
 				f = 1;
+			pDC->SelectObject(&penLines);
 			for(i=0;i< NeesALine;++i)
 			{
+				int lineEnd = EVENT_WIDTH - (EVENT_WIDTH+10)/ 2;
+				UINT x = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
 				if(IsOnLine())
 					y = notev+i*8*f;
 				else
 					y = notev+4+i*8*f;
-				pDC->MoveTo(28 + EVENT_WIDTH*event,y);
-				pDC->LineTo(44+EVENT_WIDTH*event,y);
+				pDC->MoveTo(x - lineEnd, y);
+				pDC->LineTo(x+lineEnd,y);
 			}
+			pDC->SelectObject(&pen);
 		}
 		if(NeedsTail())
 		{
 			int n;
 			UINT x = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
-			if(IsUpsideDown())
+			if(IsStemDown())
 			{
 				pDC->MoveTo(x,notev+4);
 				pDC->LineTo(x,notev+28);
@@ -404,19 +345,24 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 				pDC->MoveTo(x,notev+4);
 				pDC->LineTo(x,notev-20);
 			}
-			if((n=NeedsFlags()))
+			//------------------------------
+			// draw flags on line for sub
+			// quarter notes and smaller
+			//------------------------------
+			if((n=NeedsFlags()) && !GetFlagsOff())
 			{
+				UINT x = EVENT_OFFSET + EVENT_WIDTH * event + NOTE_LINE_OFFSET;
 				for(i=0;i<n;++i)
 				{
-					if(GetUpsideDown())
+					if(IsStemDown())	//right side down
 					{
-						pDC->MoveTo(EVENT_OFFSET+EVENT_WIDTH*event,notev+28-(i*5));
-						pDC->LineTo(EVENT_OFFSET+EVENT_WIDTH*event+4,notev+24-(i*5));
+						pDC->MoveTo(x,notev+28-(i*5));
+						pDC->LineTo(x+4,notev+24-(i*5));
 					}
-					else
+					else    // right side up
 					{
-						pDC->MoveTo(EVENT_OFFSET+EVENT_WIDTH*event+9,notev-20+i*5);
-						pDC->LineTo(EVENT_OFFSET+EVENT_WIDTH*event+13,notev-14+i*5);
+						pDC->MoveTo(x,notev-20+i*5);
+						pDC->LineTo(x+4,notev-14+i*5);
 					}
 				}
 			}
@@ -444,7 +390,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 		}
 		if(GetAccent())
 		{
-			if(IsUpsideDown())
+			if(IsStemDown())
 			{
 				pDC->MoveTo(EVENT_OFFSET+EVENT_WIDTH*event,notev-4);
 				pDC->LineTo(EVENT_OFFSET+EVENT_WIDTH*event+8,notev-7);
@@ -469,7 +415,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 				int width = EVENT_WIDTH * widthEv;
 				int x = 5 + EVENT_OFFSET + (event-widthEv) * EVENT_WIDTH;
 				r.SetRect(x,notev,x+width,notev+16);
-				if(GetUpsideDown())
+				if(IsStemDown())
 				{
 					End = CPoint(x+1,notev-8);
 					Start = CPoint (x+width-1,notev-8);
@@ -573,6 +519,14 @@ bool CMsNote::IsTriplet()
 {
 	bool rV = false;
 	if(DurTab[GetDuration()].Triplet) rV = true;
+	return rV;
+}
+
+INT CMsNote::NeedsFlags(void)
+{
+	INT rV = 0;
+
+	rV = DurTab[(int)GetDuration()].Flags;
 	return rV;
 }
 
@@ -900,13 +854,13 @@ int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
 				SetPitch(note);
 				if (!IsRest())
 				{
-					printf("    Note Off %d\n", GetPitch());
+//					printf("    Note Off %d\n", GetPitch());
 					GetStaffView()->MidiPlayNote(this, 0);// Note Off
 				}
 				SetPitch(note);
 				if (!IsRest())
 				{
-					printf("    Note On %d\n", GetPitch());
+//					printf("    Note On %d\n", GetPitch());
 					GetStaffView()->MidiPlayNote(this, 1);// Note On
 				}
 				GetStaffView()->SetLastPitch(note);
@@ -959,7 +913,7 @@ void CMsNote::Save(FILE *pO)
 	// third Byte
 	//--------------------------
 	Byte3 = GetPitch();
-	if(GetUpsideDown()) Byte3 |= MSFF_NOTE_UPSIDE_DOWN;
+	if(IsStemDown()) Byte3 |= MSFF_NOTE_UPSIDE_DOWN;
 	fputc(Byte1,pO);
 	fputc(Byte2,pO);
 	fputc(Byte3,pO);
@@ -1031,9 +985,9 @@ UINT CMsNote::Play()
 }
 
 // ???
-BOOL CMsNote::AddToQueue()
+bool CMsNote::AddToQueue()
 {
-	return TRUE;
+	return true;
 }
 
 UINT CMsNote::Process()
@@ -1044,7 +998,7 @@ UINT CMsNote::Process()
 	//----------------------------------------------
 	UINT NoteAddedToQueue = 0;
 	int flag = 0, Velocity;
-	BOOL loop;
+	bool loop;
 	CMsNote* pNote = 0;
 	//-------------------------------------------------
 	// This gets complicated.  If the note has a TieEnd
@@ -1065,7 +1019,7 @@ UINT CMsNote::Process()
 	pNote = GetTieNotePrev();
 	if (pNote)
 	{
-		loop = TRUE;
+		loop = true;
 		while (pNote && loop)
 		{
 			if (pNote->GetTieNotePrev())
@@ -1075,7 +1029,7 @@ UINT CMsNote::Process()
 				// we have found the start
 				// of the Note Tie chain
 				//---------------------------
-				loop = FALSE;
+				loop = false;
 		}
 		//-------------------------------------
 		// pNote is now the note at the front
@@ -1107,15 +1061,15 @@ UINT CMsNote::Process()
 	return NoteAddedToQueue;
 }
 
-BOOL CMsNote::RemoveFromQueue()
+bool CMsNote::RemoveFromQueue()
 {
-	BOOL rB = FALSE;
+	bool rB = false;
 
 	if ((GetTick() == 0) && !IsTieBeg())
-		rB = TRUE;
+		rB = true;
 	else if ((GetTick() == 0) && IsTieBeg())
 	{
-		rB = FALSE;
+		rB = false;
 	}
 	return rB;
 }
@@ -1170,3 +1124,27 @@ CMsNote* CMsNote::IsSecondInterval()
 	return pWholeStep;
 }
 
+void NoteData::PrintData(FILE* pO, NoteData* nd)
+{
+	CMsNote::DUR * pDur = CMsNote::GetDurationTable();
+
+	fprintf_s(pO, "==================Note Data================\n");
+	fprintf_s(pO, "Rest = %d\n", nd->m_Rest);
+	fprintf_s(pO, "Tie End = %d\n", nd->m_TieEnd);
+	fprintf_s(pO, "Accent = %d\n", nd->m_Accent);
+	fprintf_s(pO, "Stacato = %d\n", nd->m_Stacato);
+	fprintf_s(pO, "Legato = %d\n", nd->m_Legato);
+	fprintf_s(pO, "Velocty = %d\n", nd->m_Velocity);
+	fprintf_s(pO, "Note Off Tick Mark = %d\n", nd->m_NoteOffTick);
+	fprintf_s(pO, "Stem Down = %d\n", nd->m_StemDown);
+	fprintf_s(pO, "Head Flipped = %d\n", nd->m_HeadFlipped);
+	fprintf_s(pO, "Accidental = %d\n", nd->m_Accidental);
+	fprintf_s(pO, "Track = %d\n", nd->m_Track);
+	fprintf_s(pO, "Duration = %d\n", nd->m_Duration);
+	fprintf_s(pO, "Duration: %s\n", pDur[(int)nd->m_Duration].pName);
+	fprintf_s(pO, "Pitch = %d\n", nd->m_Pitch);;
+	fprintf_s(pO, "Dotted = %d\n", nd->m_Dotted);
+	fprintf_s(pO, "Triplet = %d\n", nd->m_Triplet);
+	fprintf_s(pO, "Midi DeviceID = %d\n", nd->m_MidiOutID);
+	fprintf_s(pO, "=================END=================\n");
+}

@@ -17,6 +17,7 @@ class CMsEvent
 	CMsSong* m_pParentSong;
 	int m_Index;	// posisiton in chaihn
 	UINT m_EventID;
+	INT m_NumberOfObjects;
 public:
 	CMsEvent();
 	virtual ~CMsEvent();
@@ -35,6 +36,15 @@ public:
 	//------------ Linked List ----------------
 	void AddObjectAtEnd(CMsObject *pO);
 	void AddObjectAtStart(CMsObject* pO);
+	void AddObjectAtHead(CMsObject* pO);
+	void AddObjectAtTail(CMsObject* pO);
+	void InsertObjectAfter(CMsObject* pO, CMsObject* pAfterObj);
+	void InsertObjectBefore(CMsObject* pO, CMsObject* pBeforeObj);
+	bool AreThereAnyNotesInThisEvent();
+	bool IsThereOnlyOneNoteInThisEvent();
+	void AddNoteInOrder(CMsObject* pO);
+	CMsNote* FindFirstNote();
+	CMsNote* FindNextNote(CMsNote* pPrevNote);
 	int RemoveObject(CMsObject *pObj);
 	CMsObject* ObjectAlreadyHere(CMsObject* pObj);
 	//--------------------------------------------
@@ -60,6 +70,10 @@ public:
 	int AreObjectsSelected();
 	CMsObject * GetFirstSelectedObject();
 	CMsObject * GetNextSelectedObject(CMsObject * pLastSelectedObject);
+	//--------------------------------------
+	// Flip Note Heads
+	//------------------------------------- 
+	bool FlipNoteHeads();
 	//--------------------------------------
 	// Used for debugging
 	//---------------------------------------

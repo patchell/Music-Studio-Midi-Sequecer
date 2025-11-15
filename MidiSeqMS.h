@@ -129,7 +129,7 @@ public:
 	CMidiInTable& GetMidiInTable() { return m_MidiInTable; }
 	void InitBitMaps();
 	void OnMenuSetupSelmidi();
-	BOOL RegisterBitmapComboBoxClass();
+	bool RegisterBitmapComboBoxClass();
 	// Overrides
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();

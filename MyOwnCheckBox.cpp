@@ -69,11 +69,11 @@ void CMyOwnCheckBox::OnPaint()
 
 BOOL CMyOwnCheckBox::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 
-BOOL CMyOwnCheckBox::Create(
+bool CMyOwnCheckBox::Create(
 	CString& stringTrueCaption,
 	CString& stringFalseCaption,
 	const CRect& rect,
@@ -111,9 +111,9 @@ BOOL CMyOwnCheckBox::Create(
 			0,
 			0,
 			FW_DONTCARE,
-			FALSE,
-			FALSE,
-			FALSE,
+			false,
+			false,
+			false,
 			ANSI_CHARSET,
 			OUT_DEFAULT_PRECIS,
 			CLIP_DEFAULT_PRECIS,

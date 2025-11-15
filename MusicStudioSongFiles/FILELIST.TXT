@@ -1,0 +1,133 @@
+Files included in the Archive:
+
+FEATURES.TXT	Quick Outline of most all program features.
+
+FILELIST.TXT	This file! (PLEASE READ 'READ_1ST.TXT' !!!)
+
+QUIKDOCS.TXT	Quick and dirty program operation explanation.
+
+XMARK64K.PRG	The Main Program - Compiled in GFA Basic plus Assembler
+
+XMARK64K.RSC	Resource File (Required to Run it!)
+		Custom Assembler Code and Tiny Graphics
+
+DEFAULT.CFG	Default Midi Configuration File
+                Voice, Controller, and DrumKit Names
+
+DEFAULT.KIT	Default Drum Pattern (Kit) File
+		Sample Drum Patterns and Drum Data    (see CATHYS3.SNG)
+
+Various text files that amount to what is the 'current' documentation:
+                Use together with QUIKDOCS.TXT listed above.
+
+BLOCMENU.TXT    DRUMMENU.TXT    EDITMENU.TXT    EDITMIDI.TXT
+EVNTLIST.TXT    FILEMENU.TXT    FILESEL1.TXT    FILESEL2.TXT
+FKEYSTEP.TXT    KARAOKE .TXT    LOUDNESS.TXT    MAINHELP.TXT
+MIDIMENU.TXT    MIDPARAM.TXT    NEWSTUFF.TXT    OLD_DOC .TXT
+PLAYMENU.TXT    SLIDEBBC.TXT    READ_1ST.TXT
+
+Song and Midi Files for demo or example:
+
+-----------	Note: All .SNG and .MID files are voiced for the Roland
+		Sound Canvas SC55.  They will not sound correctly if
+		played on another Midi Keyboard or Sound Module.
+
+BATMAN.SNG	Sample Song File  'BATMAN the Movie'  Opening theme uses
+		controllers and tries to mimic the movie.  The rest is only
+		fair, but is an example of use of Banks to achieve more than
+		15 voices.
+
+BEEPBEEP.SNG	Sample Song File   Cute song that demos some of the Roland
+		sound effects (cars, dogs, laughter, train, crash, etc.)
+		Uses CM64/32L (MT32 Drums with Sound Effects) drum preset.
+
+CATHYS3.SNG	Sample Song File    Demos use of Midi Controllers, Tempo
+		and Key Changes in Song, and Chords created by the Chord
+		Composer.  'Cathys Clown - Reba McIntire'.  Automatically
+		turns on Midi Clock output for a drum machine.  Turn it off
+		under PLAY menu and turn on DRUMMER under DRUM menu.  Start
+		song and press keys 1-9 (not on keypad) to hear drummer.
+		Each is a 1 bar pattern (0=mute).  Note: status of DRUMMER
+		and MIDICLOCK on/off is saved with all .SNG files.  The next
+		song will turn them off when it is loaded automatically.
+
+CONCERTO.SNG	Sample Song File  A friends work. Concerto in E Minor Chopin
+		that uses controllers, and specifically an example of using
+		the 'editable' controller set up for Sostenuto (#66).  It
+		was a first attempt at a 'fully' orchestrated piece for him.
+
+DANCE_HR.SNG	Sample Song File   Sets up Controllers, has Key and Tempo
+		Changes, example of 'cute' voicing of a Classical Tune.
+		'Dance of the Hours - Ponchielli'  Be sure to watch it
+		play with both Scrolling Notes and the Player Pianos.
+
+DEEPURPL.SNG	Sample Song File  Rhythm and Accompaniment 'ported' from
+		Band in a Box as an experiment.  'Deep Purple'
+
+EVRYROSE.SNG	Sample Song File  'Everything's Coming Up Roses'  Uses Drum
+		patterns 'imported' from Band in a Box.
+
+HAUNTED.SNG	Sample Song File  A short demo of Roland SC55 sound effects
+		with a minor sounding 'mystery or haunted' background just
+		for fun.  Uses chords created by chord composer.
+
+HOLIDAY.SNG	Sample Song File   'Holiday For Strings - David Rose'
+		Demos Roland Strings, Pizzicato, Harp, Piano, Celesta, and
+		Choir Aahs.  A bit amateurish, I know.
+
+LGHTFIRE.SNG	Sample Song File   'Light My Fire'   Another song good for
+		checking out internal 'experimental' drummer.  Demos use
+		of several Roland voices.
+
+MEDITATT.SNG	Sample Song File   4 Part Piano and Strings.  Use of
+		Controllers, Damper Pedal, Fortes, Auto Tempo, Chords,
+		and Accents.  'Auto Tempo' inserted random Tempo Changes to
+		simulate a live player.  'Meditation from Thais - Massenet'
+
+WARSAW_3.SNG	Sample Song File    Complete 'Warsaw Concerto' Piano Solo.
+		Demonstrates use of Loudness (global), Fortes, Damper Ped.
+		and other controllers, Auto Tempo, and Key Changes in Song.
+		Has 4400 music columns and took me a week to enter! Enjoy!
+
+WARVUBIN.SNG	Sample Song File   'Kathy Mattea's   Where've You Been'
+		Uses Chords, Damper Pedal, Fortes, etc.  Popular Country.
+
+BABYFACE.MID	Sample Midi File   'Baby Face' Piano Solo that sounds as
+		though it probably came from a Piano Roll.  Nicely done.
+
+JAZZLAGN.MID	Sample Midi File   'Jazz Lagoon' demo song in a Roland SC55.
+		Great example of Brass Section.  Watch Bender on the Piano
+		Midi Screen to see why the Brass sounds so realistic.  Press
+		<V> key to swap Preset for Controller Display and use Left
+		Arrow repeatedly until 'Bender' Shows above Big Slider Ctrl.
+		If PLAY.MID opens Midi Parameter Screen, press <S> to swap.
+
+LEYASONG.MID	Sample Midi File   'Leya's Song' another SC55 demo song.
+		Example use of 'Fret Noise' voice to make a very realistic
+		sounding Guitar.  Also uses the 'Voice Oohs' Patch.
+
+MEDITATT.MID	Sample Midi File   Same as .SNG above, but this is the .MID
+		version 'saved' as a MidiFile from within program.
+
+SINGING.MID	Sample Midi Karaoke File  'Singin' In The Rain'  Play this
+		on the Piano Screen after pressing <K> to toggle Karaoke
+		Mode on (1 Keyboard & KARAOKE shows in Controller Box).
+		Use Up/Dn Arrows to change Key on the fly.  L/R Shift Keys
+		change tempo. <F>=240 BPM <R>=Resume.  HELP key for others.
+
+STARGAME.MID	Sample Midi File    Another Roland Sound Canvas Demo which
+		uses RealTime SYSEX messages to animate the LCD Display
+		with a flying ship!  Must have a stand alone SC55 to see.
+		Short tune is a take off of 'Star Wars' theme.
+
+STB_B_Y.MID	Sample Midi Karaoke File 'Stand By Your Man - Tammy Wynette'
+		Watch the 'Expression' controller to see the Pedal Steel
+		Guitar sound effect using the JazzGuitar voice.  Also uses
+		Bender.  Of course, turn Karaoke on to view lyrics instead.
+		Karaoke files can be Cued Up anywhere in middle just as any
+		other File.  Drag Big Song Position Slider, then RIGHT click
+		the PLAY Button or press <ENTER>.
+
+I have included several other midis and .sng's for fun and demo.
+
+I hope you enjoy!

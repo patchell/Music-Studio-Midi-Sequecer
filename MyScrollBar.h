@@ -37,7 +37,7 @@ class CMyScrollBar : public CScrollBar
 		);
 	void* m_pUserFormatParam;
 	int m_UserIntParam;
-	BOOL m_bUserBufferFlag;
+	bool m_bUserBufferFlag;
 	char* m_pBuffer;
 	int m_nBufferLen;
 	//-----------------------------
@@ -54,7 +54,7 @@ class CMyScrollBar : public CScrollBar
 	int m_Pos;		// Slider Position
 	int m_TrackInc;	//increment when track is clicked
 	int m_Inc;	// increment when arrow is clicked
-	BOOL m_bModified;
+	bool m_bModified;
 	int *m_pMasterValue;	// pointer to value to control
 	//----------------------
 	// User Windows Message
@@ -74,8 +74,8 @@ public:
 		m_WM_UserMessage = message;
 		m_SubCommand = SubCommand;
 	}
-	BOOL IsModified(void) { return m_bModified; }
-	void ClearModify(void) { m_bModified = FALSE; }
+	bool IsModified(void) { return m_bModified; }
+	void ClearModify(void) { m_bModified = false; }
 	void SetUserFormatParam(void* pParam, int IntParam) {
 		m_UserIntParam = IntParam;
 		m_pUserFormatParam = pParam;

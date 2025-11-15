@@ -20,10 +20,10 @@ public:
 	virtual UINT Process();
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
-	BOOL DecrementRepeatCount() {
-		BOOL rV = FALSE;
+	bool DecrementRepeatCount() {
+		bool rV = false;
 		if (0 == --m_CountDown)
-			rV = TRUE;
+			rV = true;
 		return rV;
 	}
 	UINT GetCountDown() { return m_CountDown; }

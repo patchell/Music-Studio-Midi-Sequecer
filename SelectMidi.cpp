@@ -70,8 +70,8 @@ BOOL CSelectMidi::OnInitDialog()
 		m_ComboBox_MidiOut.InsertString(i,MidiOut.szPname);
 	}
 	m_ComboBox_MidiOut.SetCurSel(0);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return false
 }
 
 void CSelectMidi::OnSelchangeComboMidiInSelect() 

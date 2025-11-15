@@ -92,11 +92,10 @@ union ObjectTypes{
 
 class CMsObject  
 {
-public:
 private:
 	UINT m_ObjectID;
-	BOOL m_Selected;	//object is selected
-	BOOL m_HighLight;
+	bool m_Selected;	//object is selected
+	bool m_HighLight;
 	CMsObject *m_pNext;
 	CMsObject *m_pPrev;
 	CMsObject* m_pNextQueueObj;
@@ -116,12 +115,12 @@ public:
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE *pO);
 	virtual UINT Play();
-	virtual BOOL AddToQueue(CMsSong* pSong) { return FALSE; }
+	virtual bool AddToQueue(CMsSong* pSong) { return false; }
 	virtual UINT Process();
-	virtual BOOL MouseOverObject(CPoint pt);
+	virtual bool MouseOverObject(CPoint pt);
 	virtual void ObjectRectangle(CRect& rect, UINT Event) { rect.SetRect(0, 0, 0, 0); }
-	virtual BOOL HighLight(BOOL HL, CPoint ptObj);
-	virtual BOOL Select(BOOL Select, CPoint ptObj);
+	virtual bool HighLight(bool HL, CPoint ptObj);
+	virtual bool Select(bool Select, CPoint ptObj);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0) { return 0; }
 	virtual void SetParentEvent(UINT ParrentEvent);
 	virtual CMsEvent* GetParentEvent() { return m_pParentEvent; }
@@ -134,12 +133,13 @@ public:
 	// Attribute Methods
 	//-------------------------------------------------
 	void SetType(INT t){m_ObjType = t;}
-	INT GetType(void){return m_ObjType;}
+	INT GetType(void) const {return m_ObjType;}
+	bool Is(INT t) const { return (m_ObjType == t); }
 	void GetTypeString(CString& csType);
-	void SetSelected(BOOL s) { m_Selected = s; }
-	BOOL IsSelected(void) { return m_Selected; }
-	void SetHighLight(BOOL hl) { m_HighLight = hl; }
-	BOOL IsHighLighted() { return m_HighLight; }
+	void SetSelected(bool s) { m_Selected = s; }
+	bool IsSelected(void) { return m_Selected; }
+	void SetHighLight(bool hl) { m_HighLight = hl; }
+	bool IsHighLighted() { return m_HighLight; }
 	UINT GetObjectID() { return m_ObjectID; }
 	CMsSong* GetSong() { return m_pSong; }
 	void SetSong(CMsSong* pSong) { m_pSong = pSong; }

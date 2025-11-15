@@ -128,9 +128,9 @@ void CMainFrame::RemoveChild(CChildFrameBase* pCF)
 	m_NumChildren--;
 }
 
-BOOL CMainFrame::IsChildStillAlive(unsigned childID)
+bool CMainFrame::IsChildStillAlive(unsigned childID)
 {
-	BOOL ChildIsAlive = FALSE;
+	bool ChildIsAlive = false;
 	CChildFrameBase* pCFB = GetHead();
 	int loop = 1;
 
@@ -139,7 +139,7 @@ BOOL CMainFrame::IsChildStillAlive(unsigned childID)
 		if (childID == pCFB->GetView()->GetID())
 		{
 			loop = 0;
-			ChildIsAlive = TRUE;
+			ChildIsAlive = true;
 		}
 		else
 			pCFB = pCFB->GetNext();

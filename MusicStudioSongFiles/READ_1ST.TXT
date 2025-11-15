@@ -1,0 +1,161 @@
+From the Desk of Mark Feaver:                     11-12-95
+
+Thank you for the interest in my music program.  I hope you will be able to
+derive some benefit from its use.  I am not a professional programmer, only
+a hobbiest/amateur.  Please keep in mind that I have had no help from anyone
+on this project, except from a friend who wrote a neat Drawing program which
+I used to create much of the artwork and icons.  He doesn't want his name
+mentioned, so this is all the credit I can give.  He was the only other real
+beta tester for the program as well.  Neither of us have hard drives, so the
+File Functions and Auto checking of Disk Space could be problematic!  It
+should run OK if booted from floppy and files are loaded and saved to floppy.
+
+Please!  Tell me what happens with Hard Drives, as well as with later model
+computers (Mega's TT Falcon, etc.).  I have TOS in ROM on a 1986 520ST that
+has been upgraded to 720k drives and 2.5 meg ram (that's all).  I don't
+know any local users of other models, so don't have the hardware to check
+the program or debug it on!  I repeat, I am not a developer and don't have
+a developer's resources!  Due to my limitations, and the programs, I have
+decided to offer it at no charge (FREE) to all who are interested.  It would
+be fun to get to know other users over the internet (which is making this
+possible).  If I thought I had any kind of following on this program, I
+might try to finish some things that weren't and upgrade it to run on those
+machines that it may not run on.  All of this would depend on your feedback
+as a user (or not).
+
+Anyone that is in a position of having a BBS or FTP site that interested
+parties could load the program from (without my having to Email it to each),
+is encouraged to let me know you can or will do this.  You have my permission
+to post the program (at no charge) anywhere it would be welcomed.
+
+I don't want to mess with Shareware details, etc.  Anyone that finds the
+program useful need not feel obligated to PAY for it!  I would appreciate
+a thank you or other ego booster, and I won't turn down any US funds that
+might be forwarded to me.  Until it changes or I go off the NET for some
+unforseen reason (death maybe! ha ha), my Email address is:
+
+    mfeaver@s3.sonnet.com     (Located in Stockton, California USA)
+
+IMPORTANT NOTICE!!!
+
+Please do not write over your old Music Studio Songs, or any of your Midi
+Files.  Always work on copies.  I cannot be responsible if you trash any
+of these.  If you do write over the old Music Studio Files, then the old
+Music Studio program can't play them anymore.  I use a different file
+format with different codes for measure bars, tempos, etc. that it will not
+understand.  This had to be done to encode all the special effects that
+I wanted to implement, including all the Midi Controllers.
+
+In case I forget to mention it: one of the song files named LEYASONG.SNG
+was included for those that might get a kick out of it.  It was actually
+generated as an experiment (in a modified program) to convert a .mid file
+to a .sng file.  There are lots of stumbling blocks to do this and keep
+it accurate as possible.  This test file controls duration of notes using
+ties!  The beginning note is the 'note-on'.  The ending note tied is the
+time for note off!  It doesn't work too bad, but is impossible to edit.
+It shows and sounds the pitch bend at work, and just how fast my custom
+scrolling display can go!  One of the disadvantages of this method, is
+that I have to run the tempo at max. to get the timing to come out decent.
+This song, like all the others uses GM/GS voices for the Roland Sound Canvas.
+
+Additional notes:
+
+Please read, and even print out the various .txt files that make up all the
+documentation I have at this point.  You will need them to navagate the
+program, but you are certainly welcome to 'wing it' without reading or
+printing the docs.  Please don't email me with questions that are answered
+in the text files.  If you can't find the answer anywhere in those, then
+of course sent me a note and I'll try to answer questions or help.
+
+In an effort to 'rush' to fill requests for the program, I have editted
+most of the old docs, and included some new ones.  The list of things that
+need to be documented yet (Special Effects, Chord Composer, and maybe more)
+will have to wait until I get the time.  With only 2 users of the program,
+I didn't have reason to write myself documention.  Sorry for this oversite!
+If you think you will be using the program regularly and like what you see
+and hear, please email me back so I can put you on the list of users that
+will receive any new documentation as it is created.  If I don't receive
+your feedback, you will not automatically receive the new documentation!
+
+Note: if anyone out there can organize and cleanup this mess of text files,
+into something more user friendly, I and others would certainly appreciate
+it!  I am not that great at doing documentation (as you can tell).  Please
+forgive typos and strange wording.  The idea to offer my work for FREE
+only came to me a few days after going on the internet!
+
+If your only use for the progam is trying to convert .sng files from old
+Music Studio programs to .mid midi files exchangeable on any computer...
+
+    You will definitely want to get the original file playing correctly
+    in my program.  Two things that need to be checked and adjusted if
+    needed (both on the Midi Parameters Screen): 1. Octave Range for all
+    parts  2. VELocity (base) and at least AC1 (accent 1) if you used any
+    accents.  Music studios velocity was NOT adjustable by voice or channel.
+    All you could do was set their master volume level which had fixed
+    steps (this was the basic velocity for all parts).  To this you could
+    add a single accent mark which was not adjustable (as I remember), and
+    cranked the velocity to the maximum (127)!
+
+    My program defaults the files to velocities of 90, 100, 110 ,120 for
+    the base and accents.  Once you have changed these for a suitable
+    sound or music rendition, they will be saved if you save the .sng from
+    my program (remember - don't overwrite your originals!).  The Octave
+    range is adjusted in the column (1 char wide) under the 'R' of 'RB' for
+    Range/Bank.  Lots of files I used to get on PD disks had really crazy
+    octaves set (maybe for the Atari Internal Sound?).  So if your music
+    seems to be playing an Octave hi or lo, change the settings here.
+
+    You may want to also add some standard controllers to the front of
+    your song before saving as a .mid!  These typically would be Volume,
+    Pan, Reverb, Chorus, Damper (sustain) off, and maybe center the Pitch
+    Bend (the value would be 64).  Also, EXPRession should be set back to
+    127 (a second volume controller).  Of course, if your synth(s) don't
+    respond to these, then you can ignore them.
+
+    Once you get your musical production to sound correctly, then you can
+    save to .mid and the midi file will be identical to the sound and effects
+    of the .sng version!  You could certainly save a 'raw' .mid without
+    even listening to it, or adjusting it; but you would then have to do
+    the 'changes or improvements' in a sequencer program of some kind.
+
+    Note: .sng to .mid does not save notes played by the internal/experi-
+          mental drummer.  Don't expect them to be there.  Also, the
+          internal drummer is not available while playing Midi Files.
+
+Lastly, some features of Music Studio and '88 that are NOT implemented and
+you will lose:
+
+    1. The ability to record (from a keyboard) a .sng file.  Try recording
+       a real midi file.
+    2. The lyrics are stripped from any song you load, and not saved back
+       out.  I could never quite figure out how they were encoded.
+       The Midi File Player part will display Karaoke midi's that are
+       encoded properly.  You have to know ahead of time that the file
+       is Karaoke, and manually switch to that mode (or back).
+    3. There is no Print Song File function.  You could use the standard
+       keys for a screen dump to a graphics page.  I do make an XBIOS call
+       to initialize the driver which works fine on the main screen and
+       others (although I don't remember if I tried on Medium Rez text).
+       If it works on Medium Rez help screens (I think so) then you could
+       dump those online text pages as a graphics page.
+       I was working on a print function that would compete with Dr. T's
+       QuickScore, but it was never 'realized' beyond preliminary stages.
+    4. I think MusicStudio'88 did something with measure bars also, that
+       is not implemented.
+    5. Note stems will not be flipped ('88 feature) as I use the 'bit' for
+       multiple accents (which I felt was more important than stems).  The
+       bit is automatically cleared when an old file is imported/loaded.
+    6. There is no Music Paint function/screen for 'drawing' music.  Never
+       found it useful, sorry if you did.
+
+There may be others I can't think of.  I hope the additions and improvements
+I have made (graphics, controllers, midifiles, etc.) will out weigh the loss
+of these functions.  If not, as stated earlier, DO NOT OVERWRITE OLD FILES!
+
+That's all for now.  Read the other text files.  Looking forward to your
+feedback.  Have fun.  Take it slowly.  Remember that it cost you nothing!
+
+Sincerely yours.
+
+   Mark Feaver
+

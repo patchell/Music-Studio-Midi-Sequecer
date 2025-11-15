@@ -42,7 +42,7 @@ BOOL CSelectorDlg::OnInitDialog()
 		m_Combo_Selector.AddBitmap(m_pBitmaps++, CString(""));
 	m_Combo_Selector.SetCurSel((int)m_nSelection);
 	SetWindowText(m_csCaption);
-	return TRUE;  
+	return true;  
 }
 
 

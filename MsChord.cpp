@@ -5,7 +5,7 @@ CMsChord::CMsChord()
 	m_pNoteChainHead = 0;
 	m_pNoteChainTail = 0;
 	m_ArpegioDelay = 0;
-	m_ArpegioDirection = FALSE;
+	m_ArpegioDirection = false;
 	m_ArpegioInterations = 0;
 	m_ChordId = -1;
 	m_NumberOfIntervals = 0;

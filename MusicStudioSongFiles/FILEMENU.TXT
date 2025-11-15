@@ -1,0 +1,46 @@
+The Menu Bar will POP UP when you move to the top of the screen with the
+mouse!.  This also displays the color pallet for picking voices.  A short
+description of the Menu Items follows.
+--------------------------------------------------------------------------
+FILE MENU:
+   LOAD   SONG - Load a Song File for Edit or Playing (.SNG).
+   SAVE   SONG - Save the Current Song File to any Drive.
+   ERASE  SONG - Clears Current Song and stays in current key.
+   APPEND SONG - Appends another Song to the end of the current Song.
+                 No Midi Chan or Voice info is copied from Appended File,
+                 only Note data, Key, and Tempo (I think).
+   SONG-->.MID - Creates a Standard Midi File (format 0) of current song
+                 in buffer.  Watch 'message box' for progress: Bar #...
+                 When it's done, you get a message box asking if you
+                 want to save the file.  You can go to Midi Player and
+                 audition it before you save it, otherwise do the save.
+   APPEND TEXT - Incomplete function.  You can try out the mini text
+                 editor, but it does not append any text, or even allow
+                 it to be saved.  The idea was to allow addition of a
+                 Song Description, such as more info on it, what synths,
+                 etc.  The following function is also a dud, and would
+                 have been the reverse of append.
+   REMOVE TEXT - See APPEND.  Nothing will happen if you select this.
+   LOAD CONFIG - With this, you can load other Midi Configuration Files.
+                 The file loaded at boot time is "DEFAULT.CFG".  The
+                 configuration editor is where you can tell the program
+                 what midi equipment you have connected, and what its
+                 voice names are.  Don't overwrite DEFAULT.CFG unless you
+                 wish to trash it.  Save it somewhere!  Then you can safely
+                 overwrite the old one.  The new one will load at boot time
+                 if it is named DEFAULT.CFG, else this function LOAD... is
+                 for loading any other you have created and given a new
+                 name.  Like: "MY_MIDI.CFG" or "ENSONIQ.CFG"
+   SAVE CONFIG - If you make changes to the DEFAULT.CFG in memory, when you
+                 leave via the ESC key, you will be asked if you want to
+                 save changes.  If you choose YES, this function is called
+                 for you.  If you choose NO, then you may do it later with
+                 this function (or not at all).
+   ----------- - <--- This line actually is a hidden Memory Check!  It will
+                 show the ORIG: memory when program was started and the
+                 FREE: memory now!  If this gets too low, the program may
+                 quit working correctly!
+   ** QUIT! ** - This of course will exit the program.  A dialog asks if
+                 you have saved all changes first.
+----------------------------------------------------------------------------
+End of File Menu Description.

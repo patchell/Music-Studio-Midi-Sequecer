@@ -29,7 +29,7 @@ CString csObjectTypeString[] = {
 CMsObject::CMsObject()
 {
 	m_Selected = 0;
-	m_HighLight = FALSE;
+	m_HighLight = false;
 	m_ObjType = 0;
 	m_pNext = 0;
 	m_pPrev = 0;
@@ -77,9 +77,9 @@ UINT CMsObject::Process() {
 	return 0; 
 }
 
-BOOL CMsObject::MouseOverObject(CPoint pt)
+bool CMsObject::MouseOverObject(CPoint pt)
 {
-	BOOL MouseOverNote = FALSE;
+	bool MouseOverNote = false;
 	CRect rectNote;
 	UINT Event = 0;
 
@@ -89,26 +89,26 @@ BOOL CMsObject::MouseOverObject(CPoint pt)
 	return MouseOverNote;
 }
 
-BOOL CMsObject::HighLight(BOOL HL, CPoint ObjectPoint)
+bool CMsObject::HighLight(bool HL, CPoint ObjectPoint)
 {
-	BOOL rV = FALSE;
+	bool rV = false;
 
 	if (MouseOverObject(ObjectPoint))
 	{
 		SetHighLight(HL);
-		rV = TRUE;
+		rV = true;
 	}
 	return rV;
 }
 
-BOOL CMsObject::Select(BOOL Select, CPoint ObjectPoint)
+bool CMsObject::Select(bool Select, CPoint ObjectPoint)
 {
-	BOOL rV = FALSE;
+	bool rV = false;
 
 	if (MouseOverObject(ObjectPoint))
 	{
 		SetSelected(Select);
-		rV = TRUE;
+		rV = true;
 	}
 	return rV;
 }
@@ -120,7 +120,7 @@ void CMsObject::SetParentEvent(UINT ParrentEvent)
 	UINT Event;
 
 	GetTypeString(csType);
-	printf("Object %lS Parenet Event = %d\n", csType.GetString(),ParrentEvent);
+//	printf("Object %lS Parenet Event = %d\n", csType.GetString(),ParrentEvent);
 	m_pParentEvent = GetSong()->GetEventObject(ParrentEvent);
 	if (m_pParentEvent == NULL)
 	{

@@ -80,8 +80,8 @@ BOOL CDlgMidiInfo::OnInitDialog()
 	m_Combo_MidiDevice.SetCurSel(0);
 
 	m_Edit_SongTitle.SetWindowTextW(CString(GETMIDIINFO->GetTitle()));;
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return false
 }
 
 void CDlgMidiInfo::UpdateControls(int InstID)

@@ -14,9 +14,9 @@ public:
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual UINT Play(CMsSong* pSong);
-	virtual BOOL AddToQueue() { return FALSE; }
+	virtual bool AddToQueue() { return false; }
 	virtual UINT Process(CMsSong* pSong);
-	virtual BOOL RemoveFromQueue(CMsSong* pSong) { return FALSE; }
+	virtual bool RemoveFromQueue(CMsSong* pSong) { return false; }
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 };

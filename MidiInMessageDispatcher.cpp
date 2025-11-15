@@ -30,11 +30,11 @@ int CMidiInMessageDispatcher::GetStatusByteValue()
     return 0;
 }
 
-BOOL CMidiInMessageDispatcher::DispatchMidiInMessage(int data1, int data2)
+bool CMidiInMessageDispatcher::DispatchMidiInMessage(int data1, int data2)
 {
-    BOOL rV = FALSE;
-    BOOL DATA1 = FALSE;
-    BOOL DATA2 = FALSE;
+    bool rV = false;
+    bool DATA1 = false;
+    bool DATA2 = false;
     MidiMsg Msg;
 
     DATA1 = ((m_MidiData1Min == 0) && (m_MidiData1Max == 0)) || //all data1 values
@@ -55,7 +55,7 @@ BOOL CMidiInMessageDispatcher::DispatchMidiInMessage(int data1, int data2)
                     data2
                 )
             );
-            rV = TRUE;
+            rV = true;
         }
      }
     return rV;

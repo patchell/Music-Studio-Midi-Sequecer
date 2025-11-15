@@ -22,7 +22,7 @@ CMyBitmap::~CMyBitmap()
 
 }
 
-BOOL CMyBitmap::LoadBitmapFromFile(const char *filename)
+bool CMyBitmap::LoadBitmapFromFile(const char *filename)
 {
 	/********************************************
 	**	LoadBitmapFromFile

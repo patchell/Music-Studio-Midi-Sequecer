@@ -126,7 +126,7 @@ public:
 	int IsPlaying() { return m_nIsPlaying; }
 	void SetIsPlaying(int v) { m_nIsPlaying = v; }
 	//---------------- Play --------------
-	BOOL Play(CChildViewStaff* pCChildView);
+	bool Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------
 	void Save(FILE *pO);
 	int Parse(char *pSongData);
@@ -188,7 +188,7 @@ public:
 	int ProcessEvent(void);
 	void SetSongPosition(CMsEvent* pEv) {
 		m_pSongPosition = pEv;
-		if (pEv) printf(">****** Set Posirion %d ******<\n", pEv->GetIndex());
+//		if (pEv) printf(">****** Set Posirion %d ******<\n", pEv->GetIndex());
 	}
 	CMsEvent* GetSongPosition() { return m_pSongPosition; }
 	void Start(void);

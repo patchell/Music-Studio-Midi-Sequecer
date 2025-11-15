@@ -9,7 +9,7 @@ class CDlgSelectMidiOut : public CDialog
 	CComboBox m_Combo_MidiOut;
 	CString* m_pcsNames;
 	int m_Selection;
-	BOOL m_Instruments[16];
+	bool m_Instruments[16];
 	CStaticCheckBitmap m_Static_Check1;
 	CStaticCheckBitmap m_Static_Check2;
 	CStaticCheckBitmap m_Static_Check3;
@@ -33,7 +33,7 @@ public:
 	void OnOK();
 	int GetSelection() { return m_Selection; }
 	CString& GetNameString() { return m_pcsNames[m_Selection]; }
-	BOOL GetInstrumentSel(int i) {
+	bool GetInstrumentSel(int i) {
 		return m_Instruments[i];
 	}
 // Dialog Data

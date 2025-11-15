@@ -30,7 +30,7 @@ CMyScrollBar::CMyScrollBar():CScrollBar()
 	m_pUserFormatParam = 0;
 	m_nBufferLen = 256;
 	m_pBuffer = new char[m_nBufferLen];
-	m_bUserBufferFlag = FALSE;
+	m_bUserBufferFlag = false;
 	m_UserIntParam = 0;
 	m_pUserFormatParam = 0;
 
@@ -45,7 +45,7 @@ CMyScrollBar::CMyScrollBar():CScrollBar()
 	m_Min = 0;
 	m_Max = 100;
 	m_Pos = 0;
-	m_bModified = FALSE;
+	m_bModified = false;
 	m_pMasterValue = 0;
 
 	m_WM_UserMessage = 0;
@@ -126,7 +126,7 @@ void CMyScrollBar::SetScrollPos(int v)
 {
 	m_Pos = v;
 	int Id = GetDlgCtrlID();
-	m_bModified = TRUE;
+	m_bModified = true;
 	if(m_pMasterValue)
 		*m_pMasterValue = m_Pos;
 	if (m_pMsgDestinationWindow)
@@ -144,7 +144,7 @@ void CMyScrollBar::SetScrollPos(int v)
 void CMyScrollBar::UpdateScrollPos(int v)
 {
 	m_Pos = v;
-	m_bModified = TRUE;
+	m_bModified = true;
 	if(m_pMasterValue)
 		*m_pMasterValue = m_Pos;
 	Update();

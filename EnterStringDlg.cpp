@@ -37,8 +37,8 @@ BOOL CEnterStringDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	m_Edit_String.SetWindowTextW(m_csS);
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return false
 }
 
 

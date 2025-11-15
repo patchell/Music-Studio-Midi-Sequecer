@@ -199,7 +199,7 @@ int CMsSong::Parse(char *pSongData)
 				obj.pNote->SetTieBeg((c & MSFF_BEGTIE_FLAG)?1:0);
 				obj.pNote->SetTieEnd((c & MSFF_ENDTIE_FLAG)?1:0);
 				obj.pNote->SetTrack((c & MSFF_TRACK_MASK));
-				obj.pNote->SetUpsideDown((t2 & MSFF_NOTE_UPSIDE_DOWN)?1:0);
+				obj.pNote->SetStemDown((t2 & MSFF_NOTE_UPSIDE_DOWN)?true:false);
 				obj.pNote->SetParentEvent(pEv->GetIndex());
 				break;
 		}	/*	end of switch (c)	*/
@@ -307,12 +307,22 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 		else
 			pEventList = pEventList->GetNext();
 	}
-	if(pEventList)	///found event, add object
+	if(pEventList)	//found event, add object
 	{
 		if((pObjectToRemove = pEventList->ObjectAlreadyHere(pObjectToAdd)) != NULL)
 			pEventList->RemoveObject(pObjectToRemove);
 		else if (pObjectToAdd->GetType() != MSOBJ_ENDBAR)
 		{
+			if (pObjectToAdd->GetType() == MSOBJ_NOTE)
+			{
+				//-----------------------------
+				// If the object is a note,
+				// check to see if it is close
+				// enough to other notes to
+				// determine if the note head
+				// need to be flipped
+				//-----------------------------
+			}
 			pEventList->AddObjectAtEnd(pObjectToAdd);
 		}
 
@@ -1132,14 +1142,14 @@ UINT CMsSong::CountObjectPlayingInQueue()
 //	1 => Success
 //	0 => Fail
 //------------------------------
-BOOL CMsSong::Play(CChildViewStaff* pChildView)
+bool CMsSong::Play(CChildViewStaff* pChildView)
 {
-	BOOL Succes = FALSE;
+	bool Succes = false;
 	if (m_nIsPlaying == SONG_NOT_PLAYING)
 	{
 		SetSongPosition(GetEventListHead());
 		m_nIsPlaying = SONG_IS_PLAYING;
-		Succes = TRUE;
+		Succes = true;
 	}
 	return Succes;
 }
@@ -1168,7 +1178,7 @@ int CMsSong::ProcessEvent(void)
 		}
 		if (GetSongPosition())
 		{
-			printf("Process Objects in Event %d\n", GetSongPosition()->GetIndex());
+//			printf("Process Objects in Event %d\n", GetSongPosition()->GetIndex());
 			GetStaffChildView()->PostMessageW(
 				WM_STAFF_DISP_EVENT,
 				GetSongPosition()->GetIndex(),
@@ -1180,7 +1190,7 @@ int CMsSong::ProcessEvent(void)
 			{
 				CString csOvbj;
 				pCurrentObject->GetTypeString(csOvbj);
-				printf("Process all Objects: ObjectType = %lS\n", csOvbj.GetString());
+//				printf("Process all Objects: ObjectType = %lS\n", csOvbj.GetString());
 				//--------------------------------
 				// Process the various objects
 				// that can be in an event
@@ -1189,7 +1199,7 @@ int CMsSong::ProcessEvent(void)
 				//go to next object
 				pCurrentObject = pCurrentObject->GetNext();
 			}
-			printf("End of Process Objects %d\n", ObjectAddedToPlayerQueue);
+//			printf("End of Process Objects %d\n", ObjectAddedToPlayerQueue);
 			if (ObjectAddedToPlayerQueue == 0)
 				SetSongPosition(GetSongPosition()->GetNext());
 			else
@@ -1246,7 +1256,7 @@ CMsNote* CMsSong::FindNoteInPlayList(CMsNote*pNote)
 	//	pointer to matching note if match found
 	//	NULL if not found
 	//---------------------------------------------------
-	BOOL rV = FALSE;
+	bool rV = false;
 	CMsNote* pNoteList = (CMsNote *)GetPlayerObjectQueueHead();
 	int loop = 1;
 	while (pNoteList && loop)

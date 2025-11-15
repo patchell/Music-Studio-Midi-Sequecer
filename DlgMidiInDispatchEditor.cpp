@@ -127,8 +127,8 @@ BOOL CDlgMidiInDispatchEditor::OnInitDialog()
 		CreateANewDispatcher();
 	}
 	m_Edit_Name.SetFocus();
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return false
 }
 
 void CDlgMidiInDispatchEditor::InitializeMidiChannelComboBox()
@@ -179,37 +179,37 @@ void CDlgMidiInDispatchEditor::UpdateDialogFields()
 			{
 				printf("WM_message is Set\n");
 				m_Combo_WM_DispatchCommand.SetCurSel(m_pMIMD->GetWindowMessageID());
-				EnableCommand(TRUE);
+				EnableCommand(true);
 				if (m_pMIMD->MidiStatusByteISset())
 				{
 					printf("Midi Status is Set\n");
 					m_Combo_MidiStatusByte.SetCurSel(m_pMIMD->GetMidiStatusID());
-					EnableStatusByte(TRUE);
+					EnableStatusByte(true);
 					if (MidiStatusCommands[m_pMIMD->GetMidiStatusID()].m_Channel_flag)
 					{
-						EnableChannel(TRUE);
+						EnableChannel(true);
 					}
 					UpdateDataEditBoxes(m_pMIMD->GetMidiStatusID());
 				}
 				else
 				{
-					EnableChannel(FALSE);
+					EnableChannel(false);
 					UpdateDataEditBoxes(-1);
 				}
 			}
 			else
 			{
-				EnableStatusByte(FALSE);
-				EnableChannel(FALSE);
+				EnableStatusByte(false);
+				EnableChannel(false);
 				UpdateDataEditBoxes(-1);
 			}
 		}
 		else
 		{
 			m_Combo_DestinationWindow.SetCurSel(-1);
-			EnableCommand(FALSE);
-			EnableStatusByte(FALSE);
-			EnableChannel(FALSE);
+			EnableCommand(false);
+			EnableStatusByte(false);
+			EnableChannel(false);
 			UpdateDataEditBoxes(-1);
 		}
 		m_Edit_Name.SetWindowTextW(CString(m_pMIMD->GetDispatchName()));

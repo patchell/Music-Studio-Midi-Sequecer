@@ -95,7 +95,7 @@ class CMyOwnSlider : public CWnd
 public:
 	CMyOwnSlider();
 	virtual ~CMyOwnSlider();
-	virtual BOOL Create(
+	virtual bool Create(
 		CPoint ptControlOrigin,//upper left corner 1
 		int SliderHight,	//slider height 2
 		int SliderArrowWidth,	// width of arrows 3

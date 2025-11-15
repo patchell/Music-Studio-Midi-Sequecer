@@ -1,0 +1,123 @@
+DRUMS MENU:            (should be Drums and Miscellaneous goodies!)
+ TURN BELL OFF - The Bell Sound after Alerts, Dialogue Boxes, or File Sel-
+                 ector appears, may be turned off with this toggle switch.
+ DRUMMER   OFF - Turns on "Experimental" internal Drummer. If a number key
+                 from 0-9 is pressed during song play, that pattern will
+                 play, providing a DrumKit (of patterns) is loaded, else
+                 you must create some patterns with the EDIT PATTERN mode.
+                 Patterns (limited for now) may be saved from EDIT PATTERN
+                 Screen or DEFINE DRUMS Screen.  Press the "B" key after all
+                 patterns are created and all Drum voices are defined as
+                 these are saved in the same file.  If the file DEFAULT.KIT
+                 exists at boot time, it will be loaded.  The Drummer is not
+                 completed and is only here as an experiment.
+                 You might want to change the name DEFAULT to some other
+                 name while on the FILE SELECT SCREEN using Disk Function
+                 'RENAME FILE' which allows the left eight characters to
+                 be changed (but not the extension!).  Do this before a
+                 save operation with the 'B' key to avoid overwriting the
+                 original file!  To see the file on the FILE SELECT SCREEN
+                 change the Path to the wildcard extension '*.*', then
+                 click once on the name 'DEFAULT.KIT' which puts the name
+                 'DEFAULT' in the Filename Box.  Then click the Disk Icon
+                 at top left to get DISK FUNCTIONS Dialogue Box.  Click
+                 'RENAME' and OK to Edit the name. Follow the ALERT BOXES.
+                 If DRUMMER is ON when song is saved, the last pattern
+                 it was playing (0-9 keys) is saved to the songfile. When
+                 the Song is loaded, the DRUMMER will be turned on and
+                 initialized to that pattern. (Just like MIDI CLOCK).
+ SHOW COLBEATS - Displays numbers at top of note columns which indicate
+                 how many Midi Beats occur in that column before proceed-
+                 ing to the next column at play time.  Useful during song
+                 entry or timing check.  Also numbers are displayed at
+                 Scroll Play time if left turned on.  The note or rest
+                 which determines a columns "beat" count is the shortest
+                 duration one in the column.  If you add a rest or note
+                 of shorter duration than those already in the column, the
+                 display will be immediately updated and you can see the
+                 effect.  This is a toggle switch.  If you left click the
+                 'current note' box next to the Tempo Box, a Help image
+                 will pop up showing the beats per note duration.  Useful
+                 when trying to fix timing errors.
+ AUTO  LEDGERS - A toggle switch that when on, will show full ledgers above
+                 and below the staff during song entry as a help for those
+                 that need it.
+ HIDE ANYTHING - Brings up a dialog that allows you to show or hide various
+                 displayed items. 'ICON' color/black is the Chord Icons
+                 above the staff.  If you turn on BLACK NOTES in the PLAY
+                 menu, you may want to turn this to BLACK so chord names
+                 match.  Second item is SHOW/HIDE Chord names.  Drums are
+                 the drum Icons (useless for now), Forte, Rests, Ctrls,
+                 Ctrl Value, Accents, Note Ties, Measure Bars, Sharps/Flats,
+                 and Bank Icons can all be hidden or shown with this dialog.
+                 Don't forget to unhide if you hide things.  Doesn't reset
+                 to normal when a new song is loaded.
+ HIDE MESSAGES - Hides most messages in message - scroll box.  Also will
+                 MOVE RESTS UP during DELETE RESTS if messages are OFF.
+                 This was to clean up songs I was getting.
+ SONGFILE INFO - Returns Number of Notes, Rests and the Song File Length.
+ SONG HEX DUMP - Displays a hex dump of entire Song or Standard Midi File.
+                 Song and Midi Files have unique color codes to highlight
+                 areas of special interest.  If you know how the files
+                 should be constructed it may be meaningful.  SPACE BAR
+                 displays next page, <Q> key aborts anytime.  You may do
+                 limited editting of current page shown by pressing the
+                 'E' key once.  This displays a cursor which can be moved
+                 with the arrow keys.  If any HEX character is typed such
+                 as 0-9 or A-F, it replaces the character under cursor and
+                 waits for the second character, as all bytes of the file
+                 require two HEX 'digits' to define the byte.  To EXIT
+                 editting for this page, press RETURN key.  Next page is
+                 shown and may be editted (press 'E') or just viewed. 'Q'
+                 key exits HEX DUMP DISPLAY.  Changes are retained in
+                 their respective buffers, ie, .MID = UNDO buffer and .SNG
+                 = SONG buffer.  If SAVE .MID is used on the Midi File,
+                 your changes will be saved.  If SAVE SONG is use for the
+                 .SNG file, your changes will be saved.  Changes in a .SNG
+                 file are not immediately detectable if they are in the
+                 header.  The header is read only during LOAD SONG.  You
+                 must reload the file just saved to see effect of changes.
+                 Sorry, there is no insert/delete byte(s) mode for edit,
+                 you may only change the bytes which are already in file.
+                 Also, you cannot edit the last page, once the EOF display
+                 comes up!  The next keypress will exit the Hex Dumper.
+ DEFINE  DRUMS - Calls up Drum Definition Screen.  L-Click and Drag to
+                 change number values.  Click on a name to enter a new
+                 one.  A single space plus RETURN leaves it blank, and no
+                 key pressed except RETURN gives old name back.  BackSpace
+                 and Delete keys both DELETE character(s).  R-Click on
+                 any name to sound its Drum, providing a Drum Machine or
+                 Keyboard is connected and turned on and "listening" on
+                 the correct channel.  Save and Load 'Kits' with the
+                 Buttons provided.  Exit with the DONE button.
+ EDIT PATTERNS - Allows temporary creation of up to 10 patterns.  All will
+                 default to 4/4 time with 32nd note beat duration between
+                 "columns" on the screen.  Use the keys 0-9 to select a
+                 pattern (temporary area).  R-Click on beat columns to
+                 exit.  Space bar starts and stops the song and pattern
+                 (a song must be loaded to play).  Click any voice name
+                 and you may edit its parameters in a Dialogue Box.  These
+                 actually update the DEFINE DRUMS buffer and changes here
+                 may be seen when you call up DEFINE DRUMS.  DO NOT enter
+                 velocities larger than 127 or more chars in the field
+                 (between commas) than allowed.  DO NOT delete commas etc.
+                 Could have fatal results if you don't know what you are
+                 doing!  This option was here before the DEFINE DRUM screen
+                 and will probably stay, but in a more user friendly form.
+                 If Drums and Song are playing they will automatically
+                 Stop upon exit with the RIGHT mouse button.  Save your
+                 completed pattern "kit" using the "B" key or go to the
+                 DEFINE DRUMS screen and use SAVE button.
+ DRUM  MACHINE - Brings up Multi-Button Selector which will be used to
+                 select drum patterns and insert special codes and Icons
+                 into the music where ever you want changes at play time.
+                 The 'Icons' may be added and deleted from the song, but
+                 they will be ignored during play, as they aren't linked
+                 to the routines to act on them (and which haven't been
+                 written yet!).  Sorry, after I got Band in a Box, I wanted
+                 drums to sound as good as his!  Started thinking about
+                 how to do this, and the project got side stepped.  Hey!
+                 What do you want in a FREE program!  Sorry!
+
+
+

@@ -4,7 +4,7 @@ class CMyMMtimer :  public CMMtimer
 {
 	UINT m_Count;
 	UINT m_Tempo;
-	BOOL m_Enable;
+	bool m_Enable;
 	DWORD m_ThreadID;
 	UINT m_Message;
 	UINT m_SubMessagbe;
@@ -33,6 +33,6 @@ public:
 		UINT TimerID
 	);
 	void SetTempo(UINT tempo) { m_Tempo = tempo; }
-	void Enable(BOOL en) { m_Enable = en; }
+	void Enable(bool en) { m_Enable = en; }
 };
 

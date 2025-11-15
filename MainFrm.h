@@ -26,7 +26,7 @@ public:
 	inline void SetTail(CChildFrameBase* pCF) { m_pTail = pCF; }
 	void AddChild(CChildFrameBase* pCF);
 	void RemoveChild(CChildFrameBase* pCF);
-	BOOL IsChildStillAlive(unsigned childID);
+	bool IsChildStillAlive(unsigned childID);
 	//------------- Debug Stuff --------------------
 #ifdef _DEBUG
 	virtual void AssertValid() const;

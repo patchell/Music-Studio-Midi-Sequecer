@@ -51,6 +51,6 @@ BOOL CParamDlg::OnInitDialog()
 	m_ScrollBar_Param.SetDisplayText(&m_Static_Param);
 	m_ScrollBar_Param.SetScrollPos(m_Val);
 	SetWindowText(m_csCaption);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return false
 }

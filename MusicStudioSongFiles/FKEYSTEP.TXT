@@ -1,0 +1,57 @@
+ 8.  On either Midi Player screen, if you are in step mode, the Left
+     and Right mouse buttons now simulate playing the file at one of
+     three speeds.  These are fixed and not related to the Tempo of
+     the file.  They are just a quicker way of listening to and cuing
+     up to a point in the file you might want to edit.  You can only
+     edit the file on the PARAMETER type screen of course.
+
+     The function that plays the file with the mouse buttons, is not
+     using the internal clock, but relys on the delay in executing
+     pause statements in Basic.  Any delays caused by controller
+     changes on the PARAMETERS screen or Text changes on a KARAOKE
+     file on the Piano screen will interfere with exact timing.  That
+     is why I say it 'simulates' playing (not exactly!).
+
+     Previously clicking a mouse button stopped stepping.  Now in
+     order to stop, you must press RETURN or come to the end of the
+     song.  In either case, you will still be in step mode, unless
+     you pressed the "P" key to resume normal play (which is another
+     way to get out of step mode altogether).  You enter or exit the
+     step mode by Clicking the word STEP next to the Tempo Display.
+     A Dialogue Box displays indicating the on/off status of STEP.
+
+ 9.  The "F" key has been temporarily assigned the function to enable
+     the SONG POSITION SLIDER to be a CONTROLLER Slider.  Currently,
+     only the numbers change with no other action.  When in this mode
+     the SONG POSITION will not be displayed by the Slider!  While
+     this mode is active, the CTRL+ ALT+ UP/DWN Arrows will adjust the
+     channel number to the left of the Controller name box, and the slider
+     will adjust the number to the right (from O to 127).  I am working
+     up to the point where you will be able to record controller
+     changes, as well as presets, bends, tempos, etc.
+
+     Something that IS active when the "F" key is active, and you are on
+     the PARAMETER type screen; and if you have the channel number set
+     to an active channel, the selected USER control will cause the
+     Slider to move as the control is changed.  Kind of a graphic
+     display of the controller in addition to the number changing above.
+     The number next to the Controller Name Box doesn't change though,
+     only the slider.  This slider is more precise than those on the
+     Piano type screen, because I have more pixels to work with.
+
+     The "F" key is a Toggle, so you must press it again to display the
+     Song Position and use the Slider to Cue a file (WHILE STOPPED).
+     While playing, the "F" key selects a tempo of 240!
+
+     By the way, whenever you want to grab the slider, you don't have to
+     actually touch it with the POINTING HAND, you can just press the
+     mouse button while the hand is anywhere inside the slider box.
+     When you left/right drag the slider moves.  When you release the
+     button, the mouse cursor will be on the button 'magically'!
+
+     Another key which was added to the Midi Player screens was the "Q"
+     key.  It exits, just like clicking the DONE button.  I added it
+     as a Safety exit when I was having trouble leaving the screens
+     and left it in the program when the problem was fixed.
+
+

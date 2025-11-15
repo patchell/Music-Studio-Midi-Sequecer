@@ -48,7 +48,7 @@ public:
 		m_InstrumentName[0] = 0;
 	}
 	~CMsTrack() {}
-	BOOL Create(
+	bool Create(
 		CDC* pDC,
 		int TrackID,
 		CRect& rect,

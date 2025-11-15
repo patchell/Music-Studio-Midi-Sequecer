@@ -25,7 +25,7 @@ CMyButton::~CMyButton()
 {
 }
 
-BOOL CMyButton::Create(
+bool CMyButton::Create(
 	const CPoint& ptUL, 
 	CWnd* pParentWnd, 
 	UINT nID, 
@@ -74,7 +74,7 @@ END_MESSAGE_MAP()
 
 BOOL CMyButton::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE;
+	return true;
 }
 
 

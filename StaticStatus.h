@@ -20,7 +20,7 @@ public:
 	virtual ~CStaticStatus();
 	void SetText(CString& csText);
 	void SetColors(COLORREF bGrn, COLORREF text, COLORREF Border);
-	virtual BOOL Create(const CRect& rect, CWnd* pParentWnd, UINT nID = 0xffff);
+	virtual bool Create(const CRect& rect, CWnd* pParentWnd, UINT nID = 0xffff);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void OnDraw(CDC* pDC);
 protected:

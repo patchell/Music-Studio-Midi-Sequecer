@@ -104,7 +104,7 @@ BOOL CNotePropertiesDlg::OnInitDialog()
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_EIGTH), CString(""));
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_SIXTEENTH), CString(""));
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_THIRTYSECOND), CString(""));
-	m_Combo_Duration.SetCurSel(DurTab[m_pNote->GetDuration()].NoteShapIndex);
+	m_Combo_Duration.SetCurSel(CMsNote::GetDurationTable()[m_pNote->GetDuration()].NoteShapeIndex);
 
 	CString csCaption;
 	CString csNote;
@@ -113,8 +113,8 @@ BOOL CNotePropertiesDlg::OnInitDialog()
 	csCaption.Format(_T("Note Properties %lS ID=%d"), csNote.GetString(), m_pNote->GetObjectID());
 	SetWindowText(csCaption);
 	
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;  // return true unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return false
 }
 
 

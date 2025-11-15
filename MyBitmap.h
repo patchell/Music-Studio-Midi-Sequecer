@@ -11,7 +11,7 @@ public:
 	virtual ~CMyBitmap();
 
 	virtual CSize GetBmDim();
-	BOOL LoadBitmapFromFile(const char* filename);
+	bool LoadBitmapFromFile(const char* filename);
 	CMyBitmap* CoppyBitmap();
 };
 

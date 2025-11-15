@@ -46,8 +46,8 @@ BOOL CSelectStringDlg::OnInitDialog()
 		m_Combo_Selector.InsertString(i, m_pcsStrings[i]);
 	m_Combo_Selector.SetCurSel(m_nSelection);
 	SetWindowText(m_csCaptionString);
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return true;  // return true unless you set the focus to a control
+				  // EXCEPTION: OCX Property Pages should return false
 }
 
 

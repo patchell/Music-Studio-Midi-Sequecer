@@ -1,0 +1,92 @@
+File Selector Info  (please read NOTE: below indented)   Updated 11-10-95.
+
+1. The DISK ICON calls up various Disk Functions when clicked on.
+   RENAME, DELETE, COPY-FILES and MAKE FOLDER.  Click an item, then OK to
+   proceed.  You may Cancel anytime.  RENAME & DELETE work on the current
+   Name in the Name Box, so select one first before clicking the Disk Icon.
+   Format is not implemented yet.  MAKE FOLDER always appends .sng or .mid.
+   All operations are confirmed with other dialogs.  Read what they say!
+   MULTIDELETE is like 'medley' or list play, except after picking files
+   to delete, it deletes them after a confirmation dialog.  I kept getting
+   files from CD Roms that were write protected and would crash the program.
+   The dialogs that follow MULTIDELETE are asking if its OK to change the
+   files attributes automatically, so they can be deleted!  If you don't
+   allow this and any file is write-protected (its attribute is read only),
+   expect to crash!
+
+2. The ARROW Icon shifts FileNames up if there are more than fit on one
+   screen.  The NAME BOX can be clicked to enter or edit a File Name.  Use
+   RETURN key to get the Mouse Pointer back.  Click OK box or the RETURN key
+   to complete the operation and exit file selector.  Click CANCEL to abort
+   and exit.  If you click the word 'DRIVE' you get a dialogue showing the
+   remaining bytes on the currently selected Drive (A,B,C etc.) plus the
+   length of file (.SNG/.MID) currently in the buffer.  All 'Saves' check
+   for disk space before the write and alert you if there is not enough
+   room or if the file already exists.
+
+   NOTE: It occurs to me at this late date (nov '95) that auto diskspace
+         check on every save, could cause havock with Hard Drive users
+         that have big drives.  I don't have a HD and none of my local
+         friends (2) do either.  Kind of difficult to develope for equip
+         you don't have (sorry if there's a problem).  I don't even know
+         if the space allowed for disk space has enough characters allowed!
+         The solution, at least temporarily (until I can get some help on
+         this), is to only read and write to floppies! (or a ram disk as I
+         do).  Also booting the program from a floppy (instead of HD) may
+         be needed to avoid the HD all together.  Somebody please let me
+         know!  Of course, if no one cares for this FREEWARE then I don't
+         have to solve any problems with it!
+
+3. Click the Drive letter below DRIVE to read or re-read any drive.  Make
+   sure there is a Disk in any selected!!  If you use a RamDisk or HardDrive
+   the 3rd Drive letter will be set accordingly.  When the program is booted,
+   the Drive booted from is the default selected when File Selector first
+   comes up.  If you don't have either, then the 3rd drive will duplicate
+   the 'A' drive.
+
+4. Click the White Path Name area with the Left Button to edit the Path and
+   Drive for any of the 3 letters under the word DRIVE.  Drive Letter may be
+   selected from any that are available (not greyed).  The *.* extension may
+   be selected to see all files on the Disk.  The program normally selects
+   the correct extension for you (if not overridden with *.*) when you are
+   loading/saving .SNG or .MID files.  Right Clicking the White Path Name
+   area exits FOLDERS!
+
+5. FOLDER names are back lighted in grey.  Clicking one automatically opens
+   that folder.  When FOLDERS are created, the Extension .SNG or .MID is
+   forced and depends on which LOAD/SAVE function you called the Selector
+   from (Song Editor or Midi Player)!  If you don't want this, then create
+   your folders ahead of time from DESKTOP!  This technique allows the
+   maximum number of File Names/Folders to appear on the display and avoids
+   the use of the wild card extension (*.*).
+
+6. The EDIT PATH dialoque allows selecting new Drives and extensions easily.
+   You may manually edit the Path Name by clicking on it.  A right click
+   here will also back out of folders.  To activate the editted pathname you
+   must click OK.  Otherwise select CANCEL to abort changes.
+
+7. The COPY function always uses the 3rd Drive Letter as the destination and
+   the currently selected drive as the source.  If they are not different no
+   copying is done.  Copy was implemented to fill a RamDisk from a floppy
+   and also the reverse (if Drive letters are swapped!).  COPY has several
+   alerts and can be aborted.
+
+8. The File Selector is also used for 'MEDLEY PLAY' (play list of Songs or
+   Midi Files).  It operates a bit differently and has its own instructions
+   when called.  The most obvious difference is that File Names do not
+   HighLight till selected as part of the list.  Then they are given the
+   current sequence number.  Clicking a second time on a name removes it
+   from the list.  Playback skips any unused numbers (deleted).  Play also
+   aborts if you select an invalid .SNG or .MID file when it comes to it.
+
+   You may set the delay between songs from the opening dialogue.  RIGHT
+   CLICK on the OK button to set delay (as it says at bottom of dialog).
+   The delay is adjustable from 0 to 15 seconds between songs.  Move the
+   mouse pointing hand over the line that shows the delay and left/right
+   click (and optionally hold button).  Note: this 'adjustment' technique
+   is used in other dialogs as well (octave offset & transpose for example).
+
+   You may also loop the list or play it once by toggling the 'MEDLEY AUTO'
+   to 'MEDLEY ONCE' in the Play Menu from Main Screen.  During PLAY the
+   Left Button/SPACE aborts play.  Right Button/RETURN skips to next song.
+

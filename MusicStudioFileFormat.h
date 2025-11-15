@@ -5,16 +5,6 @@
 // Music Studio File Format
 //**************************************
 
-struct DUR {
-	UINT NoteShapIndex;
-	UINT Dotted;
-	UINT Triplet;
-	UINT Solid;	// Note circle open or solid
-	UINT Flags;
-	UINT Tail;
-	UINT DurTime;	// clock ticks
-	const char* pName;
-};
 
 //----------------------------------
 //
@@ -183,8 +173,6 @@ constexpr auto  MSFF_REST_QUARTER = 12;
 constexpr auto  MSFF_REST_HALF = 15;
 constexpr auto  MSFF_REST_WHOLE = 18;
 
-
-extern DUR DurTab[];
 
 typedef struct {
 	char Name[10];

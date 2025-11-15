@@ -31,5 +31,5 @@ public:
 	void Draw(CDC* pDC);
 	void DrawTick(CDC* pDC, COLORREF color);
 	void Offset(int x);
-	BOOL PointEnclosed(CPoint ptP);
+	bool PointEnclosed(CPoint ptP);
 };

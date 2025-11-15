@@ -1,0 +1,115 @@
+Fixes and upgrades as of 2-20-96.  Second release of Marks Music Program.
+
+1. File selector now accepts up to 512 names in one directory.  If more
+   files are there, you are informed with a screen display when the dir
+   is selected.  Overflow count will be the files not available.
+
+2. Previous File Selector allowed two pages of files, selectable with
+   the Arrow Icon Button next to the DISK icon on the left.  The current
+   version allows 10 pages maximum.  Use the left mouse button to move
+   forward and the right mouse button to go back.  If 3 column mode is
+   active (to show extensions), then 57 names are on each page, else 76.
+
+   Last name on page 1 becomes the first on page 2, etc. as with most
+   other 'computer paging functions'.  The last page will always have
+   the last file position blank, and will show as many files as will
+   fill the screen (including some of those from the previous page).
+   This is not a bug, but was designed to have the maximum number of
+   filenames viewable at one time.  The last page might have only had
+   two, or ten, files for example.
+
+3. If the mouse (pointing hand) is in the filename area, pressing the
+   'S' key will display the count of files in the current directory,
+   up to 512.  The filename box changes to 'FILES  512' for example.
+   Normally, as you move around the filenames and they are highlighted,
+   you will see the file length (in bytes) of each.
+
+4. The program now tries to determine the complete path from which it
+   was booted and gives this for the Drive Letter and Path when you
+   first enter the file selector.  Original version only determined the
+   Drive booted from, and not any folders or sub-directories.
+
+5. If you have a hardrive with more than one partition (drive letter),
+   it will 1. assign the floppy A drive  2. assign the drive and path
+   booted from  3. try to assign one other hardrive partition letter.
+   This is for the 3 'memorized' paths under the word DRIVE.  The 1st
+   release always assigned A B and C, but could have (and still can)
+   been changed to any available drive.  If there is no hardrive or
+   ramdisk (only floppies connected), the letters A B A will be the
+   default.  (Booted from a floppy with hardrive turned off, etc.)
+
+6. You can now re-read the current path, directory, or floppy using the
+   ESC key, just as the GEM desktop.  Previously, one had to left click
+   the drive letter again (which you can still do).
+
+7. If you do a save operation to either A or B floppies, a free disk
+   space routine makes sure you have enough room.  This disk space
+   check has been disabled for drives C to P, as it was discovered it
+   took too long.  The free space for these drives can still be read
+   by intentionally clicking on the word DRIVE above the letters.  The
+   drive letter selected will then be checked for free bytes and shown
+   in a dialog.  This value is then used to replace a 'default' value
+   arbitrarily chosen at boot time.  This disk space thing is still
+   being 'perfected' and if you run out of space, it is possible you
+   may 'crash' to desktop.  If you think you are running low, please
+   click the DRIVE word to check before you save.  Don't know what the
+   results will be otherwise.
+
+8. The fixed midi buffer (for .mid files) has been increased to 330k.
+   Previously was 200k.  Program refuses to load a file too large.  I
+   have been seeing a few 300k+ files!  In a future version I intend
+   to dynamically allocate the buffer, but until then, it is fixed in
+   size.  The program also requests a chunk of memory equal to the size
+   of a midi file loaded when it needs to convert the resolution to 240.
+   GEM also needs some free memory for its dialogs.  If you run many
+   accessories or anything which reduces available memory, the program
+   may not function correctly and GFA's internal routines may give you
+   a warning.  Previous version of program ran on 1 meg machines with
+   no accessories running (or very small ones).  The extra 130k and new
+   program length might not run on these machines or may behave in an
+   erratic manner.  Most users (of this program anyway) have at least
+   2 megs of memory, so I don't think this should be a concern.
+
+9. It has been determined that most screen accelerators are not
+   compatible with my switch to medium rez.  I do not know how to inform
+   them of the change, and don't know if they ever resolved the GEM
+   part of the conflict (requiring rebooting in the new rez to setup
+   mouse and screen co-ordinates etc).  Turbo ST for example will show
+   double characters with many missing, because it still thinks it is in
+   low resolution.  I would think Warp 9 and others would have the same
+   problem.  This will never be 'fixed' because I do not open a GEM
+   window or use the message 'pipeline', or GEM features (beyond what
+   GFA internally implements).  I draw directly to video memory in many
+   cases (for speed), which bypasses GEM/VDI altogether!  It is not
+   possible to rewrite this Assembler code without compromising the
+   program!  (Especially a FREE one!).  Sorry.
+
+10.  Additionally, I don't think the program can be made to 'multitask'
+   and although I am trying to figure out how to call accessories, it
+   may not be possible unless I use a GEM menu system (which I didn't
+   care for in my program).  I will be adding code to select an alternate
+   file selector (call the GEM or alt.), but this hasn't been done yet.
+   One will lose the ability to Medley or Jukebox play a list of songs,
+   because my file selector is used to 'mark' the files and their order.
+   When the GEM fileselector has been added, I will likely add the
+   ability to medley play all the files in any directory, and maybe even
+   create an 'album' file of paths/songs in any directory.
+
+11.  Speaking of MEDLEY PLAY (list of songs), although you could select
+   up to 512 songs (that would take a very long time to do individually),
+   after the first 255 or 256 the numbering system overflows as a byte
+   variable/array holds the number of the file for playing order.  It
+   would take a really long time to play even 200 files (or select them),
+   so I don't think this is a big concern.  It has no problem playing
+   all the files in a directory (none marked or selected), and doesn't
+   flinch with 512!  BTW, the old GEM TOS before 1.4 can't read more
+   than 300 filenames in a directory, and the Little Green Selector I
+   have tried (dated '89) will only read 384!
+
+12.  It has been remarked that users wish the program ran in medium rez.
+   This will never be possible because of too much custom assembler code
+   that would have to be rewritten.  Colors are used extensively to ID
+   midi channels, voices, etc., and a reduction to 4 colors would destroy
+   the programs ability and usefulness.
+
+EOF

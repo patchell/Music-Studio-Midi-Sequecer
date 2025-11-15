@@ -17,7 +17,7 @@ protected:
 public:
 	virtual void DrawItem(LPDRAWITEMSTRUCT /*lpDrawItemStruct*/);
 	CComboBitmap *m_pComboBox;
-//	virtual BOOL DestroyWindow();
+//	virtual bool DestroyWindow();
 //	afx_msg void OnNcDestroy();
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	int GetCheckBoxRect(int nItem, CRect & rcCB);
