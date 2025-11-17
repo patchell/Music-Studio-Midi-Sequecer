@@ -29,7 +29,9 @@ public:
 	void SetEventObjectHead(CMsObject* pMO) { m_pEventObjectListHead = pMO; }
 	CMsObject* GetEventObjectHead(void) { return m_pEventObjectListHead; }
 	void SetEventObjectTail(CMsObject* pMO) { m_pEventObjectListTail = pMO; }
-	CMsObject* GetEventObjectTail() { return m_pEventObjectListTail; }
+	CMsObject* GetEventObjectTail() { 
+		return m_pEventObjectListTail; 
+	}
 	void SetIndex(int I) { m_Index = I; }
 	int GetIndex() { return m_Index; }
 	UINT GetEventID() { return m_EventID; }

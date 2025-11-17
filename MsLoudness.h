@@ -11,6 +11,7 @@ public:
 	CMsLoudness();
 	virtual ~CMsLoudness();
 	void Create(CMsSong*pSong, UINT ParentEvent,UINT Loudness);
+	void Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness);
 	virtual void Save(FILE *pO);
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);

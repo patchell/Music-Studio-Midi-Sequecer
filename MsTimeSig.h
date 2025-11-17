@@ -12,6 +12,7 @@ public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
 	void Create(CMsSong* pSong, UINT ParentEvent, INT TS);
+	void Create(CMsSong* pSong, CMsEvent* pEvent, INT TS);
 	virtual UINT Process();
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);

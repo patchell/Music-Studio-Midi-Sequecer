@@ -14,6 +14,10 @@ public:
 		m_Tempo = Tempo;
 		CMsObject::Create(pSong, ParrentEvent);
 	}
+	void Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo) {
+		m_Tempo = Tempo;
+		CMsObject::Create(pSong, pEvent);
+	}
 	virtual void Save(FILE *pO);
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);

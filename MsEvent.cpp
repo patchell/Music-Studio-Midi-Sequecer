@@ -81,6 +81,24 @@ void CMsEvent::AddObjectAtEnd(CMsObject *pO)
 		{
 			AddNoteInOrder(pO);
 		}
+		else if (pNote->IsRest())
+		{
+			if (GetEventObjectHead() == 0)
+			{
+				SetEventObjectHead(pO);
+				SetEventObjectTail(pO);
+			}
+			else
+			{
+				pO->SetPrev(GetEventObjectTail());
+				GetEventObjectTail()->SetNext(pO);
+				SetEventObjectTail(pO);
+			}
+		}
+		else
+		{
+			printf("This is strange, it should not happen\n");
+		}
 	}
 	else if(GetEventObjectHead() == 0)
 	{
@@ -219,6 +237,10 @@ bool CMsEvent::IsThereOnlyOneNoteInThisEvent()
 				{
 					pObj = pObj->GetNext();
 				}
+			}
+			else
+			{
+				pObj = pObj->GetNext();
 			}
 		}
 		else

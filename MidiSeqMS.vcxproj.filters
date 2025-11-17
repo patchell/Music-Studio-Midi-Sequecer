@@ -914,6 +914,9 @@
     <Image Include="res\bm_TX816_LFO_SAMPLE_HOLD_5.bmp">
       <Filter>Resorces</Filter>
     </Image>
+    <Image Include="D:\Projects\MidiSeqMS\res\bmCB_RestEigth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

@@ -15,6 +15,8 @@ protected:
 
 public:
 	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
+    afx_msg void OnMenuMsFileSaveAs();
+    afx_msg void OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI);
 };
 
 class CMainFrame;

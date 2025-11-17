@@ -24,6 +24,10 @@ void CMsBar::Create(CMsSong* pSong, UINT ParentEvent)
 	CMsObject::Create(pSong, ParentEvent);
 }
 
+void CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	CMsObject::Create(pSong, pEvent);
+}
 
 void CMsBar::Print(FILE *pO)
 {

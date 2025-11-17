@@ -26,6 +26,10 @@ void CMsRepeatStart::Create(CMsSong* pSong, UINT Count, UINT nParrentEvent)
 	CMsObject::Create(pSong, nParrentEvent);
 }
 
+void CMsRepeatStart::Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent)
+{
+}
+
 void CMsRepeatStart::Print(FILE *pO)
 {
 	fprintf(pO,"Repeat Start |:(%d)\n",m_Count);

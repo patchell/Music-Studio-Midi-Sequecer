@@ -261,13 +261,17 @@
 #define ID_NEW_NEWTX816EDIT             32782
 #define ID_NEW_NEWLAUNCHPAD             32783
 #define ID_NEW_NEWLAUNCHCONTROLEDIT     32784
+#define MENU_FILE_OPEN                  32785
+#define MENU_MS_FILE_SAVE               32786
+#define MENU_MS_FILE_OPEN               32787
+#define MENU_MS_FILE_SAVE_as            32788
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        448
-#define _APS_NEXT_COMMAND_VALUE         32785
+#define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           315
 #endif

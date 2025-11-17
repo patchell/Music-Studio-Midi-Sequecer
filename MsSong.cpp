@@ -33,13 +33,17 @@ CMsSong::CMsSong()
 	m_pLastKeySignature = 0;
 	m_pLastTimeSignature = 0;
 	m_pLastTempo = 0;
+	m_BufIndex = 0;
+	m_pFileBuffer = 0;
+	m_nFileBufferSize = 0;
+	m_InFileSize = 0;
 }
 
 CMsSong::~CMsSong()
 {
-	/// <summary>
-	/// 
-	/// </summary>
+	// <summary>
+	// 
+	// </summary>
 	if(m_pEventListHead)
 	{
 		CMsEvent *pEv,*pEvDel;
@@ -55,10 +59,10 @@ CMsSong::~CMsSong()
 
 void CMsSong::AddEventAtEnd(CMsEvent *pE)
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pE"></param>
+	// <summary>
+	// 
+	// </summary>
+	// <param name="pE"></param>
 	if(m_pEventListHead == 0)
 	{
 		m_pEventListHead = pE;
@@ -76,10 +80,10 @@ void CMsSong::AddEventAtEnd(CMsEvent *pE)
 
 void CMsSong::AddEventAtStart(CMsEvent *pE)
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pE"></param>
+	// <summary>
+	// 
+	// </summary>
+	// <param name="pE"></param>
 	if(m_pEventListHead == 0)
 	{
 		m_pEventListHead = pE;
@@ -95,19 +99,33 @@ void CMsSong::AddEventAtStart(CMsEvent *pE)
 	GetEventListHead()->PrintEvents("AddEventAtStart");
 }
 
+bool CMsSong::SetGetPosition(int pos)
+{
+	bool  rV = false;
+
+	if(pos < m_InFileSize)
+	{
+		m_BufIndex = pos;
+		rV= true;
+	}
+	return rV;
+}
+
 int CMsSong::Parse(char *pSongData)
 {
-	/// <summary>
-	/// 	** Parse **
-	/// This function is used to parse
-	/// the raw data of the Music Studio Song
-	/// file data to create a data base
-	///
-	///	parameter:
-	///		pSongData....pointer to the song data
-	/// </summary>
-	/// <param name="pSongData"></param>
-	/// <returns></returns>
+	//--------------------------------------
+	// <summary>
+	// 	** Parse **
+	// This function is used to parse
+	// the raw data of the Music Studio Song
+	// file data to create a data base
+	//
+	//	parameter:
+	//		pSongData....pointer to the song data
+	// </summary>
+	// <param name="pSongData"></param>
+	// <returns></returns>
+	//--------------------------------------
 	int rV=0;
 	int loop = 1;
 	int c;
@@ -127,12 +145,21 @@ int CMsSong::Parse(char *pSongData)
 
 	while(loop)
 	{
-		c = (int)pSongData[i++] & 0xff;
+		if (pEv->GetIndex() == 35)
+		{
+			printf("Index is 35\n");
+		}
+		c = ParserGetC();
 		obj.pObj = 0;
 		switch(c)	/*	switch song data	*/
 		{
+			case MSFF_TOKEN_EOF:
+				loop = 0;
+				rV = 0;
+				break;
 			case MSFF_TOKEN_REPEAT_STOP:	//basically the same thing as an End Event
 				obj.pRepE = new CMsRepeatEnd;
+				obj.pRepE->Create(this, pEv);
 				break;
 			case MSFF_TOKEN_EVENT_END:
 				AddEventAtEnd(pEv);
@@ -140,35 +167,36 @@ int CMsSong::Parse(char *pSongData)
 				pEv->SetIndex(Event++);
 				break;
 			case MSFF_TOKEN_KEY_SIGNATURE:
-				KeySig = (int)pSongData[i++] & 0xff;
-				KeySig = (int)pSongData[i++] & 0xff;
+				KeySig = ParserGetC();
+				KeySig = ParserGetC();
 				obj.pKey = new CMsKeySignature();
-				obj.pKey->Create(this,pEv->GetIndex(),KeySig);
+				obj.pKey->Create(this,pEv,KeySig);
 				break;
 			case MSFF_TOKEN_TEMPO:
-				Tempo = (int)pSongData[i++] & 0xff;
+				Tempo = ParserGetC();
 				obj.pTemp = new CMsTempo();
-				obj.pTemp->Create(this, pEv->GetIndex(),Tempo);
+				obj.pTemp->Create(this, pEv,Tempo);
 				break;
 			case MSFF_TOKEN_BAR:	//don't do much of anything
 				obj.pBar = new CMsBar;
-				obj.pBar->Create(this, pEv->GetIndex());
+				obj.pBar->Create(this, pEv);
 				break;
 			case MSFF_TOKEN_TIME_SIGNATURE:
-				TimeSig = (int)pSongData[i++] & 0xff;
+				TimeSig = ParserGetC();
+				TimeSig = ParserGetC();
 				obj.pTime = new CMsTimeSignature();
-				obj.pTime->Create(this, Event, TimeSig);
+				obj.pTime->Create(this, pEv, TimeSig);
 				break;
 			case MSFF_TOKEN_LOUDNESS:
-				Loudness = (int)pSongData[i++] & 0xff;
-				Loudness = (int)pSongData[i++] & 0xff;
+				Loudness = ParserGetC();
+				Loudness = ParserGetC();
 				obj.pLoud = new CMsLoudness();
-				obj.pLoud->Create(this,GetStaffChildView()->GetDrawEvent(), Loudness);
+				obj.pLoud->Create(this,pEv, Loudness);
 				break;
 			case MSFF_TOKEN_REPEAT_START:
-				Repeat = (int)pSongData[i++] & 0xff;
+				Repeat = ParserGetC();
 				obj.pRepS = new CMsRepeatStart();
-				obj.pRepS->Create(this, 1,pEv->GetIndex());
+				obj.pRepS->Create(this, 1,pEv);
 				break;
 			case MSFF_TOKEN_END:
 				obj.pEnd = new CMsEndBar;
@@ -176,19 +204,26 @@ int CMsSong::Parse(char *pSongData)
 				rV = 0;
 				break;
 			default:
-				/*
-					if we got down here, what was found must be a note
-					so, we first get the track/type,duration,accidentals
-					and then the note number
-					If, the note starts a tie, treat it like any other
-					note, if a note is at the end of a tie, then find
-					the note in the time out buffer.  If the note is
-					the beginning and end of a tie, still find it
-					in the timeout buffer
-				*/
-				t1 = (int)pSongData[i++] & 0xff;	/*	duration	*/
-				t2 = (int)pSongData[i++] & 0xff;	/*	note mask off MSB (upside down note)	*/
+				//--------------------------------`
+				//if we got down here, what was found must be a note
+				//so, we first get the track/type,duration,accidentals
+				//and then the note number
+				//If, the note starts a tie, treat it like any other
+				//note, if a note is at the end of a tie, then find
+				//the note in the time out buffer.  If the note is
+				//the beginning and end of a tie, still find it
+				//in the timeout buffer
+				//-------------------------------
+				t1 = ParserGetC();	/*	duration	*/
+				t2 = ParserGetC();	/*	note mask off MSB (upside down note)	*/
+				//----------------------------------
+				// Create a new Note Object
+				//----------------------------------
 				obj.pNote = new CMsNote;
+				obj.pNote->Create(NULL,this, pEv->GetIndex());
+				//----------------------------------
+				// Fill in the data
+				//----------------------------------
 				obj.pNote->SetAccent((t1 & MSFF_ACCENT_FLAG)?1:0);
 				obj.pNote->SetDuration(t1 & MSFF_DURATION_MASK);
 				obj.pNote->SetAccidental((t1 & MSFF_KEY_MASK) >> MSFF_KEY_SHIFT);
@@ -200,11 +235,14 @@ int CMsSong::Parse(char *pSongData)
 				obj.pNote->SetTieEnd((c & MSFF_ENDTIE_FLAG)?1:0);
 				obj.pNote->SetTrack((c & MSFF_TRACK_MASK));
 				obj.pNote->SetStemDown((t2 & MSFF_NOTE_UPSIDE_DOWN)?true:false);
-				obj.pNote->SetParentEvent(pEv->GetIndex());
 				break;
 		}	/*	end of switch (c)	*/
 		if(obj.pObj)
 		{
+			if(pEv->GetIndex() == 35)
+			{
+				printf("Index is 35\n");
+			}
 			pEv->AddObjectAtEnd(obj.pObj);
 //			obj.pObj->Print(stdout);
 		}
@@ -218,7 +256,7 @@ UINT CMsSong::LittleEndian(UINT bE)
     union {
         unsigned char m_C[2];
         UINT m_S;
-    }CV;
+    }CV = {0};
     unsigned char t;
 
     CV.m_S = bE;
@@ -230,14 +268,14 @@ UINT CMsSong::LittleEndian(UINT bE)
 
 void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pDC"></param>
-	/// <param name="event"></param>
-	/// <param name="maxevent"></param>
-	/// <param name="pRect"></param>
-	int i;
+	// <summary>
+	// 
+	// </summary>
+	// <param name="pDC"></param>
+	// <param name="event"></param>
+	// <param name="maxevent"></param>
+	// <param name="pRect"></param>
+	int i = 0;
 	int MaxX = pRect->right;
 	CPen blk,*oldpen;
 	blk.CreatePen(PS_SOLID,1,RGB(0,0,0));
@@ -700,6 +738,53 @@ void CMsSong::Save(FILE *pO)
 		fputc(0,pO);	//event delemiter
 		pEv = pEv->GetNext();
 	}
+}
+
+bool CMsSong::Open(CString& csFileName)
+{
+	char* pName = new char[512];
+	FILE* pInFile;
+	errno_t err;
+	bool rV = true;
+	struct _stat32 FileStats;
+	unsigned BytesRead = 0;
+
+	sprintf_s(pName, 512, "%S", csFileName.GetString());
+	err = fopen_s(&pInFile, pName, "rb");
+	if (err != 0)
+	{
+		rV = false;
+	}
+	else
+	{
+		_stat32(pName, &FileStats);
+		m_InFileSize = FileStats.st_size;
+		fopen_s(&pInFile, pName, "rb");
+		m_pFileBuffer = new char[m_InFileSize + 1];
+		if (m_pFileBuffer && pInFile)
+			BytesRead = (int)fread(m_pFileBuffer, 1, m_InFileSize, pInFile);
+		if(pInFile) fclose(pInFile);
+		if (BytesRead)
+			m_InFileSize = BytesRead;
+		fprintf(stdout, "File:%s has %d Bytes\n", pName, m_InFileSize);
+		if (m_pFileBuffer)
+		{
+			SetGetPosition(520);
+			Parse(m_pFileBuffer);
+		}
+		else
+			rV = false;
+	}
+	delete[] pName;
+	return rV;
+}
+
+int CMsSong::ParserGetC()
+{
+	int rV = -1;
+	if(m_InFileSize > m_BufIndex)
+		rV = (int)m_pFileBuffer[m_BufIndex++] & 0xff;
+	return rV;
 }
 
 

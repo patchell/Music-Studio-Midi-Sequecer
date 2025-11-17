@@ -108,6 +108,12 @@ BEGIN_MESSAGE_MAP(CChildViewStaff, CChildViewBase)
 	ON_MESSAGE(WM_STAFF_MIDI_EDIT, &CChildViewStaff::OnMidiEdit)
 	ON_MESSAGE(WM_CHILDVIEW_PLAYERTHREAD, &CChildViewStaff::OnChildviewPlayerthread)
 	ON_WM_TIMER()
+	ON_COMMAND(MENU_MS_FILE_OPEN, &CChildViewStaff::OnMenuMsFileOpen)
+	ON_COMMAND(MENU_MS_FILE_SAVE, &CChildViewStaff::OnMenuMsFileSave)
+	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_OPEN, &CChildViewStaff::OnUpdateMenuMsFileOpen)
+	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_SAVE, &CChildViewStaff::OnUpdateMenuMsFileSave)
+	ON_COMMAND(MENU_MS_FILE_SAVE_as, &CChildViewStaff::OnMenuMsFileSaveAs)
+	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_SAVE_as, &CChildViewStaff::OnUpdateMenuMsFileSaveAs)
 END_MESSAGE_MAP()
 
 // CChildViewStaff message handlers
@@ -3400,4 +3406,40 @@ BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 		break;
 	}
 	return CChildViewBase::PreTranslateMessage(pMsg);
+}
+
+void CChildViewStaff::OnMenuMsFileOpen()
+{
+	printf("File Open Menu Selected\n");
+	CFileDialog Dlg(TRUE, _T("sng"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Midi Sequence Files (*.sng)|*.sng|All Files (*.*)|*.*||"));
+	if (IDOK == Dlg.DoModal())
+	{
+		CString FileName = Dlg.GetPathName();
+		GetSong()->Open(FileName);
+	}
+}
+
+void CChildViewStaff::OnUpdateMenuMsFileOpen(CCmdUI* pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+}
+
+void CChildViewStaff::OnMenuMsFileSave()
+{
+	// TODO: Add your command handler code here
+}
+
+void CChildViewStaff::OnUpdateMenuMsFileSave(CCmdUI* pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+}
+
+void CChildViewStaff::OnMenuMsFileSaveAs()
+{
+	// TODO: Add your command handler code here
+}
+
+void CChildViewStaff::OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
 }

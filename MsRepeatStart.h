@@ -11,6 +11,7 @@ public:
 	CMsRepeatStart();
 	virtual ~CMsRepeatStart();
 	void Create(CMsSong* pSong, UINT Count, UINT nParrentEvent);
+	void Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent);
 	virtual void Print(FILE* pO);
 	inline int GetCount(void) { return m_Count; }
 	inline void SetCount(int c) { m_Count = c; }

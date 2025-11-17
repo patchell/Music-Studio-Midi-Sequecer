@@ -25,6 +25,12 @@ void CMsLoudness::Create(CMsSong* pSong, UINT ParentEvent, UINT Loudness)
 	CMsObject::Create(pSong, ParentEvent);
 }
 
+void CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
+{
+	SetLoudness(Loudness);
+	CMsObject::Create(pSong, pEvent);
+}
+
 void CMsLoudness::Print(FILE *pO)
 {
 	fprintf(pO,"Loudness:%d\n",m_Loudness);

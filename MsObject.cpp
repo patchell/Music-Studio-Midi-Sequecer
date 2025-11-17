@@ -52,6 +52,12 @@ void CMsObject::Create(CMsSong* pSong, UINT ParentEvent)
 	SetParentEvent(ParentEvent);
 }
 
+void CMsObject::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	m_pSong = pSong;
+	m_pParentEvent = pEvent;
+}
+
 void CMsObject::Print(FILE *pO)
 {
 	fprintf(pO, "CMsObject:Selected=%d\n", m_Selected);

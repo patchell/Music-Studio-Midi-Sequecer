@@ -26,6 +26,12 @@ void CMsTimeSignature::Create(CMsSong* pSong, UINT ParentEvent, INT TS)
 	CMsObject::Create(pSong, ParentEvent);
 }
 
+void CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
+{
+	m_TimeSig = TS;
+	CMsObject::Create(pSong, pEvent);
+}
+
 UINT CMsTimeSignature::Process()
 {
 	GetSong()->SetCurrentTimeSignature(this);

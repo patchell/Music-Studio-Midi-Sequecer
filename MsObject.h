@@ -110,6 +110,7 @@ public:
 	CMsObject();
 	virtual ~CMsObject();
 	void Create(CMsSong* pSong, UINT ParentEvent); 
+	void Create(CMsSong* pSong, CMsEvent* pEvent);
 	virtual void Copy(CMsObject *Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
@@ -147,7 +148,9 @@ public:
 	// Linked List Methodes
 	//--------------------------------------------------
 	CMsObject* GetNext(void) { return m_pNext; }
-	void SetNext(CMsObject* pO) { m_pNext = pO; }
+	void SetNext(CMsObject* pO) { 
+		m_pNext = pO; 
+	}
 	void SetPrev(CMsObject* pO) { m_pPrev = pO; }
 	CMsObject* GetPrev(void) { return m_pPrev; }
 	//-----------------------------------------

@@ -11,6 +11,7 @@ public:
 	CMsRepeatEnd();
 	virtual ~CMsRepeatEnd();
 	void Create(CMsSong* pSong, UINT ParentEvent);
+	void Create(CMsSong* pSong, CMsEvent* pEvent);
 	virtual void Save(FILE *pO);
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);

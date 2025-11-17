@@ -17,6 +17,11 @@ public:
 		SetKeySigCorrection();
 		CMsObject::Create(pSong, ParentEvent);
 	}
+	void Create(CMsSong* pSong, CMsEvent* pEvent, UINT key) {
+		m_KeySignature = key;
+		SetKeySigCorrection();
+		CMsObject::Create(pSong, pEvent);
+	}
 	virtual void Print(FILE *pO);
 	virtual void Save(FILE *pO);
 	virtual void Draw(CDC *pDC, int event, int maxevent);

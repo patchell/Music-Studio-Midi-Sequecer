@@ -17,6 +17,11 @@ constexpr auto SONG_STOP = 2;	// This Status means we need
 
 class CMsSong
 {
+	CString m_csFileName;
+	char* m_pFileBuffer;
+	int m_nFileBufferSize;
+	int m_InFileSize;
+	int m_BufIndex;
 	//--- Data for Song Editor View ----
 	CMsEvent * m_pEventListTail;
 	CMsEvent * m_pEventListHead;
@@ -129,6 +134,9 @@ public:
 	bool Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------
 	void Save(FILE *pO);
+	bool Open(CString& csFileName);
+	int ParserGetC();
+	bool SetGetPosition(int pos);
 	int Parse(char *pSongData);
 	void Print(FILE *pO);
 	// ------------ Note Managment ------------------

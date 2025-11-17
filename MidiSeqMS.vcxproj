@@ -377,6 +377,7 @@
     <Image Include="bmCB_KEY_Cmajor.bmp" />
     <Image Include="bmCB_KEY_Gmajor.bmp" />
     <Image Include="bmCB_Misc_EndBar.bmp" />
+    <Image Include="D:\Projects\MidiSeqMS\res\bmCB_RestEigth.bmp" />
     <Image Include="IDR_TX816_EDIT.ico" />
     <Image Include="res\bmDX7Alg01.bmp" />
     <Image Include="res\bmDX7Alg02.bmp" />

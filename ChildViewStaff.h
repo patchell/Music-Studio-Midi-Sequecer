@@ -323,4 +323,10 @@ public:
 	void MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
+    afx_msg void OnMenuMsFileOpen();
+    afx_msg void OnMenuMsFileSave();
+    afx_msg void OnUpdateMenuMsFileOpen(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateMenuMsFileSave(CCmdUI* pCmdUI);
+	afx_msg void OnMenuMsFileSaveAs();
+	afx_msg void OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI);
 };

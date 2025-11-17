@@ -59,6 +59,18 @@ void CMsNote::Create(int BitmapID, CMsSong* pSong, UINT ParentEvent)
 	CMsObject::Create(pSong, ParentEvent);
 }
 
+void CMsNote::Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent)
+{
+	if (nBitmapID)
+	{
+		m_RestBitmap.LoadBitmapW(nBitmapID);
+		m_BitmapFlag = true;
+	}
+	else
+		m_BitmapFlag = false;
+	CMsObject::Create(pSong, pParentEvent);
+}
+
 
 CString NoteLUT[12] = {
 	_T("C"),

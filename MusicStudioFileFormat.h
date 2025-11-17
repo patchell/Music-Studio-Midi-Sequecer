@@ -116,6 +116,7 @@ constexpr auto	MSFF_TOKEN_PORTAMENTO_END = 0X88;
 constexpr auto	MSFF_TOKEN_GLISANDO_START = 0X89;
 constexpr auto	MSFF_TOKEN_GLISANDO_END = 0X8A;
 constexpr auto  MSFF_TOKEN_END = 0xFF;
+constexpr auto  MSFF_TOKEN_EOF = -1;
 
 //---------------------------
 // defines for note tokens

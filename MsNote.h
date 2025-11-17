@@ -266,6 +266,7 @@ public:
 	CMsNote();
 	virtual ~CMsNote();
 	void Create(int nBitmapID, CMsSong* pSong, UINT ParentEvent);
+	void Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent);
 	void LoadRestBitmap(int Selection);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
 	void DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color);
