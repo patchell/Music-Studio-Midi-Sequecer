@@ -1149,7 +1149,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 						pN->SetHeadFlipped(0);
 				}
 				Invalidate();
-				pN->Print(stdout);
+				pN->Print(stdout, 0);
 			}
 		}
 		break;
@@ -2815,18 +2815,18 @@ void CChildViewStaff::OnInitialUpdate()
 
 void CChildViewStaff::OnDraw(CDC* pDC)
 {
-	///----------------------------------------
-	/// OnDraw
-	///		This is the function that is called
-	/// when the scre
-	/// en needs to be redrawn.
-	/// To minimize screen flicker, all drawing
-	/// is done to a Memory DC, and then it is
-	/// blt to the screen.
-	///
-	///	parameters:
-	///		pDC....pointer to the device context
-	///----------------------------------------
+	//----------------------------------------
+	// OnDraw
+	//		This is the function that is called
+	// when the scre
+	// en needs to be redrawn.
+	// To minimize screen flicker, all drawing
+	// is done to a Memory DC, and then it is
+	// blt to the screen.
+	//
+	//	parameters:
+	//		pDC....pointer to the device context
+	//----------------------------------------
 	CDC DCm;	//memory device context
 	CMyBitmap bm,*pOldBM;
 	CRect rect;
@@ -3416,6 +3416,7 @@ void CChildViewStaff::OnMenuMsFileOpen()
 	{
 		CString FileName = Dlg.GetPathName();
 		GetSong()->Open(FileName);
+		Invalidate();
 	}
 }
 

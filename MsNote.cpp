@@ -140,13 +140,17 @@ int CMsNote::NearestLine()
 }
 
 
-void CMsNote::Print(FILE *pO)
+void CMsNote::Print(FILE *pO, int Indent)
 {
-	fprintf(pO, "***********************************\n");
-	CMsObject::Print(pO);
-	GetData().PrintData(pO, GetDataPointer());
-	fprintf(pO, "***********************************\n");
+	char* pIndentString = new char[256];
 
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO, "%s***********************************\n", pIndentString);
+	CMsObject::Print(pO, Indent+4);
+	GetData().PrintData(pO, GetDataPointer(), Indent+4);
+	fprintf(pO, "%s***********************************\n", pIndentString);
+
+	delete[] pIndentString;
 }
 
 UINT CMsNote::ObjectToString(CString& csString, UINT mode)
@@ -1136,27 +1140,68 @@ CMsNote* CMsNote::IsSecondInterval()
 	return pWholeStep;
 }
 
-void NoteData::PrintData(FILE* pO, NoteData* nd)
+void NoteData::PrintData(FILE* pO, NoteData* nd, int Indent)
 {
 	CMsNote::DUR * pDur = CMsNote::GetDurationTable();
+	char* pIndentString = new char[256];
+	int l = 1024, ls = 0, Size;
+	char* pS = new char[l];
 
-	fprintf_s(pO, "==================Note Data================\n");
-	fprintf_s(pO, "Rest = %d\n", nd->m_Rest);
-	fprintf_s(pO, "Tie End = %d\n", nd->m_TieEnd);
-	fprintf_s(pO, "Accent = %d\n", nd->m_Accent);
-	fprintf_s(pO, "Stacato = %d\n", nd->m_Stacato);
-	fprintf_s(pO, "Legato = %d\n", nd->m_Legato);
-	fprintf_s(pO, "Velocty = %d\n", nd->m_Velocity);
-	fprintf_s(pO, "Note Off Tick Mark = %d\n", nd->m_NoteOffTick);
-	fprintf_s(pO, "Stem Down = %d\n", nd->m_StemDown);
-	fprintf_s(pO, "Head Flipped = %d\n", nd->m_HeadFlipped);
-	fprintf_s(pO, "Accidental = %d\n", nd->m_Accidental);
-	fprintf_s(pO, "Track = %d\n", nd->m_Track);
-	fprintf_s(pO, "Duration = %d\n", nd->m_Duration);
-	fprintf_s(pO, "Duration: %s\n", pDur[(int)nd->m_Duration].pName);
-	fprintf_s(pO, "Pitch = %d\n", nd->m_Pitch);;
-	fprintf_s(pO, "Dotted = %d\n", nd->m_Dotted);
-	fprintf_s(pO, "Triplet = %d\n", nd->m_Triplet);
-	fprintf_s(pO, "Midi DeviceID = %d\n", nd->m_MidiOutID);
-	fprintf_s(pO, "=================END=================\n");
+	theApp.IndentString(pIndentString, 256, Indent);
+	//fprintf_s(pO, "%s==================Note Data================\n", pIndentString);
+	//fprintf_s(pO, "%sRest = %d\n", pIndentString, nd->m_Rest);
+	//fprintf_s(pO, "%sTie End = %d\n", pIndentString, nd->m_TieEnd);
+	//fprintf_s(pO, "%sAccent = %d\n", pIndentString, nd->m_Accent);
+	//fprintf_s(pO, "%sStacato = %d\n", pIndentString, nd->m_Stacato);
+	//fprintf_s(pO, "%sLegato = %d\n", pIndentString, nd->m_Legato);
+	//fprintf_s(pO, "%sVelocty = %d\n", pIndentString, nd->m_Velocity);
+	//fprintf_s(pO, "%sNote Off Tick Mark = %d\n", pIndentString, nd->m_NoteOffTick);
+	//fprintf_s(pO, "%sStem Down = %d\n", pIndentString, nd->m_StemDown);
+	//fprintf_s(pO, "%sHead Flipped = %d\n", pIndentString, nd->m_HeadFlipped);
+	//fprintf_s(pO, "%sAccidental = %d\n", pIndentString, nd->m_Accidental);
+	//fprintf_s(pO, "%sTrack = %d\n", pIndentString, nd->m_Track);
+	//fprintf_s(pO, "%sDuration = %d\n", pIndentString, nd->m_Duration);
+	//fprintf_s(pO, "%sDuration: %s\n", pIndentString, pDur[(int)nd->m_Duration].pName);
+	//fprintf_s(pO, "%sPitch = %d\n", pIndentString, nd->m_Pitch);
+	//fprintf_s(pO, "%sDotted = %d\n", pIndentString, nd->m_Dotted);
+	//fprintf_s(pO, "%sTriplet = %d\n", pIndentString, nd->m_Triplet);
+	//fprintf_s(pO, "%sMidi DeviceID = %d\n", pIndentString, nd->m_MidiOutID);
+	//fprintf_s(pO, "%s=================END=================\n", pIndentString);
+
+	Size = l - ls;
+	if (m_Rest)
+		ls += sprintf_s(&pS[ls], Size, "REST:%d", m_Pitch);
+	else
+		ls += sprintf_s(&pS[ls], Size, "NOTE:%d", m_Pitch);
+	if ((m_Accent))
+	{
+		Size = l - ls;
+		ls += sprintf_s(&pS[ls], Size, " Accent");
+	}
+	Size = l - ls;
+	ls += sprintf_s(&pS[ls], Size, " Duration:%d", m_Duration);
+	Size = l - ls;
+	ls += sprintf_s(&pS[ls], Size, " Accidental:%d", m_Accidental);
+	if (m_TieBeg)
+	{
+		Size = l - ls;
+		ls += sprintf_s(&pS[ls], Size, " Tie Start");
+	}
+	if (m_TieEnd)
+	{
+		Size = l - ls;
+		ls += sprintf_s(&pS[ls], Size, " Tie End");
+	}
+	Size = l - ls;
+	ls += sprintf_s(&pS[ls], Size, " Track:%d", m_Track);
+	if (m_StemDown)
+	{
+		Size = l - ls;
+		ls += sprintf_s(&pS[ls], Size, " Stem Down");
+	}
+	fprintf_s(pO, "%s==================Note Data==========\n", pIndentString);
+	fprintf_s(pO, "%  s%s\n", pIndentString, pS);
+	fprintf_s(pO, "%s=================END=================\n", pIndentString);
+	delete[] pS;
+	delete[] pIndentString;
 }

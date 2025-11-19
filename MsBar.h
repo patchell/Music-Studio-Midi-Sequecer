@@ -15,7 +15,7 @@ public:
 	virtual ~CMsBar();
 	void Create(CMsSong* pSong, UINT Event);
 	void Create(CMsSong* pSong, CMsEvent* pEvent);
-	virtual void Print(FILE* pO);
+	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual void Copy(CMsObject* pSource);
 	virtual void Draw(CDC* pDC, int event, int maxevent);

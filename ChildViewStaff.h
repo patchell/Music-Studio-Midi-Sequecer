@@ -229,7 +229,9 @@ public:
 	UINT GetHeadFlipped() { return GetNoteData().GetHeadFlipped(); }
 	void SetHeadFlipped(UINT flipped) { GetNoteData().SetHeadFlipped(flipped); }
 
-	UINT GetDrawEvent() { return m_nDrawEvent; }
+	UINT GetDrawEvent() { 
+		return m_nDrawEvent;
+	}
 	void IncDrawEvent() {
 		m_nDrawEvent++;
 	}
@@ -253,6 +255,7 @@ public:
 			m_SongScrollPos += 4;
 			for (int i = 0; i < 4; ++i)
 				GetSong()->AddEventAtEnd(GetSong()->MakeNewEvent());
+			GetSong()->RenumberEvents(NULL, NULL);
 			SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
 			SetScrollPos(GetSong()->GetTotalEvents() - GetMaxEvents());
 		}

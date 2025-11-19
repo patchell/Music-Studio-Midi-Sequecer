@@ -22,7 +22,7 @@ public:
 	virtual CMsObject* Copy(void);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
-	virtual void Print(FILE* pO);
+	virtual void Print(FILE* pO, int Indent);
 	void AddChordNoteAtHead(CMsChordNote* pCN);
 	void AddChordNoteAtTail (CMsChordNote* pCN);
 	void RemoveChordNote(CMsChordNote* pCN);

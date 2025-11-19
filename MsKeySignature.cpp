@@ -41,9 +41,13 @@ CMsKeySignature::~CMsKeySignature()
 
 }
 
-void CMsKeySignature::Print(FILE *pO)
+void CMsKeySignature::Print(FILE *pO, int Indent)
 {
-//	fprintf(pO,"Key Signature:%s\n",CMsKeySignature::KeySigStringTab[m_KeySignature]);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sKey Signature:%s\n", pIndentString, CMsKeySignature::KeySigStringTab[m_KeySignature]);
+	delete[] pIndentString;
 }
 
 void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)

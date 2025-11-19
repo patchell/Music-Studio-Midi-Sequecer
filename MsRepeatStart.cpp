@@ -30,9 +30,13 @@ void CMsRepeatStart::Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent)
 {
 }
 
-void CMsRepeatStart::Print(FILE *pO)
+void CMsRepeatStart::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Repeat Start |:(%d)\n",m_Count);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sRepeat Start |:(%d)\n", pIndentString, m_Count);
+	delete[] pIndentString;
 }
 
 

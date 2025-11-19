@@ -79,6 +79,6 @@ public:
 	//--------------------------------------
 	// Used for debugging
 	//---------------------------------------
-	void Print(FILE *pO);
-	void PrintEvents(const char*pTitle);
+	void Print(FILE *pO, const char* s, int Indent);
+	void PrintEvents(FILE* pO, const char*pTitle, int Indent);
 };

@@ -75,7 +75,7 @@ void CMsSong::AddEventAtEnd(CMsEvent *pE)
 		m_pEventListTail = pE;
 	}
 	++m_nTotalEvents;
-	GetEventListHead()->PrintEvents("AddEvent At End");
+	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEvent At End",2);
 }
 
 void CMsSong::AddEventAtStart(CMsEvent *pE)
@@ -96,7 +96,7 @@ void CMsSong::AddEventAtStart(CMsEvent *pE)
 		m_pEventListHead = pE;
 	}
 	++m_nTotalEvents;
-	GetEventListHead()->PrintEvents("AddEventAtStart");
+	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddEventAtStart", 2);
 }
 
 bool CMsSong::SetGetPosition(int pos)
@@ -268,6 +268,7 @@ UINT CMsSong::LittleEndian(UINT bE)
 
 void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 {
+	//------------------------------------
 	// <summary>
 	// 
 	// </summary>
@@ -275,9 +276,11 @@ void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 	// <param name="event"></param>
 	// <param name="maxevent"></param>
 	// <param name="pRect"></param>
+	//------------------------------------
 	int i = 0;
 	int MaxX = pRect->right;
 	CPen blk,*oldpen;
+
 	blk.CreatePen(PS_SOLID,1,RGB(0,0,0));
 	oldpen = pDC->SelectObject(&blk);
 	//------------------------------------
@@ -407,18 +410,18 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 			pNewEvent->AddObjectAtEnd(pEndBar);
 		}
 	}
-	GetEventListHead()->PrintEvents("AddObjectToSong");
+	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddObjectToSong", 2);
 	return rV;
 }
 
 UINT CMsSong::AddMoreEvenrsAtEnd(UINT NewEndEvent)
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="NewEndEvent"></param>
-	/// <returns></returns>
-	/// 
+	// <summary>
+	// 
+	// </summary>
+	// <param name="NewEndEvent"></param>
+	// <returns></returns>
+	// 
 
 	UINT NumberOfEvents = 0;
 	CMsEvent* pEndEvent = GetEventListTail();
@@ -438,7 +441,7 @@ UINT CMsSong::AddMoreEvenrsAtEnd(UINT NewEndEvent)
 		pEVTemp = MakeNewEvent();
 		AddEventAtEnd(pEVTemp);
 	}
-	GetEventListHead()->PrintEvents("AddMoreEvenrsAtEnd");
+	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddMoreEventsAtEnd", 2);
 	return NumberOfEvents;
 }
 
@@ -472,28 +475,28 @@ void CMsSong::RenumberEvents(int *First, int *Last)
 		}
 		pEv = pEv->GetNext();
 	}
-	GetEventListHead()->PrintEvents("RenumberEvents");
+	GetEventListHead()->PrintEvents(theApp.LogFile(), "RenumberEvents", 2);
 }
 
 CMsEvent *CMsSong::InsertEvent(int e)
 {
-	///--------------------------------
-	///	InsertEvent
-	///
-	///		This function inserts an
-	///	empty event at the given
-	///	position.  If there are no
-	/// events at that position, then
-	/// this function will create
-	/// them until there is.
-	///
-	/// parameters:
-	///		e.....event position to insert new event
-	///
-	/// return value:
-	///		returns a pointer to the new
-	///	event.
-	///-------------------------------------
+	//--------------------------------
+	//	InsertEvent
+	//
+	//		This function inserts an
+	//	empty event at the given
+	//	position.  If there are no
+	// events at that position, then
+	// this function will create
+	// them until there is.
+	//
+	// parameters:
+	//		e.....event position to insert new event
+	//
+	// return value:
+	//		returns a pointer to the new
+	//	event.
+	//-------------------------------------
 	CMsEvent *pEv = GetEventListHead();
 	CMsEvent *pNewEv=0;
 
@@ -536,6 +539,7 @@ CMsEvent *CMsSong::InsertEvent(int e)
 		if(pNewEv->GetNext())
 			pNewEv->GetNext()->SetPrev(pNewEv);
 	}
+	GetEventListHead()->PrintEvents(theApp.LogFile(), "InsertEvent", 2);
 	return pNewEv;
 }
 
@@ -760,20 +764,40 @@ bool CMsSong::Open(CString& csFileName)
 		_stat32(pName, &FileStats);
 		m_InFileSize = FileStats.st_size;
 		fopen_s(&pInFile, pName, "rb");
-		m_pFileBuffer = new char[m_InFileSize + 1];
-		if (m_pFileBuffer && pInFile)
-			BytesRead = (int)fread(m_pFileBuffer, 1, m_InFileSize, pInFile);
-		if(pInFile) fclose(pInFile);
-		if (BytesRead)
-			m_InFileSize = BytesRead;
-		fprintf(stdout, "File:%s has %d Bytes\n", pName, m_InFileSize);
-		if (m_pFileBuffer)
+		if(pInFile == NULL)
 		{
-			SetGetPosition(520);
-			Parse(m_pFileBuffer);
+			MessageBox(NULL, _T("Could not open file"), _T("Error"), MB_OK);
+			rV = false;
 		}
 		else
-			rV = false;
+		{
+			m_pFileBuffer = new char[m_InFileSize + 1];
+			if (m_pFileBuffer)
+			{
+				BytesRead = (int)fread(m_pFileBuffer, 1, m_InFileSize, pInFile);
+				if (pInFile) fclose(pInFile);
+				if(!ValidateFile())
+				{
+					MessageBox(NULL, _T("Not a valid Music Studio File"), _T("Error"), MB_OK);
+					rV = false;
+				}
+				else
+				{
+					if (BytesRead)
+						m_InFileSize = BytesRead;
+					fprintf(theApp.LogFile(), "File:%s has %d Bytes\n", pName, m_InFileSize);
+					//			theApp.Dump(theApp.LogFile(), m_pFileBuffer, m_InFileSize, 0);
+					if (m_pFileBuffer)
+					{
+						SetGetPosition(520);
+//						DumpSong(theApp.LogFile());
+						Parse(m_pFileBuffer);
+					}
+					else
+						rV = false;
+				}
+			}
+		}
 	}
 	delete[] pName;
 	return rV;
@@ -942,7 +966,7 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 		else
 			GetStaffChildView()->MessageBox(_T("InTernal Error"), _T("Bad Thing"), MB_OK);
 	}
-	GetEventListHead()->PrintEvents("AddEventChain #1");
+	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #1", 2);
 }
 
 void CMsSong::AddEventChain(
@@ -998,7 +1022,7 @@ void CMsSong::AddEventChain(
 			SetEventListHead(pEvC->GetHead());
 		}
 	}
-	GetEventListHead()->PrintEvents("AddEventChain #2");
+	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #2", 2);
 }
 
 //*****************************************
@@ -1051,7 +1075,7 @@ UINT CMsSong::PendingObjects()
 	//-------------------------------------
 	int rV = 0;
 	FILE* m_pLog;
-	m_pLog = GETAPP->GetLog();
+	m_pLog = GETAPP->LogFile();
 	CMsObject* pObj;
 
 	pObj = GetPlayerObjectQueueHead();
@@ -1316,13 +1340,13 @@ int CMsSong::ProcessEvent(void)
 
 void CMsSong::Print(FILE* pO)
 {
-	//	fprintf(pO,"Total Events:%d\n",m_TotalEvents);
+	fprintf(pO,"Total Events:%d\n",GetTotalEvents());
 	CMsNote* pNote = (CMsNote*)GetPlayerObjectQueueHead();
 	while(pNote)
 	{
 		if (pNote)
 		{
-			pNote->Print(pO);
+			pNote->Print(pO, 4);
 			pNote = (CMsNote*)pNote->GetNextQueueObj();
 		}
 	}
@@ -1447,5 +1471,170 @@ void CMsSong::ChangePatch(int Track, int chan, int patch)
 
 	DeviceID = GETMIDIINFO->GetTrack(Track).GetMidiOutDeviceID();
 	GETMIDIOUTDEVICE(DeviceID).PgmChange(chan, patch);
+}
+
+
+bool CMsSong::ValidateFile()
+{
+	bool rV = true;
+	int c = m_pFileBuffer[0] & 0xff;
+	char* pS = new char[16];
+	int i;
+
+	if (c != 0xcd)
+		rV = false;
+	else
+	{
+		for (i = 0; i < 7; i++)
+		{
+			pS[i] = m_pFileBuffer[i + 1];
+		}
+		pS[i] = 0;
+		if (strcmp(pS, "Mstudio") != 0)
+			rV = false;
+	}
+
+	return rV;
+}
+
+int CMsSong::DumpSong(FILE* pOutFile)
+{
+	//--------------------------------------
+	// <summary>
+	// 	** Parse **
+	// This function is used to parse
+	// the raw data of the Music Studio Song
+	// file data to create a data base
+	//
+	//	parameter:
+	//		pSongData....pointer to the song data
+	// </summary>
+	// <param name="pSongData"></param>
+	// <returns></returns>
+	//--------------------------------------
+	int rV = 0;
+	int loop = 1;
+	int c;
+	int i = 0;
+	int Event = 0;
+
+	int KeySig;
+	int Tempo;
+	int TimeSig;
+	int Loudness;
+	int Repeat;
+	int t1, t2;
+	int Size, ls = 0;
+	int l = 2048;
+	char* pS = new char[l];
+
+	while (loop)
+	{
+		c = ParserGetC();
+		ls = 0;
+		switch (c)	/*	switch song data	*/
+		{
+		case MSFF_TOKEN_EOF:
+			loop = 0;
+			rV = 0;
+			break;
+		case MSFF_TOKEN_REPEAT_STOP:	//basically the same thing as an End Event
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Repeat END");
+			break;
+		case MSFF_TOKEN_EVENT_END:
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Event END");
+			break;
+		case MSFF_TOKEN_KEY_SIGNATURE:
+			KeySig = ParserGetC();
+			KeySig = ParserGetC();
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "KEY Signature:$%d", KeySig);
+			break;
+		case MSFF_TOKEN_TEMPO:
+			Tempo = ParserGetC();
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Tempo = %d", Tempo);
+			break;
+		case MSFF_TOKEN_BAR:	//don't do much of anything
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Measure Bar");
+			break;
+		case MSFF_TOKEN_TIME_SIGNATURE:
+			TimeSig = ParserGetC();
+			TimeSig = ParserGetC();
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Time Signature %d", TimeSig);
+			break;
+		case MSFF_TOKEN_LOUDNESS:
+			Loudness = ParserGetC();
+			Loudness = ParserGetC();
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Loudness = %d", Loudness);
+			break;
+		case MSFF_TOKEN_REPEAT_START:
+			Repeat = ParserGetC();
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "Repeat Start = %d Counts", Repeat);
+			break;
+		case MSFF_TOKEN_END:
+			Size = l - ls;
+			ls = sprintf_s(&pS[ls], Size, "SONG END");
+			loop = 0;
+			rV = 0;
+			break;
+		default:
+			//--------------------------------`
+			//if we got down here, what was found must be a note
+			//so, we first get the track/type,duration,accidentals
+			//and then the note number
+			//If, the note starts a tie, treat it like any other
+			//note, if a note is at the end of a tie, then find
+			//the note in the time out buffer.  If the note is
+			//the beginning and end of a tie, still find it
+			//in the timeout buffer
+			//-------------------------------
+			t1 = ParserGetC();	/*	duration	*/
+			t2 = ParserGetC();	/*	note mask off MSB (upside down note)	*/
+			//----------------------------------
+			// Create a new Note Object
+			//----------------------------------
+			Size = l - ls;
+			if (c & MSFF_REST_FLAG)
+				ls += sprintf_s(&pS[ls], Size, "REST:%d", t2 & 0x7f);
+			else
+				ls += sprintf_s(&pS[ls], Size, "NOTE:%d", t2 & 0x7f);
+			if ((t1 & MSFF_ACCENT_FLAG))
+			{
+				Size = l - ls;
+				ls += sprintf_s(&pS[ls], Size, " Accent");
+			}
+			Size = l - ls;
+			ls += sprintf_s(&pS[ls], Size, " Duration:%d", t2 & 0x1f);
+			Size = l - ls;
+			ls += sprintf_s(&pS[ls], Size, " Accidental:%d", (t1 & MSFF_KEY_MASK) >> MSFF_KEY_SHIFT);
+			if (c & MSFF_BEGTIE_FLAG)
+			{
+				Size = l - ls;
+				ls += sprintf_s(&pS[ls], Size, " Tie Start");
+			}
+			if (c & MSFF_ENDTIE_FLAG)
+			{
+				Size = l - ls;
+				ls += sprintf_s(&pS[ls], Size, " Tie End");
+			}
+			Size = l - ls;
+			ls += sprintf_s(&pS[ls], Size, " Track:%d", c & MSFF_TRACK_MASK);
+			if (t2 & MSFF_NOTE_UPSIDE_DOWN)
+			{
+				Size = l - ls;
+				ls += sprintf_s(&pS[ls], Size, " Stem Down");
+			}
+			break;
+		}	/*	end of switch (c)	*/
+		fprintf(pOutFile, "%s\n", pS);
+	}	/*	end while	*/
+	return rV;
 }
 

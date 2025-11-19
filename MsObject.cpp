@@ -58,10 +58,14 @@ void CMsObject::Create(CMsSong* pSong, CMsEvent* pEvent)
 	m_pParentEvent = pEvent;
 }
 
-void CMsObject::Print(FILE *pO)
+void CMsObject::Print(FILE *pO, int Indent)
 {
-	fprintf(pO, "CMsObject:Selected=%d\n", m_Selected);
-	fprintf(pO, "CMsObject:ID=%d\n", m_ObjectID);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO, "%sCMsObject:Selected=%d\n", pIndentString, m_Selected);
+	fprintf(pO, "%sCMsObject:ID=%d\n", pIndentString, m_ObjectID);
+	delete[] pIndentString;
 }
 
 UINT CMsObject::Play()

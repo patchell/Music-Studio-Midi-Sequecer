@@ -31,9 +31,13 @@ void CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
 	CMsObject::Create(pSong, pEvent);
 }
 
-void CMsLoudness::Print(FILE *pO)
+void CMsLoudness::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Loudness:%d\n",m_Loudness);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sLoudness:%d\n", pIndentString, m_Loudness);
+	delete[] pIndentString;
 }
 
 UINT CMsLoudness::Process()

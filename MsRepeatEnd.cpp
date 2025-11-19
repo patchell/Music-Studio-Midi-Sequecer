@@ -18,9 +18,13 @@ CMsRepeatEnd::~CMsRepeatEnd()
 
 }
 
-void CMsRepeatEnd::Print(FILE *pO)
+void CMsRepeatEnd::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Repeat End :|\n");
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sRepeat End :|\n", pIndentString);
+	delete[] pIndentString;
 }
 
 UINT CMsRepeatEnd::Process()

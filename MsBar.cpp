@@ -29,9 +29,13 @@ void CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
 	CMsObject::Create(pSong, pEvent);
 }
 
-void CMsBar::Print(FILE *pO)
+void CMsBar::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Measure Bar:%d\n",m_BarNumber);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sMeasure Bar:%d\n", pIndentString,m_BarNumber);
+	delete[] pIndentString;
 }
 
 

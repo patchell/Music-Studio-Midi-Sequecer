@@ -48,28 +48,35 @@ void CMsEvent::Create(CMsSong*pParentSong,CChildViewStaff* pCV, UINT Event)
 	m_pParentSong = pParentSong;
 }
 
-void CMsEvent::Print(FILE *pO)
+void CMsEvent::Print(FILE *pO, const char* s, int Indent)
 {
+	char* pIndentString = new char[256];
 	CMsObject *pObj = GetEventObjectHead();
-	fprintf(pO, "=========Event %d Begin ========\n", m_Index);
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO, "%s========= %s Event %d Begin ========\n", pIndentString, s, m_Index);
 	while(pObj)
 	{
-		pObj->Print(pO);
+		pObj->Print(pO, Indent + 4);
 		pObj = pObj->GetNext();
 	}
-	fprintf(pO,"------------ event end-------------\n");
+	fprintf(pO,"%s------------ event %d end-------------\n", pIndentString, m_Index);
+	delete[] pIndentString;
 }
 
-void CMsEvent::PrintEvents(const char *pTitel)
+void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 {
 	CMsEvent* pEV = this;
-//	printf("^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
+	char* pIndentString = new char[256];
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO, "^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
 	while (pEV)
 	{
-//		printf("*** Event %d  ID %d\n", pEV->GetIndex(), pEV->GetEventID());
+//		fprintf(pO,"*** Event %d  ID %d\n", pEV->GetIndex(), pEV->GetEventID());
+		pEV->Print(pO, "Objects", Indent+4);
 		pEV = pEV->GetNext();
 	}
-//	printf("^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
+	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
 }
 
 void CMsEvent::AddObjectAtEnd(CMsObject *pO)
@@ -412,7 +419,7 @@ void CMsEvent::Draw(CDC *pDC, int event, int maxevent)
 		}
 		else if (IsSelected() && (event == RawEvent))
 		{
-			br.CreateSolidBrush(RGB(128, 132, 81));
+			br.CreateSolidBrush(RGB(220, 255, 200));
 		}
 		else if (event == RawEvent)
 		{
@@ -424,7 +431,7 @@ void CMsEvent::Draw(CDC *pDC, int event, int maxevent)
 			// Color Indicating Event that
 			// is active
 			//--------------------------------
-			br.CreateSolidBrush(RGB(228, 48, 128));
+			br.CreateSolidBrush(RGB(255, 200, 230));
 
 		}
 		dc.FillRect(CRect(0, 0, rectSize.cx, rectSize.cy), &br);

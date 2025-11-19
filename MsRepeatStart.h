@@ -12,7 +12,7 @@ public:
 	virtual ~CMsRepeatStart();
 	void Create(CMsSong* pSong, UINT Count, UINT nParrentEvent);
 	void Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent);
-	virtual void Print(FILE* pO);
+	virtual void Print(FILE* pO, int Indent);
 	inline int GetCount(void) { return m_Count; }
 	inline void SetCount(int c) { m_Count = c; }
 	virtual void Save(FILE *pO);

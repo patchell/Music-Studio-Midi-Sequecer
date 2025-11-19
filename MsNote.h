@@ -194,7 +194,7 @@ public:
 	void SetTriplet(int t) { m_Triplet = t; }
 	int GetTriplet() { return m_Triplet; }
 
-	void PrintData(FILE* pO, NoteData* nd);
+	void PrintData(FILE* pO, NoteData* nd, int Indent);
 };
 
 class CMsNote : public CMsObject
@@ -270,7 +270,7 @@ public:
 	void LoadRestBitmap(int Selection);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
 	void DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color);
-	virtual void Print(FILE* pO);
+	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual CMsObject* Copy(void);
 	//----------- Draw Funcrions ----------------------

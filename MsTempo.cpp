@@ -20,9 +20,13 @@ CMsTempo::~CMsTempo()
 
 }
 
-void CMsTempo::Print(FILE *pO)
+void CMsTempo::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Tempo:%d\n",m_Tempo);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sTempo:%d\n", pIndentString, m_Tempo);
+	delete[] pIndentString;
 }
 
 UINT CMsTempo::Process()

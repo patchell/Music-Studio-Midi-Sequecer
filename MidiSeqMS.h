@@ -95,7 +95,7 @@ public:
 	CMidiSeqMSApp() noexcept;
 	HMIDIOUT GetMidiOutHandle(int MidiID) { return  GetMidiOutTab().GetOutHandle(MidiID); }
 //	HMIDIIN GetMidiIn() {return  GetMidi()->GetMidiInHandle(); }
-	inline FILE* GetLog() { return m_pLog; }
+	inline FILE* LogFile() { return m_pLog; }
 	//------------- Midi Info -----------------------
 	CMidiInfo* GetMidiInfo() { return &m_MidiInfo; }
 	//------------ Bitmap Symbols -------------------
@@ -180,7 +180,9 @@ public:
 	afx_msg void OnNewNewlaunchcontroledit();
 	int FontPixelsToLogicalUnits(CDC* pDC, int heightInPixels);
 	unsigned GetUniqueID();
-	//---------------------------------------------------
+	void Dump(FILE* pOut, const char* pData, int len, int StartAddress);
+	char* IndentString(char* pDest, int StringLength, int Indent, int c = ' ');
+	//----------------------- Static Data----------------------------
 	static int  KeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1];
 	static int TimeSigCBbMIDs[APP_NUM_TIMESIG];
 	static int TimeSigBmIds[APP_NUM_TIMESIG];

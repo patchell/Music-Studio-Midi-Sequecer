@@ -22,6 +22,6 @@ void CMsPortamentoEnd::Save(FILE* pO)
 {
 }
 
-void CMsPortamentoEnd::Print(FILE* pO)
+void CMsPortamentoEnd::Print(FILE* pO, int Indent)
 {
 }

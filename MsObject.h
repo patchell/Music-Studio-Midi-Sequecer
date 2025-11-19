@@ -114,7 +114,7 @@ public:
 	virtual void Copy(CMsObject *Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
-	virtual void Print(FILE *pO);
+	virtual void Print(FILE *pO, int Indent);
 	virtual UINT Play();
 	virtual bool AddToQueue(CMsSong* pSong) { return false; }
 	virtual UINT Process();

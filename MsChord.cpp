@@ -32,7 +32,7 @@ void CMsChord::Save(FILE* pO)
 {
 }
 
-void CMsChord::Print(FILE* pO)
+void CMsChord::Print(FILE* pO, int Indent)
 {
 }
 

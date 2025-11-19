@@ -915,4 +915,70 @@ unsigned CMidiSeqMSApp::GetUniqueID()
 	return ++m_UniqueID;
 }
 
+void CMidiSeqMSApp::Dump(FILE* pOut, const char* pMem, int Size, int StartAddress)
+{
+	int Loc = 0;
+	bool bDone = false;
+	char* s = new char[256];
+	char strPad[64];
+	int Pad;
+	char Ascii[10] = {0,0,0,0,0,0,0,0,0,0};
+	int l, i, c, n;
+
+	Ascii[8] = 0;
+	while (!bDone)
+	{
+		l = 0;
+		l = sprintf_s(s, 256, "%04X ", Loc + StartAddress);
+		if ((Size - Loc) <= 0)
+		{
+			bDone = true;
+		}
+		else
+		{
+			if ((Size - Loc) < 8)
+				n = Size - Loc;
+			else
+				n = 8;
+			for (i = 0; i < n; ++i)
+			{
+				l += sprintf_s(&s[l], 256 - l,
+					"%02X ", unsigned(pMem[Loc + i]) & 0x0ff);
+			}
+			if (n < 8)
+			{
+				Pad = (8 - n) * 3;
+				IndentString(strPad, 64, Pad, ' ');
+				l += sprintf_s(&s[l], 256 - l, "%s", strPad);
+			}
+			for (i = 0; i < n; ++i)
+			{
+				c = pMem[Loc + i];
+				if (c < 0x20)
+					c = '.';
+				else if (c > 0x7f)
+					c = '.';
+				Ascii[i] = c;
+			}
+			fprintf(pOut, "%s %s\n", s, Ascii);
+			Loc += 8;
+			if ((Size - Loc) <= 0)
+			{
+				bDone = true;
+			}
+		}
+	}
+	delete[] s;
+}
+
+char* CMidiSeqMSApp::IndentString(char* s, int StringLength, int Indent, int c)
+{
+	int i;
+
+	for (i = 0; (i < Indent) && (i < (StringLength - 1)); ++i)
+		s[i] = c;
+	s[i] = 0;
+	return s;
+}
+
 

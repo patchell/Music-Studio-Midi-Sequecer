@@ -223,6 +223,8 @@ public:
 	CMsSong* GetSongListPrev() { return m_pPrevSong; }
 	void SetSongListPrev(CMsSong* pSong) { m_pPrevSong = pSong; }
 	CMsNote* FindNoteInPlayList(CMsNote* pNote); 
+	bool ValidateFile();
+	int DumpSong(FILE* pOutFile);
 	//----------------------------------
 	// Song Playing State Defines
 	// --------------------------------

@@ -22,7 +22,7 @@ void CMsPortamentoStart::Draw(CDC* pDC, int event, int maxevent)
 {
 }
 
-void CMsPortamentoStart::Print(FILE* pO)
+void CMsPortamentoStart::Print(FILE* pO, int Indent)
 {
 }
 

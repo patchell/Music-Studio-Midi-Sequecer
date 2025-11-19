@@ -59,9 +59,12 @@ static const char *TimeSigLut[] = {
 	"NA"
 };
 
-void CMsTimeSignature::Print(FILE *pO)
+void CMsTimeSignature::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"Time Signature:%s\n",TimeSigLut[m_TimeSig]);
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%sTime Signature:%s\n", pIndentString, TimeSigLut[m_TimeSig]);
 }
 
 void CMsTimeSignature::Draw(CDC *pDC, int event, int maxevent)

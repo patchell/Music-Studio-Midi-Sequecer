@@ -23,9 +23,13 @@ void CMsEndBar::Create(CMsSong* pSong, UINT nParentEvent)
 	CMsObject::Create(pSong, nParentEvent);
 }
 
-void CMsEndBar::Print(FILE *pO)
+void CMsEndBar::Print(FILE *pO, int Indent)
 {
-	fprintf(pO,"-------Song End------\n");
+	char* pIndentString = new char[256];
+
+	theApp.IndentString(pIndentString, 256, Indent);
+	fprintf(pO,"%s-------Song End------\n", pIndentString);
+	delete[] pIndentString;
 }
 
 void CMsEndBar::Draw(CDC *pDC, int event, int maxevent)

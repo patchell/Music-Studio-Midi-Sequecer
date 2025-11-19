@@ -22,6 +22,6 @@ void CMsGlisandoEnd::Save(FILE* pO)
 {
 }
 
-void CMsGlisandoEnd::Print(FILE* pO)
+void CMsGlisandoEnd::Print(FILE* pO, int Indent)
 {
 }
