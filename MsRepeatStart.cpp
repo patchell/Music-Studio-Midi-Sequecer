@@ -20,14 +20,41 @@ CMsRepeatStart::~CMsRepeatStart()
 
 }
 
-void CMsRepeatStart::Create(CMsSong* pSong, UINT Count, UINT nParrentEvent)
+bool CMsRepeatStart::Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent)
 {
-	SetCount(Count);
-	CMsObject::Create(pSong, nParrentEvent);
+	bool rV = true;
+	rV = CMsObject::Create(pSong, pEvent);
+	m_Count = Count;
+	return rV;
 }
 
-void CMsRepeatStart::Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent)
+UINT CMsRepeatStart::Process()
 {
+	m_CountDown = m_Count;
+	CMsEvent* pEV = GetParentEvent();
+	GetSong()->GetRepeatStack().Push(pEV);
+	printf("Repeat Start CD=%d\n", m_CountDown);
+	return 0;
+}
+
+UINT CMsRepeatStart::Play()
+{
+	return 0;
+}
+
+int CMsRepeatStart::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsRepeatStart::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsRepeatStart::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }
 
 void CMsRepeatStart::Print(FILE *pO, int Indent)
@@ -82,15 +109,6 @@ void CMsRepeatStart::Draw(CDC *pDC, int event, int maxevent)
 	delete[] s;
 	pDC->SelectObject(pOld);
 	pDC->SetTextColor(oldcolor);
-}
-
-UINT CMsRepeatStart::Process()
-{
-	m_CountDown = m_Count;
-	CMsEvent* pEV = GetParentEvent();
-	GetSong()->GetRepeatStack().Push(pEV);
-	printf("Repeat Start CD=%d\n", m_CountDown);
-	return 0;
 }
 
 UINT CMsRepeatStart::ObjectToString(CString& csString, UINT mode)

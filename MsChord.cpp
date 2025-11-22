@@ -19,6 +19,37 @@ CMsChord::~CMsChord()
 	delete[] m_pIntervals;
 }
 
+bool CMsChord::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	CMsObject::Create(pSong, pEvent);
+	return true;
+}
+
+UINT CMsChord::Process()
+{
+	return 0;
+}
+
+UINT CMsChord::Play()
+{
+	return 0;
+}
+
+int CMsChord::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsChord::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsChord::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 CMsObject* CMsChord::Copy(void)
 {
 	return nullptr;

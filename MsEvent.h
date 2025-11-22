@@ -21,8 +21,9 @@ class CMsEvent
 public:
 	CMsEvent();
 	virtual ~CMsEvent();
-	void Create(CMsSong* pParentSong, CChildViewStaff* pCV, UINT Event);
+	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV, UINT Event);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
+	virtual UINT Process(CMsSong* pSong);
 	//--------------------------------------
 	// Object management functions
 	//--------------------------------------

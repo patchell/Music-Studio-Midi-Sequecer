@@ -20,6 +20,33 @@ CMsTempo::~CMsTempo()
 
 }
 
+UINT CMsTempo::Process()
+{
+	return 0;
+}
+
+UINT CMsTempo::Play()
+{
+	GetSong()->SetCurrentTempo(this);
+	GETAPP->PlayerThreadSetTempo(GetQNPM());
+	return 1;
+}
+
+int CMsTempo::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsTempo::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsTempo::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsTempo::Print(FILE *pO, int Indent)
 {
 	char* pIndentString = new char[256];
@@ -27,13 +54,6 @@ void CMsTempo::Print(FILE *pO, int Indent)
 	theApp.IndentString(pIndentString, 256, Indent);
 	fprintf(pO,"%sTempo:%d\n", pIndentString, m_Tempo);
 	delete[] pIndentString;
-}
-
-UINT CMsTempo::Process()
-{
-	GetSong()->SetCurrentTempo(this);
-	GETAPP->PlayerThreadSetTempo(GetQNPM());
-	return 0;
 }
 
 UINT CMsTempo::ObjectToString(CString& csString, UINT mode)

@@ -24,6 +24,31 @@ CMsNatural::~CMsNatural()
 
 }
 
+UINT CMsNatural::Process()
+{
+	return 0;
+}
+
+UINT CMsNatural::Play()
+{
+	return 0;
+}
+
+int CMsNatural::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsNatural::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsNatural::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsNatural::Draw(CDC *pDC, COLORREF c, int x, int y)
 {
 	CPen pen,*oldpen;

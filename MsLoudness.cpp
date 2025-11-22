@@ -19,16 +19,36 @@ CMsLoudness::~CMsLoudness()
 
 }
 
-void CMsLoudness::Create(CMsSong* pSong, UINT ParentEvent, UINT Loudness)
+bool CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
 {
 	SetLoudness(Loudness);
-	CMsObject::Create(pSong, ParentEvent);
+	return CMsObject::Create(pSong, pEvent);
 }
 
-void CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
+UINT CMsLoudness::Play()
 {
-	SetLoudness(Loudness);
-	CMsObject::Create(pSong, pEvent);
+	GetSong()->SetCurrentLoudness(this);
+	return 1;
+}
+
+UINT CMsLoudness::Process()
+{
+	return 0;
+}
+
+int CMsLoudness::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsLoudness::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsLoudness::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }
 
 void CMsLoudness::Print(FILE *pO, int Indent)
@@ -38,12 +58,6 @@ void CMsLoudness::Print(FILE *pO, int Indent)
 	theApp.IndentString(pIndentString, 256, Indent);
 	fprintf(pO,"%sLoudness:%d\n", pIndentString, m_Loudness);
 	delete[] pIndentString;
-}
-
-UINT CMsLoudness::Process()
-{
-	GetSong()->SetCurrentLoudness(this);
-	return 0;
 }
 
 UINT CMsLoudness::ObjectToString(CString& csString, UINT mode)

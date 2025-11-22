@@ -41,12 +41,38 @@ CMsKeySignature::~CMsKeySignature()
 
 }
 
+UINT CMsKeySignature::Process()
+{
+	return 0;
+}
+
+UINT CMsKeySignature::Play()
+{
+	GetSong()->SetCurrentKeySignature(this);
+	return 1;
+}
+
+int CMsKeySignature::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsKeySignature::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsKeySignature::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsKeySignature::Print(FILE *pO, int Indent)
 {
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sKey Signature:%s\n", pIndentString, CMsKeySignature::KeySigStringTab[m_KeySignature]);
+	fprintf(pO,"%sKey Signature:%wS\n", pIndentString, CMsKeySignature::KeySigStringTab[m_KeySignature].GetString());
 	delete[] pIndentString;
 }
 
@@ -67,21 +93,27 @@ void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
 		case MSFF_CSMAJ:	///seven shrps
 			sharp.Draw(pDC,color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_B2));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
+			[[fallthrough]];
 		case MSFF_FSMAJ:	///six sharps
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+12,NoteToPosition(MSFF_NOTE_E2+12));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+20,NoteToPosition(MSFF_NOTE_E2+24));	//trebble staff
+			[[fallthrough]];
 		case MSFF_BMAJ:	///five sharps
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			[[fallthrough]];
 		case MSFF_EMAJ:	///four D sharps
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+20,NoteToPosition(MSFF_NOTE_D2+12));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+12,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			[[fallthrough]];
 		case MSFF_AMAJ:	//three G sharps
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_G2+12));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_G2+36));		//trebble staff
+			[[fallthrough]];
 		case MSFF_DMAJ:	//two C sharps
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+4,NoteToPosition(MSFF_NOTE_C2+12));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+4,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			[[fallthrough]]; 
 		case MSFF_GMAJ:	///one F sharp
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_F2+12));	//base staff
 			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
@@ -89,21 +121,27 @@ void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
 		case MSFF_CFMAJ:	//seven flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+12));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
+			[[fallthrough]];
 		case MSFF_GFMAJ:	//six flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			[[fallthrough]];
 		case MSFF_DFMAJ:	//five flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_G2));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
+			[[fallthrough]];
 		case MSFF_AFMAJ:	//four flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event +16,NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			[[fallthrough]];
 		case MSFF_EFMAJ:	//three flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			[[fallthrough]];
 		case MSFF_BFMAJ:	//two flats
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
+			[[fallthrough]];
 		case MSFF_FMAJ:	//one flat
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_B2));	//bass staff
 			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
@@ -111,11 +149,6 @@ void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
 	}
 }
 
-UINT CMsKeySignature::Process()
-{
-	GetSong()->SetCurrentKeySignature(this);
-	return 0;
-}
 
 void CMsKeySignature::ObjectRectangle(CRect& rect, UINT Event)
 {
@@ -144,21 +177,27 @@ void CMsKeySignature::SetKeySigCorrection(void)
 			case MSFF_CSMAJ:
 				if(i == MSFF_NOTE_C)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_FSMAJ:
 				if(i == MSFF_NOTE_F)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_BMAJ:
 				if(i == MSFF_NOTE_A)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_EMAJ:
 				if(i == MSFF_NOTE_D)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_AMAJ:
 				if(i == MSFF_NOTE_G)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_DMAJ:	//two sharps
 				if(i == MSFF_NOTE_F)
 					m_KeySigCorrection[i] = 1;
+				[[fallthrough]];
 			case MSFF_GMAJ:	//one sharp
 				if(i == MSFF_NOTE_C)
 					m_KeySigCorrection[i] = 1;
@@ -166,21 +205,27 @@ void CMsKeySignature::SetKeySigCorrection(void)
 			case MSFF_CFMAJ:
 				if(i == MSFF_NOTE_F)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_GFMAJ:
 				if(i == MSFF_NOTE_C)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_DFMAJ:
 				if(i == MSFF_NOTE_G)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_AFMAJ:
 				if(i == MSFF_NOTE_D)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_EFMAJ:
 				if(i == MSFF_NOTE_A)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_BFMAJ:
 				if(i == MSFF_NOTE_E)
 					m_KeySigCorrection[i] = -1;
+				[[fallthrough]];
 			case MSFF_FMAJ:
 				if(i == MSFF_NOTE_B)
 					m_KeySigCorrection[i] = -1;

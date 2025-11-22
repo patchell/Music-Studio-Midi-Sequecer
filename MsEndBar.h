@@ -8,7 +8,22 @@ class CMsEndBar : public CMsObject
 public:
 	CMsEndBar();
 	virtual ~CMsEndBar();
-	void Create(CMsSong* pSong, UINT nParentEvent);
+	bool Create(CMsSong* pSong, CMsEvent* pParentEvent);
+	//-------------------------------------------------
+	// Pure Virtual Methods
+	//-------------------------------------------------
+	virtual UINT Process();
+	virtual UINT Play();
+	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	virtual bool IsTimedObject() {
+		return false;
+	};
+	virtual bool DoesSomething() {
+		return false;
+	}
+	//------------------------------------------------------
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
 	virtual CMsObject * Copy(void);

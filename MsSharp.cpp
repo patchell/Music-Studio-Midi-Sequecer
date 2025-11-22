@@ -4,11 +4,6 @@
 
 #include "pch.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -22,6 +17,37 @@ CMsSharp::CMsSharp()
 CMsSharp::~CMsSharp()
 {
 
+}
+
+bool CMsSharp::Create(CMsSong* pSong)
+{
+	CMsObject::Create(pSong, 0);
+	return true;
+}
+
+UINT CMsSharp::Process()
+{
+	return 0;
+}
+
+UINT CMsSharp::Play()
+{
+	return 0;
+}
+
+int CMsSharp::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsSharp::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsSharp::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }
 
 void CMsSharp::Draw(CDC *pDC, COLORREF c, int x, int y)

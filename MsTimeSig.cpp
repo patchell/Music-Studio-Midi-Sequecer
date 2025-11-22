@@ -20,22 +20,36 @@ CMsTimeSignature::~CMsTimeSignature()
 
 }
 
-void CMsTimeSignature::Create(CMsSong* pSong, UINT ParentEvent, INT TS)
+bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
 {
 	m_TimeSig = TS;
-	CMsObject::Create(pSong, ParentEvent);
-}
-
-void CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
-{
-	m_TimeSig = TS;
-	CMsObject::Create(pSong, pEvent);
+	return CMsObject::Create(pSong, pEvent);
 }
 
 UINT CMsTimeSignature::Process()
 {
 	GetSong()->SetCurrentTimeSignature(this);
 	return 0;
+}
+
+UINT CMsTimeSignature::Play()
+{
+	return 0;
+}
+
+int CMsTimeSignature::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsTimeSignature::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsTimeSignature::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }
 
 UINT CMsTimeSignature::ObjectToString(CString& csString, UINT mode)
@@ -65,6 +79,7 @@ void CMsTimeSignature::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 	fprintf(pO,"%sTime Signature:%s\n", pIndentString, TimeSigLut[m_TimeSig]);
+	delete[] pIndentString;
 }
 
 void CMsTimeSignature::Draw(CDC *pDC, int event, int maxevent)

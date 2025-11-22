@@ -18,9 +18,36 @@ CMsEndBar::~CMsEndBar()
 
 }
 
-void CMsEndBar::Create(CMsSong* pSong, UINT nParentEvent)
+bool CMsEndBar::Create(CMsSong* pSong, CMsEvent* pParentEvent)
 {
-	CMsObject::Create(pSong, nParentEvent);
+	bool rV = true;
+	rV = CMsObject::Create(pSong, pParentEvent);
+	return rV;
+}
+
+UINT CMsEndBar::Process()
+{
+	return 0;
+}
+
+UINT CMsEndBar::Play()
+{
+	return 0;
+}
+
+int CMsEndBar::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsEndBar::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsEndBar::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }
 
 void CMsEndBar::Print(FILE *pO, int Indent)

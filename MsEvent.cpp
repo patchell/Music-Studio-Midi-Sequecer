@@ -38,14 +38,17 @@ CMsEvent::~CMsEvent()
 	}
 }
 
-void CMsEvent::Create(CMsSong*pParentSong,CChildViewStaff* pCV, UINT Event)
+bool CMsEvent::Create(CMsSong*pParentSong, CChildViewStaff* pCV, UINT Event)
 {
+	bool Ret = true;
+
 	m_pView = pCV;
 	//--------------------------------------------------
 	// A lot of confusion over the EventCount param
 	//--------------------------------------------------
 	m_Index = Event;
 	m_pParentSong = pParentSong;
+	return Ret;
 }
 
 void CMsEvent::Print(FILE *pO, const char* s, int Indent)
@@ -68,6 +71,8 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 {
 	CMsEvent* pEV = this;
 	char* pIndentString = new char[256];
+	int Count = 0;
+
 	theApp.IndentString(pIndentString, 256, Indent);
 	fprintf(pO, "^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
 	while (pEV)
@@ -75,6 +80,12 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 //		fprintf(pO,"*** Event %d  ID %d\n", pEV->GetIndex(), pEV->GetEventID());
 		pEV->Print(pO, "Objects", Indent+4);
 		pEV = pEV->GetNext();
+		Count++;
+		if(Count > 1000)
+		{
+			fprintf(pO, "Error: Too many events, possible infinite loop\n");
+			break;
+		}
 	}
 	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
 }
@@ -460,17 +471,39 @@ void CMsEvent::Draw(CDC *pDC, int event, int maxevent)
 	UINT itter = 0;
 	while(pObj)
 	{
-		if (pObj->GetObjectID() >= 200)
-		{
-			printf("OOOPPPS %d\n", pObj->GetObjectID());
-		}
 //		printf("************* Draw Itter = %d  pObj=%p Type %lS  *****************\n", ++itter, pObj, csObjectTypeString[pObj->GetType()].GetString());
-		pObj->DebugDump();
+//		pObj->DebugDump();
 		pObj->Draw(pDC,event,maxevent);
-		pObj->DebugDump();
+//		pObj->DebugDump();
 		pObj = pObj->GetNext();
 	}
 //	printf("--------- End Draw Objects in Event %d-----------\n", GetIndex());
+}
+
+UINT CMsEvent::Process(CMsSong* pSong)
+{
+	CMsPlayerQueue* pPQ = pSong->GetPlayerQueue();
+	CMsPlayerQueueItem* pPQI = 0;
+	CMsObject* pObj = GetEventObjectHead();
+	UINT ObjectsAdded = 0;
+
+	while(pObj)
+	{
+		if(pObj->IsTimedObject() || pObj->DoesSomething())
+		{
+			pPQI = new CMsPlayerQueueItem();
+			if(pPQI)
+			{
+				pPQI->Create();
+				pPQI->SetMsObject(pObj);
+				pPQI->Process(pSong);
+				pPQ->AddObject(pPQI);
+				ObjectsAdded++;
+			}
+		}
+		pObj = pObj->GetNext();
+	}
+	return ObjectsAdded;
 }
 
 CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)

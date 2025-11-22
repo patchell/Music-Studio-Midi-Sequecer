@@ -22,8 +22,6 @@ CMsSong::CMsSong()
 	m_pNextSong = 0;
 	m_pPrevSong = 0;
 	m_pSongPosition = 0;
-	m_pPlayerObjectListHead = 0;
-	m_pPlayerObjectListTail = 0;
 	m_PlayState = 0;
 	m_PlaySongTimerEnable = 0;
 	m_MidiClockFlag = 0;
@@ -37,6 +35,7 @@ CMsSong::CMsSong()
 	m_pFileBuffer = 0;
 	m_nFileBufferSize = 0;
 	m_InFileSize = 0;
+	m_pPlayerObjectQueue = 0;
 }
 
 CMsSong::~CMsSong()
@@ -54,6 +53,10 @@ CMsSong::~CMsSong()
 			pEv = pEv->GetNext();
 			delete pEvDel;
 		}
+	}
+	if(m_pPlayerObjectQueue)
+	{
+		delete m_pPlayerObjectQueue;
 	}
 }
 
@@ -168,6 +171,8 @@ int CMsSong::Parse(char *pSongData)
 				break;
 			case MSFF_TOKEN_KEY_SIGNATURE:
 				KeySig = ParserGetC();
+				if(KeySig != 1)
+					printf("*********** ERROR: KeySig != 1 **************\n");
 				KeySig = ParserGetC();
 				obj.pKey = new CMsKeySignature();
 				obj.pKey->Create(this,pEv,KeySig);
@@ -183,12 +188,13 @@ int CMsSong::Parse(char *pSongData)
 				break;
 			case MSFF_TOKEN_TIME_SIGNATURE:
 				TimeSig = ParserGetC();
-				TimeSig = ParserGetC();
 				obj.pTime = new CMsTimeSignature();
 				obj.pTime->Create(this, pEv, TimeSig);
 				break;
 			case MSFF_TOKEN_LOUDNESS:
 				Loudness = ParserGetC();
+				if(Loudness != 1)
+					printf("*********** ERROR: Loudness != 1 **************\n");
 				Loudness = ParserGetC();
 				obj.pLoud = new CMsLoudness();
 				obj.pLoud->Create(this,pEv, Loudness);
@@ -220,7 +226,7 @@ int CMsSong::Parse(char *pSongData)
 				// Create a new Note Object
 				//----------------------------------
 				obj.pNote = new CMsNote;
-				obj.pNote->Create(NULL,this, pEv->GetIndex());
+				obj.pNote->Create(NULL,this, pEv);
 				//----------------------------------
 				// Fill in the data
 				//----------------------------------
@@ -340,7 +346,7 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 			if (pEventList->GetIndex() != event)
 			{
 				pEndBar = new CMsEndBar;
-				pEndBar->Create(this, event);
+				pEndBar->Create(this, GetEventObject(event));
 			}
 		}
 		if(pEventList->GetIndex() == event)
@@ -911,9 +917,11 @@ CMsObject * CMsSong::GetMsObject(
 }
 
 
-void CMsSong::Create(CChildViewStaff* pCCV)
+bool CMsSong::Create(CChildViewStaff* pCCV)
 {
 	m_pChildView = pCCV;
+	m_pPlayerObjectQueue = new CMsPlayerQueue;
+	return true;
 }
 
 void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
@@ -1034,11 +1042,11 @@ void CMsSong::Start(void)
 {
 	if (ProcessEvent() > 0)
 	{
-		m_MidiClockFlag = 1;
-		MidiStart();
+		m_MidiClockFlag = 1;	// Start Midi Clock
+		MidiStart();			// Send MidiStart command to Midi device
 		//Enable the timer
-		GETAPP->PlayerThreadAddSong(this);
-		GetAddSongCompleteEV().Pend();
+		GETAPP->PlayerThreadAddSong(this);	// Add song to player thread
+		GetAddSongCompleteEV().Pend();		// clear song done event  object
 		GETAPP->PlayerThreadEnableTimer(GetSongId(), 1);
 		GetEnableTimerCompleteEV().Pend();
 		m_PlayState = SONG_IS_PLAYING;
@@ -1062,103 +1070,30 @@ int CMsSong::Stop()
 	return 0;
 }
 
-UINT CMsSong::PendingObjects()
-{
-	//------------------------------------
-	// PendingObjects
-	//	Returns 0 if there are no
-	// pending objects in the play list
-	// queue.
-	//
-	// 	Returns the number of CMsObject's
-	// 	that are still pending
-	//-------------------------------------
-	int rV = 0;
-	FILE* m_pLog;
-	m_pLog = GETAPP->LogFile();
-	CMsObject* pObj;
-
-	pObj = GetPlayerObjectQueueHead();
-	while (pObj)
-	{
-		++rV;
-
-		pObj = pObj->GetNextQueueObj();
-	}
-	if (m_pLog)
-		fprintf(m_pLog, "Pending Objects=%d\n", rV);
-	return rV;
-}
-
-void CMsSong::AddObjectToPlayerQueue(CMsObject* pOBJ)
-{
-	if (GetPlayerObjectQueueHead() == 0)
-	{
-		SetPlayerObjectQueueHead(pOBJ);
-		SetPlayerObjectQueueTail(pOBJ);
-	}
-	else
-	{
-		pOBJ->SetNextQueueObj(GetPlayerObjectQueueHead());
-		GetPlayerObjectQueueHead()->SetPrevQueueObj(pOBJ);
-		SetPlayerObjectQueueHead(pOBJ);
-	}
-}
-
-CMsObject* CMsSong::RemoveObjectFromPlayerQueue(CMsObject* pObj)
-{
-	CMsObject* pNextObject = pObj->GetNextQueueObj();
-
-	if (pObj == GetPlayerObjectQueueHead())
-	{
-		SetPlayerObjectQueueHead(pObj->GetNextQueueObj());
-		if (GetPlayerObjectQueueHead())
-			GetPlayerObjectQueueHead()->SetPrevQueueObj(0);
-		else
-			SetPlayerObjectQueueHead(0);
-	}
-	else if (pObj == GetPlayerObjectQueueTail())
-	{
-		SetPlayerObjectQueueTail(pObj->GetNextQueueObj());
-		if (GetPlayerObjectQueueTail())
-			GetPlayerObjectQueueTail()->SetNext(0);
-		else
-			SetPlayerObjectQueueHead(0);
-	}
-	else
-	{
-		pObj->GetPrevQueueObj()->SetPrevQueueObj(pObj->GetPrevQueueObj());
-		pObj->GetPrevQueueObj()->SetNextQueueObj(pObj->GetNextQueueObj());
-	}
-	pObj->SetPrevQueueObj(0);
-	pObj->SetNextQueueObj(0);
-	return pNextObject;
-}
-
 //----------------------------------------------
 UINT CMsSong::Ticker(void)
 {
-	///-----------------------------
-	/// Ticker
-	///		This is the function that
-	///	is calleed by the player thread
-	/// timer.  This is wherre
-	/// we figure out when to play
-	/// the midi event
-	///
-	/// Also, we need to output a 
-	/// Midi clock 24 time per
-	/// quarter note.  A quarter
-	/// note is 48 ticks, so every
-	/// other time this function
-	/// is called, we need to output
-	/// a midi clock.
-	/// This function is only called
-	/// by a seperate Thread.
-	///
-	/// RETURNS:0 when done,
-	///         1 while in progress
-	///-----------------------------
+	//-----------------------------
+	// Ticker
+	//		This is the function that
+	//	is calleed by the player thread
+	// timer.  This is wherre
+	// we figure out when to play
+	// the midi event
+	//
+	// Also, we need to output a 
+	// Midi clock 24 time per
+	// quarter note.  A quarter
+	// note is 48 ticks, so every
+	// other time this function
+	// is called, we need to output
+	// a midi clock.
+	// This function is only called
+	// by a seperate Thread.
+	//
+	// RETURNS:0 when done,
+	//         1 while in progress
+	//-----------------------------
 	int rV = 1;
 	//-------------------------------
 	// Flag to indicate it is time
@@ -1167,8 +1102,8 @@ UINT CMsSong::Ticker(void)
 	int AnObjectHasEnded = 0;
 	int DeleteEventFlag = 0;
 	CMsNote* pNote = 0;
-	CMsObject* pPlayListQueueObj = GetPlayerObjectQueueHead();
-	UINT TotalObjectInPlayerListQueue = PendingObjects();
+	UINT TotalObjectInPlayerListQueue = GetPlayerQueue()->GetTotalObjects();
+	CMsEvent* pNextEvent = 0;
 
 	if (m_MidiClockFlag)
 	{
@@ -1177,26 +1112,41 @@ UINT CMsSong::Ticker(void)
 	}
 	else m_MidiClockFlag = 1;
 
-	while (pPlayListQueueObj)
+
+	UINT PlayStatus = GetPlayerQueue()->Play(this);
+	if (PlayStatus)
 	{
-		if (pPlayListQueueObj->Play())
+		//-----------------------------
+		// if PlayStatus is greater
+		// than zero, then one or more
+		// objects in the player queue
+		// that have timed out and
+		// it is time to go onto the
+		// next event in the song
+		//-----------------------------
+		pNextEvent = GetNextEventToProcess();
+		if (pNextEvent == 0)
 		{
-			AnObjectHasEnded++;
-			//--------------------------------
-			// We are done with this object
-			// So it needs to be removed
-			// Remove will return the next
-			// object in the queue.
-			//--------------------------------
-			pPlayListQueueObj = RemoveObjectFromPlayerQueue(pPlayListQueueObj);
+			//-----------------------------
+			// No more events, so set
+			// the song to stop
+			//-----------------------------
+			m_PlayState = SONG_STOP;
 		}
 		else
 		{
-			//Count objects still playing
-//			PlayListCount++;
-			pPlayListQueueObj = pPlayListQueueObj->GetNextQueueObj();
+			//-----------------------------
+			// Move the song position
+			// to the next event to be
+			// processed
+			//-----------------------------
+			SetSongPosition(pNextEvent);
+			pNextEvent->Process(this)
+				;
 		}
-	}///end of while(pPlayListQueueObj)
+		GetPlayerQueue()->ProcessQueue(this);
+	}
+
 	//---------------------------------------------
 	// If one or more of the CEventMidi has ended
 	// and the song is still playing, process
@@ -1215,29 +1165,30 @@ UINT CMsSong::Ticker(void)
 	// notes that are playing to stop
 	//--------------------------------
 	if (m_PlayState == SONG_STOP)
-		rV = PendingObjects();
+		rV = GetPlayerQueue()->GetTotalObjects();
 	return rV;
 }
 
-UINT CMsSong::CountObjectPlayingInQueue()
+CMsEvent* CMsSong::GetNextEventToProcess()
 {
-	//---------------------------
-	// This method counts the
-	// Number in the Playing
-	// queue.  Generally if this
-	// function return 0, it is
-	// time to move on
-	//-----------------------------
-	UINT ObjectCount = 0;
-	CMsObject* pObjectsPlaying;
+	CMsEvent* pEv = GetSongPosition();
+	CMsObject* pObj = 0;
 
-	pObjectsPlaying = GetPlayerObjectQueueHead();
-	while (pObjectsPlaying)
+	bool Loop = true;
+
+	if (pEv)
 	{
-		ObjectCount++;
-		pObjectsPlaying = pObjectsPlaying->GetNextQueueObj();
+		pEv = pEv->GetNext();
+		while (pEv && Loop)
+		{
+			pObj = pEv->GetEventObjectHead();
+			if (pObj)
+				Loop = false;
+			else
+				pEv = pEv->GetNext();
+		}
 	}
-	return ObjectCount;
+	return pEv;
 }
 
 //--------------------------------
@@ -1270,8 +1221,8 @@ int CMsSong::ProcessEvent(void)
 	UINT QuarterNotesPerMinute = 0;
 	UINT MainLoop = 1;
 
-//	if(pCurrentPosistion)
-//		printf("***** Enter Processing Event = %d ****\n", GetSongPosition()->GetIndex());;
+	//	if(pCurrentPosistion)
+	//		printf("***** Enter Processing Event = %d ****\n", GetSongPosition()->GetIndex());;
 	//---------------------------------
 	// Keep Looking for CMsObject's
 	// In an event after the current 
@@ -1336,48 +1287,6 @@ int CMsSong::ProcessEvent(void)
 	//-------------------------------------
 //	printf("Exit Processing %d\n", ObjectAddedToPlayerQueue);
 	return ObjectAddedToPlayerQueue;;
-}
-
-void CMsSong::Print(FILE* pO)
-{
-	fprintf(pO,"Total Events:%d\n",GetTotalEvents());
-	CMsNote* pNote = (CMsNote*)GetPlayerObjectQueueHead();
-	while(pNote)
-	{
-		if (pNote)
-		{
-			pNote->Print(pO, 4);
-			pNote = (CMsNote*)pNote->GetNextQueueObj();
-		}
-	}
-}
-
-CMsNote* CMsSong::FindNoteInPlayList(CMsNote*pNote)
-{
-	//-------------------------------------------------
-	// Find this MsNote in ther playlist
-	// look through the objects in the song list for a 
-	// specific note and midi channel.
-	// Generally, we are looking for the note that
-	// begins a tie.
-	//
-	// returns:
-	//	pointer to matching note if match found
-	//	NULL if not found
-	//---------------------------------------------------
-	bool rV = false;
-	CMsNote* pNoteList = (CMsNote *)GetPlayerObjectQueueHead();
-	int loop = 1;
-	while (pNoteList && loop)
-	{
-		if ((pNote->GetPitch() == pNoteList->GetPitch()) 
-			&& (GETMIDIINFO->GetChannel(pNote->GetTrack()) == GETMIDIINFO->GetChannel(pNoteList->GetTrack()))
-		)
-			loop = 0;
-		if (loop)
-			pNoteList = (CMsNote*)pNoteList->GetNextQueueObj();
-	}
-	return pNoteList;
 }
 
 bool CMsSong::CheckChan(int track, int chan)
@@ -1562,7 +1471,6 @@ int CMsSong::DumpSong(FILE* pOutFile)
 			ls = sprintf_s(&pS[ls], Size, "Measure Bar");
 			break;
 		case MSFF_TOKEN_TIME_SIGNATURE:
-			TimeSig = ParserGetC();
 			TimeSig = ParserGetC();
 			Size = l - ls;
 			ls = sprintf_s(&pS[ls], Size, "Time Signature %d", TimeSig);

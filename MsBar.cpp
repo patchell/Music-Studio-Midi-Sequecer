@@ -19,14 +19,34 @@ CMsBar::~CMsBar()
 
 }
 
-void CMsBar::Create(CMsSong* pSong, UINT ParentEvent)
+bool CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
-	CMsObject::Create(pSong, ParentEvent);
+	return CMsObject::Create(pSong, pEvent);
 }
 
-void CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
+UINT CMsBar::Play()
 {
-	CMsObject::Create(pSong, pEvent);
+	return 0;
+}
+
+int CMsBar::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsBar::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsBar::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+UINT CMsBar::Process()
+{
+	return 0;
 }
 
 void CMsBar::Print(FILE *pO, int Indent)

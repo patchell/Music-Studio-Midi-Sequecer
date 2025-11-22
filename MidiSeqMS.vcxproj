@@ -192,6 +192,7 @@
     <ClInclude Include="ChildViewBase.h" />
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
+    <ClInclude Include="MsPlayerQueue.h" />
     <ClInclude Include="ComboBitmap.h" />
     <ClInclude Include="ComboBoxDefines.h" />
     <ClInclude Include="ComboBoxItem.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="MsChordNote.h" />
     <ClInclude Include="MsGlisandoEnd.h" />
     <ClInclude Include="MsGlisandoStart.h" />
+    <ClInclude Include="MsPlayerQueueItem.h" />
     <ClInclude Include="MsPortamentoEnd.h" />
     <ClInclude Include="MsPortamentoStart.h" />
     <ClInclude Include="MsStack.h" />
@@ -280,6 +282,7 @@
     <ClCompile Include="ChildViewBase.cpp" />
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
+    <ClCompile Include="MsPlayerQueue.cpp" />
     <ClCompile Include="ComboBitmap.cpp" />
     <ClCompile Include="ComboBoxItem.cpp" />
     <ClCompile Include="ComboDropDown.cpp" />
@@ -304,6 +307,7 @@
     <ClCompile Include="MsChordNote.cpp" />
     <ClCompile Include="MsGlisandoEnd.cpp" />
     <ClCompile Include="MsGlisandoStart.cpp" />
+    <ClCompile Include="MsPlayerQueueItem.cpp" />
     <ClCompile Include="MsPortamentoEnd.cpp" />
     <ClCompile Include="MsPortamentoStart.cpp" />
     <ClCompile Include="MsStack.cpp" />

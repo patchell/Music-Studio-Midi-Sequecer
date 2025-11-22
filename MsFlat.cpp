@@ -24,6 +24,36 @@ CMsFlat::~CMsFlat()
 
 }
 
+bool CMsFlat::Create(CMsSong* pSong)
+{
+    return false;
+}
+
+UINT CMsFlat::Process()
+{
+	return 0;
+}
+
+UINT CMsFlat::Play()
+{
+	return 0;
+}
+
+int CMsFlat::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsFlat::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsFlat::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsFlat::Draw(CDC *pDC, COLORREF c, int x, int y)
 {
 	CPen pen,*oldpen;

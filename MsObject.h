@@ -98,8 +98,6 @@ private:
 	bool m_HighLight;
 	CMsObject *m_pNext;
 	CMsObject *m_pPrev;
-	CMsObject* m_pNextQueueObj;
-	CMsObject* m_pPrevQueueObj;
 	CMsObject* m_pSelectedObjectNext;
 	CMsObject* m_pSelectedObjectPrev;
 	CMsEvent* m_pParentEvent;
@@ -109,15 +107,25 @@ protected:
 public:
 	CMsObject();
 	virtual ~CMsObject();
-	void Create(CMsSong* pSong, UINT ParentEvent); 
-	void Create(CMsSong* pSong, CMsEvent* pEvent);
+	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	//-------------------------------------------------
+	// Pure Virtual Methods
+	//-------------------------------------------------
+	virtual UINT Process() = 0;
+	virtual UINT Play() = 0;
+	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse) = 0;
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse) = 0;
+	virtual int MouseMove(int DrawState, CPoint pointMouse) = 0;
+	virtual bool IsTimedObject() = 0;
+	virtual bool DoesSomething() = 0;
+	//-------------------------------------------------
+	// Back to our regularly scheduled Methods
+	//-------------------------------------------------
 	virtual void Copy(CMsObject *Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE *pO, int Indent);
-	virtual UINT Play();
 	virtual bool AddToQueue(CMsSong* pSong) { return false; }
-	virtual UINT Process();
 	virtual bool MouseOverObject(CPoint pt);
 	virtual void ObjectRectangle(CRect& rect, UINT Event) { rect.SetRect(0, 0, 0, 0); }
 	virtual bool HighLight(bool HL, CPoint ptObj);
@@ -126,11 +134,8 @@ public:
 	virtual void SetParentEvent(UINT ParrentEvent);
 	virtual CMsEvent* GetParentEvent() { return m_pParentEvent; }
 	virtual CMsObject* MakeANewObject() { return nullptr; }
-	virtual int MouseLButtonDown( int DrawState, CPoint pointMouse);
-	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
-	virtual int MouseMove(int DrawState, CPoint pointMouse);
 	virtual void DebugDump();
-//-------------------------------------------------
+	//-------------------------------------------------
 	// Attribute Methods
 	//-------------------------------------------------
 	void SetType(INT t){m_ObjType = t;}
@@ -153,11 +158,6 @@ public:
 	}
 	void SetPrev(CMsObject* pO) { m_pPrev = pO; }
 	CMsObject* GetPrev(void) { return m_pPrev; }
-	//-----------------------------------------
-	CMsObject* GetNextQueueObj(void) { return m_pNextQueueObj; }
-	void SetNextQueueObj(CMsObject* pO) { m_pNextQueueObj = pO; }
-	void SetPrevQueueObj(CMsObject* pO) { m_pPrevQueueObj = pO; }
-	CMsObject* GetPrevQueueObj(void) { return m_pPrevQueueObj; }
 	//------------------- Selected Object List -------------------------
 	CMsObject* GetNextSelectedObject() { return m_pSelectedObjectNext; }
 	void SetNextSelectedObject(CMsObject* pOBJ) { m_pSelectedObjectNext = pOBJ; }

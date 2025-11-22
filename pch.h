@@ -139,6 +139,8 @@ extern const char* GenMidiPatchNames[128];
 #include "MsTempo.h"
 #include "MsChord.h"
 #include "MsTimeSig.h"
+#include "MsPlayerQueueItem.h"
+#include "MsPlayerQueue.h"
 #include "ChildViewBase.h"
 #include "ChildFrameBase.h"
 #include "ChildViewStaff.h"

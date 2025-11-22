@@ -9,6 +9,37 @@ CMsPortamentoEnd::~CMsPortamentoEnd()
 {
 }
 
+bool CMsPortamentoEnd::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	CMsObject::Create(pSong, pEvent);
+	return true;
+}
+
+UINT CMsPortamentoEnd::Process()
+{
+	return 0;
+}
+
+UINT CMsPortamentoEnd::Play()
+{
+	return 0;
+}
+
+int CMsPortamentoEnd::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsPortamentoEnd::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsPortamentoEnd::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 CMsObject* CMsPortamentoEnd::Copy(void)
 {
 	return nullptr;

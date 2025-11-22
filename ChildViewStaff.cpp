@@ -387,9 +387,9 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				CMsNote* pN = new CMsNote;
 				SetPitch(pNote->GetPitch());
 				if (GetRest())
-					pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), m_nDrawEvent);	// Create Rest
+					pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Rest
 				else
-					pN->Create(0, GetSong(), m_nDrawEvent);	// Create Note
+					pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Note
 				pNote->SetParentEvent(m_nDrawEvent);
 				//-----------------------------
 				// Copy attributes
@@ -405,7 +405,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			{
 				CMsEndBar* pEBar = new CMsEndBar;
 				CMsEndBar* pOldEndBar = (CMsEndBar*)m_pDrawObject;
-				pEBar->Create(m_pSong, m_nDrawEvent);
+				pEBar->Create(m_pSong, GetSong()->GetEventObject(m_nDrawEvent));
 				m_pDrawObject = pEBar;
 			}
 			CheckAndDoScroll(pointMouseLButtUp);
@@ -415,7 +415,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
 			{
 				CMsBar* pBarTemp = new CMsBar;
-				pBarTemp->Create(GetSong(), m_nDrawEvent);
+				pBarTemp->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 				pBarTemp->Copy(m_pDrawObject);
 				m_pDrawObject = pBarTemp;
 			}
@@ -427,7 +427,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			{
 				CMsKeySignature* pKS = new CMsKeySignature;
 				CMsKeySignature* pOld = (CMsKeySignature*)m_pDrawObject;
-				pKS->Create(GetSong(), GetDrawEvent(), pOld->GetKeySignature());
+				pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), pOld->GetKeySignature());
 				m_pDrawObject = pKS;
 			}
 			CheckAndDoScroll(pointMouseLButtUp);
@@ -819,7 +819,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			m_nDrawMode = DRAWMODE_NOTE;
 			if (m_pDrawObject) delete m_pDrawObject;
 			pN = new CMsNote;
-			pN->Create(0, GetSong(), m_nDrawEvent);
+			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 			m_pDrawObject = pN;
 			//-----------------------------
 			// decode message word
@@ -849,7 +849,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'N':
 		m_nDrawMode = DRAWMODE_NOTE;
 		pN = new CMsNote;
-		pN->Create(0, GetSong(), m_nDrawEvent);
+		pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		if (m_pDrawObject)
 		{
 			delete m_pDrawObject;
@@ -866,7 +866,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_nDrawMode = DRAWMODE_BAR;
 		if (m_pDrawObject) delete m_pDrawObject;
 		m_pDrawObject = new CMsBar;
-		((CMsBar*)m_pDrawObject)->Create(GetSong(), m_nDrawEvent);
+		((CMsBar*)m_pDrawObject)->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		csTemp = CString("Draw Measure Bar");
 		m_Status.SetText(csTemp);
 		break;
@@ -1540,13 +1540,13 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 			int Shape;
 			Shape = pN->GetShape();
 			int Id = CMidiSeqMSApp::RestBmIdsTypes[Shape];
-			pN->Create(Id, GetSong(), m_nDrawEvent);
+			pN->Create(Id, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		}
 		else
-			pN->Create(0, GetSong(), m_nDrawEvent);
+			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 
 		pN->ObjectToString(csTemp);
-		csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(),m_nDrawEvent);
+		csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent));
 	}
 	m_Status.SetText(csStatus);
 	break;
@@ -1555,7 +1555,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 	case DRAW_ENDBAR:
 		{
 			CMsEndBar* pEB = new CMsEndBar;
-			pEB->Create(GetSong(), m_nDrawEvent);
+			pEB->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 			m_nDrawMode = DRAWMODE_ENDBAR;
 			m_pDrawObject = pEB;
 		}
@@ -1565,7 +1565,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 	case DRAW_BAR:
 	{
 		CMsBar* pB = new CMsBar;
-		pB->Create(GetSong(), m_nDrawEvent);
+		pB->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		m_nDrawMode = DRAWMODE_BAR;
 		m_pDrawObject = pB;
 	}
@@ -1601,7 +1601,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 	case DRAW_TEMPO:
 	{
 		CMsTempo* pMT = new CMsTempo();
-		pMT->Create(GetSong(),GetDrawEvent(),v);
+		pMT->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), v);
 		m_nDrawMode = DRAWMODE_TEMPO;
 		m_pDrawObject = pMT;
 	}
@@ -1611,7 +1611,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 	case DRAW_TIMESIG:
 	{
 		CMsTimeSignature* pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), GetDrawEvent(), COMBO_TIMESIG_4_4);
+		pTS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), COMBO_TIMESIG_4_4);
 		m_nDrawMode = DRAWMODE_TIMESIG;
 		m_pDrawObject = pTS;
 	}
@@ -1631,7 +1631,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 	case DRAW_LOUDNESS:
 	{
 		CMsLoudness* pLD = new CMsLoudness;
-		pLD->SetLoudness(v);
+		pLD->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), v);
 		m_nDrawMode = DRAWMODE_LOUDNESS;
 		m_pDrawObject = pLD;
 	}
@@ -1782,11 +1782,11 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		MessageBox(_T("Block Not Selected"), _T("Oopsie"));
 	else
 	{
-		///--------------------------------
-		/// We add the repeat by adding
-		/// a new event before and after
-		/// the selected block.
-		///---------------------------------
+		//--------------------------------
+		// We add the repeat by adding
+		// a new event before and after
+		// the selected block.
+		//---------------------------------
 		CMsEvent* pRS, * pRE;
 		CMsRepeatStart* pRepStrt;
 		CMsRepeatEnd* pRepEnd;
@@ -1796,10 +1796,10 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		pRE = m_pSong->InsertEvent(m_LastSelectedEventIndex);
 		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
 		pRepStrt = new CMsRepeatStart();
-		pRepStrt->Create(GetSong(), nRepeatCount, pRS->GetIndex());
+		pRepStrt->Create(GetSong(), nRepeatCount, pRS);
 		pRS->AddObjectAtStart(pRepStrt);
 		pRepEnd = new CMsRepeatEnd;
-		pRepEnd->Create(GetSong(), pRE->GetIndex());
+		pRepEnd->Create(GetSong(), pRE);
 		pRE->AddObjectAtStart(pRepEnd);
 	}
 }
@@ -2188,7 +2188,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
 				m_nMidiNotesOn++;
 				CMsNote* pN = new CMsNote();
-				pN->Create(0, GetSong(), m_nDrawEvent);
+				pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 				pN->SetDuration((m_nMidiInputNoteSetup & DRAW_NOTE_DURATION));
 				pN->SetAccent((m_nMidiInputNoteSetup >> DRAW_NOTE_ACCENT_SHIFT) & 0x01);
 				pN->SetAccidental(adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
@@ -2471,7 +2471,7 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	}
 	if (m_pDrawObject == 0) m_pDrawObject = new CMsNote;
 	pN = (CMsNote *)m_pDrawObject;
-	pN->Create(0, GetSong(), m_nDrawEvent);
+	pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 	UpdateComboBoxes();
 	pN->GetData().CopyData(GetNoteData());
 
@@ -2538,17 +2538,17 @@ void CChildViewStaff::OnInitialUpdate()
 
 //------------ Event 0 ------------------------------
 	CMsTempo* pTM = new CMsTempo();
-	pTM->Create(GetSong(), GetDrawEvent(),100);
+	pTM->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()),100);
 	GetSong()->AddObjectToSong(GetDrawEvent(), pTM);
 	CMsTimeSignature* pTS = new CMsTimeSignature();
-	pTS->Create(GetSong(), GetDrawEvent(), COMBO_TIMESIG_4_4);
+	pTS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), COMBO_TIMESIG_4_4);
 	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pTS);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
-	pKS->Create(GetSong(), GetDrawEvent(), MSFF_CSMAJ);
+	pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), MSFF_CSMAJ);
 	GetSong()->AddObjectToSong(GetDrawEvent(), pKS);
 	CMsLoudness* pLD = new CMsLoudness();
-	pLD->Create(GetSong(), GetDrawEvent(),100);
+	pLD->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()),100);
 	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pLD);
 	//----------------------------------------------------
 	UpdateScrollbarInfo(m_pSong->GetTotalEvents(),"Init");
@@ -3003,14 +3003,14 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 			{
 				delete m_pDrawObject;
 				pNote = new CMsNote;
-				pNote->Create(0, GetSong(), m_nDrawEvent);
+				pNote->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 				m_pDrawObject = pNote;
 			}
 		}
 		else
 		{
 			pNote = new CMsNote;
-			pNote->Create(0, GetSong(), m_nDrawEvent);
+			pNote->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 			m_pDrawObject = pNote;
 		}
 		m_nDrawMode = DRAWMODE_NOTE;
@@ -3029,7 +3029,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		if (m_pDrawObject)
 			delete m_pDrawObject;
 		pNote = new CMsNote;
-		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::RestBmIdsTypes[nSelection] : 0, GetSong(), m_nDrawEvent);
+		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::RestBmIdsTypes[nSelection] : 0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		m_pDrawObject = pNote;
 		m_nDrawMode = DRAWMODE_NOTE;
 		UpdateNoteDrawObject();

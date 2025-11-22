@@ -27,31 +27,6 @@ void CMsRepeatEnd::Print(FILE *pO, int Indent)
 	delete[] pIndentString;
 }
 
-UINT CMsRepeatEnd::Process()
-{
-	CMsEvent* pRepeatStartEvent;
-	CMsRepeatStart* pRPS;
-
-	pRepeatStartEvent = (CMsEvent*)GetSong()->GetRepeatStack().PeakTop();
-	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(MSOBJ_REPEATSTART);
-	printf("Repeat end Countdown %d\n",pRPS->GetCountDown());
-	if (pRPS->DecrementRepeatCount())
-	{
-		//------------------------------
-		// Done With Repeat Loop
-		//-------------------------------
-		GetSong()->GetRepeatStack().PopLIFO();
-	}
-	else
-	{
-		//-----------------------------
-		// Keep Looping
-		//-----------------------------
-		GetSong()->SetSongPosition(pRepeatStartEvent);
-	}
-	return 0;
-}
-
 UINT CMsRepeatEnd::ObjectToString(CString& csString, UINT mode)
 {
 	return 0;
@@ -107,12 +82,52 @@ void CMsRepeatEnd::Save(FILE *pO)
 	fputc(MSFF_TOKEN_REPEAT_STOP,pO);	//token
 }
 
-void CMsRepeatEnd::Create(CMsSong* pSong, UINT ParentEvent)
+bool CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
-	CMsObject::Create(pSong, ParentEvent);
+	return CMsObject::Create(pSong, pEvent);
 }
 
-void CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent)
+UINT CMsRepeatEnd::Play()
 {
-	CMsObject::Create(pSong, pEvent);
+	return 0;
+}
+
+UINT CMsRepeatEnd::Process()
+{
+	CMsEvent* pRepeatStartEvent;
+	CMsRepeatStart* pRPS;
+
+	pRepeatStartEvent = (CMsEvent*)GetSong()->GetRepeatStack().PeakTop();
+	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(MSOBJ_REPEATSTART);
+	printf("Repeat end Countdown %d\n", pRPS->GetCountDown());
+	if (pRPS->DecrementRepeatCount())
+	{
+		//------------------------------
+		// Done With Repeat Loop
+		//-------------------------------
+		GetSong()->GetRepeatStack().PopLIFO();
+	}
+	else
+	{
+		//-----------------------------
+		// Keep Looping
+		//-----------------------------
+		GetSong()->SetSongPosition(pRepeatStartEvent);
+	}
+	return 0;
+}
+
+int CMsRepeatEnd::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsRepeatEnd::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsRepeatEnd::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
 }

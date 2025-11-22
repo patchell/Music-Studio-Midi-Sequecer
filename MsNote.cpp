@@ -47,19 +47,7 @@ void CMsNote::LoadRestBitmap(int Selection)
 		m_BitmapFlag = false;
 }
 
-void CMsNote::Create(int BitmapID, CMsSong* pSong, UINT ParentEvent)
-{
-	if (BitmapID)
-	{
-		m_RestBitmap.LoadBitmapW(BitmapID);
-		m_BitmapFlag = true;
-	}
-	else
-		m_BitmapFlag = false;
-	CMsObject::Create(pSong, ParentEvent);
-}
-
-void CMsNote::Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent)
+bool CMsNote::Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent)
 {
 	if (nBitmapID)
 	{
@@ -68,7 +56,7 @@ void CMsNote::Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent)
 	}
 	else
 		m_BitmapFlag = false;
-	CMsObject::Create(pSong, pParentEvent);
+	return CMsObject::Create(pSong, pParentEvent);
 }
 
 
@@ -299,7 +287,7 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 	else	//draw note on staff
 	{
 		UINT rectX1, rectY1, rectX2, rectY2;
-		CMsNote* pSecInterval;
+//		CMsNote* pSecInterval;
 		if (IsHeadFlipped())
 		{
 //			printf("Flipped Note Head\n");
@@ -818,10 +806,9 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 
 			SetPitch(pNote->GetPitch());
 			if (IsRest())
-				pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetStaffView()->GetDrawEvent());	// Create Rest
+				pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
 			else
-				pN->Create(0, GetSong(), GetStaffView()->GetDrawEvent());	// Create Note
-			pNote->SetParentEvent(GetStaffView()->GetDrawEvent());
+				pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
 			//-----------------------------
 			// Copy attributes
 			//------------------------------
@@ -1000,19 +987,13 @@ UINT CMsNote::Play()
 	return DeleteObject;
 }
 
-// ???
-bool CMsNote::AddToQueue()
-{
-	return true;
-}
-
 UINT CMsNote::Process()
 {
 	//----------------------------------------------
 	// This method over rides the defalt method in
 	// the base class CMsObject.
 	//----------------------------------------------
-	UINT NoteAddedToQueue = 0;
+	UINT AddToQueue = 0;
 	int flag = 0, Velocity;
 	bool loop;
 	CMsNote* pNote = 0;
@@ -1060,8 +1041,7 @@ UINT CMsNote::Process()
 		// Not a Tie Note, so add note
 		// to the play queue
 		//---------------------------------
-		GetSong()->AddObjectToPlayerQueue(this);
-		NoteAddedToQueue = 1;
+		AddToQueue = 1;
 		SetTick(0,1);
 	}
 	//-------------------------------------
@@ -1073,8 +1053,8 @@ UINT CMsNote::Process()
 			GETMIDIINFO->GetPatch(GetTrack())
 		);
 	}
-//	printf("MsNote added %d objects\n",NoteAddedToQueue);
-	return NoteAddedToQueue;
+//	printf("MsNote added %d objects\n",AddedToQueue);
+	return AddToQueue;
 }
 
 bool CMsNote::RemoveFromQueue()
@@ -1095,6 +1075,11 @@ void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 	UINT noteVerticalPos;
 	noteVerticalPos = NoteToPosition();
 	rect.SetRect(EVENT_OFFSET + EVENT_WIDTH * Event, noteVerticalPos, EVENT_OFFSET + EVENT_WIDTH * Event + 10, noteVerticalPos + 8);
+}
+
+UINT CMsNote::CorrectPitchWithKeySignature()
+{
+	return 0;
 }
 
 

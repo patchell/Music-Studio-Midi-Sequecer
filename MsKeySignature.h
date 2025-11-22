@@ -12,20 +12,29 @@ class CMsKeySignature : public CMsObject
 public:
 	CMsKeySignature();
 	virtual ~CMsKeySignature();
-	void Create(CMsSong*pSong,UINT ParentEvent, UINT key) { 
+	bool Create(CMsSong*pSong,CMsEvent* pParentEvent, UINT key) { 
 		m_KeySignature = key; 
 		SetKeySigCorrection();
-		CMsObject::Create(pSong, ParentEvent);
+		return CMsObject::Create(pSong, pParentEvent);
 	}
-	void Create(CMsSong* pSong, CMsEvent* pEvent, UINT key) {
-		m_KeySignature = key;
-		SetKeySigCorrection();
-		CMsObject::Create(pSong, pEvent);
+	//-------------------------------------------------
+	// Pure Virtual Methods
+	//-------------------------------------------------
+	virtual UINT Process();
+	virtual UINT Play();
+	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	virtual bool IsTimedObject() {
+		return false;
+	};
+	virtual bool DoesSomething() {
+		return true;
 	}
+	//------------------------------------------------------
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
-	virtual UINT Process();
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0) { return 0; }
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	int GetKeySignature(){return m_KeySignature;}

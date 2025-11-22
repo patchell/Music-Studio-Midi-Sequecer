@@ -11,9 +11,22 @@ class CMsTimeSignature : public CMsObject
 public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
-	void Create(CMsSong* pSong, UINT ParentEvent, INT TS);
-	void Create(CMsSong* pSong, CMsEvent* pEvent, INT TS);
+	bool Create(CMsSong* pSong, CMsEvent* pEvent, INT TS);
+	//-------------------------------------------------
+	// Pure Virtual Methods
+	//-------------------------------------------------
 	virtual UINT Process();
+	virtual UINT Play();
+	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	virtual bool IsTimedObject() {
+		return false;
+	};
+	virtual bool DoesSomething() {
+		return false;
+	}
+	//------------------------------------------------------
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	virtual void Save(FILE *pO);

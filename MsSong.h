@@ -15,6 +15,9 @@ constexpr auto SONG_STOP = 2;	// This Status means we need
 								// to time out.
 
 
+class CChildViewStaff;
+class CMsPlayerQueue;
+
 class CMsSong
 {
 	CString m_csFileName;
@@ -23,8 +26,8 @@ class CMsSong
 	int m_InFileSize;
 	int m_BufIndex;
 	//--- Data for Song Editor View ----
+	CMsEvent* m_pEventListHead;
 	CMsEvent * m_pEventListTail;
-	CMsEvent * m_pEventListHead;
 	int m_nMeasureBarCount;
 	int m_nTotalEvents;
 	//--------------------------------
@@ -64,8 +67,7 @@ class CMsSong
 	// timers that are currently actively
 	// playing.
 	//---------------------------------------
-	CMsObject* m_pPlayerObjectListHead;	
-	CMsObject* m_pPlayerObjectListTail;
+	CMsPlayerQueue* m_pPlayerObjectQueue;
 	//----------------------------------------
 	// variables for playing back song
 	//----------------------------------------
@@ -84,7 +86,7 @@ class CMsSong
 public:
 	CMsSong();
 	virtual ~CMsSong();
-	void Create(CChildViewStaff* pCCV);
+	bool Create(CChildViewStaff* pCCV);
 	UINT LittleEndian(UINT bE);
 	//--------------Access to Attributes ------
 	CChildViewStaff* GetStaffChildView() {
@@ -130,6 +132,7 @@ public:
 	// //indicates that the song is playing
 	int IsPlaying() { return m_nIsPlaying; }
 	void SetIsPlaying(int v) { m_nIsPlaying = v; }
+	CMsPlayerQueue* GetPlayerQueue() { return m_pPlayerObjectQueue; }	
 	//---------------- Play --------------
 	bool Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------
@@ -160,7 +163,7 @@ public:
 	void RemoveEvent(int Event);
 	void DeleteEvent(CMsEvent* pEvent);
 	CMsEvent* MakeNewEvent();
-	int GetTotalEvents() { return m_nTotalEvents; }
+	int GetTotalEvents() const { return m_nTotalEvents; }
 	void SetTotalEvents(int t) { m_nTotalEvents = t; }
 	void RenumberEvents(int* First = nullptr, int* Last = nullptr);
 	int GetSongId() { return m_SongID; }
@@ -193,6 +196,7 @@ public:
 	//---------------------------------
 	CMsStack& GetRepeatStack() { return m_stackRepeat; }
 	UINT Ticker(void);
+	CMsEvent* GetNextEventToProcess();
 	int ProcessEvent(void);
 	void SetSongPosition(CMsEvent* pEv) {
 		m_pSongPosition = pEv;
@@ -203,26 +207,12 @@ public:
 	int Stop(void);
 	//------------------------------------
 	bool CheckChan(int track, int chan);
-	//--------------------------------------------
-	// Methodes for managing the list of objects
-	// that are currently active in  the playing
-	// of the song
-	//--------------------------------------------
-	void AddObjectToPlayerQueue(CMsObject* pOBJ);
-	CMsObject* RemoveObjectFromPlayerQueue(CMsObject* pObj);
-	void SetPlayerObjectQueueHead(CMsObject* pOBJ) { m_pPlayerObjectListHead = pOBJ; }
-	void SetPlayerObjectQueueTail(CMsObject* pOBJ) { m_pPlayerObjectListTail = pOBJ; }
-	CMsObject* GetPlayerObjectQueueHead() { return m_pPlayerObjectListHead; }
-	CMsObject* GetPlayerObjectQueueTail() { return m_pPlayerObjectListTail; }
-	UINT PendingObjects();
-	UINT CountObjectPlayingInQueue();
 	//---------- Song List Methods --------------------
 	// BoGuss?
 	CMsSong* GetSongListNext() { return m_pNextSong; }
 	void SetSongListNext(CMsSong* pSong) { m_pNextSong = pSong; }
 	CMsSong* GetSongListPrev() { return m_pPrevSong; }
 	void SetSongListPrev(CMsSong* pSong) { m_pPrevSong = pSong; }
-	CMsNote* FindNoteInPlayList(CMsNote* pNote); 
 	bool ValidateFile();
 	int DumpSong(FILE* pOutFile);
 	//----------------------------------

@@ -244,6 +244,12 @@
     <ClCompile Include="MsStack.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MsPlayerQueue.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsPlayerQueueItem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -502,6 +508,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MsStack.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsPlayerQueue.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsPlayerQueueItem.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,8 +33,6 @@ CMsObject::CMsObject()
 	m_ObjType = 0;
 	m_pNext = 0;
 	m_pPrev = 0;
-	m_pNextQueueObj = 0;
-	m_pPrevQueueObj = 0;
 	m_pSelectedObjectNext = 0;
 	m_pSelectedObjectPrev = 0;
 	m_ObjectID = GETAPP->GetUniqueID();
@@ -46,16 +44,11 @@ CMsObject::~CMsObject()
 {
 }
 
-void CMsObject::Create(CMsSong* pSong, UINT ParentEvent)
-{
-	m_pSong = pSong;
-	SetParentEvent(ParentEvent);
-}
-
-void CMsObject::Create(CMsSong* pSong, CMsEvent* pEvent)
+bool CMsObject::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
 	m_pSong = pSong;
 	m_pParentEvent = pEvent;
+	return true;
 }
 
 void CMsObject::Print(FILE *pO, int Indent)
@@ -66,25 +59,6 @@ void CMsObject::Print(FILE *pO, int Indent)
 	fprintf(pO, "%sCMsObject:Selected=%d\n", pIndentString, m_Selected);
 	fprintf(pO, "%sCMsObject:ID=%d\n", pIndentString, m_ObjectID);
 	delete[] pIndentString;
-}
-
-UINT CMsObject::Play()
-{
-	//------------------------------
-	// This Methode is meant to
-	// be overriden by the Object
-	// that derived from this class
-	// This is the defalt.
-	// Return Values:
-	//	0......Keep on ticking MSOBJ_PLAY_KEEP_TICKING
-	//	1......Done with Object MSOBJ_PLAY_DONE
-	//  2......Done with Object, but tied MSOBJ_PLAY_DONE_BUT_DO_NOT_REMOVE
-	//-------------------------------
-	return MSOBJ_PLAY_DONE;
-}
-
-UINT CMsObject::Process() {
-	return 0; 
 }
 
 bool CMsObject::MouseOverObject(CPoint pt)
@@ -154,21 +128,6 @@ void CMsObject::SetParentEvent(UINT ParrentEvent)
 		} while (pEV->GetIndex() != ParrentEvent);
 		m_pParentEvent = pEV;
 	}
-}
-
-int CMsObject::MouseLButtonDown(int DrawState, CPoint pointMouse)
-{
-	return DrawState;
-}
-
-int CMsObject::MouseLButtonUp(int DrawState, CPoint pointMouse)
-{
-	return DrawState;
-}
-
-int CMsObject::MouseMove(int DrawState, CPoint pointMouse)
-{
-	return DrawState;
 }
 
 void CMsObject::DebugDump()

@@ -13,8 +13,22 @@ class CMsBar : public CMsObject
 public:
 	CMsBar();
 	virtual ~CMsBar();
-	void Create(CMsSong* pSong, UINT Event);
-	void Create(CMsSong* pSong, CMsEvent* pEvent);
+	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	//-------------------------------------------------
+	// Pure Virtual Methods
+	//-------------------------------------------------
+	virtual UINT Process();
+	virtual UINT Play();
+	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse);
+	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
+	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	virtual bool IsTimedObject() {
+		return false;
+	};
+	virtual bool DoesSomething() {
+		return false;
+	}
+	//------------------------------------------------------
 	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual void Copy(CMsObject* pSource);

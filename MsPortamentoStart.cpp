@@ -9,6 +9,37 @@ CMsPortamentoStart::~CMsPortamentoStart()
 {
 }
 
+bool CMsPortamentoStart::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	CMsObject::Create(pSong, pEvent);
+	return true;
+}
+
+UINT CMsPortamentoStart::Process()
+{
+	return 0;
+}
+
+UINT CMsPortamentoStart::Play()
+{
+	return 0;
+}
+
+int CMsPortamentoStart::MouseLButtonDown(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
+int CMsPortamentoStart::MouseLButtonUp(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}	
+
+int CMsPortamentoStart::MouseMove(int DrawState, CPoint pointMouse)
+{
+	return DrawState;
+}
+
 void CMsPortamentoStart::Save(FILE* pO)
 {
 }
