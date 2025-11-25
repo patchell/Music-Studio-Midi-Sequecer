@@ -23,7 +23,7 @@ void CMsRepeatEnd::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sRepeat End :|\n", pIndentString);
+//	fprintf(pO,"%sRepeat End :|\n", pIndentString);
 	delete[] pIndentString;
 }
 
@@ -99,7 +99,7 @@ UINT CMsRepeatEnd::Process()
 
 	pRepeatStartEvent = (CMsEvent*)GetSong()->GetRepeatStack().PeakTop();
 	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(MSOBJ_REPEATSTART);
-	printf("Repeat end Countdown %d\n", pRPS->GetCountDown());
+//	printf("Repeat end Countdown %d\n", pRPS->GetCountDown());
 	if (pRPS->DecrementRepeatCount())
 	{
 		//------------------------------

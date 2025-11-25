@@ -168,21 +168,21 @@ void CDlgMidiInDispatchEditor::UpdateDialogFields()
 {
 	CString s;
 
-	printf("****** Update Dialog Fields %S ******\n", m_pMIMD->GetDispatchName().GetString());
+//	printf("****** Update Dialog Fields %S ******\n", m_pMIMD->GetDispatchName().GetString());
 	if (m_pMIMD)
 	{
 		if (m_pMIMD->DestWindowISset())
 		{
-			printf("Destination Window is Set\n");
+//			printf("Destination Window is Set\n");
 			m_Combo_DestinationWindow.SetCurSel(m_pMIMD->GetDestinationID());
 			if (m_pMIMD->WMmessageISset())
 			{
-				printf("WM_message is Set\n");
+//				printf("WM_message is Set\n");
 				m_Combo_WM_DispatchCommand.SetCurSel(m_pMIMD->GetWindowMessageID());
 				EnableCommand(true);
 				if (m_pMIMD->MidiStatusByteISset())
 				{
-					printf("Midi Status is Set\n");
+//					printf("Midi Status is Set\n");
 					m_Combo_MidiStatusByte.SetCurSel(m_pMIMD->GetMidiStatusID());
 					EnableStatusByte(true);
 					if (MidiStatusCommands[m_pMIMD->GetMidiStatusID()].m_Channel_flag)
@@ -578,7 +578,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 		}
 		else
 		{
-			printf("Everybody Off\n");
+//			printf("Everybody Off\n");
 			//-------------------------------
 			// Data byte 1 is not turned on
 			// so everybody is OFF

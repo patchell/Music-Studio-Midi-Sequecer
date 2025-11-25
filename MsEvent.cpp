@@ -57,13 +57,13 @@ void CMsEvent::Print(FILE *pO, const char* s, int Indent)
 	CMsObject *pObj = GetEventObjectHead();
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO, "%s========= %s Event %d Begin ========\n", pIndentString, s, m_Index);
+//	fprintf(pO, "%s========= %s Event %d Begin ========\n", pIndentString, s, m_Index);
 	while(pObj)
 	{
 		pObj->Print(pO, Indent + 4);
 		pObj = pObj->GetNext();
 	}
-	fprintf(pO,"%s------------ event %d end-------------\n", pIndentString, m_Index);
+//	fprintf(pO,"%s------------ event %d end-------------\n", pIndentString, m_Index);
 	delete[] pIndentString;
 }
 
@@ -74,7 +74,7 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 	int Count = 0;
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO, "^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
+//	fprintf(pO, "^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^^^\n", pTitel);
 	while (pEV)
 	{
 //		fprintf(pO,"*** Event %d  ID %d\n", pEV->GetIndex(), pEV->GetEventID());
@@ -83,11 +83,11 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 		Count++;
 		if(Count > 1000)
 		{
-			fprintf(pO, "Error: Too many events, possible infinite loop\n");
+//			fprintf(pO, "Error: Too many events, possible infinite loop\n");
 			break;
 		}
 	}
-	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
+//	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
 }
 
 void CMsEvent::AddObjectAtEnd(CMsObject *pO)
@@ -682,7 +682,7 @@ bool CMsEvent::FlipNoteHeads()
 			NoteFlagCount = pLastNote->NeedsFlags();
 			if (NoteFlagCount)
 			{
-				printf("Previous Note Needs Flags %d\n", NoteFlagCount);
+//				printf("Previous Note Needs Flags %d\n", NoteFlagCount);
 				if (pNote->NeedsFlags())
 				{
 					if (pLastNote->IsStemDown() && pNote->IsStemDown())

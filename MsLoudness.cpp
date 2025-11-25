@@ -56,7 +56,7 @@ void CMsLoudness::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sLoudness:%d\n", pIndentString, m_Loudness);
+//	fprintf(pO,"%sLoudness:%d\n", pIndentString, m_Loudness);
 	delete[] pIndentString;
 }
 

@@ -63,7 +63,7 @@ void CMsEndBar::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%s-------Song End------\n", pIndentString);
+//	fprintf(pO,"%s-------Song End------\n", pIndentString);
 	delete[] pIndentString;
 }
 

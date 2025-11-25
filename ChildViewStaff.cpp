@@ -3410,7 +3410,6 @@ BOOL CChildViewStaff::PreTranslateMessage(MSG* pMsg)
 
 void CChildViewStaff::OnMenuMsFileOpen()
 {
-	printf("File Open Menu Selected\n");
 	CFileDialog Dlg(TRUE, _T("sng"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Midi Sequence Files (*.sng)|*.sng|All Files (*.*)|*.*||"));
 	if (IDOK == Dlg.DoModal())
 	{

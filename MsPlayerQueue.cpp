@@ -54,7 +54,7 @@ UINT CMsPlayerQueue::ProcessQueue(CMsEvent* pEvent)
 		}
 		pMusObj = pMusObj->GetNext();
 	}
-	fprintf(GETAPP->LogFile(), "==== PROCESS->Added %d Objects\n", AddedCount);
+//	fprintf(GETAPP->LogFile(), "==== PROCESS->Added %d Objects\n", AddedCount);
 	if (GetSong()->GetSongPosition())
 	{
 		GetSong()->GetStaffChildView()->PostMessageW(
@@ -78,7 +78,7 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 	UINT ObjectsPlayed = 0;
 	CMsNote* pNote = 0;
 
-	fprintf(GETAPP->LogFile(), "---- PLAY QUEUE: Total Objects:%d\n", GetTotalObjects());
+//	fprintf(GETAPP->LogFile(), "---- PLAY QUEUE: Total Objects:%d\n", GetTotalObjects());
 	while(pObj)
 	{
 		DeleteObjectFlag = pObj->GetMsObject()->Play();
@@ -101,13 +101,13 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 			if(pObj->GetMsObject()->Is(MSOBJ_NOTE))
 			{
 				pNote = dynamic_cast<CMsNote*>(pObj->GetMsObject());
-				if (pNote)
-				{
-					fprintf(GETAPP->LogFile(), "   ---- Note Timed Out: Pitch:%d Ticks:%d\n",
-						pNote->GetPitch(),
-						pNote->GetTick()
-					);
-				}
+				//if (pNote)
+				//{
+				//	fprintf(GETAPP->LogFile(), "   ---- Note Timed Out: Pitch:%d Ticks:%d\n",
+				//		pNote->GetPitch(),
+				//		pNote->GetTick()
+				//	);
+				//}
 			}
 			RemoveObject(pObj);
 			delete pObj;
@@ -271,7 +271,7 @@ void CMsPlayerQueue::RemoveAllObjects()
 
 int CMsPlayerQueue::PrintNotesInQueue(FILE* pO)
 {
-	fprintf(pO, "Total Objects in Queue:%d\n", GetTotalObjects());
+//	fprintf(pO, "Total Objects in Queue:%d\n", GetTotalObjects());
 	CMsPlayerQueueItem* pItem = m_pHead;
 	CMsNote* pNote = nullptr;
 

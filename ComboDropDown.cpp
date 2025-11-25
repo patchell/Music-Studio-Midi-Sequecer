@@ -5,12 +5,12 @@
 
 void PrintPoint(const char *string,CPoint pt)
 {
-	printf("POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
+//	printf("POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
 }
 
 void PrintSize(const char* string, CSize sz)
 {
-	printf("SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
+//	printf("SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
 
 }
 // CComboDropDown

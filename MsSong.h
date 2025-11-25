@@ -83,6 +83,8 @@ class CMsSong
 	// Parent Objects
 	//---------------------------------------
 	CChildViewStaff* m_pChildView;	//staff view window
+	int m_NoteCountOn;     // count of note on events sent
+	int m_NoteCountOff;    // count of note off events sent
 public:
 	CMsSong();
 	virtual ~CMsSong();
@@ -215,8 +217,9 @@ public:
 	bool ValidateFile();
 	int DumpSong(FILE* pOutFile);
 	UINT GetTotalTicks() { return m_TotalTicks; }
-	//----------------------------------
-	// Song Playing State Defines
-	// --------------------------------
+	void IncNoteOnCount() { m_NoteCountOn++; };
+	void IncNoteOffCount() { m_NoteCountOff++; }
+	int GetNoteOnCount() const { return m_NoteCountOn; };
+	int GetNoteOffCount() const { return m_NoteCountOff; };
 };
 

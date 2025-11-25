@@ -7,12 +7,12 @@
 
 void PrintRec(const char *pTit, CRect rec)
 {
-	printf("RECT :%s:Point(%d, %d) Size(%d, %d)\n",
-		pTit,
-		rec.left, 
-		rec.top, 
-		rec.Size().cx, 
-		rec.Size().cy);
+	//printf("RECT :%s:Point(%d, %d) Size(%d, %d)\n",
+	//	pTit,
+	//	rec.left, 
+	//	rec.top, 
+	//	rec.Size().cx, 
+	//	rec.Size().cy);
 }
 
 IMPLEMENT_DYNAMIC(CComboDropUp, CWnd)

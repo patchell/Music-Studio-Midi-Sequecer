@@ -14,6 +14,7 @@ CMsSong::CMsSong()
 	: m_nIsPlaying(SONG_NOT_PLAYING)
 	, m_nMeasureBarCount(0)
 {
+
 	m_pEventListHead = 0;
 	m_pEventListTail = 0;
 	m_nTotalEvents = 0;
@@ -36,6 +37,9 @@ CMsSong::CMsSong()
 	m_nFileBufferSize = 0;
 	m_InFileSize = 0;
 	m_pPlayerObjectQueue = 0;
+	m_NoteCountOn = 0;     // count of note on events sent
+	m_NoteCountOff = 0;    // count of note off events sent
+
 }
 
 CMsSong::~CMsSong()
@@ -148,10 +152,6 @@ int CMsSong::Parse(char *pSongData)
 
 	while(loop)
 	{
-		if (pEv->GetIndex() == 35)
-		{
-			printf("Index is 35\n");
-		}
 		c = ParserGetC();
 		obj.pObj = 0;
 		switch(c)	/*	switch song data	*/
@@ -245,10 +245,6 @@ int CMsSong::Parse(char *pSongData)
 		}	/*	end of switch (c)	*/
 		if(obj.pObj)
 		{
-			if(pEv->GetIndex() == 35)
-			{
-				printf("Index is 35\n");
-			}
 			pEv->AddObjectAtEnd(obj.pObj);
 //			obj.pObj->Print(stdout);
 		}
@@ -714,7 +710,7 @@ void CMsSong::Save(FILE *pO)
 	//		pO.....pointer to output stream
 	//-----------------------------------
 	fputc(0xcd,pO);	//first character of file
-	fprintf(pO,"MsStudio");
+	fprintf(pO,"Music Studio");
 	fputc(0xcd,pO);
 	fputc(0x02,pO);
 	//------------------------------------
@@ -1110,7 +1106,7 @@ UINT CMsSong::Ticker(void)
 	CMsNote* pNote = 0;
 	UINT TotalObjectInPlayerListQueue = GetPlayerQueue()->GetTotalObjects();
 	CMsEvent* pNextEvent = 0;
-
+	static int LastOn = 0, LastOff = 0;
 	++m_TotalTicks;
 	if (m_MidiClockFlag)
 	{
@@ -1149,6 +1145,13 @@ UINT CMsSong::Ticker(void)
 			//-----------------------------
 			SetSongPosition(pNextEvent);
 			GetPlayerQueue()->ProcessQueue(pNextEvent);
+			fprintf(GETAPP->LogFile(), "Note Off:%d Note On:%d Event:%d Delta:%d InQueue:%d\n", 
+				m_NoteCountOff, 
+				m_NoteCountOn, 
+				pNextEvent->GetIndex(), 
+				m_NoteCountOn - m_NoteCountOff,
+				GetPlayerQueue()->GetTotalObjects()
+			);
 		}
 	}
 	return rV;
@@ -1452,7 +1455,7 @@ int CMsSong::DumpSong(FILE* pOutFile)
 			}
 			break;
 		}	/*	end of switch (c)	*/
-		fprintf(pOutFile, "%s\n", pS);
+//		fprintf(pOutFile, "%s\n", pS);
 	}	/*	end while	*/
 	return rV;
 }

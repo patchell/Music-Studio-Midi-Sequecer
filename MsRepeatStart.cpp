@@ -33,7 +33,7 @@ UINT CMsRepeatStart::Process()
 	m_CountDown = m_Count;
 	CMsEvent* pEV = GetParentEvent();
 	GetSong()->GetRepeatStack().Push(pEV);
-	printf("Repeat Start CD=%d\n", m_CountDown);
+//	printf("Repeat Start CD=%d\n", m_CountDown);
 	return 0;
 }
 
@@ -62,7 +62,7 @@ void CMsRepeatStart::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sRepeat Start |:(%d)\n", pIndentString, m_Count);
+//	fprintf(pO,"%sRepeat Start |:(%d)\n", pIndentString, m_Count);
 	delete[] pIndentString;
 }
 

@@ -137,10 +137,10 @@ void CMsNote::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO, "%s***********************************\n", pIndentString);
+//	fprintf(pO, "%s***********************************\n", pIndentString);
 	CMsObject::Print(pO, Indent+4);
 	GetData().PrintData(pO, GetDataPointer(), Indent+4);
-	fprintf(pO, "%s***********************************\n", pIndentString);
+//	fprintf(pO, "%s***********************************\n", pIndentString);
 
 	delete[] pIndentString;
 }
@@ -674,6 +674,7 @@ int RangeLUT[6] = { 0,-24,-12,0,12,24 };
 
 void CMsNote::NoteOn(CMsKeySignature *pKS, UINT Velociry)
 {
+	GetSong()->IncNoteOnCount();
 	int chan = GETMIDIINFO->GetChannel(GetTrack());
 	int note = GetPitch() + RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
 	note = pKS->GetKeySigCorrection(note, GetAccidental());
@@ -690,6 +691,7 @@ void CMsNote::ChangePatch(int PatchNumber)
 
 void CMsNote::NoteOff( CMsKeySignature *pKS, UINT Velociry)
 {
+	GetSong()->IncNoteOffCount();
 	int chan = GETMIDIINFO->GetChannel(GetTrack());
 	int note = GetPitch() + RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
 	note = pKS->GetKeySigCorrection(note, GetAccidental());
@@ -992,8 +994,13 @@ UINT CMsNote::Play()
 	switch (GetPlayState())
 	{
 	case PLAYSTATE_START:
+		if (IsTieBeg())
+		{
+			fprintf(GETAPP->LogFile(),"Tie Note Start\n");
+		}
 		SetTick(GetDuration(), 1);
-		NoteOn(GetSong()->GetCurrentKeySignature(), GetSong()->GetCurrentLoudness()->GetLoudness());
+		if(IsNote() && !IsTieEnd())
+			NoteOn(GetSong()->GetCurrentKeySignature(), GetSong()->GetCurrentLoudness()->GetLoudness());
 		SetPlayState(PLAYSTATE_RUNNING);
 		DecTick();
 		break;
@@ -1025,13 +1032,13 @@ UINT CMsNote::Play()
 		DeleteObject = PLAY_OBJECT_TIMED_OUT;
 		break;
 	}
-	fprintf(GETAPP->LogFile(), "    Note:%d EVENT:%d Tick:%d State:%d  *Ticks:%d\n",
-		GetPitch(),
-		GetParentEvent()->GetIndex(),
-		GetTick(),
-		GetPlayState(),
-		GetSong()->GetTotalTicks()
-	);
+//	fprintf(GETAPP->LogFile(), "    Note:%d EVENT:%d Tick:%d State:%d  *Ticks:%d\n",
+//		GetPitch(),
+//		GetParentEvent()->GetIndex(),
+//		GetTick(),
+//		GetPlayState(),
+//		GetSong()->GetTotalTicks()
+//	);
 	return DeleteObject;
 }
 

@@ -55,7 +55,7 @@ void CMsBar::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sMeasure Bar:%d\n", pIndentString,m_BarNumber);
+//	fprintf(pO,"%sMeasure Bar:%d\n", pIndentString,m_BarNumber);
 	delete[] pIndentString;
 }
 
@@ -112,7 +112,7 @@ UINT CMsBar::ObjectToString(CString& csString, UINT mode)
 
 CMsObject* CMsBar::MakeANewObject()
 {
-	printf("Make a new Bar\n");
+//	printf("Make a new Bar\n");
 	CMsBar* pBar;
 	pBar = new CMsBar;
 	return pBar;

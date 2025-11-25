@@ -52,7 +52,7 @@ void CMsTempo::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	fprintf(pO,"%sTempo:%d\n", pIndentString, m_Tempo);
+//	fprintf(pO,"%sTempo:%d\n", pIndentString, m_Tempo);
 	delete[] pIndentString;
 }
 
