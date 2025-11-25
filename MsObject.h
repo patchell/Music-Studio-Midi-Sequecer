@@ -1,4 +1,5 @@
-// MsObject.h: interface for the CMsObject class.
+// MsObject.h
+// interface for the CMsObject class.
 //
 //////////////////////////////////////////////////////////////////////
 #pragma once
@@ -11,6 +12,19 @@ constexpr auto MSOBJ_PLAY_KEEP_TICKING = 0;
 constexpr auto MSOBJ_PLAY_DONE = 1;
 constexpr auto MSOBJ_PLAY_DONE_BUT_DO_NOT_REMOVE = 2;
 
+enum {
+	PLAYSTATE_NOT_STARTED = 0,
+	PLAYSTATE_START,
+	PLAYSTATE_RUNNING,
+	PLAYSTATE_NOTE_OFF,
+	PLAYSTATE_DONE
+};
+
+enum {
+	PLAY_NO_ACTION = 0,
+	PLAY_OBJECT_TIMED_OUT,
+	PLAY_OBJECT_DONE,
+};
 
 extern CString csObjectTypeString[];
 
@@ -93,6 +107,7 @@ union ObjectTypes{
 class CMsObject  
 {
 private:
+	UINT m_PlayState;
 	UINT m_ObjectID;
 	bool m_Selected;	//object is selected
 	bool m_HighLight;
@@ -112,6 +127,13 @@ public:
 	// Pure Virtual Methods
 	//-------------------------------------------------
 	virtual UINT Process() = 0;
+		//-------------------------------------------------
+		// Play Method
+		//	The return value says a lot.
+		// 	PLAY_NO_ACTION
+		//	PLAY_OBJECT_TIMED_OUT
+		//
+		//-------------------------------------------------
 	virtual UINT Play() = 0;
 	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse) = 0;
 	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse) = 0;
@@ -120,6 +142,10 @@ public:
 	virtual bool DoesSomething() = 0;
 	//-------------------------------------------------
 	// Back to our regularly scheduled Methods
+	//-------------------------------------------------
+	virtual void PlayStateStart() { m_PlayState = PLAYSTATE_START; }
+	virtual UINT GetPlayState() { return m_PlayState; }
+	virtual void SetPlayState(UINT state) { m_PlayState = state; }
 	//-------------------------------------------------
 	virtual void Copy(CMsObject *Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);

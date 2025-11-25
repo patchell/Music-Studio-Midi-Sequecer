@@ -951,6 +951,9 @@
       <UniqueIdentifier>{64accd9d-c37d-4811-ae6e-1b580ed68c3b}</UniqueIdentifier>
       <Extensions>exe</Extensions>
     </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{7365082d-f34b-4a5e-b8d9-7808d622a1dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MidiSeqMS.rc">

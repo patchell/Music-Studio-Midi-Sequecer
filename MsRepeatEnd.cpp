@@ -89,7 +89,7 @@ bool CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent)
 
 UINT CMsRepeatEnd::Play()
 {
-	return 0;
+	return PLAY_OBJECT_DONE;
 }
 
 UINT CMsRepeatEnd::Process()

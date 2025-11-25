@@ -25,15 +25,15 @@ bool CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
 	return CMsObject::Create(pSong, pEvent);
 }
 
-UINT CMsLoudness::Play()
+UINT CMsLoudness::Process()
 {
-	GetSong()->SetCurrentLoudness(this);
 	return 1;
 }
 
-UINT CMsLoudness::Process()
+UINT CMsLoudness::Play()
 {
-	return 0;
+	GetSong()->SetCurrentLoudness(this);
+	return PLAY_OBJECT_DONE;
 }
 
 int CMsLoudness::MouseLButtonDown(int DrawState, CPoint pointMouse)

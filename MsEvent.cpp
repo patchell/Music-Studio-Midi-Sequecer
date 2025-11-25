@@ -480,32 +480,6 @@ void CMsEvent::Draw(CDC *pDC, int event, int maxevent)
 //	printf("--------- End Draw Objects in Event %d-----------\n", GetIndex());
 }
 
-UINT CMsEvent::Process(CMsSong* pSong)
-{
-	CMsPlayerQueue* pPQ = pSong->GetPlayerQueue();
-	CMsPlayerQueueItem* pPQI = 0;
-	CMsObject* pObj = GetEventObjectHead();
-	UINT ObjectsAdded = 0;
-
-	while(pObj)
-	{
-		if(pObj->IsTimedObject() || pObj->DoesSomething())
-		{
-			pPQI = new CMsPlayerQueueItem();
-			if(pPQI)
-			{
-				pPQI->Create();
-				pPQI->SetMsObject(pObj);
-				pPQI->Process(pSong);
-				pPQ->AddObject(pPQI);
-				ObjectsAdded++;
-			}
-		}
-		pObj = pObj->GetNext();
-	}
-	return ObjectsAdded;
-}
-
 CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 {
 	int loop = 1;

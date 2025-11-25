@@ -43,13 +43,13 @@ CMsKeySignature::~CMsKeySignature()
 
 UINT CMsKeySignature::Process()
 {
-	return 0;
+	return 1;
 }
 
 UINT CMsKeySignature::Play()
 {
 	GetSong()->SetCurrentKeySignature(this);
-	return 1;
+	return PLAY_OBJECT_DONE;
 }
 
 int CMsKeySignature::MouseLButtonDown(int DrawState, CPoint pointMouse)

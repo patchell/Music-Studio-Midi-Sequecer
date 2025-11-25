@@ -1,0 +1,29 @@
+		if (GetSongPosition())
+		{
+			printf("Process Objects in Event %d\n", GetSongPosition()->GetIndex());
+			GetStaffChildView()->PostMessageW(
+				WM_STAFF_DISP_EVENT,
+				GetSongPosition()->GetIndex(),
+				STAFF_DISP_EVENT_NEXT
+			);
+//			printf("Get Head of Event Object\n");
+			pCurrentObject = GetSongPosition()->GetEventObjectHead();
+			while (pCurrentObject)
+			{
+				CString csOvbj;
+				pCurrentObject->GetTypeString(csOvbj);
+				printf("Process all Objects: ObjectType = %lS\n", csOvbj.GetString());
+				//--------------------------------
+				// Process the various objects
+				// that can be in an event
+				//----------------------------------
+				ObjectAddedToPlayerQueue += pCurrentObject->Process();
+				//go to next object
+				pCurrentObject = pCurrentObject->GetNext();
+			}
+			printf("End of Process Objects %d\n", ObjectAddedToPlayerQueue);
+			if (ObjectAddedToPlayerQueue == 0)
+				SetSongPosition(GetSongPosition()->GetNext());
+			else
+				MainLoop = 0;
+		}

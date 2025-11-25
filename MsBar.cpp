@@ -24,6 +24,12 @@ bool CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
 	return CMsObject::Create(pSong, pEvent);
 }
 
+
+UINT CMsBar::Process()
+{
+	return 0;
+}
+
 UINT CMsBar::Play()
 {
 	return 0;
@@ -42,11 +48,6 @@ int CMsBar::MouseLButtonUp(int DrawState, CPoint pointMouse)
 int CMsBar::MouseMove(int DrawState, CPoint pointMouse)
 {
 	return DrawState;
-}
-
-UINT CMsBar::Process()
-{
-	return 0;
 }
 
 void CMsBar::Print(FILE *pO, int Indent)

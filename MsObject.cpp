@@ -38,6 +38,7 @@ CMsObject::CMsObject()
 	m_ObjectID = GETAPP->GetUniqueID();
 	m_pParentEvent = 0;
 	m_pSong = 0;
+	m_PlayState = PLAYSTATE_NOT_STARTED;
 }
 
 CMsObject::~CMsObject()

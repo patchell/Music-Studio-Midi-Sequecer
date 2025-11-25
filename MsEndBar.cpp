@@ -25,12 +25,20 @@ bool CMsEndBar::Create(CMsSong* pSong, CMsEvent* pParentEvent)
 	return rV;
 }
 
-UINT CMsEndBar::Process()
-{
-	return 0;
-}
 
 UINT CMsEndBar::Play()
+{
+	UINT rV = PLAY_OBJECT_DONE;	//means the song has ended
+	GetSong()->GetStaffChildView()->PostMessageW(
+		WM_STAFF_DISP_EVENT,
+		0,
+		STAFF_DISP_EVENT_END
+	);
+	GetSong()->SetSongPlayState(GetSong()->GetSongPlayState() | SONG_STOP);
+	return rV;
+}
+
+UINT CMsEndBar::Process()
 {
 	return 0;
 }
@@ -94,23 +102,6 @@ void CMsEndBar::Draw(CDC *pDC, int event, int maxevent)
 		pDC->SelectObject(p_oldObject);
 		pDC->SelectObject(pOldPen);
 	}
-}
-
-UINT CMsEndBar::Play(CMsSong* pSong)
-{
-	return 0;
-}
-
-UINT CMsEndBar::Process(CMsSong* pSong)
-{
-	UINT rV = 0;	//means the song has ended
-	pSong->GetStaffChildView()->PostMessageW(
-		WM_STAFF_DISP_EVENT,
-		0,
-		STAFF_DISP_EVENT_END
-	);
-	pSong->SetSongPlayState(pSong->GetSongPlayState() | SONG_STOP);
-	return 0;
 }
 
 UINT CMsEndBar::ObjectToString(CString& csString, UINT mode)

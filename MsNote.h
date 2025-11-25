@@ -259,7 +259,7 @@ private:
 		{ NOTE_SHAPE_WHOLE,			1,0,0,	NOTE_FLAGS_0,0,NOTE_TICKS_WHOLE_DOTTED,"Dotted Whole"}		//20 dotted whole
 	};
 	//-------------------------------
-	CMyBitmap m_RestBitmap;
+	CMyBitmap* m_pRestBitmap;
 	bool m_BitmapFlag;
 	NoteData m_Data;
 	//-------------------------------------
@@ -388,7 +388,8 @@ public:
 	int HalfRestOffset();
 	int WholeRestOffset(int pitch);
 	int NoteToPosition();
-	CMyBitmap* GetBitmap() { return &m_RestBitmap; }
+	CMyBitmap* GetRestBitmap() { return m_pRestBitmap; }
+	void SetRestBitmap(CMyBitmap* pBM) { m_pRestBitmap = pBM; }
 	//------------ Note Tie Stuff ----------------------
 	CMsNote* FindTieBegin();
 

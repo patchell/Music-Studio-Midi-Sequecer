@@ -78,7 +78,7 @@ void CMsSong::AddEventAtEnd(CMsEvent *pE)
 		m_pEventListTail = pE;
 	}
 	++m_nTotalEvents;
-	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEvent At End",2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEvent At End",2);
 }
 
 void CMsSong::AddEventAtStart(CMsEvent *pE)
@@ -99,7 +99,7 @@ void CMsSong::AddEventAtStart(CMsEvent *pE)
 		m_pEventListHead = pE;
 	}
 	++m_nTotalEvents;
-	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddEventAtStart", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddEventAtStart", 2);
 }
 
 bool CMsSong::SetGetPosition(int pos)
@@ -416,7 +416,7 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 			pNewEvent->AddObjectAtEnd(pEndBar);
 		}
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddObjectToSong", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddObjectToSong", 2);
 	return rV;
 }
 
@@ -447,7 +447,7 @@ UINT CMsSong::AddMoreEvenrsAtEnd(UINT NewEndEvent)
 		pEVTemp = MakeNewEvent();
 		AddEventAtEnd(pEVTemp);
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddMoreEventsAtEnd", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddMoreEventsAtEnd", 2);
 	return NumberOfEvents;
 }
 
@@ -481,7 +481,7 @@ void CMsSong::RenumberEvents(int *First, int *Last)
 		}
 		pEv = pEv->GetNext();
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(), "RenumberEvents", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(), "RenumberEvents", 2);
 }
 
 CMsEvent *CMsSong::InsertEvent(int e)
@@ -545,7 +545,7 @@ CMsEvent *CMsSong::InsertEvent(int e)
 		if(pNewEv->GetNext())
 			pNewEv->GetNext()->SetPrev(pNewEv);
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(), "InsertEvent", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(), "InsertEvent", 2);
 	return pNewEv;
 }
 
@@ -714,7 +714,7 @@ void CMsSong::Save(FILE *pO)
 	//		pO.....pointer to output stream
 	//-----------------------------------
 	fputc(0xcd,pO);	//first character of file
-	fprintf(pO,"Mstudio");
+	fprintf(pO,"MsStudio");
 	fputc(0xcd,pO);
 	fputc(0x02,pO);
 	//------------------------------------
@@ -921,6 +921,7 @@ bool CMsSong::Create(CChildViewStaff* pCCV)
 {
 	m_pChildView = pCCV;
 	m_pPlayerObjectQueue = new CMsPlayerQueue;
+	m_pPlayerObjectQueue->Create(this);
 	return true;
 }
 
@@ -974,7 +975,7 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 		else
 			GetStaffChildView()->MessageBox(_T("InTernal Error"), _T("Bad Thing"), MB_OK);
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #1", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #1", 2);
 }
 
 void CMsSong::AddEventChain(
@@ -1030,7 +1031,7 @@ void CMsSong::AddEventChain(
 			SetEventListHead(pEvC->GetHead());
 		}
 	}
-	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #2", 2);
+//	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #2", 2);
 }
 
 //*****************************************
@@ -1040,16 +1041,21 @@ void CMsSong::AddEventChain(
 
 void CMsSong::Start(void)
 {
-	if (ProcessEvent() > 0)
+	CMsEvent* pEvent = GetSongPosition();
+
+	if (pEvent)
 	{
-		m_MidiClockFlag = 1;	// Start Midi Clock
-		MidiStart();			// Send MidiStart command to Midi device
-		//Enable the timer
-		GETAPP->PlayerThreadAddSong(this);	// Add song to player thread
-		GetAddSongCompleteEV().Pend();		// clear song done event  object
-		GETAPP->PlayerThreadEnableTimer(GetSongId(), 1);
-		GetEnableTimerCompleteEV().Pend();
-		m_PlayState = SONG_IS_PLAYING;
+		if (GetPlayerQueue()->ProcessQueue(pEvent) > 0)
+		{
+			m_MidiClockFlag = 1;	// Start Midi Clock
+			MidiStart();			// Send MidiStart command to Midi device
+			//Enable the timer
+			GETAPP->PlayerThreadAddSong(this);	// Add song to player thread
+			GetAddSongCompleteEV().Pend();		// clear song done event  object
+			GETAPP->PlayerThreadEnableTimer(GetSongId(), 1);
+			GetEnableTimerCompleteEV().Pend();
+			m_PlayState = SONG_IS_PLAYING;
+		}
 	}
 }
 
@@ -1105,6 +1111,7 @@ UINT CMsSong::Ticker(void)
 	UINT TotalObjectInPlayerListQueue = GetPlayerQueue()->GetTotalObjects();
 	CMsEvent* pNextEvent = 0;
 
+	++m_TotalTicks;
 	if (m_MidiClockFlag)
 	{
 		MidiClock();
@@ -1141,31 +1148,9 @@ UINT CMsSong::Ticker(void)
 			// processed
 			//-----------------------------
 			SetSongPosition(pNextEvent);
-			pNextEvent->Process(this)
-				;
+			GetPlayerQueue()->ProcessQueue(pNextEvent);
 		}
-		GetPlayerQueue()->ProcessQueue(this);
 	}
-
-	//---------------------------------------------
-	// If one or more of the CEventMidi has ended
-	// and the song is still playing, process
-	// the event list to get more midi events
-	//--------------------------------------------
-	if (AnObjectHasEnded && (m_PlayState == SONG_IS_PLAYING))
-	{
-		rV = ProcessEvent();
-		if (rV < 0)
-			m_PlayState = SONG_STOP;
-	}
-	//-------------------------------
-	// If we have run out of events
-	// or the user has pushed the
-	// stop button, wait for all the
-	// notes that are playing to stop
-	//--------------------------------
-	if (m_PlayState == SONG_STOP)
-		rV = GetPlayerQueue()->GetTotalObjects();
 	return rV;
 }
 
@@ -1205,90 +1190,16 @@ CMsEvent* CMsSong::GetNextEventToProcess()
 bool CMsSong::Play(CChildViewStaff* pChildView)
 {
 	bool Succes = false;
+
 	if (m_nIsPlaying == SONG_NOT_PLAYING)
 	{
 		SetSongPosition(GetEventListHead());
 		m_nIsPlaying = SONG_IS_PLAYING;
+		m_TotalTicks = 0;
 		Succes = true;
 	}
 	return Succes;
 }
-
-int CMsSong::ProcessEvent(void)
-{
-	CMsObject* pCurrentObject;
-	int ObjectAddedToPlayerQueue = 0;
-	UINT QuarterNotesPerMinute = 0;
-	UINT MainLoop = 1;
-
-	//	if(pCurrentPosistion)
-	//		printf("***** Enter Processing Event = %d ****\n", GetSongPosition()->GetIndex());;
-	//---------------------------------
-	// Keep Looking for CMsObject's
-	// In an event after the current 
-	// position
-	//---------------------------------
-	while (MainLoop)
-	{
-		while (GetSongPosition()
-			&& (GetSongPosition()->GetEventObjectHead() == 0)) ///no song objects this event
-		{
-//			printf("Locate some Objects in Event %d\n", GetSongPosition()->GetIndex());
-			SetSongPosition(GetSongPosition()->GetNext());
-		}
-		if (GetSongPosition())
-		{
-//			printf("Process Objects in Event %d\n", GetSongPosition()->GetIndex());
-			GetStaffChildView()->PostMessageW(
-				WM_STAFF_DISP_EVENT,
-				GetSongPosition()->GetIndex(),
-				STAFF_DISP_EVENT_NEXT
-			);
-//			printf("Get Head of Event Object\n");
-			pCurrentObject = GetSongPosition()->GetEventObjectHead();
-			while (pCurrentObject)
-			{
-				CString csOvbj;
-				pCurrentObject->GetTypeString(csOvbj);
-//				printf("Process all Objects: ObjectType = %lS\n", csOvbj.GetString());
-				//--------------------------------
-				// Process the various objects
-				// that can be in an event
-				//----------------------------------
-				ObjectAddedToPlayerQueue += pCurrentObject->Process();
-				//go to next object
-				pCurrentObject = pCurrentObject->GetNext();
-			}
-//			printf("End of Process Objects %d\n", ObjectAddedToPlayerQueue);
-			if (ObjectAddedToPlayerQueue == 0)
-				SetSongPosition(GetSongPosition()->GetNext());
-			else
-				MainLoop = 0;
-		}
-		else
-		{
-			MainLoop = 0;
-//			printf("No More Events\n");
-		}
-	}
-	if (GetSongPosition())
-		SetSongPosition(GetSongPosition()->GetNext());
-	else
-	{
-		ObjectAddedToPlayerQueue = -1;
-		SetSongPosition(0);
-	}
-	//-------------------------------------
-	// Figure out what the return value
-	// should be.
-	// If we are still in the Is Playing
-	// state (does not also have the Stop
-	// attribute), then return true
-	//-------------------------------------
-//	printf("Exit Processing %d\n", ObjectAddedToPlayerQueue);
-	return ObjectAddedToPlayerQueue;;
-}
-
 bool CMsSong::CheckChan(int track, int chan)
 {
 	bool rv = true;

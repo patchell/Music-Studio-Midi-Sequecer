@@ -32,6 +32,8 @@ public:
 	virtual void Print(FILE *pO, int Indent);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
-	UINT GetLoudness(void){return m_Loudness;}
+	UINT GetLoudness(void){
+		return m_Loudness;
+	}
 	void SetLoudness(UINT l){m_Loudness = l;}
 };

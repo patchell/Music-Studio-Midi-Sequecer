@@ -28,9 +28,7 @@ public:
 	virtual void Save(FILE *pO);
 	virtual CMsObject * Copy(void);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
-	virtual UINT Play(CMsSong* pSong);
 	virtual bool AddToQueue() { return false; }
-	virtual UINT Process(CMsSong* pSong);
 	virtual bool RemoveFromQueue(CMsSong* pSong) { return false; }
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);

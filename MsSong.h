@@ -72,7 +72,7 @@ class CMsSong
 	// variables for playing back song
 	//----------------------------------------
 	UINT m_MidiClockFlag;
-
+	UINT m_TotalTicks;
 	CMsKeySignature* m_pLastKeySignature;
 	CMsTimeSignature* m_pLastTimeSignature;
 	CMsTempo* m_pLastTempo;
@@ -197,7 +197,6 @@ public:
 	CMsStack& GetRepeatStack() { return m_stackRepeat; }
 	UINT Ticker(void);
 	CMsEvent* GetNextEventToProcess();
-	int ProcessEvent(void);
 	void SetSongPosition(CMsEvent* pEv) {
 		m_pSongPosition = pEv;
 //		if (pEv) printf(">****** Set Posirion %d ******<\n", pEv->GetIndex());
@@ -215,6 +214,7 @@ public:
 	void SetSongListPrev(CMsSong* pSong) { m_pPrevSong = pSong; }
 	bool ValidateFile();
 	int DumpSong(FILE* pOutFile);
+	UINT GetTotalTicks() { return m_TotalTicks; }
 	//----------------------------------
 	// Song Playing State Defines
 	// --------------------------------

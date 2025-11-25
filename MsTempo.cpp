@@ -22,14 +22,14 @@ CMsTempo::~CMsTempo()
 
 UINT CMsTempo::Process()
 {
-	return 0;
+	return 1;
 }
 
 UINT CMsTempo::Play()
 {
 	GetSong()->SetCurrentTempo(this);
 	GETAPP->PlayerThreadSetTempo(GetQNPM());
-	return 1;
+	return PLAY_OBJECT_DONE;
 }
 
 int CMsTempo::MouseLButtonDown(int DrawState, CPoint pointMouse)

@@ -26,6 +26,7 @@ CMsNote::CMsNote() :CMsObject()
 	m_Ticks = 0;
 	m_NoteTieNext = 0; //pointer to note object is the next tied note
 	m_NoteTiePrev = 0;	//pointer to previous note that is tied
+	m_pRestBitmap = 0;
 }
 
 
@@ -38,9 +39,9 @@ void CMsNote::LoadRestBitmap(int Selection)
 {
 	if (COMBO_REST_HALF < Selection)
 	{
-		if(GetBitmap()->GetSafeHandle())
-			GetBitmap()->DeleteObject();
-		GetBitmap()->LoadBitmapW(GETAPP->GetRestTypeID(Selection));
+		if(GetRestBitmap()->GetSafeHandle())
+			GetRestBitmap()->DeleteObject();
+		GetRestBitmap()->LoadBitmapW(GETAPP->GetRestTypeID(Selection));
 		m_BitmapFlag = true;
 	}
 	else
@@ -51,11 +52,14 @@ bool CMsNote::Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent)
 {
 	if (nBitmapID)
 	{
-		m_RestBitmap.LoadBitmapW(nBitmapID);
+		m_pRestBitmap = new CMyBitmap();
+		m_pRestBitmap->LoadBitmapW(nBitmapID);
 		m_BitmapFlag = true;
 	}
 	else
 		m_BitmapFlag = false;
+	if(pSong == NULL)
+		printf("pSong is NULL in CMsNote::Create\n");
 	return CMsObject::Create(pSong, pParentEvent);
 }
 
@@ -373,11 +377,28 @@ void CMsNote::Draw(CDC *pDC, int event, int maxevent)
 		}
 		if(DurTab[GetDuration()].Dotted)
 		{
-			pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+12,notev+6,color);
-			pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+13,notev+6,color);
-			pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+11,notev+6,color);
-			pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+12,notev+7,color);
-			pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+12,notev+5,color);
+			int y;
+
+			if(IsOnLine())
+				y = notev;
+			else
+				y = notev + 4;
+			if(IsStemDown())
+			{
+				pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+31,y+3,color);
+				pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+32,y+3,color);
+				pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+33,y+3,color);
+				pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+32,y+4,color);
+				pDC->SetPixel(EVENT_OFFSET+EVENT_WIDTH*event+32,y+2,color);
+			}
+			else
+			{
+				pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * event + 23, y + 3, color);
+				pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * event + 24, y + 3, color);
+				pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * event + 22, y + 3, color);
+				pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * event + 23, y + 4, color);
+				pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * event + 23, y + 2, color);
+			}
 		}
 		else if (DurTab[GetDuration()].Triplet)
 		{
@@ -467,11 +488,11 @@ void CMsNote::DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color)
 	CDC dc;
 	CSize bmSize;
 
-	if (m_BitmapFlag)
+	if (m_pRestBitmap)
 	{
 		dc.CreateCompatibleDC(pDC);
-		bmSize = m_RestBitmap.GetBmDim();
-		pOldBm = (CMyBitmap*)dc.SelectObject(&m_RestBitmap);
+		bmSize = m_pRestBitmap->GetBmDim();
+		pOldBm = (CMyBitmap*)dc.SelectObject(m_pRestBitmap);
 		x = EVENT_OFFSET + EVENT_WIDTH * event;
 		y = notev;
 		pDC->BitBlt(x, y, bmSize.cx, bmSize.cy, &dc, 0, 0, SRCAND);
@@ -725,12 +746,20 @@ void CMsNote::DecrNote()
 CMsObject * CMsNote::Copy()
 {
 	CMsNote *pN = new CMsNote();
+	CMsSong* pSong = GetSong();
 
+	if(pSong == NULL)
+	{
+		printf("pSong is NULL in CMsNote::Copy\n");
+	}
+
+	pN->Create(0,pSong, GetParentEvent());
+	pN->SetRestBitmap(GetRestBitmap());
 	pN->GetData().CopyData(GetData());
 	pN->SetParentEvent(GetParentEvent()->GetIndex());
 
 	if (m_BitmapFlag)
-		pN->GetBitmap()->LoadBitmapW(CMidiSeqMSApp::RestBmIdsTypes[GetShape()]);
+		pN->GetRestBitmap()->LoadBitmapW(CMidiSeqMSApp::RestBmIdsTypes[GetShape()]);
 	return pN;
 }
 
@@ -929,12 +958,12 @@ bool CMsNote::IsDotted()
 
 void CMsNote::SetTick(int Duration, int tempo)
 {
-	///----------------------------
-	/// Set the number of ticks for
-	/// the ticker.  This is the
-	/// product of the duration
-	/// and the tempo
-	///----------------------------
+	//----------------------------
+	// Set the number of ticks for
+	// the ticker.  This is the
+	// product of the duration
+	// and the tempo
+	//----------------------------
 	m_Ticks = DurTab[Duration].DurTime * tempo;
 }
 
@@ -958,32 +987,51 @@ UINT CMsNote::Play()
 	// returns 1 if object needs to be
 	// deleted
 	//---------------------------------------
-	UINT DeleteObject = 0;
+	UINT DeleteObject = PLAY_NO_ACTION;
 
-//	GetData().PrintData(stdout,  GetDataPointer());
-	if (GetTick() == 0)	//Object just added
+	switch (GetPlayState())
 	{
+	case PLAYSTATE_START:
 		SetTick(GetDuration(), 1);
-		//-----------------------------------
-		// Change the pitch according to the
-		// Key Signature and or acidentals
-		//-----------------------------------
-		NoteOn(GetSong()->GetCurrentKeySignature(),GetSong()->GetCurrentLoudness()->GetLoudness());
-	}
-	else if (GetTick() == GetNoteOffTick())
-	{
-		if (IsNote() && (GetTieNoteNext() == NULL))
-			NoteOff(
-				GetSong()->GetCurrentKeySignature(), 
-				GetSong()->GetCurrentLoudness()->GetLoudness()
-			);
+		NoteOn(GetSong()->GetCurrentKeySignature(), GetSong()->GetCurrentLoudness()->GetLoudness());
+		SetPlayState(PLAYSTATE_RUNNING);
 		DecTick();
+		break;
+	case PLAYSTATE_RUNNING:
+		DecTick();
+		if (GetTick() == GetNoteOffTick())
+		{
+			if (IsNote())
+			{
+				if (GetTieNoteNext() == NULL)
+					NoteOff(
+						GetSong()->GetCurrentKeySignature(),
+						GetSong()->GetCurrentLoudness()->GetLoudness()
+					);
+			}
+			SetPlayState(PLAYSTATE_NOTE_OFF);
+		}
+		break;
+	case PLAYSTATE_NOTE_OFF:
+		DecTick();
+		if (0 == GetTick())
+		{
+			if (!GetTieNoteNext())
+				DeleteObject = PLAY_OBJECT_TIMED_OUT;
+			SetPlayState(PLAYSTATE_DONE);
+		}
+		break;
+	case PLAYSTATE_DONE:
+		DeleteObject = PLAY_OBJECT_TIMED_OUT;
+		break;
 	}
-	else if (0 == DecTick())
-	{
-		if (!GetTieNoteNext())
-			DeleteObject = 1;
-	}
+	fprintf(GETAPP->LogFile(), "    Note:%d EVENT:%d Tick:%d State:%d  *Ticks:%d\n",
+		GetPitch(),
+		GetParentEvent()->GetIndex(),
+		GetTick(),
+		GetPlayState(),
+		GetSong()->GetTotalTicks()
+	);
 	return DeleteObject;
 }
 

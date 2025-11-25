@@ -39,7 +39,7 @@ UINT CMsRepeatStart::Process()
 
 UINT CMsRepeatStart::Play()
 {
-	return 0;
+	return PLAY_OBJECT_DONE;
 }
 
 int CMsRepeatStart::MouseLButtonDown(int DrawState, CPoint pointMouse)

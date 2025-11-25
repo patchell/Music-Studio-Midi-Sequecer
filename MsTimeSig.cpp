@@ -28,13 +28,13 @@ bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
 
 UINT CMsTimeSignature::Process()
 {
-	GetSong()->SetCurrentTimeSignature(this);
-	return 0;
+	return 1;
 }
 
 UINT CMsTimeSignature::Play()
 {
-	return 0;
+	GetSong()->SetCurrentTimeSignature(this);
+	return PLAY_OBJECT_DONE;
 }
 
 int CMsTimeSignature::MouseLButtonDown(int DrawState, CPoint pointMouse)
