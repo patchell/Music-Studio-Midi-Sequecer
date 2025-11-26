@@ -719,8 +719,11 @@ UINT CMidiSeqMSApp::DoPlayThread()
 		case WM_THREAD_PLAYER_ADD_SONG:
 			++TotalSongsPlaying;
 			pMS = (CMsSong*)msg.lParam;
-			AddToSongPlayingList(&pSongPlayingListHead, &pSongPlayingListTail,pMS);
-			pMS->GetAddSongCompleteEV().Post();
+			if (pMS)
+			{
+				AddToSongPlayingList(&pSongPlayingListHead, &pSongPlayingListTail, pMS);
+				pMS->GetAddSongCompleteEV().Post();
+			}
 			break;
 		case WM_THREAD_PLAYER_DELETE_SONG:
 			SongID = msg.wParam;
@@ -733,8 +736,8 @@ UINT CMidiSeqMSApp::DoPlayThread()
 			{
 				--TotalSongsPlaying;	///decement event count
 				RemoveFromSongList(&pSongPlayingListHead, &pSongPlayingListTail, pMS);
+				pMS->GetDelSongCompleteEV().Post();
 			}
-			pMS->GetDelSongCompleteEV().Post();
 			break;
 		case WM_THREAD_PLAYER_ENABLE_TIMER:
 			//-----------------------------------

@@ -34,7 +34,7 @@ UINT CMsEndBar::Play()
 		0,
 		STAFF_DISP_EVENT_END
 	);
-	GetSong()->SetSongPlayState(GetSong()->GetSongPlayState() | SONG_STOP);
+	GetSong()->SetTickerState(CMsSong::TickerState::WIND_DOWN);
 	return rV;
 }
 

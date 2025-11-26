@@ -7,19 +7,22 @@
 constexpr int SEARCH_FORWARD = 0;
 constexpr int SEARCH_REVERSE = 1;
 
-constexpr auto SONG_NOT_PLAYING = 0;
-constexpr auto SONG_IS_PLAYING = 1;
-constexpr auto SONG_STOP = 2;	// This Status means we need
-								// to wait for the events
-								// in the playlist queue
-								// to time out.
-
 
 class CChildViewStaff;
 class CMsPlayerQueue;
 
 class CMsSong
 {
+public:
+	enum class TickerState
+	{
+		START,
+		RUNNING,
+		WIND_DOWN,
+		STOPPED
+	};
+private:
+	TickerState m_TickerState;
 	CString m_csFileName;
 	char* m_pFileBuffer;
 	int m_nFileBufferSize;
@@ -31,7 +34,7 @@ class CMsSong
 	int m_nMeasureBarCount;
 	int m_nTotalEvents;
 	//--------------------------------
-	int m_nIsPlaying;
+//	int m_nIsPlaying;
 	CMsSong* m_pNextSong;
 	CMsSong* m_pPrevSong;
 	//*************************************
@@ -39,7 +42,6 @@ class CMsSong
 	//*************************************
 	int m_SongID;
 	int m_PlaySongTimerEnable;
-	int m_PlayState;
 	char m_Patches[16];
 	//----------------------------------
 	// Synchronizing objects between
@@ -71,7 +73,7 @@ class CMsSong
 	//----------------------------------------
 	// variables for playing back song
 	//----------------------------------------
-	UINT m_MidiClockFlag;
+	UINT m_MidiClockToggleFlag;
 	UINT m_TotalTicks;
 	CMsKeySignature* m_pLastKeySignature;
 	CMsTimeSignature* m_pLastTimeSignature;
@@ -123,18 +125,17 @@ public:
 		m_pLastKeySignature = pNewKS;
 	}
 
-	UINT GetSongPlayState() {
-		return m_PlayState;
-	}
-	void SetSongPlayState(UINT PS) { m_PlayState = PS; }
 
 	//--------- Screen Management ---------------------
 	virtual void Draw(CDC* pDC, int event, int maxevent, CRect* pRect);
 	//------------ Song Playing Functions
 	// //indicates that the song is playing
-	int IsPlaying() { return m_nIsPlaying; }
-	void SetIsPlaying(int v) { m_nIsPlaying = v; }
-	CMsPlayerQueue* GetPlayerQueue() { return m_pPlayerObjectQueue; }	
+	bool IsPlaying() const { return m_TickerState != TickerState::STOPPED; }
+	void SetTickerState(TickerState v) { m_TickerState = v; }
+	TickerState GetTickerState() const {
+		return m_TickerState;
+	}
+	CMsPlayerQueue* GetPlayerQueue() { return m_pPlayerObjectQueue; }
 	//---------------- Play --------------
 	bool Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------

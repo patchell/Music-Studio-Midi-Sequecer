@@ -11,10 +11,8 @@
 
 
 CMsSong::CMsSong()
-	: m_nIsPlaying(SONG_NOT_PLAYING)
-	, m_nMeasureBarCount(0)
 {
-
+	m_nMeasureBarCount = 0;
 	m_pEventListHead = 0;
 	m_pEventListTail = 0;
 	m_nTotalEvents = 0;
@@ -23,9 +21,7 @@ CMsSong::CMsSong()
 	m_pNextSong = 0;
 	m_pPrevSong = 0;
 	m_pSongPosition = 0;
-	m_PlayState = 0;
 	m_PlaySongTimerEnable = 0;
-	m_MidiClockFlag = 0;
 	for(int i=0;i<16;++i)
 		m_Patches[i] = 0;
 	m_pLastLoudness = 0;
@@ -39,6 +35,7 @@ CMsSong::CMsSong()
 	m_pPlayerObjectQueue = 0;
 	m_NoteCountOn = 0;     // count of note on events sent
 	m_NoteCountOff = 0;    // count of note off events sent
+	m_TickerState = TickerState::STOPPED;
 
 }
 
@@ -1043,14 +1040,12 @@ void CMsSong::Start(void)
 	{
 		if (GetPlayerQueue()->ProcessQueue(pEvent) > 0)
 		{
-			m_MidiClockFlag = 1;	// Start Midi Clock
-			MidiStart();			// Send MidiStart command to Midi device
 			//Enable the timer
 			GETAPP->PlayerThreadAddSong(this);	// Add song to player thread
 			GetAddSongCompleteEV().Pend();		// clear song done event  object
 			GETAPP->PlayerThreadEnableTimer(GetSongId(), 1);
 			GetEnableTimerCompleteEV().Pend();
-			m_PlayState = SONG_IS_PLAYING;
+			m_TickerState = TickerState::START;
 		}
 	}
 }
@@ -1067,8 +1062,8 @@ int CMsSong::Stop()
 		// 	   Player thread know that the song
 		// 	   is to be terminated
 		//-------------------------------------
-	if (m_PlayState == SONG_IS_PLAYING)
-		m_PlayState = SONG_STOP;
+	if(GetTickerState() != TickerState::STOPPED)
+		m_TickerState = TickerState::WIND_DOWN;
 	return 0;
 }
 
@@ -1106,53 +1101,92 @@ UINT CMsSong::Ticker(void)
 	CMsNote* pNote = 0;
 	UINT TotalObjectInPlayerListQueue = GetPlayerQueue()->GetTotalObjects();
 	CMsEvent* pNextEvent = 0;
-	static int LastOn = 0, LastOff = 0;
-	++m_TotalTicks;
-	if (m_MidiClockFlag)
-	{
-		MidiClock();
-		m_MidiClockFlag = 0;
-	}
-	else m_MidiClockFlag = 1;
+	UINT PlayStatus = 0;
 
-
-	UINT PlayStatus = GetPlayerQueue()->Play(this);
-	if (PlayStatus)
+	switch (m_TickerState)
 	{
-		//-----------------------------
-		// if PlayStatus is greater
-		// than zero, then one or more
-		// objects in the player queue
-		// that have timed out and
-		// it is time to go onto the
-		// next event in the song
-		//-----------------------------
-		pNextEvent = GetNextEventToProcess();
-		if (pNextEvent == 0)
+	case TickerState::START:
+		//--------------------------------
+		// Starting up the ticker
+		//--------------------------------
+		MidiStart();			// Send MidiStart command to Midi device
+		m_MidiClockToggleFlag = 0;
+		m_TickerState = TickerState::RUNNING;
+		break;
+	case TickerState::RUNNING:
+		//--------------------------------
+		// Send Midi Clock every other tick
+		//-------------------------------
+		if(!m_MidiClockToggleFlag)
 		{
-			//-----------------------------
-			// No more events, so set
-			// the song to stop
-			//-----------------------------
-			m_PlayState = SONG_STOP;
+			m_MidiClockToggleFlag = 1;
 		}
 		else
 		{
-			//-----------------------------
-			// Move the song position
-			// to the next event to be
-			// processed
-			//-----------------------------
-			SetSongPosition(pNextEvent);
-			GetPlayerQueue()->ProcessQueue(pNextEvent);
-			fprintf(GETAPP->LogFile(), "Note Off:%d Note On:%d Event:%d Delta:%d InQueue:%d\n", 
-				m_NoteCountOff, 
-				m_NoteCountOn, 
-				pNextEvent->GetIndex(), 
-				m_NoteCountOn - m_NoteCountOff,
-				GetPlayerQueue()->GetTotalObjects()
-			);
+			MidiClock();			// Send first Midi Clock command
+			m_MidiClockToggleFlag = 0;
 		}
+		PlayStatus = GetPlayerQueue()->Play(this);
+		if (PlayStatus)
+		{
+			//-----------------------------
+			// if PlayStatus is greater
+			// than zero, then one or more
+			// objects in the player queue
+			// that have timed out and
+			// it is time to go onto the
+			// next event in the song
+			//-----------------------------
+			pNextEvent = GetNextEventToProcess();
+			if (pNextEvent == 0)
+			{
+				//-----------------------------
+				// No more events, so set
+				// the song to stop
+				//-----------------------------
+				m_TickerState = TickerState::WIND_DOWN;
+			}
+			else
+			{
+				//-----------------------------
+				// Move the song position
+				// to the next event to be
+				// processed
+				//-----------------------------
+				SetSongPosition(pNextEvent);
+				GetPlayerQueue()->ProcessQueue(pNextEvent);
+			}
+		}
+		break;
+	case TickerState::WIND_DOWN:
+		//--------------------------------
+		// Send Midi Clock every other tick
+		//-------------------------------
+		if (!m_MidiClockToggleFlag)
+		{
+			m_MidiClockToggleFlag = 1;
+		}
+		else
+		{
+			MidiClock();			// Send first Midi Clock command
+			m_MidiClockToggleFlag = 0;
+		}
+		PlayStatus = GetPlayerQueue()->WindDown();
+		if(PlayStatus == 0)
+		{
+			m_TickerState = TickerState::STOPPED;
+			MidiStop();				// Send Midi Stop command to Midi device
+			rV = 0;					// Indicate we are done
+			GETAPP->PlayerThreadEnableTimer(GetSongId(),0);
+			GetDisableTimerCompleteEV().Pend();
+			GETAPP->PlayerThreadDeleteSong(this);
+			GetDelSongCompleteEV().Pend();
+		}
+		break;
+	case TickerState::STOPPED:
+		break;
+	default:
+		break;
 	}
 	return rV;
 }
@@ -1194,10 +1228,10 @@ bool CMsSong::Play(CChildViewStaff* pChildView)
 {
 	bool Succes = false;
 
-	if (m_nIsPlaying == SONG_NOT_PLAYING)
+	if (GetTickerState() == TickerState::STOPPED)
 	{
 		SetSongPosition(GetEventListHead());
-		m_nIsPlaying = SONG_IS_PLAYING;
+		SetTickerState(TickerState::RUNNING);
 		m_TotalTicks = 0;
 		Succes = true;
 	}

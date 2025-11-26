@@ -3322,26 +3322,25 @@ afx_msg LRESULT CChildViewStaff::OnChildviewPlayerthread(WPARAM SubCommand, LPAR
 		// song that is playing stops at
 		// the end on its own.
 		//
-// Call the methode in the button
-// that sort of acts like it was
-// pushed, but doesn't send a
-// notification that the button
-// was pressed.
-//-------------------------------
-m_Button_Stop.LikeA_ButtonPush();
-//----------------------------------
-// Disable stop button,
-// Enable Play Button
-//----------------------------------
-m_Button_Stop.EnableWindow(0);
-m_Button_Play.EnableWindow(1);
-//---------------------------------
-// delete the event queue
-//---------------------------------
-GetSong()->SetIsPlaying(0);
-GETAPP->PlayerThreadDeleteSong(GetSong());
-GetSong()->GetDelSongCompleteEV().Pend();
-break;
+		// Call the methode in the button
+		// that sort of acts like it was
+		// pushed, but doesn't send a
+		// notification that the button
+		// was pressed.
+		//-------------------------------
+		m_Button_Stop.LikeA_ButtonPush();
+		//----------------------------------
+		// Disable stop button,
+		// Enable Play Button
+		//----------------------------------
+		m_Button_Stop.EnableWindow(0);
+		m_Button_Play.EnableWindow(1);
+		//---------------------------------
+		// delete the event queue
+		//---------------------------------
+		GETAPP->PlayerThreadDeleteSong(GetSong());
+		GetSong()->GetDelSongCompleteEV().Pend();
+		break;
 	}
 	return 0;
 }
