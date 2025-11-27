@@ -66,26 +66,27 @@ void CMsBar::Draw(CDC *pDC, int event, int maxevent)
 	CPen penBlackLine;
 	CRect rectHighlight;
 	CPen* p_penOld;
-	CGdiObject* p_oldObject;
+	CBrush* pOldBrush = 0, brushNULL;
+	CPoint pointUpperLeft;
+	CSize szRectSize;
 
-	penBlackLine.CreatePen(1, PS_SOLID, RGB(0, 0, 0));
+	penBlackLine.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 	penSelectHighlight.CreatePen(2, PS_SOLID, RGB(255, 0, 0));
+	brushNULL.CreateStockObject(NULL_BRUSH);
 	int x = EVENT_OFFSET+EVENT_WIDTH*event+MEASUREBAR_OFFSET;
 	if (IsSelected() || IsHighLighted())
 	{
 		//----------------------------------------
 		// Bar
 		//-----------------------------------------
-		CPoint pointUpperLeft;
-		CSize szRectSize;
 	
 		pointUpperLeft = CPoint(x - 2, STAVE_OFFSET - 2);
 		szRectSize = CSize(5, STAVE_OFFSET + STAVE_HEIGHT + 2);
 		rectHighlight = CRect(pointUpperLeft, szRectSize);
 		p_penOld = pDC->SelectObject(&penSelectHighlight);
-		p_oldObject = pDC->SelectStockObject(NULL_BRUSH);
+		pOldBrush = pDC->SelectObject(&brushNULL);
 		pDC->Rectangle(&rectHighlight);
-		pDC->SelectObject(p_oldObject);
+		pDC->SelectObject(pOldBrush);
 		pDC->SelectObject(p_penOld);
 	}
 	p_penOld = pDC->SelectObject(&penBlackLine);

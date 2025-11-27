@@ -64,7 +64,6 @@ class NoteData {
 	INT m_Track;		//value is 1->15, 0 is not used
 	INT m_Duration;
 	UINT m_Pitch;		// Location on the music staff
-	UINT m_CorrectedPitch; // Pitch after applying key signature, etc
 	INT m_FlagsOff;		// flags for eigth, sixteenth, etc. not not drawn
 	INT m_Flags;		// Number of flags to draw on note
 	UINT m_Triplet;
@@ -86,7 +85,6 @@ public:
 		m_Track = COMBO_Index_INST_7;
 		m_Duration = COMBO_NOTE_QUARTER;
 		m_Pitch = 0;
-		m_CorrectedPitch = 0;
 		m_Dotted = 0;
 		m_Triplet = 0;
 		m_FlagsOff = 0;	// default is  not flags OFF (Flags ON)
@@ -119,14 +117,11 @@ public:
 		m_Track = source.GetTrack();
 		m_Duration = source.GetDuration();
 		m_Pitch = source.GetPitch();
-		m_CorrectedPitch = source.GetCorrectedPitch();	
 		m_Dotted = source.GetDotted();
 		m_FlagsOff = 0;	//default is  not flags OFF (Flags ON)
 		m_Flags = source.GetFlags();
 		m_Triplet = source.GetTriplet();
 	}
-	UINT GetCorrectedPitch() const { return m_CorrectedPitch; }
-	void SetCorrectedPitch(UINT v) { m_CorrectedPitch = v; }
 
 	void SetFlags(INT v) { m_Flags = v; }
 	INT GetFlags() const { return m_Flags; }	

@@ -4,7 +4,7 @@
 #pragma once
 
 
-constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH - 1;
+constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
 
 class CMsBar : public CMsObject
 {

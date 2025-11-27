@@ -69,7 +69,7 @@ void CMsEndBar::Print(FILE *pO, int Indent)
 
 void CMsEndBar::Draw(CDC *pDC, int event, int maxevent)
 {
-	CPen Heavy, *pOldPen;
+	CPen penThin, Heavy, *pOldPen;
 	LOGBRUSH Lb;
 	Lb.lbColor = RGB(0, 0, 0);
 	Lb.lbStyle = BS_SOLID;
@@ -79,11 +79,13 @@ void CMsEndBar::Draw(CDC *pDC, int event, int maxevent)
 	CPen penHLrect;
 	CGdiObject* p_oldObject;
 
+	penThin.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 	Heavy.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT, 6, &Lb);
 	int x = EVENT_OFFSET + EVENT_WIDTH*event + MEASUREBAR_OFFSET;
+	pOldPen = pDC->SelectObject(&penThin);
 	pDC->MoveTo(x - 6, STAVE_OFFSET);
 	pDC->LineTo(x - 6, STAVE_OFFSET + STAVE_HEIGHT);
-	pOldPen = pDC->SelectObject(&Heavy);
+	pDC->SelectObject(&Heavy);
 	pDC->MoveTo(x, STAVE_OFFSET);
 	pDC->LineTo(x, STAVE_OFFSET + STAVE_HEIGHT);
 	pDC->SelectObject(pOldPen);

@@ -1,9 +1,2 @@
 -------- MisiSeqMS Start -------
-File:C:\Users\patch\OneDrive\Documents\VisualStudio2022\Projects\MidiSeqMS\MusicStudioSongFiles\MusicStudio\PRELUDE.SNG has 2714 Bytes
-Tie Note Start
-Tie Note Start
-Tie Note Start
-Tie Note Start
-Tie Note Start
-Tie Note Start
 ------ Exit MidiSeqMS-------

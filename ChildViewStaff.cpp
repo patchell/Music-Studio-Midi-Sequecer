@@ -2545,7 +2545,7 @@ void CChildViewStaff::OnInitialUpdate()
 	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pTS);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
-	pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), MSFF_CSMAJ);
+	pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), MSFF_CMAJ);
 	GetSong()->AddObjectToSong(GetDrawEvent(), pKS);
 	CMsLoudness* pLD = new CMsLoudness();
 	pLD->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()),100);
