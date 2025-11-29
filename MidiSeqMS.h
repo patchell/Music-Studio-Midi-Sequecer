@@ -27,6 +27,119 @@ class CMainFrame;
 
 class CMidiSeqMSApp : public CWinApp
 {
+	inline static int MisStuffTypes[APP_NUM_MISC] = {
+		IDB_MEASUREBAR,
+		IDB_NOTETIE,
+		IDB_LOUDNESS,
+		IDB_TEMPO,
+		IDB_INST_CHANGE,
+		IDB_CB_MISC_ENDBAR,
+		IDB_GLISSANDO
+	};
+	inline static int  KeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1] = {
+		-1,
+		IDB_CB_KEY_CMAJ,	//1X
+		IDB_CB_KEY_GMAJ,	//2X
+		IDB_CB_KEY_DMAJ,	//3X
+		IDB_CB_KEY_AMAJ,	//4X
+		IDB_CB_KEY_EMAJ,	//5X
+		IDB_CB_KEY_BMAJ,	//6X
+		IDB_CB_KEY_FSMAJ,	//7X
+		IDB_CB_KEY_CSMAJ,	//8X
+		IDB_CB_KEY_FMAJ,	//9X
+		IDB_CB_KEY_BFMAJ,	//10X
+		IDB_CB_KEY_EFMAJ,	//11X
+		IDB_CB_KEY_AFMAJ,	//12X
+		IDB_CB_KEY_DFMAJ,	//13X
+		IDB_CB_KEY_GFMAJ,	//14X
+		IDB_CB_KEY_CFMAJ	//15X
+	};
+	inline static int TimeSigCBbMIDs[APP_NUM_TIMESIG] = {
+		IDB_CB_TIMESIG_2_2,
+		IDB_CB_TIMESIG_3_2,
+		IDB_CB_TIMESIG_2_4,
+		IDB_CB_TIMESIG_3_4,
+		IDB_CB_TIMESIG_4_4,
+		IDB_CB_TIMESIG_5_4,
+		IDB_CB_TIMESIG_6_8
+	};
+	inline static int TimeSigBmIds[APP_NUM_TIMESIG] = {
+		IDB_TIMESIG_2_2,
+		IDB_TIMESIG_3_2,
+		IDB_TIMESIG_2_4,
+		IDB_TIMESIG_3_4,
+		IDB_TIMESIG_4_4,
+		IDB_TIMESIG_5_4,
+		IDB_TIMESIG_6_8
+	};
+	inline static int RestBmIdsTypes[APP_NUM_RESTTYPES] = {
+		IDB_WHOLEREST,
+		IDB_HALFREST,
+		IDB_BITMAP_QUARTERREST,
+		IDB_EIGHTHREST,
+		IDB_SIXTEENTHREST,
+		IDB_THIRTYSEC_REST
+	};
+	inline static int NoteBmIdsTypes[APP_NUM_NOTETYPES] = {
+		IDB_NOTE_WHOLE,
+		IDB_NOTE_HALF,
+		IDB_NOTE_QUARTER,
+		IDB_NOTE_EIGTH,
+		IDB_NOTE_SIXTEENTH,
+		IDB_NOTE_THIRTYSECOND
+	};
+	inline static int RestComboBoxTypes[APP_NUM_RESTTYPES] = {
+		IDB_CB_REST_WHOLE,
+		IDB_CB_REST_HALF,
+		IDB_CB_REST_QUARTER,
+		IDB_CB_REST_EIGTH,
+		IDB_CB_REST_SIXTEENTH,
+		IDB_CB_REST_THIRTYSECOND
+	};
+	inline static int DecorationsBmIds[APP_NUM_DECORATIONS] = {
+		IDB_ACCENT,
+		IDB_DECOR_NONE,
+		IDB_DOT,
+		IDB_TRIPLET
+	};
+	inline static int DecorationsBmCbIdsSel[APP_NUM_DECORATIONS] = {
+		IDB_CB_DECORATIONS_ACCENT_SEL,
+		IDB_CB_DECORATIONS_NONE_SEL,
+		IDB_CB_DECORATIONS_DOTTED_SEL,
+		IDB_CB_DECORATIONS_TRIPLET_SEL
+	};
+	inline static int DecorationsBmCbIdsNotSel[APP_NUM_DECORATIONS] = {
+		IDB_CB_DECORATIONS_ACCENT_NOTSEL,
+		IDB_CB_DECORATIONS_NONE,
+		IDB_CB_DECORATIONS_DOTTED_NOTSEL,
+		IDB_CB_DECORATIONS_TRIPLET_NOTSEL
+	};
+	inline static int BlockOpBmIdsTypes[APP_NUM_BLOCKOPTYPES] = {
+		IDB_BLOCK_COPY,
+		IDB_BLOCK_MOVE,
+		IDB_BLOCK_CHANGEINSTRUMENT,
+		IDB_BLOCK_CHANGEDUR,
+		IDB_BLOCK_INCREASE,
+		IDB_BLOCK_DECREASE,
+		IDB_BLOCKUP,
+		IDB_BLOCKDOWN,
+		IDB_BLOCK_REPEAT,
+		IDB_BLOCK_INSERT,
+		IDB_BLOCK_MIDIINPUT
+	};
+	inline static int AccidentalBmIdsTypes[APP_NUM_ACCIDENTALTYPES] = {
+		IDB_INKEY,
+		IDB_SHARP,
+		IDB_FLAT,
+		IDB_NATURAL
+	};
+	inline static int AccidentalBmCBIdsTypes[APP_NUM_ACCIDENTALTYPES] = {
+		IDB_CB_ACCIDENTAL_INKEY,
+		IDB_CB_ACCIDENTALS_SHARP,
+		IDB_CB_ACCIDENTAL_FLAT,
+		IDB_CB_ACCIDENTAL_NATURAL
+	};
+
 	//------------------------------------------
 	static UINT PlayWorkerThread(LPVOID param);
 	CFont m_fFont;
@@ -94,7 +207,7 @@ class CMidiSeqMSApp : public CWinApp
 public:
 	CMidiSeqMSApp() noexcept;
 	HMIDIOUT GetMidiOutHandle(int MidiID) { return  GetMidiOutTab().GetOutHandle(MidiID); }
-//	HMIDIIN GetMidiIn() {return  GetMidi()->GetMidiInHandle(); }
+	//	HMIDIIN GetMidiIn() {return  GetMidi()->GetMidiInHandle(); }
 	inline FILE* LogFile() { return m_pLog; }
 	//------------- Midi Info -----------------------
 	CMidiInfo* GetMidiInfo() { return &m_MidiInfo; }
@@ -108,7 +221,7 @@ public:
 	inline int GetNumNoteTypes() { return APP_NUM_NOTETYPES; }
 	inline CMyBitmap* bmGetNoteType(int NoteType) { return &m_aBmNoteTypes[NoteType]; }
 	inline int GetNumRestTypes() { return APP_NUM_RESTTYPES; }
-	inline CMyBitmap* bmGetCBRestTypes(int RestType) {return &m_aBmCBRestTypes[RestType];}
+	inline CMyBitmap* bmGetCBRestTypes(int RestType) { return &m_aBmCBRestTypes[RestType]; }
 	inline CMyBitmap* bmGetRestType(int RestType) { return &m_aBmCBRestTypes[RestType]; }
 	inline int GetRestTypeID(int restBmID) { return RestBmIdsTypes[restBmID]; }
 	inline int GetNumDecorations() { return APP_NUM_DECORATIONS; }
@@ -150,7 +263,7 @@ public:
 	void PlayerThreadSetTempo(int QnPMinute);
 	CMsSong* FindSongFromID(CMsSong* pEqTable, int ID);
 	void AddToSongPlayingList(
-		CMsSong** ppHead, 
+		CMsSong** ppHead,
 		CMsSong** ppTail,
 		CMsSong* pEQtoAdd
 	);
@@ -174,7 +287,7 @@ public:
 	int UpdateColors();
 	CMainFrame* GetMainFrame() { return (CMainFrame*)m_pMainWnd; }
 	afx_msg void OnSettingsAddmidiOut();
-	UINT CalculateTempo(int QuarterNotesPerMinute); 
+	UINT CalculateTempo(int QuarterNotesPerMinute);
 	afx_msg void OnNewNewtx816edit();
 	afx_msg void OnNewNewlaunchpad();
 	afx_msg void OnNewNewlaunchcontroledit();
@@ -183,20 +296,15 @@ public:
 	void Dump(FILE* pOut, const char* pData, int len, int StartAddress);
 	char* IndentString(char* pDest, int StringLength, int Indent, int c = ' ');
 	//----------------------- Static Data----------------------------
-	static int  KeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1];
-	static int TimeSigCBbMIDs[APP_NUM_TIMESIG];
-	static int TimeSigBmIds[APP_NUM_TIMESIG];
-	static int RestBmIdsTypes[APP_NUM_RESTTYPES];
-	static int NoteBmIdsTypes[APP_NUM_NOTETYPES];
-	static int RestComboBoxTypes[APP_NUM_RESTTYPES];
-	static int DecorationsBmIds[APP_NUM_DECORATIONS];
-	static int DecorationsBmCbIdsSel[APP_NUM_DECORATIONS];
-	static int DecorationsBmCbIdsNotSel[APP_NUM_DECORATIONS];
-	static int BlockOpBmIdsTypes[APP_NUM_BLOCKOPTYPES];
-	static int AccidentalBmIdsTypes[APP_NUM_ACCIDENTALTYPES];
-	static int AccidentalBmCBIdsTypes[APP_NUM_ACCIDENTALTYPES];
-	static int MisStuffTypes[APP_NUM_MISC];
+	static int* GetAccidentalBmCBIdsTypes() { return AccidentalBmCBIdsTypes; }
+	static int* GetDecorationsBmCbIdsNotSel() { return DecorationsBmCbIdsNotSel; }
+	static int* GetDecorationsBmCbIdsSel() { return DecorationsBmCbIdsSel; }
+	static int* GetRestBmIdsTypes() { return RestBmIdsTypes; }
 };
+
+
+
+
 //----------- function prototypes -------------
 extern char* WcharToChar(char* pcDest, WCHAR* pwSrc, int len);
 //----------- global variable -----------------------

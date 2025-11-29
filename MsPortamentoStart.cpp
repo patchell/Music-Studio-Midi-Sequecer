@@ -25,17 +25,17 @@ UINT CMsPortamentoStart::Play()
 	return 0;
 }
 
-int CMsPortamentoStart::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsPortamentoStart::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsPortamentoStart::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsPortamentoStart::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }	
 
-int CMsPortamentoStart::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsPortamentoStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

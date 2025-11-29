@@ -327,7 +327,8 @@ enum {
 	IDC_COMBO_KEYSIG,			// Key Signatures
 	IDC_COMBO_TIMESIG,			// Time Signatures
 	IDC_BUTTON_PLAY,			// Play Button
-	IDC_BUTTON_STOP,				// Stop Button
+	IDC_BUTTON_PAUSE,			// Pause Button
+	IDC_BUTTON_STOP,			// Stop Button
 	IDC_STATIC_DEBUGDISP,
 	IDC_STATIC_STATUSDISP
 };

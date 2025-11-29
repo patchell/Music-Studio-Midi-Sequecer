@@ -226,10 +226,7 @@
     <ClCompile Include="MsPortamentoEnd.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="MsGlisandoStart.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MsGlisandoEnd.cpp">
+    <ClCompile Include="MsGlisando.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="MusicStudioFileFormat.cpp">
@@ -495,10 +492,7 @@
     <ClInclude Include="MsPortamentoEnd.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="MsGlisandoStart.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MsGlisandoEnd.h">
+    <ClInclude Include="MsGlisando.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MsChord.h">
@@ -927,6 +921,24 @@
       <Filter>Resorces</Filter>
     </Image>
     <Image Include="D:\Projects\MidiSeqMS\res\bmCB_RestEigth.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtonPauseDown.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmButtonPauseUp.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bitmap10.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bitmap11.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bitmap12.bmp">
+      <Filter>Resorces</Filter>
+    </Image>
+    <Image Include="res\bmGlissando.bmp">
       <Filter>Resorces</Filter>
     </Image>
   </ItemGroup>

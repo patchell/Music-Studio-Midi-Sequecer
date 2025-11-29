@@ -117,17 +117,17 @@ UINT CMsRepeatEnd::Process()
 	return 0;
 }
 
-int CMsRepeatEnd::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatEnd::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsRepeatEnd::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatEnd::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsRepeatEnd::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatEnd::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

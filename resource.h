@@ -168,6 +168,12 @@
 #define IDB_TX816_LFO_SINE_4            444
 #define IDB_TX816_LFO_SAMPLE_HOLD_5     445
 #define IDD_CHORD_EDITOR                446
+#define IDB_BITMAP9                     448
+#define IDB_BITMAP10                    449
+#define IDB_GLISSANDO                   449
+#define IDB_BUTTON_PAUSE_UP             450
+#define IDB_BUTTON_PAUSE_DOWN           451
+#define IDB_BITMAP12                    452
 #define IDC_EDIT_ENTR_STRING            1002
 #define IDC_VSB_INST_SELECT             1003
 #define IDC_HSB_PATCH                   1004
@@ -270,7 +276,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        448
+#define _APS_NEXT_RESOURCE_VALUE        453
 #define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           315

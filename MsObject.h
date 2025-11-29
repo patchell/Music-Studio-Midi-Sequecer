@@ -40,7 +40,7 @@ class CMsTempo;
 class CMsTimeSignature;
 class CMsPortamentoStart;
 class CMsPortamentoEnd;
-class CMsGlisandoStart;
+class CMsGlisando;
 class CMsGlisandoEnd;
 class CMsSong;
 class CMsEvent;
@@ -82,10 +82,9 @@ constexpr auto MSOBJ_TEMPO = 7;
 constexpr auto MSOBJ_TIMESIG = 8;
 constexpr auto MSOBJ_PORTAMENTO_START = 9;
 constexpr auto MSOBJ_PORTAMENTO_STOP = 10;
-constexpr auto MSOBJ_GLISANDO_START = 11;
-constexpr auto MSOBJ_GLISANDO_END = 12;
-constexpr auto MSOBJ_CHORD = 13;
-constexpr auto MSOBJ_CHORD_NOTE = 14;
+constexpr auto MSOBJ_GLISANDO = 11;
+constexpr auto MSOBJ_CHORD = 12;
+constexpr auto MSOBJ_CHORD_NOTE = 13;
 
 union ObjectTypes{
 	CMsBar *pBar;
@@ -100,8 +99,7 @@ union ObjectTypes{
 	CMsTimeSignature*pTime;
 	CMsPortamentoEnd* pPortEnd;
 	CMsPortamentoStart* pPortStart;
-	CMsGlisandoEnd* pGlisEnd;
-	CMsGlisandoStart* pGlisStart;
+	CMsGlisando* pGlissando;
 };
 
 class CMsObject  
@@ -135,10 +133,10 @@ public:
 		//
 		//-------------------------------------------------
 	virtual UINT Play() = 0;
-	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse) = 0;
-	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse) = 0;
-	virtual int MouseMove(int DrawState, CPoint pointMouse) = 0;
-	virtual bool IsTimedObject() = 0;
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual int IsTimedObject() = 0;
 	virtual bool DoesSomething() = 0;
 	//-------------------------------------------------
 	// Back to our regularly scheduled Methods

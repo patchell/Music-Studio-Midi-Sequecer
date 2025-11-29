@@ -40,7 +40,7 @@ CChildViewStaff::CChildViewStaff()
 	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEUP;			// Mouse state machine
 	m_pFirstTieNote = 0;		// pointer to first tie note
 	m_pSecondTieNote = 0;		// Pointer to second tie note
-	m_nDrawState = 0;			// draw state machine
+	m_nDrawState = DRAWSTATE::NA;			// draw state machine
 	m_nDrawMode = 0;			// Drawing mode ie notes, etc
 	m_nDrawEvent = 0;			// Current event mouse is over
 	m_pSong = 0;				// pointer to song
@@ -387,7 +387,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				CMsNote* pN = new CMsNote;
 				SetPitch(pNote->GetPitch());
 				if (GetRest())
-					pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Rest
+					pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Rest
 				else
 					pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Note
 				pNote->SetParentEvent(m_nDrawEvent);
@@ -455,14 +455,14 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			///------------------------------------------
 			switch (m_nDrawState)
 			{
-			case (int)DrawState::DRAWSTATE_TIE_FIRSTNOTE:		//OnLButtonUp
+			case DRAWSTATE::TIE_FIRSTNOTE:		//OnLButtonUp
 			{
 				int note = YtoNote(pointMouseLButtUp.y);
 				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
 				if (pN)
 				{
 					m_pFirstTieNote = pN;
-					m_nDrawState = DrawState::DRAWSTATE_TIE_SECONDNOTE;
+					m_nDrawState = DRAWSTATE::TIE_SECONDNOTE;
 					m_TieStartPoint = pointMouseLButtUp + CSize(0, 4);
 					CString s,csTemp;
 					s = CString("First Note ");
@@ -474,7 +474,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				}
 			}
 			break;
-			case (int)DrawState::DRAWSTATE_TIE_SECONDNOTE:		//OnLButtonUp
+			case DRAWSTATE::TIE_SECONDNOTE:		//OnLButtonUp
 			{
 				int note = YtoNote(pointMouseLButtUp.y);
 				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
@@ -492,7 +492,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 					s.Append(csTemp);
 					m_Status.SetText(s);
 					//-------------------------------------------
-					m_nDrawState = DRAWSTATE_TIE_FIRSTNOTE;
+					m_nDrawState = DRAWSTATE::TIE_FIRSTNOTE;
 					m_TieEndPoint = pointMouseLButtUp + CSize(0, 4);
 					//----------------------------------------------
 					// setting the tie end and begin is a little
@@ -768,10 +768,10 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		case DRAWMODE_TIE:		///On Mouse Move
 			switch (m_nDrawState)
 			{
-			case DRAWSTATE_TIE_FIRSTNOTE:
+			case DRAWSTATE::TIE_FIRSTNOTE:
 				StatusString.Format(_T("Select First Note at Event %d"), m_nDrawEvent);
 				break;
-			case DRAWSTATE_TIE_SECONDNOTE:
+			case DRAWSTATE::TIE_SECONDNOTE:
 				m_TieEndPoint = CPoint(pointMouse.x, m_TieStartPoint.y);
 				StatusString.Format(_T("Select Second Note at Event %d"), m_nDrawEvent);
 				Invalidate();
@@ -1539,14 +1539,15 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		{
 			int Shape;
 			Shape = pN->GetShape();
-			int Id = CMidiSeqMSApp::RestBmIdsTypes[Shape];
+			int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
 			pN->Create(Id, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		}
 		else
 			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 
 		pN->ObjectToString(csTemp);
-		csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent));
+		if(GetSong()->GetEventObject(m_nDrawEvent))
+			csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
 	}
 	m_Status.SetText(csStatus);
 	break;
@@ -1576,7 +1577,7 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		if (m_pDrawObject) delete m_pDrawObject;
 		m_pDrawObject = 0;
 		m_nDrawMode = DRAWMODE_TIE;
-		m_nDrawState = DRAWSTATE_TIE_FIRSTNOTE;
+		m_nDrawState = DRAWSTATE::TIE_FIRSTNOTE;
 		m_pFirstTieNote = 0;
 		m_pSecondTieNote = 0;
 		csTemp = CString("Draw Tie");
@@ -2474,8 +2475,13 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 	UpdateComboBoxes();
 	pN->GetData().CopyData(GetNoteData());
-
-	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;
+	//WTF?
+	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;	//this line does nothing
+	//-----------------------------
+	// Get the duration by first
+	// Oh, this is just too
+	// convoluted....
+	//-----------------------------
 	Dur = CMsNote::NoteDurLut[CMsNote::GetDurationTable()[(int)pN->GetDuration()].NoteShapeIndex];
 	pN->SetDuration(Dur);
 	pN->SetRest(RestFlag);
@@ -2650,7 +2656,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize decorations combo box
 	//--------------------------------------------
 	n = GETAPP->GetNumDecorations();
-	itemSize = GetBmDimensions(CMidiSeqMSApp::DecorationsBmCbIdsSel[COMBO_DECORATION_ACCENT]);
+	itemSize = GetBmDimensions(CMidiSeqMSApp::GetDecorationsBmCbIdsSel()[COMBO_DECORATION_ACCENT]);
 	itemSize += CSize(8, 8);
 	m_Combo_Decorations.Create(
 		n,
@@ -2663,8 +2669,8 @@ void CChildViewStaff::OnInitialUpdate()
 	);
 	for (i = 0; i < n; ++i)
 	{
-		m_Combo_Decorations.AddNotSelBitmapID(CMidiSeqMSApp::DecorationsBmCbIdsNotSel[i]);
-		m_Combo_Decorations.AddSelBitmapID(CMidiSeqMSApp::DecorationsBmCbIdsSel[i]);
+		m_Combo_Decorations.AddNotSelBitmapID(CMidiSeqMSApp::GetDecorationsBmCbIdsNotSel()[i]);
+		m_Combo_Decorations.AddSelBitmapID(CMidiSeqMSApp::GetDecorationsBmCbIdsSel()[i]);
 		m_Combo_Decorations.SetItemFlags(i, CBDecorationFlags[i]);
 	}
 	ControlX += m_Combo_Decorations.GetTotalWidth();
@@ -2672,7 +2678,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize accidental combo box
 	//---------------------------------------
 	n = GETAPP->GetNumAccidentalTypes();
-	itemSize = GetBmDimensions(CMidiSeqMSApp::AccidentalBmCBIdsTypes[COMBO_ACCIDENTAL_INKEY]);
+	itemSize = GetBmDimensions(CMidiSeqMSApp::GetAccidentalBmCBIdsTypes()[COMBO_ACCIDENTAL_INKEY]);
 	itemSize += CSize(8, 4);
 	m_Combo_Accidentals.Create(
 		n,
@@ -2712,7 +2718,7 @@ void CChildViewStaff::OnInitialUpdate()
 		4,		//Number of Items to display
 		n,		//Total Items
 		itemSize,	//size of one item
-		CPoint(100,clientRect.bottom - 25),
+		CPoint(400,clientRect.bottom - 25),
 		CSize(16, itemSize.cy),		// widty of arrow reginon
 		this,	//	parrent
 		IDC_COMBO_MISCSTUFF			// ID
@@ -2773,9 +2779,10 @@ void CChildViewStaff::OnInitialUpdate()
 	MYBUTTS_LATCHED
 	);
 	m_Button_Play.EnableWindow(1);
+
 	itemSize = m_Button_Stop.GetButtonSize(IDB_BUTTON_STOP_UP);
 	m_Button_Stop.Create(
-		CPoint(48, clientRect.bottom - itemSize.cy - 25),
+		CPoint(96, clientRect.bottom - itemSize.cy - 25),
 		this,
 		IDC_BUTTON_STOP,
 		IDB_BUTTON_STOP_UP,
@@ -2783,6 +2790,18 @@ void CChildViewStaff::OnInitialUpdate()
 		&m_Button_Play
 	);
 	m_Button_Stop.EnableWindow(0);
+
+	itemSize = m_Button_Pause.GetButtonSize(IDB_BUTTON_PAUSE_UP);
+	m_Button_Pause.Create(
+		CPoint(48, clientRect.bottom - itemSize.cy - 25),
+		this,
+		IDC_BUTTON_PAUSE,
+		IDB_BUTTON_PAUSE_UP,
+		IDB_BUTTON_PAUSE_DOWN,
+		&m_Button_Pause
+	);
+	m_Button_Pause.EnableWindow(0);
+
 	//----------------------------------
 	// Set combo boxes to their defaul
 	// Selectopm
@@ -2861,7 +2880,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 				m_pDrawObject->Draw(&DCm, m_nDrawEvent - m_SongScrollPos, m_MaxEvents);
 			}
 		}
-		if (m_nDrawMode == DRAWMODE_TIE && m_nDrawState == DRAWSTATE_TIE_SECONDNOTE)
+		if (m_nDrawMode == DRAWMODE_TIE && m_nDrawState == DRAWSTATE::TIE_SECONDNOTE)
 		{
 			CRect r;
 			r.SetRect(m_TieEndPoint + CSize(0, -16), m_TieStartPoint + CSize(0, 16));
@@ -2892,6 +2911,7 @@ void CChildViewStaff::DrawControls(CDC* pDC)
 	m_Combo_KeySig.OnDraw(pDC);
 	m_Status.OnDraw(pDC);
 	m_Button_Play.OnDraw(pDC);
+	m_Button_Pause.OnDraw(pDC);
 	m_Button_Stop.OnDraw(pDC);
 }
 
@@ -3029,7 +3049,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		if (m_pDrawObject)
 			delete m_pDrawObject;
 		pNote = new CMsNote;
-		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::RestBmIdsTypes[nSelection] : 0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::GetRestBmIdsTypes()[nSelection] : 0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 		m_pDrawObject = pNote;
 		m_nDrawMode = DRAWMODE_NOTE;
 		UpdateNoteDrawObject();

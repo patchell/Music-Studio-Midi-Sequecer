@@ -32,17 +32,17 @@ UINT CMsTempo::Play()
 	return PLAY_OBJECT_DONE;
 }
 
-int CMsTempo::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTempo::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsTempo::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTempo::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsTempo::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTempo::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

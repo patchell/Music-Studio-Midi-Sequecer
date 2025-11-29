@@ -42,17 +42,17 @@ UINT CMsRepeatStart::Play()
 	return PLAY_OBJECT_DONE;
 }
 
-int CMsRepeatStart::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatStart::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsRepeatStart::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatStart::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsRepeatStart::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsRepeatStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

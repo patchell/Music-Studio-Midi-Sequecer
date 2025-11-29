@@ -4,6 +4,8 @@
 
 #pragma once
 
+class CChildViewStaff;
+
 extern UINT OnLine[12];
 
 constexpr auto NOTE_SHAPE_WHOLE = 0;
@@ -21,6 +23,10 @@ constexpr auto NOTE_FLAGS_1 = 1;
 constexpr auto NOTE_FLAGS_2 = 2;
 constexpr auto NOTE_FLAGS_3 = 3;
 
+//--------------------------------
+// Note Tick Definitions arranged
+// from shortest to longest
+//--------------------------------
 constexpr auto NOTE_TICKS_32nd_TRIPLET = 4;
 constexpr auto NOTE_TICKS_32nd = 6;
 constexpr auto NOTE_TICKS_32nd_DOTTED = 9;
@@ -62,7 +68,7 @@ class NoteData {
 	INT m_Accidental;		// sharp, flat or natural
 	UINT m_Dotted;
 	INT m_Track;		//value is 1->15, 0 is not used
-	INT m_Duration;
+	INT m_Duration;		// Token for the note duration
 	UINT m_Pitch;		// Location on the music staff
 	INT m_FlagsOff;		// flags for eigth, sixteenth, etc. not not drawn
 	INT m_Flags;		// Number of flags to draw on note
@@ -201,6 +207,12 @@ public:
 class CMsNote : public CMsObject
 {
 public:
+	//------------------------------------
+	// Byte 0 Midi Status (NOTEON,NOTEOFF)
+	// Byte 1 Midi Note
+	// Byte 2 Velocity
+	//-------------------------------------
+	inline static int RangeLUT[6] = { 0,-24,-12,0,12,24 };
 	struct DUR {
 		UINT NoteShapeIndex;
 		UINT Dotted;
@@ -208,8 +220,9 @@ public:
 		UINT Solid;	// Note circle open or solid
 		UINT Flags;
 		UINT Tail;
-		UINT DurTime;	// clock ticks
+		UINT NoteDurClockTicks;	// clock ticks
 		const char* pName;
+		int DurationTimeTicks() const { return NoteDurClockTicks; }
 	};
 private:
 	//----------------------------------
@@ -272,9 +285,7 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
-	virtual bool IsTimedObject() {
-		return true;
-	};
+	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return false;
 	}
@@ -286,9 +297,9 @@ public:
 	virtual void Save(FILE* pO);
 	virtual CMsObject* Copy(void);
 	//----------- Draw Funcrions ----------------------
-	virtual int MouseLButtonDown(int DrawState,CPoint pointMouse);
-	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
-	virtual int MouseMove(int DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState,CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
 	CChildViewStaff* GetStaffView() { return  GetSong()->GetStaffChildView(); }
 
 	void SetNoteOffTick(UINT NOT) { GetData().SetNoteOffTick(NOT); }

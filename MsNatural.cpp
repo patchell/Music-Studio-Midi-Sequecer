@@ -34,17 +34,17 @@ UINT CMsNatural::Play()
 	return 0;
 }
 
-int CMsNatural::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNatural::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsNatural::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNatural::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsNatural::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNatural::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

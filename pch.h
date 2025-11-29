@@ -17,6 +17,20 @@
 #include "afxdialogex.h"
 #include <afxmt.h>
 
+//---------------------------------------
+// Draw State Machine
+//---------------------------------------
+enum class DRAWSTATE {
+	NA,
+	SET_ATTRIBUTES,
+	WAITFORMOUSE_DOWN,
+	MOVE_OBJECT_AROUND,
+	PLACE,
+	TIE_FIRSTNOTE,
+	TIE_SECONDNOTE,
+	GLISSANDO_FIRST_NOTE,
+	GLISSANDO_SECOND_NOTE
+};
 
 //---------------------------------------
 // Music Editor
@@ -28,7 +42,7 @@ constexpr auto APP_NUM_RESTTYPES = 6;
 constexpr auto APP_NUM_DECORATIONS = 4;
 constexpr auto APP_NUM_ACCIDENTALTYPES = 4;
 constexpr auto APP_NUM_BLOCKOPTYPES = 11;
-constexpr auto APP_NUM_MISC = 6;
+constexpr auto APP_NUM_MISC = 7;
 constexpr auto APP_NUM_KEYSIGNATURES = 15;
 //-----------------------------------------
 // TX816 Editor
@@ -122,8 +136,7 @@ extern const char* GenMidiPatchNames[128];
 #include "MsEventChain.h"
 #include "MsSong.h"
 #include "MidiSeqMS.h"
-#include "MsGlisandoEnd.h"
-#include "MsGlisandoStart.h"
+#include "MsGlisando.h"
 #include "MsPortamentoEnd.h"
 #include "MsPortamentoStart.h"
 #include "MsBar.h"

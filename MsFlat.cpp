@@ -39,17 +39,17 @@ UINT CMsFlat::Play()
 	return 0;
 }
 
-int CMsFlat::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsFlat::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsFlat::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsFlat::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsFlat::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsFlat::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

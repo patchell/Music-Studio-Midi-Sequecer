@@ -52,17 +52,17 @@ UINT CMsKeySignature::Play()
 	return PLAY_OBJECT_DONE;
 }
 
-int CMsKeySignature::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsKeySignature::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsKeySignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsKeySignature::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

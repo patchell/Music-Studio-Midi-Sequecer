@@ -35,17 +35,17 @@ UINT CMsSharp::Play()
 	return 0;
 }
 
-int CMsSharp::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsSharp::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsSharp::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

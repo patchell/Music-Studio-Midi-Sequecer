@@ -26,16 +26,21 @@ UINT CMsChordNote::Play()
 	return 0;
 }
 
-int CMsChordNote::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChordNote::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
-int CMsChordNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChordNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsChordNote::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChordNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
+}
+
+int CMsChordNote::IsTimedObject()
+{
+	return GetDuration();
 }

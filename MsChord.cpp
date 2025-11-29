@@ -35,20 +35,26 @@ UINT CMsChord::Play()
 	return 0;
 }
 
-int CMsChord::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChord::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsChord::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChord::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsChord::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsChord::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
+
+int CMsChord::IsTimedObject()
+{
+	return GetDuration();
+}
+
 
 CMsObject* CMsChord::Copy(void)
 {

@@ -37,17 +37,17 @@ UINT CMsTimeSignature::Play()
 	return PLAY_OBJECT_DONE;
 }
 
-int CMsTimeSignature::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsTimeSignature::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTimeSignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsTimeSignature::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

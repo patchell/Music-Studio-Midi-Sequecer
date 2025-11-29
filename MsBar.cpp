@@ -35,17 +35,17 @@ UINT CMsBar::Play()
 	return 0;
 }
 
-int CMsBar::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsBar::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsBar::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsBar::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

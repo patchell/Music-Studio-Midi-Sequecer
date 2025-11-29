@@ -665,12 +665,6 @@ void CMsNote::ChangeRestColor(CDC *pDC,COLORREF newcolor,int w,int h)
 	}
 }
 
-//------------------------------------
-// Byte 0 Midi Status (NOTEON,NOTEOFF)
-// Byte 1 Midi Note
-// Byte 2 Velocity
-//-------------------------------------
-int RangeLUT[6] = { 0,-24,-12,0,12,24 };
 
 void CMsNote::NoteOn(CMsKeySignature *pKS, UINT Velociry)
 {
@@ -761,11 +755,11 @@ CMsObject * CMsNote::Copy()
 	pN->SetParentEvent(GetParentEvent()->GetIndex());
 
 	if (m_BitmapFlag)
-		pN->GetRestBitmap()->LoadBitmapW(CMidiSeqMSApp::RestBmIdsTypes[GetShape()]);
+		pN->GetRestBitmap()->LoadBitmapW(CMidiSeqMSApp::GetRestBmIdsTypes()[GetShape()]);
 	return pN;
 }
 
-int CMsNote::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNote::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	//-------------------------------------------------------
 	//	MouseDown
@@ -782,18 +776,18 @@ int CMsNote::MouseLButtonDown(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
+	case DRAWSTATE::SET_ATTRIBUTES:
 		break;
-	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
 		break;
-	case CChildViewStaff::DRAWSTATE_PLACE:
+	case DRAWSTATE::PLACE:
 		break;
 	}
 	GetStaffView()->Invalidate();
 	return DrawState;
 }
 
-int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	//-------------------------------------------------------
 	// MouseUp
@@ -813,23 +807,23 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
+	case DRAWSTATE::SET_ATTRIBUTES:
 		csText.Format(_T("Configure Note Prameters"));
 		GetStaffView()->GetStatusBar()->SetText(csText);
 		Dlg.SetNoteToEdit(this);
 		if ((Id = Dlg.DoModal()) == IDOK)
 		{
-			DrawState = CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN;
+			DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 			GetStaffView()->Invalidate();
 		}
 		break;
-	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
 //		m_P1 = m_P2 = pASV->m_SnapPos;
 //		pASV->EnableAutoScroll(1);
 //		DrawState = DRAWSTATE_PLACE;;
 		GetStaffView()->Invalidate();
 		break;
-	case CChildViewStaff::DRAWSTATE_PLACE:
+	case DRAWSTATE::PLACE:
 		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
 		{
 			CMsNote* pN = new CMsNote;
@@ -837,7 +831,7 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 
 			SetPitch(pNote->GetPitch());
 			if (IsRest())
-				pN->Create(CMidiSeqMSApp::RestBmIdsTypes[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
+				pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
 			else
 				pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
 			//-----------------------------
@@ -847,14 +841,14 @@ int CMsNote::MouseLButtonUp(int DrawState, CPoint pointMouse)
 			GetStaffView()->SetDrawObject(pN);
 			GetStaffView()->CheckAndDoScroll(pointMouse);
 		}
-		DrawState = CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN;
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		GetStaffView()->Invalidate();
 		break;
 	}
 	return DrawState;
 }
 
-int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	//-------------------------------------------------------
 	// MouseMove
@@ -874,9 +868,9 @@ int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
 
 	switch (DrawState)
 	{
-	case CChildViewStaff::DRAWSTATE_SET_ATTRIBUTES:
+	case DRAWSTATE::SET_ATTRIBUTES:
 		break;
-	case CChildViewStaff::DRAWSTATE_WAITFORMOUSE_DOWN:
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
 		note = GetStaffView()->YtoNote(pointMouse.y);
 
 //		pNote = (CMsNote*)GetStaffView()->GetDrawObject();
@@ -918,9 +912,9 @@ int CMsNote::MouseMove(int DrawState, CPoint pointMouse)
 		}
 		GetStaffView()->Invalidate();
 		break;
-	case CChildViewStaff::DRAWSTATE_MOVE_OBJECT_AROUND:
+	case DRAWSTATE::MOVE_OBJECT_AROUND:
 		break;
-	case CChildViewStaff::DRAWSTATE_PLACE:
+	case DRAWSTATE::PLACE:
 		break;
 	}
 	GetStaffView()->Invalidate();
@@ -966,7 +960,7 @@ void CMsNote::SetTick(int Duration, int tempo)
 	// product of the duration
 	// and the tempo
 	//----------------------------
-	m_Ticks = DurTab[Duration].DurTime * tempo;
+	m_Ticks = DurTab[Duration].DurationTimeTicks() * tempo;
 }
 
 int CMsNote::GetChannel()
@@ -1040,6 +1034,11 @@ UINT CMsNote::Play()
 //		GetSong()->GetTotalTicks()
 //	);
 	return DeleteObject;
+}
+
+int CMsNote::IsTimedObject()
+{
+	return GetDuration();
 }
 
 UINT CMsNote::Process()

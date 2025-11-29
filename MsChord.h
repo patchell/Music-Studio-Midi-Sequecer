@@ -25,12 +25,10 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
-	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse) = 0;
-	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse) = 0;
-	virtual int MouseMove(int DrawState, CPoint pointMouse) = 0;
-	virtual bool IsTimedObject() {
-		return true;
-	};
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return true;
 	}
@@ -54,6 +52,7 @@ public:
 	void SetArpegioDirection(bool Dir) { m_ArpegioDirection = Dir; }
 	bool IsArpegioDirectionUp() { return (m_ArpegioDirection == false); }
 	bool IsArpegioDirectionDown() { return (m_ArpegioDirection == true); }
+	int GetDuration() const { return 0; /*TODO*/ }
 
 };
 

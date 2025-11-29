@@ -217,8 +217,7 @@
     <ClInclude Include="MMtimer.h" />
     <ClInclude Include="MsChord.h" />
     <ClInclude Include="MsChordNote.h" />
-    <ClInclude Include="MsGlisandoEnd.h" />
-    <ClInclude Include="MsGlisandoStart.h" />
+    <ClInclude Include="MsGlisando.h" />
     <ClInclude Include="MsPlayerQueueItem.h" />
     <ClInclude Include="MsPortamentoEnd.h" />
     <ClInclude Include="MsPortamentoStart.h" />
@@ -305,8 +304,7 @@
     <ClCompile Include="MMtimer.cpp" />
     <ClCompile Include="MsChord.cpp" />
     <ClCompile Include="MsChordNote.cpp" />
-    <ClCompile Include="MsGlisandoEnd.cpp" />
-    <ClCompile Include="MsGlisandoStart.cpp" />
+    <ClCompile Include="MsGlisando.cpp" />
     <ClCompile Include="MsPlayerQueueItem.cpp" />
     <ClCompile Include="MsPortamentoEnd.cpp" />
     <ClCompile Include="MsPortamentoStart.cpp" />
@@ -383,6 +381,11 @@
     <Image Include="bmCB_Misc_EndBar.bmp" />
     <Image Include="D:\Projects\MidiSeqMS\res\bmCB_RestEigth.bmp" />
     <Image Include="IDR_TX816_EDIT.ico" />
+    <Image Include="res\bitmap10.bmp" />
+    <Image Include="res\bitmap11.bmp" />
+    <Image Include="res\bitmap12.bmp" />
+    <Image Include="res\bmButtonPauseDown.bmp" />
+    <Image Include="res\bmButtonPauseUp.bmp" />
     <Image Include="res\bmDX7Alg01.bmp" />
     <Image Include="res\bmDX7Alg02.bmp" />
     <Image Include="res\bmDX7Alg03.bmp" />
@@ -415,6 +418,7 @@
     <Image Include="res\bmDX7Alg5.bmp" />
     <Image Include="res\bmDX7Alg8.bmp" />
     <Image Include="res\bmDX7Alg9.bmp" />
+    <Image Include="res\bmGlissando.bmp" />
     <Image Include="res\bmStaff_QuarterRest.bmp" />
     <Image Include="res\blockdown.bmp" />
     <Image Include="res\blockup.bmp" />

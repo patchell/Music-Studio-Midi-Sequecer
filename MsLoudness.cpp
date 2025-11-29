@@ -36,17 +36,17 @@ UINT CMsLoudness::Play()
 	return PLAY_OBJECT_DONE;
 }
 
-int CMsLoudness::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsLoudness::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsLoudness::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsLoudness::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsLoudness::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsLoudness::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

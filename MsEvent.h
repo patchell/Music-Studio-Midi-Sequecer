@@ -49,6 +49,7 @@ public:
 	CMsNote* FindNextNote(CMsNote* pPrevNote);
 	int RemoveObject(CMsObject *pObj);
 	CMsObject* ObjectAlreadyHere(CMsObject* pObj);
+	int GetMinEventDuration();
 	//--------------------------------------------
 	CChildViewStaff* GetParentView() { return m_pView; }
 	void SetParentView(CChildViewStaff* pCV) { m_pView = pCV; }

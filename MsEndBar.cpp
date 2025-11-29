@@ -43,17 +43,17 @@ UINT CMsEndBar::Process()
 	return 0;
 }
 
-int CMsEndBar::MouseLButtonDown(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsEndBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsEndBar::MouseLButtonUp(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsEndBar::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }
 
-int CMsEndBar::MouseMove(int DrawState, CPoint pointMouse)
+DRAWSTATE CMsEndBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	return DrawState;
 }

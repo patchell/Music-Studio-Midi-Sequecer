@@ -24,14 +24,6 @@ constexpr auto	BM_NOTE_INDEX_THIRTYSECOND = 5;
 class CChildViewStaff : public CChildViewBase
 {
 public:
-	enum DrawState {
-		DRAWSTATE_SET_ATTRIBUTES,
-		DRAWSTATE_WAITFORMOUSE_DOWN,
-		DRAWSTATE_MOVE_OBJECT_AROUND,
-		DRAWSTATE_PLACE,
-		DRAWSTATE_TIE_FIRSTNOTE,
-		DRAWSTATE_TIE_SECONDNOTE
-	};
 	enum MouseRegions {
 		MOUSE_OUTSIDE,
 		MOUSE_INEDITREG,
@@ -79,8 +71,6 @@ public:
 	//---------------------------
 	// Note bitmap indexes
 	//---------------------------
-
-
 	enum class MiscBitmapIndex {
 		BM_MISC_INDEX_MEASUREBAR,
 		BM_MISC_INDEX_NOTETIE,
@@ -113,6 +103,7 @@ private:
 	CComboDropDown m_Combo_KeySig;
 	//--------- View Controls ------------------
 	CMyButton m_Button_Play;
+	CMyButton m_Button_Pause;
 	CMyButton m_Button_Stop;
 	CStaticStatus m_Status;
 	//------- Song Position ----------------
@@ -127,7 +118,7 @@ private:
 	CMsNote* m_pSecondTieNote;
 	CMsNote* m_pFirstTieNote;
 	//-------------------------------------
-	int m_nDrawState;
+	DRAWSTATE m_nDrawState;
 	int m_ExitEditRegion;
 	INT m_LastPitch;
 	CMsNote* pLastNote;

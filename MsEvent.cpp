@@ -526,6 +526,22 @@ CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 	return rpObj;
 }
 
+int CMsEvent::GetMinEventDuration()
+{
+	CMsObject* pObj = GetEventObjectHead();
+	int MinDuration = 10000000;
+	int Dur;
+
+	while (pObj)
+	{
+		Dur = pObj->IsTimedObject();
+		if(Dur < MinDuration)
+			MinDuration = Dur;
+		pObj = pObj->GetNext();
+	}
+    return MinDuration;
+}
+
 int CMsEvent::RemoveObject(CMsObject *pObj)
 {
 	if(pObj == GetEventObjectHead() )

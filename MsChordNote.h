@@ -12,12 +12,10 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
-	virtual int MouseLButtonDown(int DrawState, CPoint pointMouse);
-	virtual int MouseLButtonUp(int DrawState, CPoint pointMouse);
-	virtual int MouseMove(int DrawState, CPoint pointMouse);
-	virtual bool IsTimedObject() {
-		return true;
-	};
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return true;
 	}
