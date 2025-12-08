@@ -12,11 +12,7 @@ class CMsKeySignature : public CMsObject
 public:
 	CMsKeySignature();
 	virtual ~CMsKeySignature();
-	bool Create(CMsSong*pSong,CMsEvent* pParentEvent, UINT key) { 
-		m_KeySignature = key; 
-		SetKeySigCorrection();
-		return CMsObject::Create(pSong, pParentEvent);
-	}
+	bool Create(CMsSong* pSong, CMsEvent* pParentEvent, UINT key);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

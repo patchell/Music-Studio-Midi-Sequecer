@@ -37,16 +37,14 @@ public:
 	virtual ~CDlgMidiInfo();
 	virtual BOOL OnInitDialog();
 	void UpdateControls(int InstID);
-// Dialog Data
+	virtual void OnOK();
+
 	enum { IDD = IDD_DIALOG_INSTUMENT_MIDI };
 
 protected:
+	afx_msg LRESULT OnMyscrollbarMsg(WPARAM wParam, LPARAM lParam);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	afx_msg void OnClickedStaticTrack();
 
 	DECLARE_MESSAGE_MAP()
-protected:
-	afx_msg LRESULT OnMyscrollbarMsg(WPARAM wParam, LPARAM lParam);
-public:
-	afx_msg void OnClickedStaticTrack();
-	virtual void OnOK();
 };

@@ -25,6 +25,11 @@ public:
 	virtual bool DoesSomething() {
 		return false;
 	}
+	virtual UINT ObjectToString(CString& csString, UINT mode = 0)
+	{
+		csString.Format(_T("Sharp"));
+		return csString.GetLength();
+	}
 	//------------------------------------------------------
 	void Draw(CDC* pDC, COLORREF c, int x, int y);
 

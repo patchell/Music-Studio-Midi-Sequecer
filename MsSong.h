@@ -149,7 +149,7 @@ public:
 	CMsNote* CheckForNotePresence(int Event, int Note);
 	//-----------Object Managment --------------------
 	int AddObjectToSong(int event, CMsObject* pO);
-	UINT AddMoreEvenrsAtEnd(UINT NewEndEvent);
+	UINT AddMoreEventsAtEnd(UINT NewEndEvent);
 	CMsObject* GetMsObject(INT ObjType, CMsEvent* pStartEventObject, INT Direction);
 	CMsObject* GetObjectTypeInEvent(int nType, int nEvent);
 	//---------- Event Management -------------------------

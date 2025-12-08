@@ -40,7 +40,7 @@ class CMsTempo;
 class CMsTimeSignature;
 class CMsPortamentoStart;
 class CMsPortamentoEnd;
-class CMsGlisando;
+class CMsGlissando;
 class CMsGlisandoEnd;
 class CMsSong;
 class CMsEvent;
@@ -66,7 +66,7 @@ constexpr auto CENTER_OF_BASS = (STAVE_OFFSET + 48);
 
 constexpr auto NOTE_LINE_OFFSET = EVENT_WIDTH / 2;
 constexpr auto NOTE_HEAD_WIDTH = 10;
-constexpr auto NOTE_HEAD_HIEGTH = 8;
+constexpr auto NOTE_HEAD_HEIGHT = 8;
 
 constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
 constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
@@ -99,7 +99,7 @@ union ObjectTypes{
 	CMsTimeSignature*pTime;
 	CMsPortamentoEnd* pPortEnd;
 	CMsPortamentoStart* pPortStart;
-	CMsGlisando* pGlissando;
+	CMsGlissando* pGlissando;
 };
 
 class CMsObject  
@@ -138,6 +138,7 @@ public:
 	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse) = 0;
 	virtual int IsTimedObject() = 0;
 	virtual bool DoesSomething() = 0;
+	virtual UINT ObjectToString(CString& csString, UINT mode = 0) = 0;
 	//-------------------------------------------------
 	// Back to our regularly scheduled Methods
 	//-------------------------------------------------
@@ -154,7 +155,6 @@ public:
 	virtual void ObjectRectangle(CRect& rect, UINT Event) { rect.SetRect(0, 0, 0, 0); }
 	virtual bool HighLight(bool HL, CPoint ptObj);
 	virtual bool Select(bool Select, CPoint ptObj);
-	virtual UINT ObjectToString(CString& csString, UINT mode = 0) { return 0; }
 	virtual void SetParentEvent(UINT ParrentEvent);
 	virtual CMsEvent* GetParentEvent() { return m_pParentEvent; }
 	virtual CMsObject* MakeANewObject() { return nullptr; }

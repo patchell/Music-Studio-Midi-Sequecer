@@ -326,11 +326,11 @@ void CComboDropUp::OnLButtonDown(UINT nFlags, CPoint point)
 
 		if (m_rgnSliderTrack.PtInRegion(point))
 		{
-		if (m_rgnThumb.PtInRegion(point))
-		{
-			m_nDragThumb = true;
-			m_nDragLastY = point.y;
-		}
+			if (m_rgnThumb.PtInRegion(point))
+			{
+				m_nDragThumb = true;
+				m_nDragLastY = point.y;
+			}
 		}
 		CWnd::OnLButtonDown(nFlags, point);
 }

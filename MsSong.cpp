@@ -325,7 +325,7 @@ void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 {
 	CMsEvent *pEventList = m_pEventListHead;
-	CMsObject* pObjectToRemove;;
+	CMsObject* pObjectToRemove = 0;
 	int loop = 1;
 	CMsObject *pObj;
 	int rV = 1;		//indicate object was added
@@ -413,7 +413,7 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 	return rV;
 }
 
-UINT CMsSong::AddMoreEvenrsAtEnd(UINT NewEndEvent)
+UINT CMsSong::AddMoreEventsAtEnd(UINT NewEndEvent)
 {
 	// <summary>
 	// 
@@ -440,6 +440,7 @@ UINT CMsSong::AddMoreEvenrsAtEnd(UINT NewEndEvent)
 		pEVTemp = MakeNewEvent();
 		AddEventAtEnd(pEVTemp);
 	}
+	RenumberEvents(nullptr, nullptr);
 //	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddMoreEventsAtEnd", 2);
 	return NumberOfEvents;
 }
@@ -1311,7 +1312,7 @@ void CMsSong::MidiContinue()
 	}
 }
 
-void CMsSong::ChangePatch(int Track, int chan, int patch)
+void CMsSong::ChangePatch(int Track, int MidiChannel, int Patch)
 {
 	//----------------------------------------------
 	// ChangePatch
@@ -1326,8 +1327,9 @@ void CMsSong::ChangePatch(int Track, int chan, int patch)
 	//-----------------------------------------------
 	int DeviceID;
 
-	DeviceID = GETMIDIINFO->GetTrack(Track).GetMidiOutDeviceID();
-	GETMIDIOUTDEVICE(DeviceID).PgmChange(chan, patch);
+	MidiChannel = GETMIDIINFO->GetChannel(Track);
+	DeviceID = GETMIDIINFO->GetMidiOutDeviceId(Track);
+	GETMIDIOUTTABLE.PgmChange(DeviceID, MidiChannel, Patch);
 }
 
 

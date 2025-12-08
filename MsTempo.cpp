@@ -20,6 +20,14 @@ CMsTempo::~CMsTempo()
 
 }
 
+bool CMsTempo::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo)
+{
+	CMsObject::Create(pSong, pEvent);
+	m_Tempo = Tempo;
+	pSong->SetCurrentTempo(this);
+	return true;
+}
+
 UINT CMsTempo::Process()
 {
 	return 1;

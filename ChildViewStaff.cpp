@@ -251,16 +251,18 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	case MOUSE_INLOWERSEL:
 		break;
 	case MOUSE_INEDITREG:
-		switch (m_nDrawMode)
+		switch (m_nDrawMode)	//OnLButtonDown
 		{
 		case DRAWMODE_NOP:
 			pObject = MatchMouseToSelectedObject(pointMouse);
 			if (pObject == nullptr)
 				pObject = MatchMouseToObjectInEvent(Event, pointMouse);
 			break;
-		}
-		Invalidate();
-		break;
+		case DRAWMODE_GLISSANDO:	//OnLButtonDown
+			m_nDrawState = m_pDrawObject->MouseLButtonDown(m_nDrawState, pointMouse);;
+			Invalidate();
+			break;
+		}//end of switch(m_nDrawMode)
 	}
 	CWnd::OnLButtonDown(nFlags, pointMouse);
 }
@@ -270,6 +272,8 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 	int Region;
 	CMsEvent* pEv;
 	CMsNote* pNote;
+	CString csTemp;
+	CMsGlissando* pGliss = 0;
 
 	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
@@ -399,6 +403,24 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				CheckAndDoScroll(pointMouseLButtUp);
 			}
 			Invalidate();
+			break;
+		case DRAWMODE_GLISSANDO:		//OnLButtonUp
+			m_nDrawState = m_pDrawObject->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);
+			//------------------------------
+			// Create new glissando object
+			//------------------------------
+			if(m_nDrawState == DRAWSTATE::GLISSANDO_END)
+			{
+				m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+				pGliss = new CMsGlissando;
+				pGliss->Create(GetSong(), 0,0);
+				m_pDrawObject = pGliss;
+				CheckAndDoScroll(pointMouseLButtUp);
+				Invalidate();
+			}
+			if (GetSong()->GetEventObject(m_nDrawEvent))
+				csTemp.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
+			m_Status.SetText(csTemp);
 			break;
 		case DRAWMODE_ENDBAR:
 			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
@@ -556,15 +578,16 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	CMsNote* pN;
 	CMsObject* pObj;
 	int Region;
-	int note;
+	int NoteLocation = 0;	// location of note on the stave
 	CString StatusString,csTemp;
 	bool Loop = false;
+	int NoteActuallyPlayed = 0;
 
 	m_nDrawEvent = XtoEventIndex(pointMouse.x);
 	Region = MouseInRegion(pointMouse);
 	switch (Region)
 	{
-	case MOUSE_INUPPERSEL:	///OnMouseMove
+	case MOUSE_INUPPERSEL:	//OnMouseMove
 	case MOUSE_INLOWERSEL:
 		//----------------------------------
 		// Update the state as to where the
@@ -582,12 +605,10 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		switch (m_nDrawMode)
 		{
 		case DRAWMODE_NOTE:		//OnMouseMove
-			if (GetLastPitch() && m_ExitEditRegion)
+			if (GetLastNote() && m_ExitEditRegion)
 			{
-				pN = (CMsNote*)m_pDrawObject;
-				if(pN)
-					MidiPlayNote(pN, 0);// Note Off
-				SetLastPitch(INVALID_PITCH);
+				MidiPlayNote(GetLastNote(), 0);// Note Off
+				SetLastNote(nullptr);
 			}
 			break;
 		}	//end of switch(m_nDrawMode) in case MOUSE_INUPPERSEL
@@ -602,24 +623,29 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		switch (m_nDrawMode)	//OnMouseMove
 		{
 		case DRAWMODE_NOTE:
-			if (LastPitchIsValid() && m_ExitEditRegion)
+			if (GetLastNote() && m_ExitEditRegion)
 			{
-				pN = (CMsNote*)m_pDrawObject;
-				if (pN)
-				{
-					MidiPlayNote(pN, 0);	//NoteOff
-				}
-				SetLastPitch(-1);
-				SetLastPitch(INVALID_PITCH);
+				MidiPlayNote(GetLastNote(), 0);	//NoteOff
+				SetLastNote(nullptr);
 				Invalidate();
 			}
 			break;
 		}	//end of switch(m_nDrawMode) in case MOUSE_OUTSIDE
 		break;
-	case MOUSE_INEDITREG:	///On Mouse Move
+	case MOUSE_INEDITREG:	//On Mouse Move
 		m_MouseInEditRegion = 1;
 		m_ExitEditRegion = 0;
-		note = YtoNote(pointMouse.y);
+		//-----------------------------
+		// change the mouse Y coordinate
+		// into a note location on the
+		// stave, ie C, D, E, F, etc
+		// The note location is NOT the
+		// actual pitch.  The actual
+		// pitch is determined by the
+		// Key Signature or an accidental
+		// if one is present.
+		//-----------------------------
+		NoteLocation = YtoNote(pointMouse.y);	
 		switch(m_nDrawMode)
 		{
 		case DRAWMODE_NOP:
@@ -662,7 +688,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					//------------------------
 					pSelectedObjects = GetSelectedObjectHead();
 				}
-				else // Mouse button is up
+				else // Mouse button is up	//OnMouseMove
 				{
 					//--------------------------
 					// highlight objects and
@@ -696,48 +722,36 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 				Invalidate();
 			}
 			break;
-		case DRAWMODE_NOTE:
+		case DRAWMODE_NOTE:		//OnMouseMove
 			//-------------------------------
 			// Move a note around the screen
 			//--------------------------------
 			pN = (CMsNote*)m_pDrawObject;
+			if (pN)
+			{
+				pN->MouseMove(m_nDrawState, pointMouse);
+			}
 //			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
-			if (LastPitchIsValid())
-			{
-				if (GetLastPitch() != note)
-				{
-					SetPitch(note);
-					if (!pN->IsRest())
-					{
-//						printf("    Note Off %d\n", pN->GetPitch());
-						MidiPlayNote(pN, 0);// Note Off
-					}
-					pN->SetPitch(note);
-					if (!pN->IsRest())
-					{
-//						printf("    Note On %d\n", pN->GetPitch());
-						MidiPlayNote(pN, 1);// Note On
-					}
-					SetLastPitch(note);
-					if (pN->IsRest())
-					{
-						StatusString.Format(_T("Draw Rest at Event %d"), m_nDrawEvent);
-					}
-					else
-					{
-						pN->ObjectToString(csTemp);
-						StatusString.Format(_T("%lS at Event %d: "), csTemp.GetString(), m_nDrawEvent);
-					}
-				}
-			}
-			else if (!LastPitchIsValid() && IsMouseInEditRegion())
-			{
-				pN->SetPitch(note);
-				if (!pN->IsRest())
-					MidiPlayNote(pN, 1);// Note On
-				SetLastPitch(note);
-			}
 			Invalidate();
+			break;
+		case DRAWMODE_GLISSANDO:		///On Mouse Move
+			switch (m_nDrawState)
+			{
+			case DRAWSTATE::WAITFORMOUSE_DOWN:
+				m_pDrawObject->MouseMove(m_nDrawState, pointMouse);
+				break;
+			case DRAWSTATE::GLISSANDO_FIRST_NOTE:
+				m_pDrawObject->MouseMove(m_nDrawState, pointMouse);
+				break;
+			case DRAWSTATE::GLISSANDO_SECOND_NOTE:
+//				m_GlissEndPoint = CPoint(pointMouse.x, m_GlissStartPoint.y);
+				m_pDrawObject->MouseMove(m_nDrawState, pointMouse);
+				Invalidate();
+				break;
+			default:
+				printf("Unknown Glissando State\n");
+				break;
+			}	//end of switch(m_nDrawState)
 			break;
 		case DRAWMODE_ENDBAR:
 			if (MSOBJ_ENDBAR == m_pDrawObject->GetType())
@@ -1412,17 +1426,6 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 	}//end of switch(id)		OnContextMenu
 }
 
-int NoteLut[7] = {
-	0,	//C
-	2,	//D
-	4,	//E
-	5,	//F
-	7,	//G
-	9,	//A
-	11	//B
-};
-
-
 int CChildViewStaff::YtoNote(int mouseY)
 {
 	int NoteIndex;
@@ -1439,7 +1442,10 @@ int CChildViewStaff::YtoNote(int mouseY)
 	// C8 from the mouse Y coordiant
 	// so that we know where to draw
 	//----------------------------------
+//	fprintf(GETAPP->LogFile(),"----------------------------\n");
+//	fprintf(GETAPP->LogFile(), "YtoNote: Initial MouseY=%d\n", mouseY);
 	mouseY -= HIGHC_OFFSET;
+//	fprintf(GETAPP->LogFile(), "YtoNote: Initial MouseY=%d\n", mouseY);
 	//----------------------------------
 	// quantize the y coordiant so that
 	// the note will only be drawn either
@@ -1447,6 +1453,7 @@ int CChildViewStaff::YtoNote(int mouseY)
 	// not quantize the mouse pointer
 	//-----------------------------------
 	mouseY = QuantizeY(mouseY);
+//	fprintf(GETAPP->LogFile(), "YtoNote: Quantized MouseY=%d\n", mouseY);
 	mouseY = QUANTIZED_STAFF_HEIGHT - mouseY;	//invert y
 	mouseY -= STAVE_LINE_SPACING / 2;	//center
 	//------------------------------------
@@ -1454,18 +1461,16 @@ int CChildViewStaff::YtoNote(int mouseY)
 	//------------------------------------
 	if (mouseY < 0) mouseY = 0;
 	NoteIndex = mouseY % 7;
+//	fprintf(GETAPP->LogFile(), "YtoNote: MouseY=%d NoteIndex=%d\n", mouseY, NoteIndex);
 	Note = NoteLut[NoteIndex];
+//	fprintf(GETAPP->LogFile(), "YtoNote: Note from Lut=%d\n", Note);
 	Octave += (mouseY / 7) * 12;	/// calculate octave
+//	fprintf(GETAPP->LogFile(), "YtoNote: Octave from MouseY=%d\n", Octave);
 	Note = Note + Octave + 0x24;
 	if (Note > 0x60)
 		Note = 0x60;	// limit max value of Note
+//	fprintf(GETAPP->LogFile(), "YtoNote: MouseY=%d Note=%d\n", mouseY, Note);
 	return Note;
-}
-
-int NoteToY(int Note)
-{
-	int rV = 0;
-	return rV;
 }
 
 
@@ -1523,34 +1528,59 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 		m_Status.SetText(csBlank);
 		break;
 	case DRAW_NOTE:
-	{
-		CMsNote* pN = new CMsNote;
-		if (m_pDrawObject)
 		{
-			delete m_pDrawObject;
-		}
-		m_pDrawObject = pN;
-		m_nDrawMode = DRAWMODE_NOTE;
-		//-----------------------------
-		// decode message word
-		//------------------------------
-		pN->GetData().CopyData(GetNoteData());
-		if (pN->IsRest())
-		{
-			int Shape;
-			Shape = pN->GetShape();
-			int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
-			pN->Create(Id, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
-		}
-		else
+			CMsNote* pN = new CMsNote;
 			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+			if (m_pDrawObject)
+			{
+				delete m_pDrawObject;
+			}
+			m_pDrawObject = pN;
+			m_nDrawMode = DRAWMODE_NOTE;
+			m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+			//-----------------------------
+			// decode message word
+			//------------------------------
+			pN->GetData().CopyData(GetNoteData());
+			if (pN->IsRest())
+			{
+				int Shape;
+				Shape = pN->GetShape();
+				int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
+				pN->Create(Id, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+			}
+			else
+				pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 
-		pN->ObjectToString(csTemp);
-		if(GetSong()->GetEventObject(m_nDrawEvent))
-			csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
-	}
-	m_Status.SetText(csStatus);
-	break;
+			pN->ObjectToString(csTemp);
+			if(GetSong()->GetEventObject(m_nDrawEvent))
+				csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
+		}
+		m_Status.SetText(csStatus);
+		break;
+	case DRAW_GLISSANDO:
+		{
+			CMsGlissando* pMG = new CMsGlissando;
+			if (m_pDrawObject)
+			{
+				delete m_pDrawObject;
+			}
+			m_pDrawObject = pMG;
+			m_nDrawMode = DRAWMODE_GLISSANDO;
+			m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+			//-----------------------------
+			// decode message word
+			//------------------------------
+			pMG->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
+			pMG->ObjectToString(csTemp);
+			if (!GetSong()->GetEventObject(m_nDrawEvent))
+			{
+				GetSong()->AddMoreEventsAtEnd(m_nDrawEvent);
+			}
+		}
+		csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
+		m_Status.SetText(csStatus);
+		break;
 	case DRAW_REST:
 		break;
 	case DRAW_ENDBAR:
@@ -2015,21 +2045,6 @@ void CChildViewStaff::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CWnd::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-int NoteAdjustLUT[12] = {
-	0,
-	1,
-	0,
-	1,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	0
-};
-
 afx_msg LRESULT CChildViewStaff::OnLongMidiMsg(WPARAM wParam, LPARAM lParam)
 {
 	return 0;
@@ -2467,7 +2482,7 @@ void CChildViewStaff::UpdateNoteInfo(int RestFlag)
 	if ((m_nDrawMode != DRAWMODE_NOTE) && (m_nDrawMode != DRAWMODE_MIDINOTEIN))
 	{
 		if (m_pDrawObject) delete m_pDrawObject;
-		m_pDrawObject = new CMsNote;
+		m_pDrawObject = 0;
 		m_nDrawMode = DRAWMODE_NOTE;
 	}
 	if (m_pDrawObject == 0) m_pDrawObject = new CMsNote;
@@ -2953,6 +2968,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 	CBToggle ToggleMSG;
 	int op;
 	CMsNote* pNote;
+	int Track = 0, Patch = 0, Chan = 0;
 
 	switch (ComboID)
 	{
@@ -2960,6 +2976,9 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		Selection = m_Combo_Misc.GetCurSel();
 		switch (Selection)
 		{
+		case COMBO_MISC_GLISSANDO:	//glissando
+			mode = DRAW_GLISSANDO;
+			break;
 		case COMBO_MISC_ENDBAR:
 			mode = DRAW_ENDBAR;
 			break;
@@ -3055,7 +3074,11 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		UpdateNoteDrawObject();
 		break;
 	case IDC_COMBO_INSTRUMENT:
-		SetTrack(m_Combo_Instrument.GetCurSel() + 1);		//Instrument number needs +1
+		Track = m_Combo_Instrument.GetCurSel() + 1;
+		Patch = GETMIDIINFO->GetPatch(Track);
+		Chan = GETMIDIINFO->GetChannel(Track);
+		SetTrack(Track);		//Instrument number needs +1
+		GetSong()->ChangePatch(Track, Chan, Patch);
 		SetFocus();
 		UpdateNoteDrawObject();
 		break;
@@ -3136,6 +3159,19 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 }
 
 //---------------- Combo Boxes ---------------
+
+void CChildViewStaff::CheckAndDoScroll(CPoint point)
+{
+	if (GetRawEventNumber(point.x) == m_MaxEvents)
+	{
+		m_SongScrollPos += 4;
+		for (int i = 0; i < 4; ++i)
+			GetSong()->AddEventAtEnd(GetSong()->MakeNewEvent());
+		GetSong()->RenumberEvents(NULL, NULL);
+		SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
+		SetScrollPos(GetSong()->GetTotalEvents() - GetMaxEvents());
+	}
+}
 
 void CChildViewStaff::DoBlockOps(int Op)
 {
@@ -3392,11 +3428,11 @@ void CChildViewStaff::MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag)
 	{
 		if (NoteOnFlag)
 		{
-			pNote->NoteOn((CMsKeySignature*)pKeySig, 100);
+			pNote->NoteOn(100);
 		}
 		else
 		{
-			pNote->NoteOff((CMsKeySignature*)pKeySig, 100);
+			pNote->NoteOff(100);
 		}
 	}
 }

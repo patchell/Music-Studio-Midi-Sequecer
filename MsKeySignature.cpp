@@ -41,6 +41,13 @@ CMsKeySignature::~CMsKeySignature()
 
 }
 
+bool CMsKeySignature::Create(CMsSong* pSong, CMsEvent* pEvent, UINT key)
+{
+	m_KeySignature = key;
+	pSong->SetCurrentKeySignature(this);
+	return CMsObject::Create(pSong, pEvent);
+}
+
 UINT CMsKeySignature::Process()
 {
 	return 1;
@@ -272,6 +279,5 @@ void CMsKeySignature::Save(FILE *pO)
 
 int CMsKeySignature::NoteToPosition(int Note)
 {
-	extern int NotePos[12];
-	return NotePos[Note % 12] + 28 * (7 - (Note / 12)) + (STAVE_OFFSET - 44);
+	return CMsNote::NotePos[Note % 12] + 28 * (7 - (Note / 12)) + (STAVE_OFFSET - 44);
 }

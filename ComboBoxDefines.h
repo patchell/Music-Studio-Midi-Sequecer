@@ -54,6 +54,7 @@ constexpr auto 	COMBO_MISC_LOUDNESS = 2;
 constexpr auto 	COMBO_MISC_TEMPO = 3;
 constexpr auto 	COMBO_MISC_INST_CHANGE = 4;
 constexpr auto 	COMBO_MISC_ENDBAR = 5;
+constexpr auto  COMBO_MISC_GLISSANDO = 6;
 
 
 

@@ -61,6 +61,7 @@
 #define IDD_DIALOG_SELECTOR             202
 #define IDD_DIALOG_STRINGSELECTOR       204
 #define IDD_DIALOG_ENTERSTRING          311
+#define IDD_CDlgGlissandoProperties     315
 #define IDB_CB_REST_WHOLE               319
 #define IDB_CB_REST_HALF                320
 #define IDB_CB_REST_QUARTER             321
@@ -169,7 +170,6 @@
 #define IDB_TX816_LFO_SAMPLE_HOLD_5     445
 #define IDD_CHORD_EDITOR                446
 #define IDB_BITMAP9                     448
-#define IDB_BITMAP10                    449
 #define IDB_GLISSANDO                   449
 #define IDB_BUTTON_PAUSE_UP             450
 #define IDB_BUTTON_PAUSE_DOWN           451
@@ -279,6 +279,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        453
 #define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1047
-#define _APS_NEXT_SYMED_VALUE           315
+#define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

@@ -247,6 +247,9 @@
     <ClCompile Include="MsPlayerQueueItem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="DlgGlissandoProperties.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -508,6 +511,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MsPlayerQueueItem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgGlissandoProperties.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

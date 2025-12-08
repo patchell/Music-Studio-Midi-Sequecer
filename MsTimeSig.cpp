@@ -23,6 +23,7 @@ CMsTimeSignature::~CMsTimeSignature()
 bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
 {
 	m_TimeSig = TS;
+	pSong->SetCurrentTimeSignature(this);
 	return CMsObject::Create(pSong, pEvent);
 }
 

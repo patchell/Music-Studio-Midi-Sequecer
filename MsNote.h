@@ -73,7 +73,7 @@ class NoteData {
 	INT m_FlagsOff;		// flags for eigth, sixteenth, etc. not not drawn
 	INT m_Flags;		// Number of flags to draw on note
 	UINT m_Triplet;
-	int m_MidiOutID;
+	int m_MidiOutID;	// Identidy of the MIDI output device
 public:
 	NoteData() {
 		m_MidiOutID = 0;
@@ -219,7 +219,7 @@ public:
 		UINT Triplet;
 		UINT Solid;	// Note circle open or solid
 		UINT Flags;
-		UINT Tail;
+		UINT Stem;	// Stem direction
 		UINT NoteDurClockTicks;	// clock ticks
 		const char* pName;
 		int DurationTimeTicks() const { return NoteDurClockTicks; }
@@ -240,7 +240,7 @@ private:
 	// Triplet	=	True/False
 	// Solid	=	True/False Inside of note is solid
 	// flags	=	Number of flags on the note tail
-	// tail		=	True/False Needs a tail or stem
+	// Stem		=	True/False Needs a stem
 	// DurationTime	= Clock ticks
 	//------------------------------------------
 	inline static DUR DurTab[21] = {
@@ -276,6 +276,7 @@ private:
 	CMsNote* m_NoteTieNext; //pointer to note object is the next tied note
 	CMsNote* m_NoteTiePrev;	//pointer to previous note that is tied
 	int m_Ticks;            // timer ticks
+	int m_NotePlayed;     // actual pitch that was played
 public:
 	CMsNote();
 	virtual ~CMsNote();
@@ -292,15 +293,27 @@ public:
 	//------------------------------------------------------
 	void LoadRestBitmap(int Selection);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
+	void DrawNote(CDC* pDC, int Event, int MaxEvent, int NoteY, COLORREF Color);
+	void DrawNoteHead(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteLines(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteAccidental(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteAccent(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteDots(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteTriplet(CDC* pDC, int Event, int NoteY, COLORREF Color);
+	void DrawNoteTie(CDC* pDC, int Event, int NoteY, COLORREF Color);
 	void DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color);
 	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
-	virtual CMsObject* Copy(void);
+	virtual void Copy(CMsNote* pNote);
 	//----------- Draw Funcrions ----------------------
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState,CPoint pointMouse);
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
 	CChildViewStaff* GetStaffView() { return  GetSong()->GetStaffChildView(); }
+
+	int GetNoteActuallyPlayed() const { return m_NotePlayed; }
 
 	void SetNoteOffTick(UINT NOT) { GetData().SetNoteOffTick(NOT); }
 	UINT GetNoteOffTick() { return GetData().GetNoteOffTick(); }
@@ -344,8 +357,7 @@ public:
 	void SetDuration(INT d) { GetData().SetDuration(d); }
 
 	int GetPitch(void) { return GetData().GetPitch(); }
-	void SetPitch(int p) { GetData().SetPitch(p); }
-
+	int SetPitch(int p);
 	bool IsStemDown(void) { return GetData().IsStemDown(); }
 	void SetStemDown(bool u) { GetData().SetStemDown(u); }
 	bool GetStemDown(void) { return GetData().GetStemDown(); }
@@ -377,23 +389,24 @@ public:
 	// returns true for various attributes
 	//-------------------------------------
 	CMsNote* IsSecondInterval( );
-	bool IsDotted();
+	bool IsDotted() {
+		return DurTab[GetDuration()].Dotted ? true : false;
+	};
 	bool IsSolid(void) { return DurTab[(int)GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
 	INT NeedsFlags(void);
-	bool NeedsTail(void) { return DurTab[(int)GetDuration()].Tail ? true : false; }
+	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem ? true : false; }
 	int NeedsLine(void);
 	//----------------
 	// Send to Midi
 	//---------------
-	void NoteOff(CMsKeySignature* pKS, UINT Velociry);
-	void NoteOn(CMsKeySignature* pKS, UINT Velociry);
-	void ChangePatch(int PatchNumber);
+	void NoteOff(int Velocity);
+	void NoteOn(int Velocity);
 	//---------- Graphic methodes ------------
 	void ChangeRestColor(CDC* pDC, COLORREF c, int w, int h);
 	int HalfRestOffset();
 	int WholeRestOffset(int pitch);
-	int NoteToPosition();
+	int NoteToPosition(int Note);
 	CMyBitmap* GetRestBitmap() { return m_pRestBitmap; }
 	void SetRestBitmap(CMyBitmap* pBM) { m_pRestBitmap = pBM; }
 	//------------ Note Tie Stuff ----------------------
@@ -440,5 +453,69 @@ public:
 		MSFF_SIXTEENTH_NOTE,
 		MSFF_THIRTYSEC_NOTE
 	};
+
+	inline static
+		int NoteInc[12] = {
+			2,	//C
+			2,	//C#
+			2,	//D
+			2,	//D#
+			1,	//E
+			2,	//F
+			2,	//F#
+			2,	//g
+			2,	//G#
+			2,	//A
+			2,	//A#
+			1	//B
+	};
+
+	inline static
+		int NoteDec[12] = {
+			1,	//C
+			1,	//C#
+			2,	//D
+			2,	//D#
+			2,	//E
+			1,	//F
+			1,	//F#
+			2,	//g
+			2,	//G#
+			2,	//A
+			2,	//A#
+			2	//B
+	};
+	inline static
+		int NotePos[12] = {
+			24,	//C
+			24,	//C#
+			20,	//D
+			20,	//D#
+			16,	//E
+			12,	//F
+			12,	//F#
+			8,	//G
+			8,	//G#
+			4,	//A
+			4,	//A#
+			0	//B
+	};
+	inline static
+		UINT OnLine[12] = {
+			1,	///C
+			1,	///C#
+			0,	///D
+			0,	///D#
+			1,	///E
+			0,	///F
+			0,	///F#
+			1,	///G
+			1,	///G#
+			0,	///A
+			0,	///A#
+			1	///B
+	};
+
+
 };
 

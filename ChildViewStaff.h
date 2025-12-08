@@ -24,6 +24,33 @@ constexpr auto	BM_NOTE_INDEX_THIRTYSECOND = 5;
 class CChildViewStaff : public CChildViewBase
 {
 public:
+	inline static
+		int NoteAdjustLUT[12] = {
+			0,
+			1,
+			0,
+			1,
+			0,
+			0,
+			1,
+			0,
+			1,
+			0,
+			1,
+			0
+	};
+
+	inline static
+		int NoteLut[7] = {
+			0,	//C
+			2,	//D
+			4,	//E
+			5,	//F
+			7,	//G
+			9,	//A
+			11	//B
+	};
+
 	enum MouseRegions {
 		MOUSE_OUTSIDE,
 		MOUSE_INEDITREG,
@@ -34,6 +61,7 @@ public:
 	enum DrawModes {
 		DRAWMODE_NOP,
 		DRAWMODE_NOTE,
+		DRAWMODE_GLISSANDO,
 		DRAWMODE_BAR,
 		DRAWMODE_ENDBAR,
 		DRAWMODE_KKEYSIG,
@@ -177,6 +205,8 @@ public:
 	void DrawControls(CDC* pDC);
 	//---- Get/Set Data Member Access Methods -----
 	NoteData& GetNoteData() { return m_CurrentNoteData; }
+	CMsNote* GetLastNote() { return pLastNote; }
+	void SetLastNote(CMsNote* pLN) { pLastNote = pLN; }
 	INT GetLastPitch() const { return m_LastPitch; }
 	bool LastPitchIsValid() const {
 		bool rv = false;
@@ -236,21 +266,12 @@ public:
 	int GetMaxEvents() {return m_MaxEvents;}
 	void SetMaxEvents(int mE) { m_MaxEvents = mE; }
 	int GetRawEvent() { return m_nRawEvent; }
-	inline CMsSong* GetSong() { return m_pSong; }
+	inline CMsSong* GetSong() { 
+		return m_pSong; 
+	}
 	inline void SetSong(CMsSong* pMS) { m_pSong = pMS; }
 	// Operations
-	void CheckAndDoScroll(CPoint point) 
-	{
-		if (GetRawEventNumber(point.x) == m_MaxEvents)
-		{
-			m_SongScrollPos += 4;
-			for (int i = 0; i < 4; ++i)
-				GetSong()->AddEventAtEnd(GetSong()->MakeNewEvent());
-			GetSong()->RenumberEvents(NULL, NULL);
-			SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
-			SetScrollPos(GetSong()->GetTotalEvents() - GetMaxEvents());
-		}
-	}
+	void CheckAndDoScroll(CPoint point);
 	void DoBlockOps(int Op);
 	void MoveBlock(int dest);
 	void CopyBlock(int dest);
@@ -271,7 +292,6 @@ public:
 	int GetSelectionRegionTop() { return m_SelectRectTop; }
 	int IsEventDisplayed(CMsEvent* pEV);
 	int MouseInRegion(CPoint p);
-	//	int NoteToY(int Note);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
 	void SetupDrawMode(int DrawMode, long v = 0);

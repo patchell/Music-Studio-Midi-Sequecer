@@ -1,7 +1,33 @@
 #pragma once
 
-class CMsGlisando : public CMsObject
+class CMsGlissando : public CMsObject
 {
+	inline static
+		int NotePos[12] = {
+			24,	//C
+			24,	//C#
+			20,	//D
+			20,	//D#
+			16,	//E
+			12,	//F
+			12,	//F#
+			8,	//G
+			8,	//G#
+			4,	//A
+			4,	//A#
+			0	//B
+	};
+	inline static
+		int NoteLut[7] = {
+			0,	//C
+			2,	//D
+			4,	//E
+			5,	//F
+			7,	//G
+			9,	//A
+			11	//B
+	};
+
 public:
 	enum class GlisandoState
 	{
@@ -15,6 +41,7 @@ public:
 		DOWN
 	};
 private:
+	DRAWSTATE m_DrawState;
 	GlisandoState m_GlisandoState;
 	GlisandoDirection m_GlisandoDirection;
 	CMsEvent* m_pEvEnd;
@@ -22,13 +49,16 @@ private:
 	int m_TotalDurationTicks;
 	int m_TotalIntervals;
 	int m_StartPitch;
+	bool m_StartStemDown;
 	int m_EndPitch;
+	bool m_EndStemDown;
 	int m_CurrentPitch;
 	int m_TicksPerInterval;
 	int m_Ticks;
+	bool m_bSelected;
 public:
-	CMsGlisando();
-	~CMsGlisando();
+	CMsGlissando();
+	~CMsGlissando();
 	bool Create(CMsSong* pSong, CMsEvent* pEvStart, CMsEvent* pEvEnd);
 	//-------------------------------------------------
 	// Pure Virtual Methods
@@ -42,11 +72,20 @@ public:
 	virtual bool DoesSomething() {
 		return true;
 	}
+	UINT ObjectToString(CString& csString, UINT mode = 0);
 	//------------------------------------------------------
+	CChildViewStaff* GetStaffView() { 
+		return  GetSong()->GetStaffChildView();
+	}
 	virtual CMsObject* Copy(void);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE* pO, int Indent);
+	//------------------------------------------------------
+	// Drawing Methodes
+	//------------------------------------------------------
+	void DrawNote(CDC* pDC, int Event, int yPos, bool bStart, bool bStemDown);
+	void DrawGlisandoSquiggleLine(CDC* pDC, int xStart, int yStart, int xEnd, int yEnd);
 	//------------------------------------------------------
 	// Midi Methodes
 	//------------------------------------------------------
@@ -58,5 +97,14 @@ public:
 	CMsEvent* GetEndEvent() { return m_pEvEnd; }
 	int GetTrack() { return m_Track; }
 	void SetTrack(int t) { m_Track = t; }
+	int GetStartPitch() { return m_StartPitch; }
+	void SetStartPitch(int p) { m_StartPitch = p; }
+	int GetEndPitch() { return m_EndPitch; }
+	void SetEndPitch(int p) { m_EndPitch = p; }
+	bool IsSelected() { return m_bSelected; }
+	void SetSelected(bool sel) { m_bSelected = sel; }
+	int NotePitchToYPos(int Pitch);
+	int YPosToNotePitch(int YPos);
+	int NeedsLine(int Pitch);
 };
 

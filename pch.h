@@ -29,7 +29,8 @@ enum class DRAWSTATE {
 	TIE_FIRSTNOTE,
 	TIE_SECONDNOTE,
 	GLISSANDO_FIRST_NOTE,
-	GLISSANDO_SECOND_NOTE
+	GLISSANDO_SECOND_NOTE,
+	GLISSANDO_END
 };
 
 //---------------------------------------
@@ -167,6 +168,7 @@ extern const char* GenMidiPatchNames[128];
 #include "ContextMenuList.h"
 #include "MyScrollBar.h"
 #include "MainFrm.h"
+#include "DlgGlissandoProperties.h"
 #include "NoteComboBox.h"
 #include "DlgSelectMidiOut.h"
 #include "DlgSelectMidiIn.h"

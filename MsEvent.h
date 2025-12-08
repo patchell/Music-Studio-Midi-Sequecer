@@ -33,7 +33,9 @@ public:
 		return m_pEventObjectListTail; 
 	}
 	void SetIndex(int I) { m_Index = I; }
-	int GetIndex() { return m_Index; }
+	int GetIndex() { 
+		return m_Index; 
+	}
 	UINT GetEventID() { return m_EventID; }
 	//------------ Linked List ----------------
 	void AddObjectAtEnd(CMsObject *pO);
