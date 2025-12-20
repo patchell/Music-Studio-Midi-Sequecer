@@ -26,7 +26,7 @@ public:
 	}
 	//------------------------------------------------------
 	virtual void Save(FILE *pO);
-	virtual CMsObject * Copy(void);
+	virtual void Copy(CMsObject* Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Print(FILE *pO, int Indent);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);

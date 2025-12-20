@@ -31,7 +31,7 @@ CString CMsKeySignature::KeySigStringTab[APP_NUM_KEYSIGNATURES + 1] = {
 
 CMsKeySignature::CMsKeySignature():CMsObject()
 {
-	m_ObjType = MSOBJ_KEYSIG;
+	m_ObjType = CMsObject::MsObjType::KEYSIG;
 	m_KeySignature = 0;
 	SetKeySigCorrection();
 }
@@ -61,16 +61,49 @@ UINT CMsKeySignature::Play()
 
 DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	DrawState = DRAWSTATE::PLACE;
 	return DrawState;
 }
 
 DRAWSTATE CMsKeySignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CMsKeySignature* pKS = nullptr;
+	CString csText;
+	int EventIndex;
+	CMsEvent* pEV = nullptr;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		EventIndex = GetStaffChildView()->GetDrawEvent();
+		pEV = GetSong()->GetEventObject(EventIndex);
+		pEV->AddObject(this);
+		pKS = new CMsKeySignature;
+		pKS->Create(GetSong(), 0,0);
+		GetStaffChildView()->SetDrawObject(pKS);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		csText.Format(_T("Place Key Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+		GetStaffChildView()->Invalidate();
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CString csText;
+
+	csText.Format(_T("Draw Key Signature at event %d"), GetStaffChildView()->GetDrawEvent());
+	GetStaffChildView()->GetStatusBar()->SetText(csText);
+	GetStaffChildView()->Invalidate();
 	return DrawState;
 }
 
@@ -261,13 +294,14 @@ UINT CMsKeySignature::GetKeySigCorrection(UINT note, INT accidental)
 	return note;
 }
 
-CMsObject * CMsKeySignature::Copy()
+void CMsKeySignature::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsKeySignature *pB = new CMsKeySignature;
-	*pB = *this;
-	pOb = pB;
-	return pOb;
+	m_KeySignature = ((CMsKeySignature*)pSource)->m_KeySignature;
+	for(int i=0;i<12;++i)
+	{
+		m_KeySigCorrection[i] = ((CMsKeySignature*)pSource)->m_KeySigCorrection[i];
+	}
+	CMsObject::Copy(pSource);
 }
 
 void CMsKeySignature::Save(FILE *pO)

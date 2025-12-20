@@ -2,7 +2,7 @@
 
 CMsChordNote::CMsChordNote()
 {
-	m_ObjType = MSOBJ_CHORD_NOTE;
+	m_ObjType = CMsObject::MsObjType::CHORD_NOTE;
 	m_IntervalType = 0;
 }
 

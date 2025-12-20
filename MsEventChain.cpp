@@ -14,7 +14,8 @@ void CMsEventChain::CreateChain(
 	for (i = 0; i < nEvents; ++i)
 	{
 		pEV = new CMsEvent;
-		pEV->Create(pSong, pStaffView, StartIndex++);
+		pEV->Create(pSong, pStaffView);
+		pEV->SetEventIndex(StartIndex + i);
 		AddEventAtEnd(pEV);
 	}
 }

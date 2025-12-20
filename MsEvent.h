@@ -21,7 +21,7 @@ class CMsEvent
 public:
 	CMsEvent();
 	virtual ~CMsEvent();
-	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV, UINT Event);
+	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	//--------------------------------------
 	// Object management functions
@@ -32,16 +32,21 @@ public:
 	CMsObject* GetEventObjectTail() { 
 		return m_pEventObjectListTail; 
 	}
-	void SetIndex(int I) { m_Index = I; }
-	int GetIndex() { 
+	void SetEventIndex(int I) { 
+		m_Index = I; 
+	}
+	int GetIndex() const { 
 		return m_Index; 
 	}
 	UINT GetEventID() { return m_EventID; }
 	//------------ Linked List ----------------
+	void AddObject(CMsObject* pO);
+private:
 	void AddObjectAtEnd(CMsObject *pO);
 	void AddObjectAtStart(CMsObject* pO);
 	void AddObjectAtHead(CMsObject* pO);
 	void AddObjectAtTail(CMsObject* pO);
+public:
 	void InsertObjectAfter(CMsObject* pO, CMsObject* pAfterObj);
 	void InsertObjectBefore(CMsObject* pO, CMsObject* pBeforeObj);
 	bool AreThereAnyNotesInThisEvent();
@@ -60,7 +65,7 @@ public:
 	// Function returns Note of a given pitch
 	CMsNote* FindNote(int Note, int Accidental);
 	// Determines if the paricular object is in this event
-	CMsObject* ContainsObjectType(int ObjectType);
+	CMsObject* ContainsObjectType(CMsObject::MsObjType ObjectType);
 	CMsObject* ContainsRepeatObject();
 	//------------ Event Management --------------------
 	void SetNext(CMsEvent *pE){m_pNext = pE;}

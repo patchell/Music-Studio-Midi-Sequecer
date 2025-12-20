@@ -74,10 +74,7 @@ public:
 	}
 	UINT ObjectToString(CString& csString, UINT mode = 0);
 	//------------------------------------------------------
-	CChildViewStaff* GetStaffView() { 
-		return  GetSong()->GetStaffChildView();
-	}
-	virtual CMsObject* Copy(void);
+	virtual void Copy(CMsObject* Source);
 	virtual void Draw(CDC* pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE* pO, int Indent);

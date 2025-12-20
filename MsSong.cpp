@@ -12,6 +12,10 @@
 
 CMsSong::CMsSong()
 {
+	m_BufIndex = 0;
+	m_pFileBuffer = 0;
+	m_MidiClockToggleFlag = 0;
+	m_TotalTicks = 0;
 	m_nMeasureBarCount = 0;
 	m_pEventListHead = 0;
 	m_pEventListTail = 0;
@@ -36,6 +40,7 @@ CMsSong::CMsSong()
 	m_NoteCountOn = 0;     // count of note on events sent
 	m_NoteCountOff = 0;    // count of note off events sent
 	m_TickerState = TickerState::STOPPED;
+	m_pEventDirectory = new CMsEventDirectory();
 
 }
 
@@ -59,6 +64,10 @@ CMsSong::~CMsSong()
 	{
 		delete m_pPlayerObjectQueue;
 	}
+	if(m_pEventDirectory)
+	{
+		delete m_pEventDirectory;
+	}
 }
 
 void CMsSong::AddEventAtEnd(CMsEvent *pE)
@@ -67,18 +76,26 @@ void CMsSong::AddEventAtEnd(CMsEvent *pE)
 	// 
 	// </summary>
 	// <param name="pE"></param>
-	if(m_pEventListHead == 0)
+	if (pE)
 	{
-		m_pEventListHead = pE;
-		m_pEventListTail = pE;
+		if(m_pEventDirectory->GetTotalEvents() == pE->GetIndex())
+		{
+			m_pEventDirectory->SetEvent(pE);
+		}
+		if (m_pEventListHead == 0)
+		{
+			m_pEventListHead = pE;
+			m_pEventListTail = pE;
+		}
+		else
+		{
+			pE->SetPrev(m_pEventListTail);
+			m_pEventListTail->SetNext(pE);
+			m_pEventListTail = pE;
+		}
+		++m_nTotalEvents;
 	}
-	else
-	{
-		pE->SetPrev(m_pEventListTail);
-		m_pEventListTail->SetNext(pE);
-		m_pEventListTail = pE;
-	}
-	++m_nTotalEvents;
+
 //	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEvent At End",2);
 }
 
@@ -145,7 +162,7 @@ int CMsSong::Parse(char *pSongData)
 	ObjectTypes obj;
 	obj.pObj = 0;
 	CMsEvent *pEv = MakeNewEvent();
-	pEv->SetIndex(Event++);
+	pEv->SetEventIndex(Event++);
 
 	while(loop)
 	{
@@ -164,7 +181,7 @@ int CMsSong::Parse(char *pSongData)
 			case MSFF_TOKEN_EVENT_END:
 				AddEventAtEnd(pEv);
 				pEv = MakeNewEvent();
-				pEv->SetIndex(Event++);
+				pEv->SetEventIndex(Event++);
 				break;
 			case MSFF_TOKEN_KEY_SIGNATURE:
 				KeySig = ParserGetC();
@@ -242,7 +259,7 @@ int CMsSong::Parse(char *pSongData)
 		}	/*	end of switch (c)	*/
 		if(obj.pObj)
 		{
-			pEv->AddObjectAtEnd(obj.pObj);
+			pEv->AddObject(obj.pObj);
 //			obj.pObj->Print(stdout);
 		}
 	}	/*	end while	*/
@@ -322,6 +339,8 @@ void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 	}
 }
 
+/*
+
 int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 {
 	CMsEvent *pEventList = m_pEventListHead;
@@ -331,9 +350,10 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 	int rV = 1;		//indicate object was added
 	CMsEndBar* pEndBar = 0;
 
+	//--------------------------------------
 	while(loop && pEventList)
 	{
-		if ((pObj = pEventList->ContainsObjectType(MSOBJ_ENDBAR)))
+		if ((pObj = pEventList->ContainsObjectType(CMsObject::MsObjType::ENDBAR)))
 		{
 			pEventList->RemoveObject(pObj);
 			if (pEventList->GetIndex() != event)
@@ -351,9 +371,9 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 	{
 		if((pObjectToRemove = pEventList->ObjectAlreadyHere(pObjectToAdd)) != NULL)
 			pEventList->RemoveObject(pObjectToRemove);
-		else if (pObjectToAdd->GetType() != MSOBJ_ENDBAR)
+		else if (pObjectToAdd->GetType() != CMsObject::MsObjType::ENDBAR)
 		{
-			if (pObjectToAdd->GetType() == MSOBJ_NOTE)
+			if (pObjectToAdd->GetType() == CMsObject::MsObjType::NOTE)
 			{
 				//-----------------------------
 				// If the object is a note,
@@ -363,7 +383,7 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 				// need to be flipped
 				//-----------------------------
 			}
-			pEventList->AddObjectAtEnd(pObjectToAdd);
+			pEventList->AddObject(pObjectToAdd);
 		}
 
 		if (pEndBar)
@@ -371,7 +391,7 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 			CMsEvent* pNewEvent = 0;
 			pNewEvent = MakeNewEvent();
 			AddEventAtEnd(pNewEvent);
-			pNewEvent->AddObjectAtEnd(pEndBar);
+			pNewEvent->AddObject(pEndBar);
 		}
 	}
 	else
@@ -395,24 +415,25 @@ int CMsSong::AddObjectToSong(int event, CMsObject *pObjectToAdd)
 		{
 			CMsEvent* pEV;
 			pEV = new CMsEvent;
-			pEV->Create(this, GetStaffChildView(), GetStaffChildView()->GetDrawEvent());
+			pEV->Create(this, GetStaffChildView());
+			pEV->SetEventIndex(GetStaffChildView()->GetDrawEvent());
 			AddEventAtEnd(pEV);
 		}
 		RenumberEvents(nullptr, nullptr);
 		pEndList = GetEventListTail();
-		pEndList->AddObjectAtEnd(pObjectToAdd);
+		pEndList->AddObject(pObjectToAdd);
 		if(pEndBar)
 		{
 			CMsEvent* pNewEvent = 0;
-			pNewEvent = MakeNewEvent();
+			pNewEvent = MakeNewEvent(GetStaffChildView()->GetDrawEvent());
 			AddEventAtEnd(pNewEvent);
-			pNewEvent->AddObjectAtEnd(pEndBar);
+			pNewEvent->AddObject(pEndBar);
 		}
 	}
 //	GetEventListHead()->PrintEvents(theApp.LogFile(), "AddObjectToSong", 2);
 	return rV;
 }
-
+*/
 UINT CMsSong::AddMoreEventsAtEnd(UINT NewEndEvent)
 {
 	// <summary>
@@ -455,7 +476,7 @@ void CMsSong::RenumberEvents(int *First, int *Last)
 	while(pEv)
 	{
 		m_nTotalEvents++;
-		pEv->SetIndex(i++);
+		pEv->SetEventIndex(i++);
 		if(pEv->IsSelected() && !SelFlag)
 		{
 			SelFlag = 1;
@@ -576,7 +597,7 @@ CMsNote * CMsSong::CheckForNotePresence(int Event, int Note)
 		loop = 1;
 		while(loop && pOb)
 		{
-			if(pOb->GetType() == MSOBJ_NOTE)
+			if(pOb->GetType() == CMsObject::MsObjType::NOTE)
 			{
 				CMsNote *pNC = (CMsNote *)pOb;
 				if(!pNC->IsRest() && pNC->GetPitch() == Note)
@@ -592,7 +613,7 @@ CMsNote * CMsSong::CheckForNotePresence(int Event, int Note)
 	return pN;
 }
 
-CMsEvent *CMsSong::GetEventObject(int Event)
+CMsEvent *CMsSong::GetEventObject(int EventIndex)
 {
 	//------------------------------------
 	// GetEventObject
@@ -603,21 +624,37 @@ CMsEvent *CMsSong::GetEventObject(int Event)
 	// there yet, it returns NULL
 	// 
 	// parameter:
-	//		Event....Index of desired event
+	//		EventIndex....Index of desired event
 	//
 	//	returns: pointer to the CMsEvent
 	//			NULL if not found
 	//-------------------------------------
 	CMsEvent *pEv = GetEventListHead();
-	int loop = 1;
+	bool loop = true;
+
+
 	while(pEv && loop)
 	{
 		// Is this the one?
-		if(pEv->GetIndex() == Event)
-			loop = 0;	//Yes, stop seraching
+		if(pEv->GetIndex() == EventIndex)
+			loop = false;	//Yes, stop seraching
 		else
 			// Keep seraching
 			pEv = pEv->GetNext();
+	}
+	if(!pEv)
+	{
+		//-----------------------------
+		// Did not find event
+		// return NULL
+		// If this method was called,
+		// the APP must be pretty
+		// serious about wanting
+		// a pointer to an event,
+		// so create a new event
+		// to go here.
+		//-----------------------------
+		pEv = MakeNewEvent(EventIndex);
 	}
 	return pEv;
 }
@@ -679,7 +716,7 @@ void CMsSong::Save(FILE *pO)
 		CMsObject *pOb = m_pEventListTail->GetEventObjectHead();
 		while(pOb && NoEnd)
 		{
-			if(MSOBJ_ENDBAR == pOb->GetType())
+			if(CMsObject::MsObjType::ENDBAR == pOb->GetType())
 				NoEnd = 0;
 			pOb = pOb->GetNext();
 		}
@@ -696,7 +733,7 @@ void CMsSong::Save(FILE *pO)
 		AddEventAtEnd(pEV);
 		pEV = MakeNewEvent();
 		AddEventAtEnd(pEV);
-		m_pEventListTail->AddObjectAtEnd(pME);
+		m_pEventListTail->AddObject(pME);
 		RenumberEvents(NULL,NULL);
 	}
 	//-----------------------------------
@@ -852,12 +889,80 @@ void CMsSong::DeleteEvent(CMsEvent * pEvent)
 CMsEvent* CMsSong::MakeNewEvent()
 {
 	CMsEvent* pEV = new CMsEvent();
-	pEV->Create(this, GetStaffChildView(), GetStaffChildView()->GetDrawEvent());
-//	printf("CMsSong Child View %p\n", m_pChildView);
+	//--------------------------------------------
+	// Set "this" as Events Parent Song and
+	// set the Staff View Parent
+	//--------------------------------------------
+	pEV->Create(this, GetStaffChildView());
+	//--------------------------------------------
+	// Set the Event index as unknown ( -1 )
+	//--------------------------------------------
+	pEV->SetEventIndex(-1);
 	return pEV;
 }
 
-CMsObject * CMsSong::GetObjectTypeInEvent(int nType, int nEvent)
+CMsEvent* CMsSong::MakeNewEvent(int EventIndex)
+{
+	CMsEvent* pTail = GetEventListTail();
+	CMsEvent* pEV = new CMsEvent();
+	CMsEvent* pBlankEv = nullptr;
+
+	pEV->Create(this, GetStaffChildView());
+	if(!pTail && (EventIndex == 0))
+	{
+		//--------------------------------------------
+		// There are no events yet, and we want
+		// to create the first one
+		//--------------------------------------------
+		pEV->SetEventIndex(0);
+	}
+	else if (!pTail && (EventIndex > 0))
+	{
+		//--------------------------------------------
+		// We need to add blank events until we
+		// get to the right index
+		//--------------------------------------------
+		int i;
+		for (i = 0; i < EventIndex; ++i)
+		{
+			pBlankEv = MakeNewEvent();
+			pBlankEv->SetEventIndex(i);
+			AddEventAtEnd(pBlankEv);
+		}
+		pEV = MakeNewEvent();
+		pEV->SetEventIndex(EventIndex);
+		AddEventAtEnd(pEV);
+	}
+	else if (pTail && (EventIndex == (pTail->GetIndex() + 1)))
+	{
+		pEV->SetEventIndex(EventIndex);
+	}
+	else if (pTail && (EventIndex > (pTail->GetIndex() + 1)))
+	{
+		//--------------------------------------------
+		// We need to add blank events until we
+		// get to the right index
+		//--------------------------------------------
+		int i;
+		for (i = pTail->GetIndex() + 1; i < EventIndex; ++i)
+		{
+			pBlankEv = MakeNewEvent();
+			pBlankEv->SetEventIndex(i);
+			AddEventAtEnd(pBlankEv);
+		}
+		pEV = MakeNewEvent();
+		pEV->SetEventIndex(EventIndex);
+		AddEventAtEnd(pEV);
+	}
+	else
+	{
+		GetStaffChildView()->MessageBox(_T("Cannot make event at this index"), _T("Internal Error"), MB_OK);
+		pEV->SetEventIndex(-1);
+	}
+	return pEV;
+}
+
+CMsObject * CMsSong::GetObjectTypeInEvent(CMsObject::MsObjType nType, int nEvent)
 {
 	CMsEvent *pEV = GetEventObject(nEvent);
 	CMsObject *pObj = 0;
@@ -866,7 +971,7 @@ CMsObject * CMsSong::GetObjectTypeInEvent(int nType, int nEvent)
 }
 
 CMsObject * CMsSong::GetMsObject(
-	INT ObjType,
+	CMsObject::MsObjType ObjType,
 	CMsEvent * pStartObject, 
 	INT Direction)
 {
@@ -916,6 +1021,7 @@ bool CMsSong::Create(CChildViewStaff* pCCV)
 	m_pChildView = pCCV;
 	m_pPlayerObjectQueue = new CMsPlayerQueue;
 	m_pPlayerObjectQueue->Create(this);
+	m_pEventDirectory->Create(this);
 	return true;
 }
 

@@ -516,6 +516,62 @@ public:
 			1	///B
 	};
 
+	inline static 
+		CString NoteLUT[12] = {
+			_T("C"),
+			_T("C#"),
+			_T("D"),
+			_T("D#"),
+			_T("E"),
+			_T("F"),
+			_T("F#"),
+			_T("G"),
+			_T("G#"),
+			_T("A"),
+			_T("A#"),
+			_T("B")
+		};
+
+	inline static
+		int AccidentalLUT[4] = {
+			' ',
+			'N',
+			'#',
+			'b'
+		};
+
+	inline static
+		int NearestLineOdd[12] = {
+			0,	//C  0
+			-1,	//C# 1
+			2,	//D	 2
+			1,	//D# 3
+			0,	//E  4
+			-1,	//F  5
+			1,	//F# 6
+			0,	//G  7
+			-1,	//G# 8
+			-2,	//A  9
+			1,	//A# 10
+			0	//B  11
+		};
+
+	inline static
+		int NearestLineEven[12] = {
+			-1,	//C		0
+			1,	//C#	1
+			0,	//D		2
+			-1,	//D#	3
+			1,	//E		4
+			0,	//F		5
+			-1,	//F#	6
+			2,	//G		7
+			1,	//G#	8
+			0,	//A		9
+			-1,	//A#	10
+			1	//B		11
+		};
+
 
 };
 

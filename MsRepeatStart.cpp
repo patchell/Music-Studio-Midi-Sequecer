@@ -10,7 +10,7 @@
 
 CMsRepeatStart::CMsRepeatStart() :CMsObject()
 {
-	m_ObjType = MSOBJ_REPEATSTART;
+	m_ObjType = CMsObject::MsObjType::REPEATSTART;
 	m_Count = 1;
 	m_CountDown = 0;
 }
@@ -44,16 +44,45 @@ UINT CMsRepeatStart::Play()
 
 DRAWSTATE CMsRepeatStart::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsRepeatStart::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsRepeatStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
@@ -120,13 +149,11 @@ void CMsRepeatStart::ObjectRectangle(CRect& rect, UINT Event)
 {
 }
 
-CMsObject * CMsRepeatStart::Copy()
+void CMsRepeatStart::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsRepeatStart *pRS = new CMsRepeatStart;
-	*pRS = *this;
-	pOb = pRS;
-	return pOb;
+	m_Count = ((CMsRepeatStart*)pSource)->m_Count;
+	m_CountDown = ((CMsRepeatStart*)pSource)->m_CountDown;
+	CMsObject::Copy(pSource);
 }
 
 void CMsRepeatStart::Save(FILE *pO)

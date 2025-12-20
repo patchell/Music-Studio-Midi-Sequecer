@@ -10,7 +10,7 @@
 
 CMsLoudness::CMsLoudness():CMsObject()
 {
-	m_ObjType = MSOBJ_LOUDNESS;
+	m_ObjType = CMsObject::MsObjType::LOUDNESS;
 	m_Loudness = 100;
 }
 
@@ -39,16 +39,49 @@ UINT CMsLoudness::Play()
 
 DRAWSTATE CMsLoudness::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	DrawState = DRAWSTATE::PLACE;
 	return DrawState;
 }
 
 DRAWSTATE CMsLoudness::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CMsLoudness* pLdNs = nullptr;
+	CString csText;
+	int EventIndex = 0;
+	CMsEvent* pEV = nullptr;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		EventIndex = GetStaffChildView()->GetDrawEvent();
+		pEV = GetSong()->GetEventObject(EventIndex);
+		pEV->AddObject(this);
+		pLdNs = new CMsLoudness;
+		pLdNs->Create(GetSong(), 0, 0);
+		GetStaffChildView()->SetDrawObject(pLdNs);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		csText.Format(_T("Place Loudness at Event %d"), GetStaffChildView()->GetDrawEvent());
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+		GetStaffChildView()->Invalidate();
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsLoudness::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CString csText;
+
+	csText.Format(_T("Place Loudness at Event %d"), m_Loudness);
+	GetStaffChildView()->GetStatusBar()->SetText(csText);
+	GetStaffChildView()->Invalidate();
 	return DrawState;
 }
 
@@ -86,13 +119,10 @@ void CMsLoudness::Draw(CDC *pDC, int event, int maxevent)
 	pDC->SelectObject(oldFont);
 }
 
-CMsObject * CMsLoudness::Copy()
+void CMsLoudness::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsLoudness *pB = new CMsLoudness;
-	*pB = *this;
-	pOb = pB;
-	return pOb;
+	m_Loudness = ((CMsLoudness*)pSource)->m_Loudness;
+	CMsObject::Copy(pSource);
 }
 
 void CMsLoudness::Save(FILE *pO)

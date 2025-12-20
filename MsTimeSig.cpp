@@ -11,7 +11,7 @@
 
 CMsTimeSignature::CMsTimeSignature():CMsObject()
 {
-	m_ObjType = MSOBJ_TIMESIG;
+	m_ObjType = CMsObject::MsObjType::TIMESIG;
 	m_TimeSig = 0;
 }
 
@@ -40,16 +40,50 @@ UINT CMsTimeSignature::Play()
 
 DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	DrawState = DRAWSTATE::PLACE;
 	return DrawState;
 }
 
 DRAWSTATE CMsTimeSignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CMsTimeSignature* pTS = nullptr;
+	CString csText;
+	int EventIndex = 0;
+	CMsEvent* pEvent = nullptr;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		EventIndex = GetStaffChildView()->GetDrawEvent();
+		pEvent = GetSong()->GetEventObject(EventIndex);
+		pEvent->AddObject(this);
+		//-----------------------------
+		pTS = new CMsTimeSignature;
+		pTS->Create(GetSong(), 0, 0);
+		GetStaffChildView()->SetDrawObject(pTS);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		csText.Format(_T("Place Time Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+		GetStaffChildView()->Invalidate();
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CString csText;
+
+	csText.Format(_T("Draw Time Signature at event %d"), GetStaffChildView()->GetDrawEvent());
+	GetStaffChildView()->GetStatusBar()->SetText(csText);
+	GetStaffChildView()->Invalidate();
 	return DrawState;
 }
 
@@ -96,13 +130,10 @@ void CMsTimeSignature::Draw(CDC *pDC, int event, int maxevent)
 	dc.SelectObject(oldBitmap);
 }
 
-CMsObject * CMsTimeSignature::Copy()
+void CMsTimeSignature::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsTimeSignature*pTS = new CMsTimeSignature;
-	*pTS = *this;
-	pOb = pTS;
-	return pOb;
+	m_TimeSig = ((CMsTimeSignature*)pSource)->m_TimeSig;
+	CMsObject::Copy(pSource);
 }
 
 void CMsTimeSignature::Save(FILE *pO)

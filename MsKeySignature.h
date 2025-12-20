@@ -35,7 +35,7 @@ public:
 	void SetKeySignature(UINT k){m_KeySignature = k;}
 	UINT GetKeySigCorrection(UINT note, INT accidental);
 	void SetKeySigCorrection();
-	CMsObject * Copy();
+	void Copy(CMsObject* Source);
 	int NoteToPosition(int Note);
 	//--------------------------------------------------
 	static CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1];

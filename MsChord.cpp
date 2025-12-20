@@ -9,7 +9,7 @@ CMsChord::CMsChord()
 	m_ArpegioInterations = 0;
 	m_ChordId = -1;
 	m_NumberOfIntervals = 0;
-	m_ObjType = MSOBJ_CHORD;
+	m_ObjType = CMsObject::MsObjType::CHORD;
 	m_RootPitch = 0;
 	m_pIntervals = new UCHAR[12];
 }
@@ -56,9 +56,9 @@ int CMsChord::IsTimedObject()
 }
 
 
-CMsObject* CMsChord::Copy(void)
+void CMsChord::Copy(CMsObject* pSource)
 {
-	return nullptr;
+	CMsObject::Copy(pSource);
 }
 
 void CMsChord::Draw(CDC* pDC, int event, int maxevent)

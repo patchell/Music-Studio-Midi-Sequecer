@@ -2,7 +2,7 @@
 
 CMsPortamentoEnd::CMsPortamentoEnd() : CMsObject()
 {
-	m_ObjType =  MSOBJ_PORTAMENTO_STOP;
+	m_ObjType = CMsObject::MsObjType::PORTAMENTO_STOP;
 }
 
 CMsPortamentoEnd::~CMsPortamentoEnd()
@@ -40,9 +40,9 @@ DRAWSTATE CMsPortamentoEnd::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-CMsObject* CMsPortamentoEnd::Copy(void)
+void CMsPortamentoEnd::Copy(CMsObject* pSource)
 {
-	return nullptr;
+	CMsObject::Copy(pSource);
 }
 
 void CMsPortamentoEnd::Draw(CDC* pDC, int event, int maxevent)

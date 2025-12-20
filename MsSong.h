@@ -22,6 +22,7 @@ public:
 		STOPPED
 	};
 private:
+	CMsEventDirectory* m_pEventDirectory;
 	TickerState m_TickerState;
 	CString m_csFileName;
 	char* m_pFileBuffer;
@@ -124,8 +125,6 @@ public:
 	void SetCurrentKeySignature(CMsKeySignature* pNewKS) {
 		m_pLastKeySignature = pNewKS;
 	}
-
-
 	//--------- Screen Management ---------------------
 	virtual void Draw(CDC* pDC, int event, int maxevent, CRect* pRect);
 	//------------ Song Playing Functions
@@ -148,10 +147,10 @@ public:
 	// ------------ Note Managment ------------------
 	CMsNote* CheckForNotePresence(int Event, int Note);
 	//-----------Object Managment --------------------
-	int AddObjectToSong(int event, CMsObject* pO);
+//	int AddObjectToSong(int event, CMsObject* pO);
 	UINT AddMoreEventsAtEnd(UINT NewEndEvent);
-	CMsObject* GetMsObject(INT ObjType, CMsEvent* pStartEventObject, INT Direction);
-	CMsObject* GetObjectTypeInEvent(int nType, int nEvent);
+	CMsObject* GetMsObject(CMsObject::MsObjType ObjType, CMsEvent* pStartEventObject, INT Direction);
+	CMsObject* GetObjectTypeInEvent(CMsObject::MsObjType nType, int nEvent);
 	//---------- Event Management -------------------------
 	CMsEvent* GetEventListHead(void) { return m_pEventListHead; }
 	void SetEventListHead(CMsEvent* pEV) { m_pEventListHead = pEV; }
@@ -162,13 +161,20 @@ public:
 	void AddEventAtStart(CMsEvent* pE);
 	void AddEventAtEnd(CMsEvent* pE);
 	void AddEventChain(int EventDest, CMsEventChain* pEvC);
-	void AddEventChain(CMsEvent* Destination, CMsEventChain* pEvC, int DestIndex, int AddBlanks);
+	void AddEventChain(
+		CMsEvent* Destination,
+		CMsEventChain* pEvC, 
+		int DestIndex, 
+		int AddBlanks
+	);
 	void RemoveEvent(int Event);
 	void DeleteEvent(CMsEvent* pEvent);
 	CMsEvent* MakeNewEvent();
+	CMsEvent* MakeNewEvent(int EventIndex);
 	int GetTotalEvents() const { return m_nTotalEvents; }
 	void SetTotalEvents(int t) { m_nTotalEvents = t; }
 	void RenumberEvents(int* First = nullptr, int* Last = nullptr);
+	//----------------- Song ID Management ----------------
 	int GetSongId() { return m_SongID; }
 	//**************************************
 	// Methods for playing the song
@@ -202,7 +208,6 @@ public:
 	CMsEvent* GetNextEventToProcess();
 	void SetSongPosition(CMsEvent* pEv) {
 		m_pSongPosition = pEv;
-//		if (pEv) printf(">****** Set Posirion %d ******<\n", pEv->GetIndex());
 	}
 	CMsEvent* GetSongPosition() { return m_pSongPosition; }
 	void Start(void);
@@ -222,5 +227,7 @@ public:
 	void IncNoteOffCount() { m_NoteCountOff++; }
 	int GetNoteOnCount() const { return m_NoteCountOn; };
 	int GetNoteOffCount() const { return m_NoteCountOff; };
+	//=------------------------------------------------
+	CMsEventDirectory* GetEventDirectory(){ return m_pEventDirectory; }
 };
 

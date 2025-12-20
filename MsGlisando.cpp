@@ -2,7 +2,7 @@
 
 CMsGlissando::CMsGlissando():CMsObject()
 {
-    m_ObjType = MSOBJ_GLISANDO;
+    m_ObjType = CMsObject::MsObjType::GLISSANDO;
 	m_pEvEnd = nullptr;
 	m_EndPitch = 0;
 	m_StartPitch = 0;
@@ -12,6 +12,13 @@ CMsGlissando::CMsGlissando():CMsObject()
 	m_GlisandoState = GlisandoState::END;
 	m_GlisandoDirection = GlisandoDirection::UP;	
 	m_Track = COMBO_Index_INST_7;
+	m_bSelected = false;
+	m_DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+	m_EndStemDown = false;
+	m_StartStemDown = false;
+	m_bSelected = false;
+	m_Ticks = 0;
+	m_TotalDurationTicks = 0;
 }
 
 CMsGlissando::~CMsGlissando()
@@ -95,17 +102,15 @@ UINT CMsGlissando::Play()
 
 DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
-	static int Count = 0;
 
-	printf("Gliss:MouseDown:Count=%d\n", ++Count);
 	switch (DrawState)
 	{
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		printf("Gliss:MouseDown:Wait\n");
+		printf("Gliss:MouseDown:Wait Goto First Note\n");
 		DrawState = DRAWSTATE::GLISSANDO_FIRST_NOTE;
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		printf("Gliss:MouseDown:FirstNote\n");
+		printf("Gliss:MouseDown:Never Get Here\n");
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
 		printf("Gliss:MouseDown:SecondNote\n");
@@ -122,43 +127,47 @@ DRAWSTATE CMsGlissando::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	CDlgGlissandoProperties Dlg;
 	int Id;
 	CString csText;
-	static int Count = 0;
+	int EventIndex = 0;
+	CMsGlissando* pGliss = nullptr;
+	CMsEvent* pEV = nullptr;
 
-	printf("Gliss:MouseUp:Count=%d\n", ++Count);
 	switch (DrawState)
 	{
 	case DRAWSTATE::SET_ATTRIBUTES:
 		csText.Format(_T("Configure Note Prameters"));
-		GetStaffView()->GetStatusBar()->SetText(csText);
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
 		if ((Id = Dlg.DoModal()) == IDOK)
 		{
 			DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
-			GetStaffView()->Invalidate();
+			GetStaffChildView()->Invalidate();
 		}
 		break;
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		//		m_P1 = m_P2 = pASV->m_SnapPos;
-		//		pASV->EnableAutoScroll(1);
-		//		DrawState = DRAWSTATE_PLACE;
-		printf("Gliss:MouseUp:Wait\n");
-		GetStaffView()->Invalidate();
+		printf("Gliss:MouseUp:Wait MD :Nver Get Here\n");
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		printf("Gliss:MouseUp:FirstNote\n");
-//		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
-		GetStaffView()->CheckAndDoScroll(pointMouse);
-		csText.Format(_T("Place Second Note at Event %d"), GetStaffView()->GetDrawEvent());
-		GetStaffView()->GetStatusBar()->SetText(csText);
-		GetStaffView()->Invalidate();
+		printf("Gliss:MouseUp:FirstNote:Goto Second Note\n");
+		EventIndex = GetStaffChildView()->GetDrawEvent();
+		pEV = GetSong()->GetEventObject(EventIndex);
+		pEV->AddObject(this);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		csText.Format(_T("Place Second Note at Event %d"), GetStaffChildView()->GetDrawEvent());
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
+		GetStaffChildView()->Invalidate();
 		DrawState = DRAWSTATE::GLISSANDO_SECOND_NOTE;
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-		printf("Gliss:MouseUp:SecondNote\n");
-		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
-		GetStaffView()->CheckAndDoScroll(pointMouse);
-		csText.Format(_T("Place First Note at Event %d"), GetStaffView()->GetDrawEvent());
-		GetStaffView()->GetStatusBar()->SetText(csText);
-		DrawState = DRAWSTATE::GLISSANDO_END;
+		printf("Gliss:MouseUp:SecondNote:Goto End\n");
+		EventIndex = GetStaffChildView()->GetDrawEvent();
+		pEV = GetSong()->GetEventObject(EventIndex);
+		pEV->AddObject(this);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		pGliss = new CMsGlissando;
+		pGliss->Create(GetSong(), 0, 0);
+		GetStaffChildView()->SetDrawObject(pGliss);
+		csText.Format(_T("Place First Note at Event %d"), GetStaffChildView()->GetDrawEvent());
+		GetStaffChildView()->GetStatusBar()->SetText(csText);
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		break;
 	default:
 		break;
@@ -170,18 +179,31 @@ DRAWSTATE CMsGlissando::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 DRAWSTATE CMsGlissando::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
 	int Pitch = YPosToNotePitch(pointMouse.y);
+	CString csStatus;
+
+	//CMsEvent* pEv = GetSong()->GetEventDirectory()->GetEvent(
+	//	GetStaffView()->GetDrawEvent()
+	//);
 	switch (DrawState)
 	{
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		printf("Mouse Move Pitch=%d WMD\n", Pitch);
+//		printf("Mouse Move Pitch=%d WMD\n", Pitch);
 		SetStartPitch(Pitch);
+		csStatus.Format(_T("Glissando: Set First Note At Event:%d"), 
+			GetSong()->GetStaffChildView()->GetDrawEvent()
+		);
+		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatus);
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		printf("Mouse Move Pitch=%d FN\n", Pitch);
+//		printf("Mouse Move Pitch=%d FN\n", Pitch);
 		SetStartPitch(Pitch);
+		csStatus.Format(_T("Glissando: Set End Note At Event:%d"),
+			GetSong()->GetStaffChildView()->GetDrawEvent()
+		);
+		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatus);
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-		printf("Mouse Move Pitch=%d SD\n", Pitch);
+//		printf("Mouse Move Pitch=%d SD\n", Pitch);
 		SetEndPitch(Pitch);
 		break;
 	default:
@@ -221,9 +243,15 @@ void CMsGlissando::NoteOff(UINT Velociry)
 	GETMIDIOUTTABLE.NoteOff(DeviceID, chan, note, Velociry);
 }
 
-CMsObject* CMsGlissando::Copy(void)
+void CMsGlissando::Copy(CMsObject* pSource)
 {
-    return nullptr;
+	m_GlisandoDirection = ((CMsGlissando*)pSource)->m_GlisandoDirection;
+	m_Track = ((CMsGlissando*)pSource)->m_Track;
+	m_StartPitch = ((CMsGlissando*)pSource)->m_StartPitch;
+	m_StartStemDown = ((CMsGlissando*)pSource)->m_StartStemDown;
+	m_EndPitch = ((CMsGlissando*)pSource)->m_EndPitch;
+	m_EndStemDown = ((CMsGlissando*)pSource)->m_EndStemDown;
+	CMsObject::Copy(pSource);
 }
 
 void CMsGlissando::Draw(CDC* pDC, int event, int maxevent)
@@ -382,7 +410,7 @@ int CMsGlissando::YPosToNotePitch(int YPos)
 	// in the space, or on the line.  We do
 	// not quantize the mouse pointer
 	//-----------------------------------
-	YPos = GetStaffView()->QuantizeY(YPos);
+	YPos = GetStaffChildView()->QuantizeY(YPos);
 	YPos = QUANTIZED_STAFF_HEIGHT - YPos;	//invert y
 	YPos -= STAVE_LINE_SPACING / 2;	//center
 	//------------------------------------

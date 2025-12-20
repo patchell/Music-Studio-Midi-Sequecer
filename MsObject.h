@@ -71,21 +71,6 @@ constexpr auto NOTE_HEAD_HEIGHT = 8;
 constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
 constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
 
-constexpr auto MSOBJ_BAR = 0;
-constexpr auto MSOBJ_ENDBAR = 1;
-constexpr auto MSOBJ_KEYSIG = 2;
-constexpr auto MSOBJ_LOUDNESS = 3;
-constexpr auto MSOBJ_NOTE = 4;
-constexpr auto MSOBJ_REPEATEND = 5;
-constexpr auto MSOBJ_REPEATSTART = 6;
-constexpr auto MSOBJ_TEMPO = 7;
-constexpr auto MSOBJ_TIMESIG = 8;
-constexpr auto MSOBJ_PORTAMENTO_START = 9;
-constexpr auto MSOBJ_PORTAMENTO_STOP = 10;
-constexpr auto MSOBJ_GLISANDO = 11;
-constexpr auto MSOBJ_CHORD = 12;
-constexpr auto MSOBJ_CHORD_NOTE = 13;
-
 union ObjectTypes{
 	CMsBar *pBar;
 	CMsEndBar *pEnd;
@@ -104,7 +89,56 @@ union ObjectTypes{
 
 class CMsObject  
 {
+public:
+	enum class MsObjType : int {
+		BAR,
+		ENDBAR,
+		KEYSIG,
+		LOUDNESS,
+		NOTE,
+		REPEATEND,
+		REPEATSTART,
+		TEMPO,
+		TIMESIG,
+		PORTAMENTO_START,
+		PORTAMENTO_STOP,
+		GLISSANDO,
+		GLISSANDO_END,
+		CHORD,
+		CHORD_NOTE,
+	};
 private:
+	struct ObjTypeStringItem {
+		MsObjType m_type;
+		const char* m_pTypeString;
+		bool Is(MsObjType type) const {
+			return m_type == type;
+		}
+		bool Compare(const char* pTypeString) const {
+			return 0 == strcmp(m_pTypeString, pTypeString);
+		}
+	};
+	static inline const ObjTypeStringItem ObjTypeStringTable[] = {
+		{ MsObjType::BAR,			"Bar" },
+		{ MsObjType::ENDBAR,		"End Bar" },
+		{ MsObjType::KEYSIG,		"Key Signature" },
+		{ MsObjType::LOUDNESS,		"Loudness" },
+		{ MsObjType::NOTE,			"Note" },
+		{ MsObjType::REPEATEND,		"Repeat End" },
+		{ MsObjType::REPEATSTART,	"Repeat Start" },
+		{ MsObjType::TEMPO,			"Tempo" },
+		{ MsObjType::TIMESIG,		"Time Signature" },
+		{ MsObjType::PORTAMENTO_START,	"Portamento Start" },
+		{ MsObjType::PORTAMENTO_STOP,	"Portamento Stop" },
+		{ MsObjType::GLISSANDO,		"Glissando" },
+		{ MsObjType::GLISSANDO_END,	"Glissando End" },
+		{ MsObjType::CHORD,			"Chord" },
+		{ MsObjType::CHORD_NOTE,	"Chord Note" },
+		{ MsObjType(-1),			nullptr  }
+	};
+	//---------------------------------
+	// Object Attributes
+	//---------------------------------
 	UINT m_PlayState;
 	UINT m_ObjectID;
 	bool m_Selected;	//object is selected
@@ -116,7 +150,7 @@ private:
 	CMsEvent* m_pParentEvent;
 	CMsSong* m_pSong;		// pointer to song for this obje4ct
 protected:
-	INT m_ObjType;
+	MsObjType m_ObjType;
 public:
 	CMsObject();
 	virtual ~CMsObject();
@@ -156,15 +190,20 @@ public:
 	virtual bool HighLight(bool HL, CPoint ptObj);
 	virtual bool Select(bool Select, CPoint ptObj);
 	virtual void SetParentEvent(UINT ParrentEvent);
-	virtual CMsEvent* GetParentEvent() { return m_pParentEvent; }
+	virtual CMsEvent* GetParentEvent() { 
+		return m_pParentEvent; 
+	}
+	virtual void SetParentEvent(CMsEvent* pEvent) { 
+		m_pParentEvent = pEvent; 
+	}
 	virtual CMsObject* MakeANewObject() { return nullptr; }
 	virtual void DebugDump();
 	//-------------------------------------------------
 	// Attribute Methods
 	//-------------------------------------------------
-	void SetType(INT t){m_ObjType = t;}
-	INT GetType(void) const {return m_ObjType;}
-	bool Is(INT t) const { return (m_ObjType == t); }
+	void SetType(MsObjType t){m_ObjType = t;}
+	MsObjType GetType(void) const { return m_ObjType; }
+	bool Is(MsObjType t) const { return (m_ObjType == t); }
 	void GetTypeString(CString& csType);
 	void SetSelected(bool s) { m_Selected = s; }
 	bool IsSelected(void) { return m_Selected; }
@@ -187,4 +226,11 @@ public:
 	void SetNextSelectedObject(CMsObject* pOBJ) { m_pSelectedObjectNext = pOBJ; }
 	CMsObject* GetPrevSelectedObject() { return m_pSelectedObjectPrev; }
 	void SetPrevSelectedObject(CMsObject* pObj) { m_pSelectedObjectPrev = pObj; }
+	CChildViewStaff* GetStaffChildView();
+	//--------------------------------------------------
+	// Type String Methods
+	//--------------------------------------------------
+	static MsObjType GetTypeFromString(const char* pTypeString);
+	static const char* GetStringFromType(MsObjType type);
+
 };

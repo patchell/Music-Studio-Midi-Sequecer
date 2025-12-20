@@ -15,7 +15,7 @@ CMsEvent::CMsEvent()
 	m_pEventObjectListHead = 0;
 	m_pEventObjectListTail = 0;
 	m_Selected = 0;	// Selected If True
-	m_Index = 0;	//WHERE in event chat this is located
+	m_Index = -1;	//WHERE in event chain this is located
 	m_pView = 0;
 	m_pParentSong = 0;
 	m_EventID = GETAPP->GetUniqueID();
@@ -38,15 +38,11 @@ CMsEvent::~CMsEvent()
 	}
 }
 
-bool CMsEvent::Create(CMsSong*pParentSong, CChildViewStaff* pCV, UINT Event)
+bool CMsEvent::Create(CMsSong*pParentSong, CChildViewStaff* pCV)
 {
 	bool Ret = true;
 
 	m_pView = pCV;
-	//--------------------------------------------------
-	// A lot of confusion over the EventCount param
-	//--------------------------------------------------
-	m_Index = Event;
 	m_pParentSong = pParentSong;
 	return Ret;
 }
@@ -90,59 +86,68 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 //	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
 }
 
+void CMsEvent::AddObject(CMsObject* pO)
+{
+	CMsNote* pNote = 0;
+
+	switch (pO->GetType())
+	{
+	case CMsObject::MsObjType::NOTE:
+		pNote = dynamic_cast<CMsNote*>(pO);
+		if (pNote->IsRest())
+			AddObjectAtEnd(pO);
+		else
+			AddNoteInOrder(pO);
+		break;
+	case CMsObject::MsObjType::REPEATSTART:
+	case CMsObject::MsObjType::REPEATEND:
+	case CMsObject::MsObjType::BAR:
+	case CMsObject::MsObjType::ENDBAR:
+	case CMsObject::MsObjType::KEYSIG:
+	case CMsObject::MsObjType::TIMESIG:
+	case CMsObject::MsObjType::TEMPO:
+	case CMsObject::MsObjType::LOUDNESS:
+		AddObjectAtEnd(pO);
+		break;
+	case CMsObject::MsObjType::PORTAMENTO_START:
+		break;
+	case CMsObject::MsObjType::PORTAMENTO_STOP:
+		break;
+	case CMsObject::MsObjType::GLISSANDO:
+		break;
+	case CMsObject::MsObjType::GLISSANDO_END:
+		break;
+	case CMsObject::MsObjType::CHORD:
+		break;
+	case CMsObject::MsObjType::CHORD_NOTE:
+		break;
+	default:
+		break;
+	}
+}
+
 void CMsEvent::AddObjectAtEnd(CMsObject *pO)
 {
-	if (pO->Is(MSOBJ_NOTE))
+	if (pO)
 	{
-		CMsNote* pNote = dynamic_cast<CMsNote*>(pO);
-		if (pNote->IsNote())
+		if (GetEventObjectHead() == 0)
 		{
-			AddNoteInOrder(pO);
-		}
-		else if (pNote->IsRest())
-		{
-			if (GetEventObjectHead() == 0)
-			{
-				SetEventObjectHead(pO);
-				SetEventObjectTail(pO);
-			}
-			else
-			{
-				pO->SetPrev(GetEventObjectTail());
-				GetEventObjectTail()->SetNext(pO);
-				SetEventObjectTail(pO);
-			}
+			SetEventObjectHead(pO);
+			SetEventObjectTail(pO);
 		}
 		else
 		{
-			printf("This is strange, it should not happen\n");
+			pO->SetPrev(GetEventObjectTail());
+			GetEventObjectTail()->SetNext(pO);
+			SetEventObjectTail(pO);
 		}
+		m_NumberOfObjects++;
 	}
-	else if(GetEventObjectHead() == 0)
-	{
-		SetEventObjectHead(pO);
-		SetEventObjectTail(pO);
-	}
-	else
-	{
-		pO->SetPrev(GetEventObjectTail());
-		GetEventObjectTail()->SetNext(pO);
-		SetEventObjectTail(pO);
-	}
-	m_NumberOfObjects++;
 }
 
 void CMsEvent::AddObjectAtStart(CMsObject *pO)
 {
-	if (pO->Is(MSOBJ_NOTE))
-	{
-		CMsNote* pNote = dynamic_cast<CMsNote*>(pO);
-		if(pNote->IsNote())
-		{
-			AddNoteInOrder(pO);
-		}
-	}
-	else if(GetEventObjectHead() == 0)
+	if(GetEventObjectHead() == 0)
 	{
 		SetEventObjectHead(pO);
 		SetEventObjectTail(pO);
@@ -214,7 +219,7 @@ bool CMsEvent::AreThereAnyNotesInThisEvent()
 
 	while (pObj && !bFound)
 	{
-		if (pObj->Is(MSOBJ_NOTE))
+		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
 			pNote = dynamic_cast<CMsNote*>(pObj);
 			if(pNote->IsNote())
@@ -241,7 +246,7 @@ bool CMsEvent::IsThereOnlyOneNoteInThisEvent()
 
 	while (pObj && bOnlyOne)
 	{
-		if (pObj->Is(MSOBJ_NOTE))
+		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
 			pNote = dynamic_cast<CMsNote*>(pObj);
 			if (pNote->IsNote())
@@ -355,7 +360,7 @@ CMsNote* CMsEvent::FindFirstNote()
 
 	while (pObj && !bFound)
 	{
-		if (pObj->Is(MSOBJ_NOTE))
+		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
 			pNote = dynamic_cast<CMsNote*>(pObj);
 			if (pNote->IsNote())
@@ -381,7 +386,7 @@ CMsNote* CMsEvent::FindNextNote(CMsNote* pPrevNote)
 
 	while (pObj && !bFound)
 	{
-		if (pObj->Is(MSOBJ_NOTE))
+		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
 			pNote = dynamic_cast<CMsNote*>(pObj);
 			if (pNote->IsNote())
@@ -493,17 +498,17 @@ CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 		{
 			switch(pH->GetType())
 			{
-				case MSOBJ_KEYSIG:
-				case MSOBJ_BAR:
-				case MSOBJ_LOUDNESS:
-				case MSOBJ_TEMPO:
-				case MSOBJ_TIMESIG:
+			case CMsObject::MsObjType::KEYSIG:
+				case CMsObject::MsObjType::BAR:
+				case CMsObject::MsObjType::LOUDNESS:
+				case CMsObject::MsObjType::TEMPO:
+				case CMsObject::MsObjType::TIMESIG:
 					rpObj = pH;
 					loop = 0;
 					break;
-				case MSOBJ_ENDBAR:
+				case CMsObject::MsObjType::ENDBAR:
 					break;
-				case MSOBJ_NOTE:
+				case CMsObject::MsObjType::NOTE:
 					obj.pObj = pObj;
 					sobj.pObj = pH;
 					if(obj.pNote->GetPitch() == sobj.pNote->GetPitch())	//found it
@@ -515,9 +520,9 @@ CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 						}
 					}
 					break;
-				case MSOBJ_REPEATEND:
+				case CMsObject::MsObjType::REPEATEND:
 					break;
-				case MSOBJ_REPEATSTART:
+				case CMsObject::MsObjType::REPEATSTART:
 					break;
 			}
 		}
@@ -578,7 +583,7 @@ CMsNote * CMsEvent::FindNote(int Note, int Accidental)
 	int loop = 1;
 	while (pObj && loop)
 	{
-		if (pObj->GetType() == MSOBJ_NOTE)
+		if (pObj->GetType() == CMsObject::MsObjType::NOTE)
 		{
 			pN = (CMsNote *)pObj;
 			if (pN->GetPitch() == Note && pN->GetAccidental() == Accidental)
@@ -599,7 +604,7 @@ CMsNote * CMsEvent::FindNote(int Note, int Accidental)
 
 
 // Determines if the paricular object is in this event
-CMsObject *CMsEvent::ContainsObjectType(int ObjectType)
+CMsObject *CMsEvent::ContainsObjectType(CMsObject::MsObjType ObjectType)
 {
 	CMsObject *pObj = GetEventObjectHead();
 	int loop = 1;
@@ -743,12 +748,12 @@ CMsObject * CMsEvent::ContainsRepeatObject()
 {
 	CMsObject *pObj = GetEventObjectHead();
 	int loop=1;
-	int type;
+	CMsObject::MsObjType type;
 
 	while (loop && pObj)
 	{
 		type = pObj->GetType();
-		if (MSOBJ_REPEATEND == type || MSOBJ_REPEATSTART == type)
+		if (CMsObject::MsObjType::REPEATEND == type || CMsObject::MsObjType::REPEATSTART == type)
 			loop = 0;
 		else
 		{

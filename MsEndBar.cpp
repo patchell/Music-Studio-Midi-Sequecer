@@ -10,7 +10,7 @@
 
 CMsEndBar::CMsEndBar():CMsObject()
 {
-	m_ObjType = MSOBJ_ENDBAR;
+	m_ObjType = CMsObject::MsObjType::ENDBAR;
 }
 
 CMsEndBar::~CMsEndBar()
@@ -45,16 +45,48 @@ UINT CMsEndBar::Process()
 
 DRAWSTATE CMsEndBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsEndBar::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CMsEndBar* pEndBarNew;
+
+	DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+	GetParentEvent()->AddObject(this);
+	pEndBarNew = new CMsEndBar;
+	pEndBarNew->Create(GetSong(), 0);
+	pEndBarNew->Copy(GetStaffChildView()->GetDrawObject());
+	GetStaffChildView()->SetDrawObject(pEndBarNew);
+	GetStaffChildView()->CheckAndDoScroll(pointMouse);
+	GetStaffChildView()->Invalidate();
 	return DrawState;
 }
 
 DRAWSTATE CMsEndBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
@@ -117,13 +149,9 @@ void CMsEndBar::ObjectRectangle(CRect& rect, UINT Event)
 	rect.SetRect((EVENT_OFFSET + EVENT_WIDTH * Event) - 4, STAVE_OFFSET, EVENT_OFFSET + EVENT_WIDTH * Event + 5, STAVE_OFFSET + STAVE_HEIGHT);
 }
 
-CMsObject * CMsEndBar::Copy()
+void CMsEndBar::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsEndBar *pTS = new CMsEndBar;
-	*pTS = *this;
-	pOb = pTS;
-	return pOb;
+	CMsObject::Copy(pSource);
 }
 
 void CMsEndBar::Save(FILE *pO)

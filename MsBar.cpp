@@ -10,7 +10,7 @@ UINT CMsBar::LastBarNumber = 0;
 
 CMsBar::CMsBar():CMsObject()
 {
-	m_ObjType = MSOBJ_BAR;
+	m_ObjType = CMsObject::MsObjType::BAR;
 	m_BarNumber = GenBarNumber();
 }
 
@@ -37,11 +37,33 @@ UINT CMsBar::Play()
 
 DRAWSTATE CMsBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		DrawState = DRAWSTATE::PLACE;
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsBar::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	CMsBar* pBarNew;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::PLACE:
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+		GetParentEvent()->AddObject(this);
+		pBarNew = new CMsBar;
+		pBarNew->Create(GetSong(), 0);
+		pBarNew->Copy(GetStaffChildView()->GetDrawObject());
+		GetStaffChildView()->SetDrawObject(pBarNew);
+		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		GetStaffChildView()->Invalidate();
+		break;
+
+	}
 	return DrawState;
 }
 

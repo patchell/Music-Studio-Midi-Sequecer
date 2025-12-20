@@ -21,7 +21,7 @@ void PrintRecPtSz(const char* pTit, CRect rec)
 
 CMsNote::CMsNote() :CMsObject()
 {
-	m_ObjType = MSOBJ_NOTE;
+	m_ObjType = CMsObject::MsObjType::NOTE;
 	m_BitmapFlag = false;
 	m_Ticks = 0;
 	m_NoteTieNext = 0; //pointer to note object is the next tied note
@@ -68,58 +68,6 @@ bool CMsNote::Create(
 	return CMsObject::Create(pSong, pParentEvent);
 }
 
-
-CString NoteLUT[12] = {
-	_T("C"),
-	_T("C#"),
-	_T("D"),
-	_T("D#"),
-	_T("E"),
-	_T("F"),
-	_T("F#"),
-	_T("G"),
-	_T("G#"),
-	_T("A"),
-	_T("A#"),
-	_T("B")
-};
-
-int AccidentalLUT[4] = {
-	' ',
-	'N',
-	'#',
-	'b'
-};
-
-int NearestLineOdd[12] = {
-	0,	//C  0
-	-1,	//C# 1
-	2,	//D	 2
-	1,	//D# 3
-	0,	//E  4
-	-1,	//F  5
-	1,	//F# 6
-	0,	//G  7
-	-1,	//G# 8
-	-2,	//A  9
-	1,	//A# 10
-	0	//B  11
-};
-
-int NearestLineEven[12] = {
-	-1,	//C		0
-	1,	//C#	1
-	0,	//D		2
-	-1,	//D#	3
-	1,	//E		4
-	0,	//F		5
-	-1,	//F#	6
-	2,	//G		7
-	1,	//G#	8
-	0,	//A		9
-	-1,	//A#	10
-	1	//B		11
-};
 
 int CMsNote::NearestLine()
 {
@@ -643,7 +591,7 @@ CMsNote * CMsNote::FindTieBegin()
 		{
 			switch(pObj.pObj->GetType())
 			{
-				case MSOBJ_NOTE:
+				case CMsObject::MsObjType::NOTE:
 					if((GetPitch() == pObj.pNote->GetPitch()) && pObj.pNote->IsTieBeg())
 					{
 						pMsN = pObj.pNote;
@@ -830,6 +778,7 @@ DRAWSTATE CMsNote::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 	case DRAWSTATE::SET_ATTRIBUTES:
 		break;
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		DrawState = DRAWSTATE::PLACE;
 		break;
 	case DRAWSTATE::PLACE:
 		break;
@@ -855,6 +804,10 @@ DRAWSTATE CMsNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	CNotePropertiesDlg Dlg;
 	int Id;
 	CString csText;
+	int EventIndex = 0;
+	CMsEvent* pEV = 0;
+	CMsNote* pN = 0;
+	CMsNote* pNote = 0;
 
 	switch (DrawState)
 	{
@@ -875,25 +828,28 @@ DRAWSTATE CMsNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 		GetStaffView()->Invalidate();
 		break;
 	case DRAWSTATE::PLACE:
-		GetSong()->AddObjectToSong(GetStaffView()->GetDrawEvent(), this);
-		{
-			CMsNote* pN = new CMsNote;
-			CMsNote* pNote = (CMsNote * )GetStaffView()->GetDrawObject();
+		EventIndex = GetStaffView()->GetDrawEvent();
+		pEV = GetSong()->GetEventObject(EventIndex);
+		pEV->AddObject(this);
+		//-----------------------------
+		// Create new Note Object to be
+		// placed on the staff view
+		//------------------------------
+		pN = new CMsNote;
+		pNote = (CMsNote * )GetStaffView()->GetDrawObject();
 
-			SetPitch(pNote->GetPitch());
-			if (IsRest())
-				pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
-			else
-				pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
-			//-----------------------------
-			// Copy attributes
-			//------------------------------
-			pN->GetData().CopyData(GetStaffView()->GetNoteData());
-			GetStaffView()->SetDrawObject(pN);
-			GetStaffView()->CheckAndDoScroll(pointMouse);
-		}
+		SetPitch(pNote->GetPitch());
+		if (IsRest())
+			pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
+		else
+			pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
+		//-----------------------------
+		// Copy attributes
+		//------------------------------
+		pN->GetData().CopyData(GetStaffView()->GetNoteData());
+		GetStaffView()->SetDrawObject(pN);
+		GetStaffView()->CheckAndDoScroll(pointMouse);
 		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
-		GetStaffView()->Invalidate();
 		break;
 	}
 	return DrawState;
@@ -915,7 +871,6 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 	//		Next Draw State
 	//-------------------------------------------------------
 	int Note = -1;
-	int CorrectedNote;
 	CString csStatus;
 
 	CString csStatusString, csTemp;
@@ -1171,11 +1126,11 @@ CMsNote* CMsNote::IsSecondInterval()
 	INT pitchDiff;
 	UINT Loop = 1;
 	
-	if ((pCurrentSongObject = pCurrentEvent->ContainsObjectType(MSOBJ_NOTE)) != NULL)
+	if ((pCurrentSongObject = pCurrentEvent->ContainsObjectType(CMsObject::MsObjType::NOTE)) != NULL)
 	{
 		while (pCurrentSongObject && Loop)
 		{
-			if (pCurrentSongObject->GetType() == MSOBJ_NOTE)
+			if (pCurrentSongObject->GetType() == CMsObject::MsObjType::NOTE)
 			{
 				CMsNote* pN = (CMsNote*)pCurrentSongObject;
 				pitchDiff = pN->GetPitch() - GetPitch();

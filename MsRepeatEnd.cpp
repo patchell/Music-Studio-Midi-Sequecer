@@ -10,7 +10,7 @@
 
 CMsRepeatEnd::CMsRepeatEnd():CMsObject()
 {
-	m_ObjType = MSOBJ_REPEATEND;
+	m_ObjType = CMsObject::MsObjType::REPEATEND;
 }
 
 CMsRepeatEnd::~CMsRepeatEnd()
@@ -68,13 +68,9 @@ void CMsRepeatEnd::Draw(CDC *pDC, int event, int maxevent)
 	pDC->SelectObject(pOld);
 }
 
-CMsObject * CMsRepeatEnd::Copy()
+void CMsRepeatEnd::Copy(CMsObject* pSource)
 {
-	CMsObject *pOb = 0;
-	CMsRepeatEnd *pRE = new CMsRepeatEnd;
-	*pRE = *this;
-	pOb = pRE;
-	return pOb;
+	CMsObject::Copy(pSource);
 }
 
 void CMsRepeatEnd::Save(FILE *pO)
@@ -98,7 +94,7 @@ UINT CMsRepeatEnd::Process()
 	CMsRepeatStart* pRPS;
 
 	pRepeatStartEvent = (CMsEvent*)GetSong()->GetRepeatStack().PeakTop();
-	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(MSOBJ_REPEATSTART);
+	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(CMsObject::MsObjType::REPEATSTART);
 //	printf("Repeat end Countdown %d\n", pRPS->GetCountDown());
 	if (pRPS->DecrementRepeatCount())
 	{
@@ -119,15 +115,40 @@ UINT CMsRepeatEnd::Process()
 
 DRAWSTATE CMsRepeatEnd::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsRepeatEnd::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsRepeatEnd::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }

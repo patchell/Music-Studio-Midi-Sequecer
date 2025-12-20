@@ -250,6 +250,15 @@
     <ClCompile Include="DlgGlissandoProperties.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MsEventDirectory.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsEventDirectorItem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsGlissandoEnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -514,6 +523,15 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="DlgGlissandoProperties.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsEventDirectory.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsEventDirectorItem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsGlissandoEnd.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

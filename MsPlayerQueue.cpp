@@ -98,7 +98,7 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 		case PLAY_OBJECT_TIMED_OUT:
 			// Object has finished playing, remove it from the queue
 			pTempObj = pObj->GetNext();
-			if(pObj->GetMsObject()->Is(MSOBJ_NOTE))
+			if(pObj->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
 			{
 				pNote = dynamic_cast<CMsNote*>(pObj->GetMsObject());
 				//if (pNote)
@@ -279,7 +279,7 @@ int CMsPlayerQueue::PrintNotesInQueue(FILE* pO)
 	{
 		if (pItem)
 		{
-			if(pItem->GetMsObject()->Is(MSOBJ_NOTE))
+			if(pItem->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
 			{
 				pNote = dynamic_cast<CMsNote*>(pItem->GetMsObject());
 				pNote->Print(pO, 4);

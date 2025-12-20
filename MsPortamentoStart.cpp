@@ -2,7 +2,7 @@
 
 CMsPortamentoStart::CMsPortamentoStart():CMsObject()
 {
-	m_ObjType = MSOBJ_PORTAMENTO_START;
+	m_ObjType = CMsObject::MsObjType::PORTAMENTO_START;
 }
 
 CMsPortamentoStart::~CMsPortamentoStart()
@@ -27,16 +27,49 @@ UINT CMsPortamentoStart::Play()
 
 DRAWSTATE CMsPortamentoStart::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
 DRAWSTATE CMsPortamentoStart::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }	
 
 DRAWSTATE CMsPortamentoStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 {
+	switch (DrawState)
+	{
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	default:
+		break;
+	}
 	return DrawState;
 }
 
@@ -44,9 +77,9 @@ void CMsPortamentoStart::Save(FILE* pO)
 {
 }
 
-CMsObject* CMsPortamentoStart::Copy(void)
+void CMsPortamentoStart::Copy(CMsObject* pSource)
 {
-	return nullptr;
+	CMsObject::Copy(pSource);
 }
 
 void CMsPortamentoStart::Draw(CDC* pDC, int event, int maxevent)

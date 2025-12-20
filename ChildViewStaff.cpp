@@ -54,7 +54,7 @@ CChildViewStaff::CChildViewStaff()
 	m_FirstSelectedEvent = -1;
 	m_SongScrollPos = 0;
 	m_nMidiNotesOn = 0;
-	m_color_BackGround = RGB(172, 162, 172);
+	m_color_BackGround = RGB(100, 95, 100);
 	m_nRawEvent = 0;
 	m_pHighLightedObject = 0;
 	m_DragFlag = 0;
@@ -262,6 +262,12 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 			m_nDrawState = m_pDrawObject->MouseLButtonDown(m_nDrawState, pointMouse);;
 			Invalidate();
 			break;
+		case DRAWMODE_NOTE:	//OnLButtonDown
+			m_nDrawState = m_pDrawObject->MouseLButtonDown(m_nDrawState, pointMouse);;
+			break;
+		default:
+			m_nDrawState = m_pDrawObject->MouseLButtonDown(m_nDrawState, pointMouse);;
+			break;
 		}//end of switch(m_nDrawMode)
 	}
 	CWnd::OnLButtonDown(nFlags, pointMouse);
@@ -271,9 +277,10 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 {
 	int Region;
 	CMsEvent* pEv;
-	CMsNote* pNote;
 	CString csTemp;
 	CMsGlissando* pGliss = 0;
+	CMsNote* pN = 0;
+	int note = 0;
 
 	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
@@ -384,122 +391,50 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		case DRAWMODE_NOP:		//OnLButtonUp
 			break;
 		case DRAWMODE_NOTE:		//OnLButtonUp
-			pNote = (CMsNote*)m_pDrawObject;
-//			pNote->Print(stdout);
-			GetSong()->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			{
-				CMsNote* pN = new CMsNote;
-				SetPitch(pNote->GetPitch());
-				if (GetRest())
-					pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Rest
-				else
-					pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));	// Create Note
-				pNote->SetParentEvent(m_nDrawEvent);
-				//-----------------------------
-				// Copy attributes
-				//------------------------------
-				pN->GetData().CopyData(GetNoteData());
-				m_pDrawObject = pN;
-				CheckAndDoScroll(pointMouseLButtUp);
-			}
+			m_nDrawState = m_pDrawObject->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);;
 			Invalidate();
 			break;
-		case DRAWMODE_GLISSANDO:		//OnLButtonUp
-			m_nDrawState = m_pDrawObject->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);
-			//------------------------------
-			// Create new glissando object
-			//------------------------------
-			if(m_nDrawState == DRAWSTATE::GLISSANDO_END)
-			{
-				m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
-				pGliss = new CMsGlissando;
-				pGliss->Create(GetSong(), 0,0);
-				m_pDrawObject = pGliss;
-				CheckAndDoScroll(pointMouseLButtUp);
-				Invalidate();
-			}
-			if (GetSong()->GetEventObject(m_nDrawEvent))
-				csTemp.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
-			m_Status.SetText(csTemp);
-			break;
-		case DRAWMODE_ENDBAR:
-			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			{
-				CMsEndBar* pEBar = new CMsEndBar;
-				CMsEndBar* pOldEndBar = (CMsEndBar*)m_pDrawObject;
-				pEBar->Create(m_pSong, GetSong()->GetEventObject(m_nDrawEvent));
-				m_pDrawObject = pEBar;
-			}
-			CheckAndDoScroll(pointMouseLButtUp);
-			Invalidate();
-			break;
-		case DRAWMODE_BAR:		//OnLButtonUp
-			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			{
-				CMsBar* pBarTemp = new CMsBar;
-				pBarTemp->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
-				pBarTemp->Copy(m_pDrawObject);
-				m_pDrawObject = pBarTemp;
-			}
-			CheckAndDoScroll(pointMouseLButtUp);
-			Invalidate();
-			break;
-		case DRAWMODE_KKEYSIG:		//OnLButtonUp
-			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			{
-				CMsKeySignature* pKS = new CMsKeySignature;
-				CMsKeySignature* pOld = (CMsKeySignature*)m_pDrawObject;
-				pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), pOld->GetKeySignature());
-				m_pDrawObject = pKS;
-			}
-			CheckAndDoScroll(pointMouseLButtUp);
-			Invalidate();
-			break;
+		case DRAWMODE_TEMPO:
+		case DRAWMODE_LOUDNESS:		//OnLButtonUp
 		case DRAWMODE_TIMESIG:		//OnLButtonUp
-			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			{
-				CMsTimeSignature* pTS = new CMsTimeSignature;
-				CMsTimeSignature* pOld = (CMsTimeSignature*)m_pDrawObject;
-				pTS->SetTimeSignature(pOld->GetTimeSignature());
-				m_pDrawObject = pTS;
-			}
-			CheckAndDoScroll(pointMouseLButtUp);
-			Invalidate();
+		case DRAWMODE_KKEYSIG:		//OnLButtonUp
+		case DRAWMODE_GLISSANDO:		//OnLButtonUp
+		case DRAWMODE_ENDBAR:
+			[[fallthrough]];
+		case DRAWMODE_BAR:		//OnLButtonUp
+			m_nDrawState = m_pDrawObject->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);
 			break;
 		case DRAWMODE_TIE:		//OnLButtonUp
-			///-----------------------------------
-			/// This is where we change the state of
-			/// drawing a tie.  When the mouse releases
-			/// we need to check to see if there really
-			/// is a note under the mouse pointer.
-			///  If there is, record the note and the
-			/// points.
-			///------------------------------------------
+			//-----------------------------------
+			// This is where we change the state of
+			// drawing a tie.  When the mouse releases
+			// we need to check to see if there really
+			// is a note under the mouse pointer.
+			//  If there is, record the note and the
+			// points.
+			//------------------------------------------
 			switch (m_nDrawState)
 			{
 			case DRAWSTATE::TIE_FIRSTNOTE:		//OnLButtonUp
-			{
-				int note = YtoNote(pointMouseLButtUp.y);
-				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
+				note = YtoNote(pointMouseLButtUp.y);
+				pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
 				if (pN)
 				{
 					m_pFirstTieNote = pN;
 					m_nDrawState = DRAWSTATE::TIE_SECONDNOTE;
 					m_TieStartPoint = pointMouseLButtUp + CSize(0, 4);
-					CString s,csTemp;
+					CString s, csTemp;
 					s = CString("First Note ");
 					pN->ObjectToString(csTemp);
 					s.Append(csTemp);
-					csTemp.Format(_T(" Selected at Event %d"), m_nDrawEvent) ;
+					csTemp.Format(_T(" Selected at Event %d"), m_nDrawEvent);
 					s.Append(csTemp);
 					m_Status.SetText(s);
 				}
-			}
-			break;
+				break;
 			case DRAWSTATE::TIE_SECONDNOTE:		//OnLButtonUp
-			{
-				int note = YtoNote(pointMouseLButtUp.y);
-				CMsNote* pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
+				note = YtoNote(pointMouseLButtUp.y);
+				pN = m_pSong->CheckForNotePresence(m_nDrawEvent, note);
 				if (pN)
 				{
 					//------------------------------------
@@ -540,19 +475,8 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 					m_pSecondTieNote = 0;
 					Invalidate();
 				}
-			}
-			break;
-			}
-			break;
-		case DRAWMODE_LOUDNESS:		//OnLButtonUp
-		case DRAWMODE_TEMPO:
-			//--------------------------------------
-			// we only need to place these items once
-			//--------------------------------------
-			m_pSong->AddObjectToSong(m_nDrawEvent, m_pDrawObject);
-			m_pDrawObject = 0;
-			m_nDrawMode = DRAWMODE_NOP;
-			Invalidate();
+				break;
+			}	//end of switch(m_nDrawState) in case DRAWMODE_TIE
 			break;
 		case DRAWMODE_COPY:		//OnLButtonUp
 			CopyBlock(m_nDrawEvent);
@@ -699,7 +623,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					{
 						if (pObj->HighLight(true, pointMouse))
 						{
-//							printf("Highligt Set'\n");
 							Loop = false;
 						}
 						else
@@ -709,7 +632,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 					}
 					if (pObj == NULL)
 					{
-//						printf("No Object Found, Clear Highlight\n");
+//						fprintf(stderr, "No Object Found, Clear Highlight\n");
 						if (m_pHighLightedObject)
 							m_pHighLightedObject->SetHighLight(false);
 						m_pHighLightedObject = NULL;
@@ -731,7 +654,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 			{
 				pN->MouseMove(m_nDrawState, pointMouse);
 			}
-//			printf("@@@@@@@@@@@@ LasrPitch = %d  Note = %d @@@@@@@@@@@\n", GetLastPitch(), note);
 			Invalidate();
 			break;
 		case DRAWMODE_GLISSANDO:		///On Mouse Move
@@ -754,22 +676,21 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 			}	//end of switch(m_nDrawState)
 			break;
 		case DRAWMODE_ENDBAR:
-			if (MSOBJ_ENDBAR == m_pDrawObject->GetType())
+			if (CMsObject::MsObjType::ENDBAR == m_pDrawObject->GetType())
 			{
 				StatusString.Format(_T("Draw Song End Bar At Event %d"), m_nDrawEvent);
 				Invalidate();
 			}
 			break;
-		case DRAWMODE_BAR:		///On Mouse Move
-			if (MSOBJ_BAR == m_pDrawObject->GetType())
+		case DRAWMODE_BAR:		//On Mouse Move
+			if (CMsObject::MsObjType::BAR == m_pDrawObject->GetType())
 			{
 				StatusString.Format(_T("Draw Measure Bar At Event %d"), m_nDrawEvent);
 				Invalidate();
 			}
 			break;
 		case DRAWMODE_KKEYSIG:		///On Mouse Move
-			StatusString.Format(_T("Draw Key Signature at event %d"), m_nDrawEvent);
-			Invalidate();
+			GetDrawObject()->MouseMove(m_nDrawState, pointMouse);
 			break;
 		case DRAWMODE_TIMESIG:		///On Mouse Move
 			StatusString.Format(_T("Draw Time Signature at event %d"), m_nDrawEvent);
@@ -803,7 +724,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		}
 		break;
 	}
-	if (StatusString.GetLength())m_Status.SetText(StatusString);
+//	if (StatusString.GetLength())m_Status.SetText(StatusString);
 	CWnd::OnMouseMove(nFlags, pointMouse);
 }
 
@@ -1149,7 +1070,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case VK_SPACE:	//flip note
 		if (m_pDrawObject)
 		{
-			if (m_pDrawObject->GetType() == MSOBJ_NOTE)
+			if (m_pDrawObject->GetType() == CMsObject::MsObjType::NOTE)
 			{
 				CMsNote* pN = (CMsNote*)m_pDrawObject;
 				if (m_CtrlKeyDown)
@@ -1244,39 +1165,39 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 				l = 0;
 				switch (Obj.pObj->GetType())
 				{
-				case MSOBJ_BAR:	//OnContextMenu
+				case CMsObject::MsObjType::BAR:	//OnContextMenu
 					break;
-				case MSOBJ_ENDBAR:	//OnContextMenu
+				case CMsObject::MsObjType::ENDBAR:	//OnContextMenu
 					break;
-				case MSOBJ_KEYSIG:	//OnContextMenu
+				case CMsObject::MsObjType::KEYSIG:	//OnContextMenu
 					csStatus.Format(_T("Key Signature"));
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
 					break;
-				case MSOBJ_LOUDNESS:	//OnContextMenu
+				case CMsObject::MsObjType::LOUDNESS:	//OnContextMenu
 					csStatus.Format(_T( "Loudness"));
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
 					break;
-				case MSOBJ_NOTE:	//OnContextMenu
+				case CMsObject::MsObjType::NOTE:	//OnContextMenu
 					csStatus = CString("Note:");
 					Obj.pNote->ObjectToString(csTemp);
 					csStatus.Append(csTemp);
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
 					break;
-				case MSOBJ_REPEATEND:	//OnContextMenu
-				case MSOBJ_REPEATSTART:
+				case CMsObject::MsObjType::REPEATEND:	//OnContextMenu
+				case CMsObject::MsObjType::REPEATSTART:
 					csStatus.Format(_T("Repeat"));
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
 					break;
-				case MSOBJ_TEMPO:	//OnContextMenu
+				case CMsObject::MsObjType::TEMPO:	//OnContextMenu
 					csStatus.Format(_T("Tempo"));
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
 					break;
-				case MSOBJ_TIMESIG:	//OnContextMenu
+				case CMsObject::MsObjType::TIMESIG:	//OnContextMenu
 					csStatus.Format(_T("Time Signature"));
 					ConTexMenu.AppendMenuW(MF_STRING, ID_CM_EXTRA_ITEMS + i, csStatus);
 					pContextMenueList->AddObject(Obj.pObj, ID_CM_EXTRA_ITEMS + i);
@@ -1339,10 +1260,10 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 				Obj.pObj = pContextMenueList->GetObject(index);
 				switch (Obj.pObj->GetType())
 				{
-				case MSOBJ_BAR:	//OnContextMenu
-				case MSOBJ_ENDBAR:
+				case CMsObject::MsObjType::BAR:	//OnContextMenu
+				case CMsObject::MsObjType::ENDBAR:
 					break;
-				case MSOBJ_KEYSIG:	//OnContextMenu
+				case CMsObject::MsObjType::KEYSIG:	//OnContextMenu
 				{
 					CSelectStringDlg Dlg;
 					Dlg.SetCaptionString( CString("Change Key Signature"));
@@ -1356,7 +1277,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 						Obj.pKey->SetKeySignature(Dlg.m_nSelection);
 				}
 				break;
-				case MSOBJ_LOUDNESS:	//OnContextMenu
+				case CMsObject::MsObjType::LOUDNESS:	//OnContextMenu
 				{
 					CParamDlg Dlg;
 
@@ -1370,7 +1291,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					}
 				}
 				break;
-				case MSOBJ_NOTE:	//OnContextMenu
+				case CMsObject::MsObjType::NOTE:	//OnContextMenu
 				{
 					CNotePropertiesDlg Dlg;
 
@@ -1378,8 +1299,8 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					Dlg.DoModal();
 				}
 				break;
-				case MSOBJ_REPEATEND:	//OnContextMenu
-				case MSOBJ_REPEATSTART:
+				case CMsObject::MsObjType::REPEATEND:	//OnContextMenu
+				case CMsObject::MsObjType::REPEATSTART:
 					if (m_pRepeatEndSelected && m_pRepeatStartSelected)
 					{
 						CParamDlg Dlg;
@@ -1394,7 +1315,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 						}
 					}
 					break;
-				case MSOBJ_TEMPO:	//OnContextMenu
+				case CMsObject::MsObjType::TEMPO:	//OnContextMenu
 				{
 					CParamDlg Dlg;
 				
@@ -1408,7 +1329,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					}
 				}
 				break;
-				case MSOBJ_TIMESIG:	//OnContextMenu
+				case CMsObject::MsObjType::TIMESIG:	//OnContextMenu
 				{
 					CSelectorDlg Dlg;
 					Dlg.SetBitmaps(GETAPP->bmGetCbTimeSig(COMBO_TIMESIG_2_2));
@@ -1554,7 +1475,10 @@ void CChildViewStaff::SetupDrawMode(int DrawMode,long v)
 
 			pN->ObjectToString(csTemp);
 			if(GetSong()->GetEventObject(m_nDrawEvent))
-				csStatus.Format(_T("Draw %lS Event %d"), csTemp.GetString(), GetSong()->GetEventObject(m_nDrawEvent)->GetIndex());
+				csStatus.Format(_T("Draw %lS Event %d"), 
+					csTemp.GetString(), 
+					GetSong()->GetEventObject(m_nDrawEvent)->GetIndex()
+				);
 		}
 		m_Status.SetText(csStatus);
 		break;
@@ -1762,7 +1686,7 @@ void CChildViewStaff::IncrPitch()
 			CMsObject* pOb = pEv->GetEventObjectHead();
 			while (pOb)
 			{
-				if (MSOBJ_NOTE == pOb->GetType())
+				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
 					pN->IncrNote();
@@ -1786,7 +1710,7 @@ void CChildViewStaff::DecrPitch()
 			CMsObject* pOb = pEv->GetEventObjectHead();
 			while (pOb)
 			{
-				if (MSOBJ_NOTE == pOb->GetType())
+				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
 					pN->DecrNote();
@@ -1828,10 +1752,10 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
 		pRepStrt = new CMsRepeatStart();
 		pRepStrt->Create(GetSong(), nRepeatCount, pRS);
-		pRS->AddObjectAtStart(pRepStrt);
+		pRS->AddObject(pRepStrt);
 		pRepEnd = new CMsRepeatEnd;
 		pRepEnd->Create(GetSong(), pRE);
-		pRE->AddObjectAtStart(pRepEnd);
+		pRE->AddObject(pRepEnd);
 	}
 }
 
@@ -1847,7 +1771,7 @@ void CChildViewStaff::ChangeInst(INT From, INT To)
 			CMsObject* pOb = pEv->GetEventObjectHead();
 			while (pOb)
 			{
-				if (MSOBJ_NOTE == pOb->GetType())
+				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
 					if (pN->GetTrack() == From)
@@ -1872,7 +1796,7 @@ void CChildViewStaff::ChangeDuration(INT From, INT To)
 			CMsObject* pOb = pEv->GetEventObjectHead();
 			while (pOb)
 			{
-				if (MSOBJ_NOTE == pOb->GetType())
+				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
 					if (pN->GetDuration() == From)
@@ -1910,7 +1834,7 @@ void CChildViewStaff::CopyBlock(int dest)
 				CMsObject* pNewObj;
 				pNewObj = pOb->MakeANewObject();
 				pNewObj->Copy(pOb);
-				pEvNew->AddObjectAtEnd(pNewObj);
+				pEvNew->AddObject(pNewObj);
 				pOb = pOb->GetNext();
 			}
 			pEventChain.AddEventAtEnd(pEvNew);
@@ -2215,7 +2139,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				if ((pO = pEv->ObjectAlreadyHere(pN)) == NULL)
 				{
 					MidiPlayNote(pN, 1);// Note On
-					pEv->AddObjectAtEnd(pN);
+					pEv->AddObject(pN);
 
 				}
 				else
@@ -2226,7 +2150,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				int count = 0;
 				while (pObj)
 				{
-					if (MSOBJ_NOTE == pObj->GetType())
+					if (CMsObject::MsObjType::NOTE == pObj->GetType())
 					{
 						CMsNote* pNote = (CMsNote*)pObj;
 						if (!pNote->IsRest())
@@ -2313,7 +2237,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 						while (pOb)
 						{
 							pObT = pOb->GetNext();
-							if (MSOBJ_NOTE == pOb->GetType())
+							if (CMsObject::MsObjType::NOTE == pOb->GetType())
 								pEv->RemoveObject(pOb);
 							pOb = pObT;
 						}
@@ -2536,7 +2460,8 @@ void CChildViewStaff::OnInitialUpdate()
 	int x2;
 	int y1;
 	int y2;
-
+	CMsEvent* pEV = 0;
+	//---------------------------------
 	m_TimerID = SetTimer(1000, 60000,NULL);
 	GetClientRect(&clientRect);
 	x1 = clientRect.left;
@@ -2559,18 +2484,22 @@ void CChildViewStaff::OnInitialUpdate()
 
 //------------ Event 0 ------------------------------
 	CMsTempo* pTM = new CMsTempo();
-	pTM->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()),100);
-	GetSong()->AddObjectToSong(GetDrawEvent(), pTM);
+	pEV = m_pSong->GetEventObject(0);
+	pTM->Create(GetSong(), pEV,100);
+	pEV->AddObject(pTM);
 	CMsTimeSignature* pTS = new CMsTimeSignature();
-	pTS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), COMBO_TIMESIG_4_4);
-	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pTS);
+	pTS->Create(GetSong(), pEV, COMBO_TIMESIG_4_4);
+	pEV->AddObject(pTS);
+	GetSong()->AddEventAtEnd(pEV);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
-	pKS->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()), MSFF_CMAJ);
-	GetSong()->AddObjectToSong(GetDrawEvent(), pKS);
+	pEV = m_pSong->GetEventObject(1);
+	pKS->Create(GetSong(), pEV, MSFF_CMAJ);
+	pEV->AddObject(pKS);
 	CMsLoudness* pLD = new CMsLoudness();
-	pLD->Create(GetSong(), GetSong()->GetEventObject(GetDrawEvent()),100);
-	GetSong()->AddObjectToSong(GetDrawEventAndInc(), pLD);
+	pLD->Create(GetSong(), pEV,100);
+	pEV->AddObject(pLD);
+	GetSong()->AddEventAtEnd(pEV);
 	//----------------------------------------------------
 	UpdateScrollbarInfo(m_pSong->GetTotalEvents(),"Init");
 	//----------------------------------------
@@ -2827,11 +2756,11 @@ void CChildViewStaff::OnInitialUpdate()
 
 	m_Combo_Misc.SetCurSel(COMBO_MISC_MEASUREBAR);
 
-	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_KEYSIG, (int)EventObjectSignatureTypes::EVENT_LOUDNESS_KEYSIG);
+	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::KEYSIG, (int)EventObjectSignatureTypes::EVENT_LOUDNESS_KEYSIG);
 	if(pKS)
 		m_Combo_KeySig.SetCurSel(pKS->GetKeySignature() - 1);
 
-	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(MSOBJ_TIMESIG,  (int)EventObjectSignatureTypes::EVENT_TEMPO_TIMESIG);
+	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::TIMESIG,  (int)EventObjectSignatureTypes::EVENT_TEMPO_TIMESIG);
 	if(pTS)
 		m_Combo_TimeSig.SetCurSel((int)pTS->GetTimeSignature() - 1);
 
@@ -2864,7 +2793,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 	CDC DCm;	//memory device context
 	CMyBitmap bm,*pOldBM;
 	CRect rect;
-	CBrush br, green, blue;
+	CBrush brushBackGround, green, blue;
 
 	if (m_ReadyToDraw)
 	{
@@ -2874,10 +2803,10 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 		bm.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
 		pOldBM = (CMyBitmap*)DCm.SelectObject(&bm);
 		// Fill in background
-		br.CreateSolidBrush(m_color_BackGround);
+		brushBackGround.CreateSolidBrush(m_color_BackGround);
 		blue.CreateSolidBrush(RGB(60, 100, 224));
 		green.CreateSolidBrush(RGB(88, 128, 88));
-		DCm.FillRect(&rect, &br);
+		DCm.FillRect(&rect, &brushBackGround);
 		DCm.FillRect(&m_LowerSelRect, &green);
 		DCm.FillRect(&m_UpperSelRect, &green);
 		CRect lastEvent;
@@ -3038,7 +2967,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		SetRest(0);
 		if (m_pDrawObject)
 		{
-			if (m_pDrawObject->GetType() != MSOBJ_NOTE)
+			if (m_pDrawObject->GetType() != CMsObject::MsObjType::NOTE)
 			{
 				delete m_pDrawObject;
 				pNote = new CMsNote;
@@ -3350,7 +3279,7 @@ void CChildViewStaff::UpdateNoteDrawObject()
 {
 	if (m_pDrawObject)
 	{
-		if (m_pDrawObject->GetType() == MSOBJ_NOTE)
+		if (m_pDrawObject->GetType() == CMsObject::MsObjType::NOTE)
 		{
 			CMsNote* pNote = (CMsNote*)m_pDrawObject;
 			pNote->GetData().CopyData(GetNoteData());
@@ -3403,7 +3332,6 @@ afx_msg LRESULT CChildViewStaff::OnChildviewPlayerthread(WPARAM SubCommand, LPAR
 
 void CChildViewStaff::OnTimer(UINT_PTR nIDEvent)
 {
-//	printf("***************** One Minute ***************************\n");
 	CChildViewBase::OnTimer(nIDEvent);
 }
 
@@ -3415,12 +3343,12 @@ void CChildViewStaff::MidiPlayNote(CMsNote* pNote, UINT NoteOnFlag)
 		DrawEvent = 2;
 	CMsEvent* pEV = GetSong()->GetEventObject(DrawEvent);
 	pKeySig = GetSong()->GetMsObject(
-		MSOBJ_KEYSIG,
+		CMsObject::MsObjType::KEYSIG,
 		pEV,
 		SEARCH_REVERSE
 	);
 	pLoudness = GetSong()->GetMsObject(
-		MSOBJ_LOUDNESS,
+		CMsObject::MsObjType::LOUDNESS,
 		pEV,
 		SEARCH_REVERSE
 	);

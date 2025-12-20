@@ -24,7 +24,7 @@ public:
 	//------------------------------------------------------
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
-	virtual CMsObject * Copy(void);
+	virtual void Copy(CMsObject* Source);
 	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual bool AddToQueue() { return false; }
 	virtual bool RemoveFromQueue(CMsSong* pSong) { return false; }

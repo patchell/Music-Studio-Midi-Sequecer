@@ -193,6 +193,9 @@
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
     <ClInclude Include="DlgGlissandoProperties.h" />
+    <ClInclude Include="MsEventDirectorItem.h" />
+    <ClInclude Include="MsEventDirectory.h" />
+    <ClInclude Include="MsGlissandoEnd.h" />
     <ClInclude Include="MsPlayerQueue.h" />
     <ClInclude Include="ComboBitmap.h" />
     <ClInclude Include="ComboBoxDefines.h" />
@@ -283,6 +286,9 @@
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
     <ClCompile Include="DlgGlissandoProperties.cpp" />
+    <ClCompile Include="MsEventDirectorItem.cpp" />
+    <ClCompile Include="MsEventDirectory.cpp" />
+    <ClCompile Include="MsGlissandoEnd.cpp" />
     <ClCompile Include="MsPlayerQueue.cpp" />
     <ClCompile Include="ComboBitmap.cpp" />
     <ClCompile Include="ComboBoxItem.cpp" />

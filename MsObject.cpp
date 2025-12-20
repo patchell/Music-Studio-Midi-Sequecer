@@ -30,7 +30,7 @@ CMsObject::CMsObject()
 {
 	m_Selected = 0;
 	m_HighLight = false;
-	m_ObjType = 0;
+	m_ObjType = MsObjType(-1);
 	m_pNext = 0;
 	m_pPrev = 0;
 	m_pSelectedObjectNext = 0;
@@ -47,6 +47,18 @@ CMsObject::~CMsObject()
 
 bool CMsObject::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
+	if(!pEvent)
+		pSong->GetStaffChildView()->MessageBoxW(
+			CString("CMsObject::Create: Parent Event is NULL"),
+			CString("Error"),
+			MB_OK | MB_ICONERROR
+		);
+	//if(!pSong)
+	//	GetStaffChildView()->MessageBoxW(
+	//		CString("CMsObject::Create: Parent Song is NULL"),
+	//		CString("Error"),
+	//		MB_OK | MB_ICONERROR
+	//	);
 	m_pSong = pSong;
 	m_pParentEvent = pEvent;
 	return true;
@@ -100,35 +112,9 @@ bool CMsObject::Select(bool Select, CPoint ObjectPoint)
 
 void CMsObject::SetParentEvent(UINT ParrentEvent)
 {
-	CString csType;
-	CMsEvent* pEV = 0, * pLastEvent = 0;
-	UINT Event;
+	CMsEvent* pEV = 0;
 
-	GetTypeString(csType);
-//	printf("Object %lS Parenet Event = %d\n", csType.GetString(),ParrentEvent);
 	m_pParentEvent = GetSong()->GetEventObject(ParrentEvent);
-	if (m_pParentEvent == NULL)
-	{
-		//-----------------------------------------
-		// OK, this event does not acruall
-		// exist yet, so make one
-		//-----------------------------------------
-		pLastEvent = GetSong()->GetEventListTail();
-		if (pLastEvent)
-			Event = pLastEvent->GetIndex() + 1;
-		else
-			Event = 0;
-		do {
-			pEV = new CMsEvent;
-			pEV->Create(
-				GetSong(),
-				GetSong()->GetStaffChildView(),
-				Event++
-			);
-			GetSong()->AddEventAtEnd(pEV);
-		} while (pEV->GetIndex() != ParrentEvent);
-		m_pParentEvent = pEV;
-	}
 }
 
 void CMsObject::DebugDump()
@@ -163,6 +149,40 @@ void CMsObject::Copy(CMsObject* pSource)
 	m_ObjectID = GETAPP->GetUniqueID();
 	m_pParentEvent = pSource->GetParentEvent();
 	m_pSong = pSource->GetSong();
+}
+
+CChildViewStaff* CMsObject::GetStaffChildView()
+{
+	return GetSong()->GetStaffChildView();
+}
+
+CMsObject::MsObjType CMsObject::GetTypeFromString(const char* pTypeString)
+{
+	MsObjType TYPE = MsObjType(-1);
+
+	for (int i = 0; ObjTypeStringTable[i].m_pTypeString != nullptr; i++)
+	{
+		if (ObjTypeStringTable[i].Compare(pTypeString))
+		{
+			TYPE =  ObjTypeStringTable[i].m_type;
+		}
+	}
+	return TYPE;
+}
+
+const char* CMsObject::GetStringFromType(MsObjType type)
+{
+	const char* pR = nullptr;
+	int i;
+
+	for(i=0; ObjTypeStringTable[i].m_pTypeString != nullptr; i++)
+	{
+		if (ObjTypeStringTable[i].Is(type))
+		{
+			pR = ObjTypeStringTable[i].m_pTypeString;
+		}
+	}
+	return pR;
 }
 
 void CMsObject::Save(FILE *pO)
