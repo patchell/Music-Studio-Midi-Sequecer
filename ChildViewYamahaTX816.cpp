@@ -4633,11 +4633,11 @@ void CChildViewYamahaTX816::TX816DumpRequst(int dumpType, int channel)
 	midiOutHDR = new MIDIHDR;
 	memset(midiOutHDR, 0, sizeof(MIDIHDR));
 	msgBuffer = new unsigned char[DX7_MIDI_SYSEX_DUMPREQ_MESSAGE_SIZE];
-	msgBuffer[0] = MIDI_SYSEX;
+	msgBuffer[0] = (unsigned char)MidiSystemCmds::SYSEX;
 	msgBuffer[1] = 0x43;	//ID
 	msgBuffer[2] = 0x02 | (channel & 0x0f);
 	msgBuffer[3] = dumpType;
-	msgBuffer[4] = MIDI_SYSEXEND;
+	msgBuffer[4] = (unsigned char)MidiSystemCmds::SYSEXEND;
 	midiOutHDR->dwBufferLength = DX7_MIDI_SYSEX_DUMPREQ_MESSAGE_SIZE;
 	midiOutHDR->dwFlags = 0;
 	midiOutHDR->lpData = (LPSTR)msgBuffer;

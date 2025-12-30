@@ -28,16 +28,10 @@
     <ClCompile Include="EnterStringDlg.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="GeneralMidiPatchNames.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="MyScrollBar.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MidiInfo.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="MidiSeqMS.cpp">
@@ -259,6 +253,9 @@
     <ClCompile Include="MsGlissandoEnd.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MsSongInfo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -298,9 +295,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MidiInfo.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MidiSeqMS.h">
@@ -532,6 +526,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MsGlissandoEnd.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsSongInfo.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

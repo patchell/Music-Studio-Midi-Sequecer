@@ -106,13 +106,13 @@ BOOL CDlgMidiInDispatchEditor::OnInitDialog()
 	InitializeMidiStatusByteComboBox();
 	InitializeMidiChannelComboBox();
 	//----------------------------------------
-	if (GETMIDIINDEVICE(m_DeviceID)->GetDispatcherTail())
+	if (GETAPP->GetMidiInTable()->GetMidiInDevice(m_DeviceID)->GetDispatcherTail())
 	{
 		//--------------------------------
 		// If there are any dispatch 
 		// objects, then load the last one
 		//-----------------------------------
-		m_pMIMD = GETMIDIINDEVICE(m_DeviceID)->GetDispatcherTail();
+		m_pMIMD = GETAPP->GetMidiInTable()->GetMidiInDevice(m_DeviceID)->GetDispatcherTail();
 		//------------------------------------
 		// Fill in the fields in the dialog
 		//------------------------------------
@@ -265,7 +265,7 @@ void CDlgMidiInDispatchEditor::OnBnClickedButtonDeletedispatcher()
 		pTemp = m_pMIMD->GetPrev();
 	else
 		pTemp = NULL;
-	GETMIDIINDEVICE(m_DeviceID)->RemoveDispatcher(m_pMIMD);
+	GETAPP->GetMidiInTable()->GetMidiInDevice(m_DeviceID)->RemoveDispatcher(m_pMIMD);
 	m_pMIMD = pTemp;
 	UpdateDialogFields();;
 }
@@ -638,7 +638,7 @@ void CDlgMidiInDispatchEditor::CreateANewDispatcher()
 //	memset(m_pMIMD, 0, sizeof(CMidiInMessageDispatcher));
 	m_pMIMD->SetDispatchName(CString("Enter a Name Here"));
 	m_Edit_Name.SetWindowTextW(CString(m_pMIMD->GetDispatchName()));
-	GETMIDIINDEVICE(m_DeviceID)->AddDispatcherToTail(m_pMIMD);
+	GETAPP->GetMidiInTable()->GetMidiInDevice(m_DeviceID)->AddDispatcherToTail(m_pMIMD);
 	//-----------------------------------------
 	// Disable controls that need to be diabled
 	//---------------------------------------------

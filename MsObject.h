@@ -64,9 +64,6 @@ constexpr auto HIGHC_OFFSET = STAVE_OFFSET - MAXNOTE_HEIGHT + CURSOR_CENTER;
 constexpr auto CENTER_OF_TREBEL = (STAVE_OFFSET);
 constexpr auto CENTER_OF_BASS = (STAVE_OFFSET + 48);
 
-constexpr auto NOTE_LINE_OFFSET = EVENT_WIDTH / 2;
-constexpr auto NOTE_HEAD_WIDTH = 10;
-constexpr auto NOTE_HEAD_HEIGHT = 8;
 
 constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
 constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
@@ -96,6 +93,9 @@ public:
 		KEYSIG,
 		LOUDNESS,
 		NOTE,
+		FLAT,
+		SHARP,
+		NATURAL,
 		REPEATEND,
 		REPEATSTART,
 		TEMPO,
@@ -124,6 +124,9 @@ private:
 		{ MsObjType::KEYSIG,		"Key Signature" },
 		{ MsObjType::LOUDNESS,		"Loudness" },
 		{ MsObjType::NOTE,			"Note" },
+		{ MsObjType::FLAT,			"Flat" },
+		{ MsObjType::SHARP,			"Sharp" },
+		{ MsObjType::NATURAL,		"Natural" },
 		{ MsObjType::REPEATEND,		"Repeat End" },
 		{ MsObjType::REPEATSTART,	"Repeat Start" },
 		{ MsObjType::TEMPO,			"Tempo" },
@@ -153,6 +156,7 @@ protected:
 	MsObjType m_ObjType;
 public:
 	CMsObject();
+	CMsObject(MsObjType type);
 	virtual ~CMsObject();
 	bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
@@ -173,6 +177,7 @@ public:
 	virtual int IsTimedObject() = 0;
 	virtual bool DoesSomething() = 0;
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0) = 0;
+	virtual void Draw(CDC* pDC, int event, int maxevent) = 0;
 	//-------------------------------------------------
 	// Back to our regularly scheduled Methods
 	//-------------------------------------------------
@@ -181,7 +186,6 @@ public:
 	virtual void SetPlayState(UINT state) { m_PlayState = state; }
 	//-------------------------------------------------
 	virtual void Copy(CMsObject *Source);
-	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE *pO, int Indent);
 	virtual bool AddToQueue(CMsSong* pSong) { return false; }

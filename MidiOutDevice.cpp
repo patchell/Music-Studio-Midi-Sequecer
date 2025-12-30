@@ -10,3 +10,9 @@ CMidiOutDevice::CMidiOutDevice()
 CMidiOutDevice::~CMidiOutDevice()
 {
 }
+
+bool CMidiOutDevice::Create(int OutId)
+{
+	Open(OutId);
+	return false;
+}

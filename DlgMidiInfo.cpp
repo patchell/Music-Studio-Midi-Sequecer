@@ -11,10 +11,9 @@ IMPLEMENT_DYNAMIC(CDlgMidiInfo, CDialogEx)
 CDlgMidiInfo::CDlgMidiInfo(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_INSTUMENT_MIDI, pParent)
 {
-#ifndef _WIN32_WCE
 	EnableActiveAccessibility();
-#endif
 	m_CurrentInstrument = 1;
+	m_pSongInfo = nullptr;
 }
 
 CDlgMidiInfo::~CDlgMidiInfo()
@@ -72,14 +71,14 @@ BOOL CDlgMidiInfo::OnInitDialog()
 	m_SB_TrackSelection.SetWindowMessage(this, WM_MYSCROLLBAR_MSG);
 	m_SB_TrackSelection.SetScrollPos(1);
 
-	int nMidiDevices = GETMIDIOUTTABLE.GetNumDevices();
+	int nMidiDevices = GETAPP->GetMidiOutTable()->GetNumDevices();
 	for (int i = 0; i < nMidiDevices; ++i)
 	{
-		m_Combo_MidiDevice.AddString(GETMIDIOUTDEVICE(i).csGetName());
+		m_Combo_MidiDevice.AddString(GETAPP->GetMidiOutTable()->GetDevice(i).csGetName());
 	}
 	m_Combo_MidiDevice.SetCurSel(0);
 
-	m_Edit_SongTitle.SetWindowTextW(CString(GETMIDIINFO->GetTitle()));;
+	m_Edit_SongTitle.SetWindowTextW(CString(GetSongInfo()->GetSongTitle()));;
 	return TRUE;  // return true unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return false
 }
@@ -88,13 +87,12 @@ void CDlgMidiInfo::UpdateControls(int InstID)
 {
 	char* s = new char[256];
 
-	m_Static_InstBitmap.SetColor(GETMIDIINFO->GetInstColor(InstID));
+	m_Static_InstBitmap.SetColor(m_pSongInfo->GetTrack(InstID)->GetColor());
 
-	m_SB_Patch_Selection.SetScrollPos(GETMIDIINFO->GetPatch(InstID));
-	m_SB_RangeSelection.SetScrollPos(GETMIDIINFO->GetRange(InstID));
-	m_SB__MidiChannel.SetScrollPos(GETMIDIINFO->GetChannel(InstID) + 1);
-
-	m_Combo_MidiDevice.SetCurSel(GETTRACKINFO(InstID).GetMidiOutDeviceID());
+	m_SB_Patch_Selection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPatch());
+	m_SB_RangeSelection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPitchRange());
+	m_SB__MidiChannel.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetChannel() + 1);
+	m_Combo_MidiDevice.SetCurSel(m_pSongInfo->GetTrack(InstID)->GetMidiOutDeviceID());
 	delete[] s;
 }
 
@@ -112,17 +110,17 @@ afx_msg LRESULT CDlgMidiInfo::OnMyscrollbarMsg(WPARAM ControlID, LPARAM Position
 		UpdateControls(m_CurrentInstrument);
 		break;
 	case IDC_HSB_PATCH:
-		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetPatch(Position);
+		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetPatch(Position);
 		csString.Format(_T("%d"), Position);
 		m_Static_PatchValue.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_RANGE:
-		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetPitchRange(Position);
+		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetPitchRange(Position);
 		csString.Format(_T("%d"), Position);
 		m_Static_RangeValue.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_CHANNEL:
-		GETMIDIINFO->GetTrack(m_CurrentInstrument).SetChanel(Position - 1);
+		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetChannel(Position - 1);
 		csString.Format(_T("%d"), Position);
 		m_Static_ChannelValue.SetWindowTextW(csString);
 		break;
@@ -132,11 +130,11 @@ afx_msg LRESULT CDlgMidiInfo::OnMyscrollbarMsg(WPARAM ControlID, LPARAM Position
 
 void CDlgMidiInfo::OnClickedStaticTrack()
 {
-	CColorDialog dlg(GETMIDIINFO->GetInstColor(m_CurrentInstrument),0,this);
+	CColorDialog dlg(m_pSongInfo->GetTrack(m_CurrentInstrument)->GetColor(), 0, this);
 
 	if (IDOK == dlg.DoModal())
 	{
-		GETMIDIINFO->SetInstColor(m_CurrentInstrument, dlg.GetColor());
+		m_pSongInfo->SetInstColor(m_CurrentInstrument, dlg.GetColor());
 		m_Static_InstBitmap.SetColor(dlg.GetColor());
 	}
 }
@@ -147,6 +145,6 @@ void CDlgMidiInfo::OnOK()
 	char* s = new char[256];
 	
 	m_Edit_SongTitle.GetWindowTextW(cs);
-	GETMIDIINFO->SetTitle(WcharToChar(s, cs.GetBuffer(), cs.GetLength()));
+	m_pSongInfo->SetSongTitle(WcharToChar(s, cs.GetBuffer(), cs.GetLength()));
 	CDialogEx::OnOK();
 }

@@ -9,7 +9,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMsSharp::CMsSharp()
+CMsSharp::CMsSharp() : CMsObject(CMsObject::MsObjType::SHARP)
 {
 
 }

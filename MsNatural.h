@@ -4,7 +4,7 @@
 
 #pragma once
 
-class CMsNatural  
+class CMsNatural : public CMsObject
 {
 public:
 	CMsNatural();
@@ -23,6 +23,8 @@ public:
 	virtual bool DoesSomething() {
 		return false;
 	}
+	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
+	virtual void Draw(CDC* pDC, int event, int maxevent) {}
 	//------------------------------------------------------
 	void Draw(CDC *pDC, COLORREF c, int x, int y);
 };

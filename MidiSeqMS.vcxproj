@@ -225,6 +225,7 @@
     <ClInclude Include="MsPlayerQueueItem.h" />
     <ClInclude Include="MsPortamentoEnd.h" />
     <ClInclude Include="MsPortamentoStart.h" />
+    <ClInclude Include="MsSongInfo.h" />
     <ClInclude Include="MsStack.h" />
     <ClInclude Include="MyEvent.h" />
     <ClInclude Include="MidiOutDevice.h" />
@@ -234,7 +235,6 @@
     <ClInclude Include="MyOwnSlider.h" />
     <ClInclude Include="MyScrollBar.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="MidiInfo.h" />
     <ClInclude Include="MidiSeqMS.h" />
     <ClInclude Include="MsBar.h" />
     <ClInclude Include="MsEndBar.h" />
@@ -302,7 +302,6 @@
     <ClCompile Include="DlgSelectMidiIn.cpp" />
     <ClCompile Include="DlgSelectMidiOut.cpp" />
     <ClCompile Include="EnterStringDlg.cpp" />
-    <ClCompile Include="GeneralMidiPatchNames.cpp" />
     <ClCompile Include="ChildFrameLaunchControlXL.cpp" />
     <ClCompile Include="ChildViewLaunchControlXL.cpp" />
     <ClCompile Include="MidiControllerObject.cpp" />
@@ -316,6 +315,7 @@
     <ClCompile Include="MsPlayerQueueItem.cpp" />
     <ClCompile Include="MsPortamentoEnd.cpp" />
     <ClCompile Include="MsPortamentoStart.cpp" />
+    <ClCompile Include="MsSongInfo.cpp" />
     <ClCompile Include="MsStack.cpp" />
     <ClCompile Include="MusicStudioFileFormat.cpp" />
     <ClCompile Include="MyEvent.cpp" />
@@ -326,7 +326,6 @@
     <ClCompile Include="MyOwnSlider.cpp" />
     <ClCompile Include="MyScrollBar.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="MidiInfo.cpp" />
     <ClCompile Include="MidiSeqMS.cpp" />
     <ClCompile Include="MsBar.cpp" />
     <ClCompile Include="MsEndBar.cpp" />

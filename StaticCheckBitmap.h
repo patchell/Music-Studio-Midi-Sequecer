@@ -1,5 +1,6 @@
 #pragma once
 
+class CMsSongInfo;
 
 // CStaticCheckBitmap
 
@@ -9,12 +10,14 @@ class CStaticCheckBitmap : public CStatic
 	int m_Check;
 	COLORREF m_Color;
 	int m_TrackID;
+	CMsSongInfo* m_pSongInfo;
 public:
 	CStaticCheckBitmap();
 	virtual ~CStaticCheckBitmap();
 	int GetCheck() { return m_Check; }
 	void SetColor(COLORREF color) { m_Color = color; }
 	void SetTrackID(int id) { m_TrackID = id; }
+	void SetSongInfo(CMsSongInfo* pInfo) { m_pSongInfo = pInfo; }
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

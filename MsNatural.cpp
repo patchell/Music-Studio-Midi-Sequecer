@@ -4,17 +4,11 @@
 
 #include "pch.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMsNatural::CMsNatural()
+CMsNatural::CMsNatural() : CMsObject(CMsObject::MsObjType::NATURAL)
 {
 
 }
@@ -61,4 +55,9 @@ void CMsNatural::Draw(CDC *pDC, COLORREF c, int x, int y)
 	pDC->LineTo(x+2,y-2);
 	pDC->LineTo(x-2,y-2);
 	pDC->SelectObject(oldpen);
+}
+
+UINT CMsNatural::ObjectToString(CString& csString, UINT mode)
+{
+	return 0;
 }

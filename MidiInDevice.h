@@ -35,7 +35,7 @@ public:
 	MMRESULT Close() { return ::midiInClose(m_hMidiIn); }
 	MMRESULT Start() { return ::midiInStart(m_hMidiIn); }
 	UINT MidiInThread();
-	int KillThead();
+	int KillThread();
 	CMyEvent& GetMidiLongComplete() { return m_evMidiLongDone; }
 	//-------------------
 	//	Attribute methods

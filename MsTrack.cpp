@@ -1,45 +1,37 @@
 #include "pch.h"
 
-static COLORREF DefaultColors[16] = {
-	RGB(0,0,0),			//Not used
-	RGB(0,0,0),			//Track 1
-	RGB(0,0,192),		//Track 2
-	RGB(100,0,192),		//Track 3
-	RGB(0,100,192),		//Track 4
-	RGB(0,96,255),		//Track 5
-	RGB(0,192,0),		//Track 6
-	RGB(96,208,0),		//Track 7
-	RGB(0,208,96),		//Track 8
-	RGB(96,208,128),	//Track 9
-	RGB(208,255,64),	//Track 10
-	RGB(192,0,0),		//Track 11
-	RGB(192,0,128),		//Track 12
-	RGB(224,86,96),		//Track 13
-	RGB(224,67,148),		//Track 14
-	RGB(255,80,192)		//Track 15
-};
-
-static COLORREF DefaultTextColors[16] = {
-
-	RGB(255,255,255),			//Not used
-	RGB(255,255,255),			//Track 1
-	RGB(255,255,255-192),		//Track 2
-	RGB(155,255,255-192),		//Track 3
-	RGB(255,155,255-192),		//Track 4
-	RGB(255,255-96,0),			//Track 5
-	RGB(255,255-192,255),		//Track 6
-	RGB(255-96,255-208,255),	//Track 7
-	RGB(255,255-208,255-96),	//Track 8
-	RGB(255-96,255-208,155-128),	//Track 9
-	RGB(255-208,0,255-64),		//Track 10
-	RGB(255-192,255,255),		//Track 11
-	RGB(255-192,255,255-128),	//Track 12
-	RGB(255-224,255-86,255-96),	//Track 13
-	RGB(255-224,255-67,255-148),//Track 14
-	RGB(0,255-80,255-192)		//Track 15
-};
 
 CMsTrackSettings  CMsTrack::Settings[16];
+
+
+void CMsTrack::GetDefaultTrackSettings(int TrackNumber, int MidiOutDviceID)
+{
+	m_MidiChannel = DefaultMidiChannel[TrackNumber];
+	m_PatchNumber = DefaultPatch[TrackNumber];
+	strncpy_s(m_InstrumentName, sizeof(m_InstrumentName), GenMidiPatchNames[m_PatchNumber], _TRUNCATE);
+	m_PitchRange = DefaultPitchRange[TrackNumber];
+	m_Color = DefaultColors[TrackNumber];
+	m_TextColor = DefaultTextColors[TrackNumber];
+	m_MidiDeviceID = MidiOutDviceID;
+}
+
+void CMsTrack::GetTrackSettings(int TrackNumber)
+{
+	CString s;
+
+	s.Format(_T("COLOR_%d"), TrackNumber);
+	CMsTrack::Settings[TrackNumber].m_Color = GETAPP->GetProfileIntW(
+		_T("MsTrack"),
+		s,
+		(INT)DefaultColors[TrackNumber]
+	);
+	s.Format(_T("TEXT_COLOR_%d"), TrackNumber);
+	CMsTrack::Settings[TrackNumber].m_TextColor = GETAPP->GetProfileIntW(
+		_T("MsTrack"),
+		s,
+		DefaultTextColors[TrackNumber]
+	);
+}
 
 void CMsTrack::GetSettings()
 {
@@ -87,37 +79,39 @@ void CMsTrack::SaveSettings()
 }
 
 bool CMsTrack::Create(
-	CDC* pDC,
-	int TrackID,
-	CRect& rect,
-	int MidiOutDevice,
-	int Range,
-	int MidiChannel,
-	int Patch
+	CMsSongInfo* pParentSongInfo, // Parent song info
+	CSize szTrackIconSize,		// size of track bitmap Icon
+	int MidiOutDevId,	// Midi output device ID
+	int TrackID,		// Track number 1->15
+	int Range,			// Pitch range
+	int MidiChannel,	// Midi channel
+	int Patch			// Patch number
 )
 {
-	m_MidiDeviceID = MidiOutDevice;
+	m_pParentSongInfo = pParentSongInfo;
+	m_MidiDeviceID = MidiOutDevId;
 	m_PitchRange = Range;
 	m_MidiChannel = MidiChannel;
 	m_PatchNumber = Patch;
 	m_Color = CMsTrack::Settings[TrackID].m_Color;
 	m_TextColor = CMsTrack::Settings[TrackID].m_TextColor;
 	m_Number = TrackID;
-	m_ptUpperLeft = rect.TopLeft();
-	m_szDimensions = rect.Size();
+
+	m_ptUpperLeft = CPoint(0, 0);
+	m_szDimensions = szTrackIconSize;
 	m_bmTrack.CreateBitmap(
-		rect.Width(),
-		rect.Height(),
+		szTrackIconSize.cx,
+		szTrackIconSize.cy,
 		1,
 		32,
 		NULL
 	);
-	DWORD count = rect.Width() * rect.Height() * sizeof(long);
+	DWORD count = szTrackIconSize.cx * szTrackIconSize.cy * sizeof(long);
 	bmBits = new char[count];
 	m_bmTrack.SetBitmapBits(count, bmBits);
 	m_Font.CreateFontW(
-		rect.Height() - 10,
-		(rect.Width() -5)/2,
+		szTrackIconSize.cy - 10,
+		(szTrackIconSize.cx -5)/2,
 		0,
 		0,
 		FW_DONTCARE,
@@ -138,8 +132,66 @@ bool CMsTrack::Create(
 		sprintf_s(s, 4, "%d", m_Number);
 	m_csText = CString(s);
 	delete[] s;
-	Draw( pDC);
+//	Draw( pDC);
 	return true;
+}
+
+bool CMsTrack::Create(
+	CMsSongInfo* pParentSongInfo, 
+	CSize szTrackIconSize, 
+	int MidiOutDevId, 
+	int TrackID		// Track number 1->15
+)
+{
+	m_Number = TrackID;
+	m_pParentSongInfo = pParentSongInfo;
+	m_ptUpperLeft = CPoint(0, 0);
+	m_szDimensions = szTrackIconSize;
+	GetDefaultTrackSettings(m_Number, MidiOutDevId);
+	//-------------------------------
+	// Create bitmap
+	//-------------------------------
+	m_bmTrack.CreateBitmap(
+		szTrackIconSize.cx,
+		szTrackIconSize.cy,
+		1,
+		32,
+		NULL
+	);
+	DWORD count = szTrackIconSize.cx * szTrackIconSize.cy * sizeof(long);
+	bmBits = new char[count];
+	memset(bmBits, 0, count);
+	m_bmTrack.SetBitmapBits(count, bmBits);
+	//---------------------------------
+	// Create font
+	//---------------------------------
+	m_Font.CreateFontW(
+		szTrackIconSize.cy - 4,
+		(szTrackIconSize.cx - 2) / 2,
+		0,
+		0,
+		FW_DONTCARE,
+		false,
+		false,
+		false,
+		ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		DRAFT_QUALITY,
+		DEFAULT_PITCH,
+		_T("Courier")
+	);
+	if (m_Number > 9)
+		m_csText.Format(_T("%2d"), m_Number);
+	else
+		m_csText.Format(_T("%1d"), m_Number);
+	CDC* pDC = GetParentSongInfo()->GetParentSong()->GetStaffChildView()->GetDC();
+	Draw(pDC);
+	return true;
+}
+
+void CMsTrack::Save(FILE* pO)
+{
 }
 
 void CMsTrack::Draw(CDC* pDC)

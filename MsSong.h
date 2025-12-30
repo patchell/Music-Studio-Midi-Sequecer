@@ -22,20 +22,32 @@ public:
 		STOPPED
 	};
 private:
+	//-------------------------------------
+	// Song Midi Info and other stuff
+	//-------------------------------------
+	CMsSongInfo m_SongInfo;
+	//--------------------------------------
+	// Events
+	//--------------------------------------
 	CMsEventDirectory* m_pEventDirectory;
+	//--------------------------------------
+	// Song position pointer
+	//--------------------------------------
+	CMsEvent* m_pSongPosition;			//current song position
+	//--- Data for Song Editor View ----
+	CMsEvent* m_pEventListHead;
+	CMsEvent* m_pEventListTail;
+	int m_nMeasureBarCount;
+	int m_nTotalEvents;
+	//--------------------------------------
 	TickerState m_TickerState;
 	CString m_csFileName;
 	char* m_pFileBuffer;
 	int m_nFileBufferSize;
 	int m_InFileSize;
 	int m_BufIndex;
-	//--- Data for Song Editor View ----
-	CMsEvent* m_pEventListHead;
-	CMsEvent * m_pEventListTail;
-	int m_nMeasureBarCount;
-	int m_nTotalEvents;
 	//--------------------------------
-//	int m_nIsPlaying;
+	//	int m_nIsPlaying;
 	CMsSong* m_pNextSong;
 	CMsSong* m_pPrevSong;
 	//*************************************
@@ -61,10 +73,6 @@ private:
 	CMyEvent m_EvDisableTimerComplete;
 	CMyEvent m_EvAddEventQueueComplete;
 	CMyEvent m_EvDelEventQueueComplete;
-	//--------------------------------------
-	// Song position pointer
-	//--------------------------------------
-	CMsEvent* m_pSongPosition;			//current song position
 	//---------------------------------------
 	// List of Midi operations, like note
 	// timers that are currently actively
@@ -91,7 +99,10 @@ private:
 public:
 	CMsSong();
 	virtual ~CMsSong();
-	bool Create(CChildViewStaff* pCCV);
+	bool Create(
+		CChildViewStaff* pCCV,
+		CSize szTrackIconSize
+	);
 	UINT LittleEndian(UINT bE);
 	//--------------Access to Attributes ------
 	CChildViewStaff* GetStaffChildView() {
@@ -139,6 +150,7 @@ public:
 	bool Play(CChildViewStaff* pCChildView);
 	//-------------File Save -----------------------------
 	void Save(FILE *pO);
+	void SaveTracks(FILE* pO);
 	bool Open(CString& csFileName);
 	int ParserGetC();
 	bool SetGetPosition(int pos);
@@ -194,6 +206,7 @@ public:
 	void MidiStop(void);
 	void MidiStart(void);
 	void MidiClock(void);
+	void MidiAllNotesOff();
 	void SetPlaySongTimerEnable(int enable) {
 		m_PlaySongTimerEnable = enable;
 	}
@@ -229,5 +242,7 @@ public:
 	int GetNoteOffCount() const { return m_NoteCountOff; };
 	//=------------------------------------------------
 	CMsEventDirectory* GetEventDirectory(){ return m_pEventDirectory; }
+	CMsTrack* GetTrack(int TrackNum); 
+	CMsSongInfo* GetSongInfo() { return &m_SongInfo; }
 };
 

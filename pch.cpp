@@ -8,30 +8,30 @@
 
 MIDI_STATUS MidiStatusCommands[DISPATCHEDIT__NUM_MIDI_CMDS] = {
 	//------------ Channel Status ---------------------
-	{CString("Note Off"), MIDI_NOTEOFF,1,1,1, CString("Note"), CString("Velocity")},
-	{CString("Note On"), MIDI_NOTEON,1,1,1, CString("Note"), CString("Velocity")},
-	{CString("Poly AftrTch"), MIDI_POLYPRESS,1,1,1, CString("Note"), CString("Pres")},
-	{CString("Control/Mode"),MIDI_CTRLCHNG,1,1,1, CString("Type"), CString("Value")},
-	{CString("Prog Cnance"),MIDI_PGMCHANGE,1,0,1, CString("Prgm"), CString("-----")},
-	{CString("After Touch"), MIDI_CHNLPRESS,1,0,1, CString("Pres"), CString("----")},
-	{CString("Pitch Bend"),MIDI_PITCHBEND,1,1,1, CString("LSB"), CString("MSB")},
+	{CString("Note Off"), (unsigned) MidiChannelCmds::NOTEOFF,1,1,1, CString("Note"), CString("Velocity")},
+	{CString("Note On"), (unsigned)MidiChannelCmds::NOTEON,1,1,1, CString("Note"), CString("Velocity")},
+	{CString("Poly AftrTch"), (unsigned)MidiChannelCmds::POLYPRESS,1,1,1, CString("Note"), CString("Pres")},
+	{CString("Control/Mode"),(unsigned)MidiChannelCmds::CTRLCHNG,1,1,1, CString("Type"), CString("Value")},
+	{CString("Prog Cnance"),(unsigned)MidiChannelCmds::PGMCHANGE,1,0,1, CString("Prgm"), CString("-----")},
+	{CString("After Touch"), (unsigned)MidiChannelCmds::CHNLPRESS,1,0,1, CString("Pres"), CString("----")},
+	{CString("Pitch Bend"),(unsigned)MidiChannelCmds::PITCHBEND,1,1,1, CString("LSB"), CString("MSB")},
 	//----- System Status ----------------------
-	{CString("TimeCode"),MIDI_TIMECODE, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Song Pos"),MIDI_SONGPOSITION, 1, 1, 0, CString("LSB"), CString("MSB")},
-	{CString("Song Sel"),MIDI_SONGSELECT, 1, 0, 0, CString("Song #"), CString("----")},
-	{CString("Reserved"),MIDI_RESERVED_F4, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Reserved"),MIDI_RESERVED_F5, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Tune Request"),MIDI_TUNEREQUEST, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Timing Clock"),MIDI_CLOCK, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Reserved"),MIDI_RTM_RSVRD_F9, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Start"),MIDI_START, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Continue"),MIDI_CONTINUE, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Stop"),MIDI_STOP, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Reserved"),MIDI_RTM_RSVRD_FD, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Active Sensing"),MIDI_ACTIVE_SENSING, 0, 0, 0, CString("----"), CString("----")},
-	{CString("Reset"),MIDI_RESET, 0, 0, 0, CString("----"), CString("----")},
-	{CString("SYSEX"),MIDI_SYSEX, 0, 0, 0, CString("----"), CString("----")},
-	{CString("SYSEX END"),MIDI_SYSEXEND, 0, 0, 0, CString("----"), CString("----")}
+	{CString("TimeCode"),(unsigned)MidiSystemCmds::TIMECODE, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Song Pos"),(unsigned)MidiSystemCmds::SONG_POSITION, 1, 1, 0, CString("LSB"), CString("MSB")},
+	{CString("Song Sel"),(unsigned)MidiSystemCmds::SONG_SELECT, 1, 0, 0, CString("Song #"), CString("----")},
+	{CString("Reserved"),(unsigned)MidiSystemCmds::RSVRD_F4, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Reserved"),(unsigned)MidiSystemCmds::RSVRD_F5, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Tune Request"),(unsigned)MidiSystemCmds::TUNE_REQUEST, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Timing Clock"),(unsigned)MidiRealTimeMsgs::CLOCK, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Reserved"),(unsigned)MidiRealTimeMsgs::RSVRD_F9, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Start"),(unsigned)MidiRealTimeMsgs::START, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Continue"),(unsigned)MidiRealTimeMsgs::CONTINUE, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Stop"),(unsigned)MidiRealTimeMsgs::STOP, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Reserved"),(unsigned)MidiRealTimeMsgs::RSVRD_FD, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Active Sensing"),(unsigned)MidiRealTimeMsgs::ACTIVE_SENSING, 0, 0, 0, CString("----"), CString("----")},
+	{CString("Reset"),(unsigned)MidiRealTimeMsgs::RESET, 0, 0, 0, CString("----"), CString("----")},
+	{CString("SYSEX"),(unsigned)MidiSystemCmds::SYSEX, 0, 0, 0, CString("----"), CString("----")},
+	{CString("SYSEX END"),(unsigned)MidiSystemCmds::SYSEXEND, 0, 0, 0, CString("----"), CString("----")}
 };
 
 
@@ -265,73 +265,73 @@ int MidiStatusToMidiID(int status)
 {
 	switch (status)
 	{
-	case MIDI_NOTEOFF:
+	case (int)MidiChannelCmds::NOTEOFF:
 		status = STATUS_ID_MIDI_NOTEOFF;
 		break;
-	case MIDI_NOTEON:
+	case (int)MidiChannelCmds::NOTEON:
 		status = STATUS_ID_MIDI_NOTEON;
 		break;
-	case MIDI_POLYPRESS:
+	case (int)MidiChannelCmds::POLYPRESS:
 		status = STATUS_ID_MIDI_POLYPRESS;
 		break;
-	case MIDI_CTRLCHNG:
+	case (int)MidiChannelCmds::CTRLCHNG:
 		status = STATUS_ID_MIDI_CTRLCHNG;
 		break;
-	case MIDI_PGMCHANGE:
+	case (int)MidiChannelCmds::PGMCHANGE:
 		status = STATUS_ID_MIDI_PGMCHANGE;
 		break;
-	case MIDI_CHNLPRESS:
+	case (int)MidiChannelCmds::CHNLPRESS:
 		status = STATUS_ID_MIDI_CHNLPRESS;
 		break;
-	case MIDI_PITCHBEND:
+	case (int)MidiChannelCmds::PITCHBEND:
 		status = STATUS_ID_MIDI_PITCHBEND;
 		break;
-	case MIDI_TIMECODE:
+	case (int)MidiSystemCmds::TIMECODE:
 		status = STATUS_ID_MIDI_TIMECODE;
 		break;
-	case MIDI_SONGPOSITION:
+	case (int)MidiSystemCmds::SONG_POSITION:
 		status = STATUS_ID_MIDI_SONGPOSITION;
 		break;
-	case MIDI_SONGSELECT:
+	case (int)MidiSystemCmds::SONG_SELECT:
 		status = STATUS_ID_MIDI_SONGSELECT;
 		break;
-	case MIDI_RESERVED_F4:
+	case (int)MidiSystemCmds::RSVRD_F4:
 		status = STATUS_ID_MIDI_RESERVED_F4;
 		break;
-	case MIDI_RESERVED_F5:
+	case (int)MidiSystemCmds::RSVRD_F5:
 		status = STATUS_ID_MIDI_RESERVED_F5;
 		break;
-	case MIDI_TUNEREQUEST:
+	case (int)MidiSystemCmds::TUNE_REQUEST:
 		status = STATUS_ID_MIDI_TUNEREQUEST;
 		break;
-	case MIDI_CLOCK:
+	case (int)MidiRealTimeMsgs::CLOCK:
 		status = STATUS_ID_MIDI_CLOCK;
 		break;
-	case MIDI_RTM_RSVRD_F9:
+	case (int)MidiRealTimeMsgs::RSVRD_F9:
 		status = STATUS_ID_MIDI_RTM_RSVRD_F9;
 		break;
-	case MIDI_START:
+	case (int)MidiRealTimeMsgs::START:
 		status = STATUS_ID_MIDI_START;
 		break;
-	case MIDI_CONTINUE:
+	case (int)MidiRealTimeMsgs::CONTINUE:
 		status = STATUS_ID_MIDI_CONTINUE;
 		break;
-	case MIDI_STOP:
+	case (int)MidiRealTimeMsgs::STOP:
 		status = STATUS_ID_MIDI_STOP;
 		break;
-	case MIDI_RTM_RSVRD_FD:
+	case (int)MidiRealTimeMsgs::RSVRD_FD:
 		status = STATUS_ID_MIDI_RTM_RSVRD_FD;
 		break;
-	case MIDI_ACTIVE_SENSING:
+	case (int)MidiRealTimeMsgs::ACTIVE_SENSING:
 		status = STATUS_ID_MIDI_ACTIVE_SENSING;
 		break;
-	case MIDI_RESET:
+	case (int)MidiRealTimeMsgs::RESET:
 		status = STATUS_ID_MIDI_RESET;
 		break;
-	case MIDI_SYSEX:
+	case (int)MidiSystemCmds::SYSEX:
 		status = STATUS_ID_MIDI_SYSEX;
 		break;
-	case MIDI_SYSEXEND:
+	case (int)MidiSystemCmds::SYSEXEND:
 		status = STATUS_ID_MIDI_SYSEXEND;
 		break;
 	}

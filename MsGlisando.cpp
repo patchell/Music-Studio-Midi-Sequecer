@@ -228,19 +228,19 @@ UINT CMsGlissando::ObjectToString(CString& csString, UINT mode)
 void CMsGlissando::NoteOn(UINT Velociry)
 {
 	GetSong()->IncNoteOnCount();
-	int chan = GETMIDIINFO->GetChannel(GetTrack());
-	int note = m_CurrentPitch + CMsNote::RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
-	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId(GetTrack());
-	GETMIDIOUTTABLE.NoteOn(DeviceID, chan, note, Velociry);
+	int chan = GetSong()->GetTrack(GetTrack())->GetChannel();
+	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
+	int DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(chan, note, Velociry);
 }
 
 void CMsGlissando::NoteOff(UINT Velociry)
 {
 	GetSong()->IncNoteOffCount();
-	int chan = GETMIDIINFO->GetChannel(GetTrack());
-	int note = m_CurrentPitch + CMsNote::RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
-	int DeviceID = GETMIDIINFO->GetMidiOutDeviceId(GetTrack());
-	GETMIDIOUTTABLE.NoteOff(DeviceID, chan, note, Velociry);
+	int chan = GetSong()->GetTrack(GetTrack())->GetChannel();
+	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
+	int DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(chan, note, Velociry);
 }
 
 void CMsGlissando::Copy(CMsObject* pSource)
@@ -300,7 +300,7 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	}
 	else
 	{
-		Color = GETMIDIINFO->GetInstColor(GetTrack());
+		Color = GetSong()->GetTrack(GetTrack())->GetColor();
 	}
 	penNote.CreatePen(PS_SOLID, 2, Color);
 	brushNote.CreateSolidBrush(Color);
@@ -310,13 +310,13 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	{
 		if (bStemDown)
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET;
+			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
 			rectNoteHead = CRect(CPoint(NoteXPos,NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
 		else
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET - NOTE_HEAD_WIDTH;
+			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
@@ -325,13 +325,13 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	{
 		if (bStemDown)
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET;
+			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
 		else
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET - NOTE_HEAD_WIDTH;
+			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}

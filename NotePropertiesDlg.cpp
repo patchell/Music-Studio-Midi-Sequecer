@@ -35,6 +35,16 @@ CNotePropertiesDlg::~CNotePropertiesDlg()
 {
 }
 
+CMsTrack* CNotePropertiesDlg::GetTrackInfo(int Track)
+{
+	CMsTrack* pTrack = nullptr;
+	if (m_pNote)
+	{
+		pTrack = m_pNote->GetSong()->GetSongInfo()->GetTrack(Track);
+	}
+	return pTrack;
+}
+
 void CNotePropertiesDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -59,14 +69,6 @@ END_MESSAGE_MAP()
 
 
 // CNotePropertiesDlg message handlers
-
-int PitchToNote[12] = {
-	0,0,1,1,2,3,3,4,4,5,5,6
-};
-
-int NoteToPitch[7] = {
-	0,2,4,5,7,9,11
-};
 
 #define PROP_NONE	0
 #define PROP_DOTTED	1
@@ -95,7 +97,7 @@ BOOL CNotePropertiesDlg::OnInitDialog()
 	UpdateData(false);	//Initialize Dialog Items
 
 	for (int i = 1; i < 16; ++i)
-		m_Combo_Instrument.AddBitmap(GETMIDIINFO->GetTrack(i).GetBitmap(), CString(""));
+		m_Combo_Instrument.AddBitmap(GetTrackInfo(i)->GetBitmap(), CString(""));
 	m_Combo_Instrument.SetCurSel(m_pNote->GetTrack() - 1);
 
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_WHOLE), CString(""));
@@ -104,7 +106,7 @@ BOOL CNotePropertiesDlg::OnInitDialog()
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_EIGTH), CString(""));
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_SIXTEENTH), CString(""));
 	m_Combo_Duration.AddBitmap(GETAPP->bmGetNoteType(BM_NOTE_INDEX_THIRTYSECOND), CString(""));
-	m_Combo_Duration.SetCurSel(CMsNote::GetDurationTable()[m_pNote->GetDuration()].NoteShapeIndex);
+	m_Combo_Duration.SetCurSel((int)CMsNote::GetDurationTable()[m_pNote->GetDuration()].NoteShapeIndex);
 
 	CString csCaption;
 	CString csNote;

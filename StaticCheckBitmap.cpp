@@ -13,6 +13,7 @@ CStaticCheckBitmap::CStaticCheckBitmap()
 	m_Check = 0;
 	m_Color = RGB(0, 0, 255);
 	m_TrackID = 0;
+	m_pSongInfo = nullptr;
 }
 
 CStaticCheckBitmap::~CStaticCheckBitmap()
@@ -45,16 +46,16 @@ void CStaticCheckBitmap::OnPaint()
 	GetClientRect(&rect);
 	innerRect.CopyRect(&rect);
 	Black.CreateStockObject(BLACK_BRUSH);
-	Highlight.CreateStockObject(GETMIDIINFO->GetTextColor(m_TrackID));
+	Highlight.CreateStockObject(m_pSongInfo->GetTrack(m_TrackID)->GetTextColor());
 	Brush.CreateSolidBrush(m_Color);
-	dc.SetTextColor(GETMIDIINFO->GetTextColor(m_TrackID));
+	dc.SetTextColor(m_pSongInfo->GetTrack(m_TrackID)->GetTextColor());
 	dc.SetBkColor(m_Color);
 	if (m_Check)
 	{
 		dc.FillRect(&rect, &Highlight);
 		OtherBrush.CreateStockObject(NULL_BRUSH);
 		innerRect.DeflateRect(CSize(2, 2));
-		Pen.CreatePen(PS_SOLID, 2, GETMIDIINFO->GetTextColor(m_TrackID));
+		Pen.CreatePen(PS_SOLID, 2, m_pSongInfo->GetTrack(m_TrackID)->GetTextColor());
 		oldPen = dc.SelectObject(&Pen);
 		oldBrush = dc.SelectObject(&OtherBrush);
 		dc.Rectangle(rect);

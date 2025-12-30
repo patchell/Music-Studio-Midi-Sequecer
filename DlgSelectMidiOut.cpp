@@ -90,7 +90,7 @@ BOOL CDlgSelectMidiOut::OnInitDialog()
 	for (i = 0; i < 15; ++i)
 	{
 		m_aChecks[i].SetTrackID(i + 1);
-		m_aChecks[i].SetColor(GETMIDIINFO->GetTrack(i+1).GetColor());
+	//	m_aChecks[i].SetColor(GETMIDIINFO->GetTrack(i+1).GetColor());
 	}
 	return TRUE;  // return true unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return false

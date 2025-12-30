@@ -7,6 +7,7 @@ class CMidiOutTable
 public:
 	CMidiOutTable();
 	virtual ~CMidiOutTable();
+	bool Create();
 	int AddItem(CMidiOutDevice* pItem);
 	MMRESULT Send(int DeviceID, DWORD message) { return m_ppTable[DeviceID]->Send(message); }
 	MMRESULT Open(int DeviceID, int OutID) {
@@ -48,7 +49,9 @@ public:
 		m_ppTable[OutID]->GetOutHandle();
 	}
 	int GetNumDevices() { return m_nDevices; }
-	CMidiOutDevice& GetDevice(int DevID) { return *m_ppTable[DevID]; }
+	CMidiOutDevice& GetDevice(int DevID) { 
+		return *m_ppTable[DevID]; 
+	}
 };
 
 

@@ -45,53 +45,125 @@ struct MIDI_STATUS {
 //----------------------------------
 // Midi channel Messages
 //----------------------------------
-constexpr auto MIDI_NOTEOFF = (0x80);
-constexpr auto MIDI_NOTEON = (0x90);
-constexpr auto MIDI_POLYPRESS = (0xa0);
-constexpr auto MIDI_CTRLCHNG = (0xb0);
-constexpr auto MIDI_PGMCHANGE = (0xc0);
-constexpr auto MIDI_CHNLPRESS = (0xd0);
-constexpr auto MIDI_PITCHBEND = (0xe0);
+enum class MidiChannelCmds : int {
+	NOTEOFF = 0x80,
+	NOTEON = 0x90,
+	POLYPRESS = 0xa0,
+	CTRLCHNG = 0xb0,
+	PGMCHANGE = 0xc0,
+	CHNLPRESS = 0xd0,
+	PITCHBEND = 0xe0
+};
+
 //-------------------------------------
 // Submessages for MIDI_CTRLCHNG
 //-------------------------------------
 
-constexpr auto MIDI_CTRLCHNG_ALLOFF = (120);
-constexpr auto MIDI_CTRLCHNG_RESETALL = (121);
-constexpr auto MIDI_CTRLCHNG_LOCAL = (122);
-constexpr auto MIDI_CTRLCHNG_LOCAL_OFF = (0);		//sub message to MIDI_CTRLCHNG_LOCAL;
-constexpr auto MIDI_CTRLCHNG_LOCAL_ON = (127);	//sub message to MIDI_CTRLCHNG_LOCAL
-constexpr auto MIDI_CTRLCHNG_NOTESOFF = (123);
-constexpr auto MIDI_CTRLCHNG_OMNION = (124);
-constexpr auto MIDI_CTRLCHNG_OMNIOFF = (125);
-constexpr auto MIDI_CTRLCHNG_MONO_ON = (126);
-constexpr auto MIDI_CTRLCHNG_POLY_ON = (127);
+enum class MidiCC : int {
+	BANK_SELECT_MSB = 0,
+	MODWHEEL_MSB = 1,
+	BREATHCTRL_MSB = 2,
+	FOOTCTRL_MSB = 4,
+	PORTAMENTO_TIME_MSB = 5,
+	DATA_ENTRY_MSB = 6,
+	VOLUME_MSB = 7,
+	PAN_MSB = 10,
+	EXPRESSION_MSB = 11,
+	EFFECT1_MSB = 12,
+	EFFECT2_MSB = 13,
+	GENERAL_PURPOSE1_MSB = 16,
+	GENERAL_PURPOSE2_MSB = 17,
+	GENERAL_PURPOSE3_MSB = 18,
+	GENERAL_PURPOSE4_MSB = 19,
+
+	BANK_SELECT_LSB = 32,
+	MODWHEEL_LSB = 33,
+	BREATHCTRL_LSB = 34,
+	FOOTCTRL_LSB = 36,
+	PORTAMENTO_TIME_LSB = 37,
+	DATA_ENTRY_LSB = 38,
+	VOLUME_LSB = 39,
+	PAN_LSB = 42,
+	EXPRESSION_LSB = 43,
+	EFFECT1_LSB = 44,
+	EFFECT2_LSB = 45,
+	GENERAL_PURPOSE1_LSB = 48,
+	GENERAL_PURPOSE2_LSB = 49,
+	GENERAL_PURPOSE3_LSB = 50,
+	GENERAL_PURPOSE4_LSB = 51,
+
+	DAMPER_PEDAL = 64,
+	PORTAMENTO_ONOFF = 65,
+	SOSTENUTO_PEDAL = 66,
+	SOFT_PEDAL = 67,
+	LEGATO_FOOTSWITCH = 68,
+	HOLD2 = 69,
+	SOUND_CONTROLLER1 = 70,
+	SOUND_CONTROLLER2 = 71,
+	SOUND_CONTROLLER3 = 72,
+	SOUND_CONTROLLER4 = 73,
+	SOUND_CONTROLLER5 = 74,
+	SOUND_CONTROLLER6 = 75,
+	SOUND_CONTROLLER7 = 76,
+	SOUND_CONTROLLER8 = 77,
+	SOUND_CONTROLLER9 = 78,
+	SOUND_CONTROLLER10 = 79,
+	GENERAL_PURPOSE5 = 80,
+	GENERAL_PURPOSE6 = 81,
+	GENERAL_PURPOSE7 = 82,
+	GENERAL_PURPOSE8 = 83,
+	PORTAMENTO_CONTROL = 84,
+	EFFECTS1_DEPTH = 91,
+	EFFECTS2_DEPTH = 92,
+	EFFECTS3_DEPTH = 93,
+	EFFECTS4_DEPTH = 94,
+	EFFECTS5_DEPTH = 95,
+	DATA_INCREMENT = 96,
+	DATA_DECREMENT = 97,
+	NON_REGISTERED_PARAM_MSB = 98,	
+	NON_REGISTERED_PARAM_LSB = 99,
+	REGISTERED_PARAM_MSB = 100,
+	REGISTERED_PARAM_LSB = 101,
+	ALL_SOUND_OFF = 120,
+	RESET_ALL_CONTROLLERS = 121,
+	LOCAL_CONTROL = 122,
+	ALL_NOTES_OFF = 123,
+	OMNI_MODE_ON = 124,
+	OMNI_MODE_OFF = 125,
+	MONO_MODE_ON = 126,
+	POLY_MODE_ON = 127
+};;
+
 
 //-------------------------------------
 // Midi Real Time Messages
 //-------------------------------------
-constexpr auto MIDI_CLOCK = (0xf8);
-constexpr auto MIDI_RTM_RSVRD_F9 = 0xf9;
-constexpr auto MIDI_START = (0xfa);
-constexpr auto MIDI_CONTINUE = (0xfb);
-constexpr auto MIDI_STOP = (0xfc);
-constexpr auto MIDI_RTM_RSVRD_FD = 0xfd;
-constexpr auto MIDI_ACTIVE_SENSING = 0xfe;
-constexpr auto MIDI_RESET = (0xff);
-//-------------------------------------
-// Midi System Exclusive
-//--------------------------------------
-constexpr auto MIDI_SYSEX = (0xf0);
-constexpr auto MIDI_SYSEXEND = (0xf7);
+
+enum class MidiRealTimeMsgs : int {
+	CLOCK = 0xf8,
+	RSVRD_F9,
+	START,
+	CONTINUE,
+	STOP,
+	RSVRD_FD,
+	ACTIVE_SENSING,
+	RESET
+};
+
 //--------------------------------------
 // Midi System Messages
 // --------------------------------------
-constexpr auto MIDI_TIMECODE = 0xf1;
-constexpr auto MIDI_SONGPOSITION = 0xf2;
-constexpr auto MIDI_SONGSELECT = 0xf3;
-constexpr auto MIDI_RESERVED_F4 = 0xf4;
-constexpr auto MIDI_RESERVED_F5 = 0xf5;
-constexpr auto MIDI_TUNEREQUEST = 0xf6;
+enum class MidiSystemCmds : int {
+	SYSEX = 0xf0,
+	TIMECODE,
+	SONG_POSITION,
+	SONG_SELECT,
+	RSVRD_F4,
+	RSVRD_F5,
+	TUNE_REQUEST,
+	SYSEXEND
+};
+
 //****************************************
 // Midi Message Decoding
 //***************************************
@@ -259,30 +331,6 @@ enum {
 	MIDIEDIT_MISC_INST_CHANGE
 };
 //--------------------------------------
-enum {
-	DRAW_NOP,
-	DRAW_NOTE,
-	DRAW_REST,
-	DRAW_ENDBAR,
-	DRAW_GLISSANDO,
-	DRAW_BAR,
-	DRAW_TIE,
-	DRAW_COPY,
-	DRAW_MOVE,
-	DRAW_REPEAT,
-	DRAW_TEMPO,
-	DRAW_TIMESIG,
-	DRAW_KEYSIG,
-	DRAW_LOUDNESS,
-	DRAW_INSTCHANGE,
-	DRAW_CHANGEDUR,
-	DRAW_INCREASEDUR,
-	DRAW_DECREASEDUR,	//16
-	DRAW_INCRPITCH,		//17
-	DRAW_DECRPITCH,		//18
-	DRAW_INSERTBLOCK,	//19
-	DRAW_DRAWNOTESVIAMIDI	//20
-};
 
 // decorations combo box indexes
 

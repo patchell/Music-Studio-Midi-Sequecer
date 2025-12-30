@@ -4,6 +4,14 @@
 
 class CNotePropertiesDlg : public CDialog
 {
+
+	inline static int PitchToNote[12] = {
+		0,0,1,1,2,3,3,4,4,5,5,6
+	};
+
+	inline static int NoteToPitch[7] = {
+		0,2,4,5,7,9,11
+	};
 	//---------------------------------
 	// Controls
 	//---------------------------------
@@ -28,7 +36,7 @@ public:
 	//---------------------------------
 	CNotePropertiesDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CNotePropertiesDlg();
-
+	CMsTrack* GetTrackInfo(int Track);
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_NOTEPROPERTIES };

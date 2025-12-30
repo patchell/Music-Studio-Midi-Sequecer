@@ -36,11 +36,7 @@ public:
 	bool GetInstrumentSel(int i) {
 		return m_Instruments[i];
 	}
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_MIDIOUT };
-#endif
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

@@ -16,6 +16,25 @@ CMidiOutTable::~CMidiOutTable()
 	}
 }
 
+bool CMidiOutTable::Create()
+{
+	m_nDevices = midiOutGetNumDevs();
+	MIDIOUTCAPS MidiOut;
+	CString csName;
+	int i, l = 0;
+
+	m_ppTable = new CMidiOutDevice*[m_nDevices];
+	for (i = 0; i < m_nDevices; ++i)
+	{
+		midiOutGetDevCaps(i, &MidiOut, sizeof(MIDIOUTCAPS));
+		m_ppTable[i] = new CMidiOutDevice;
+		csName = MidiOut.szPname;
+		m_ppTable[i]->SetName(csName);
+		m_ppTable[i]->Create(i);
+	}
+	return true;
+}
+
 int CMidiOutTable::AddItem(CMidiOutDevice* pItem)
 {
 	int DeviceID = m_nDevices;

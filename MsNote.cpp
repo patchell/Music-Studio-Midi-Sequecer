@@ -152,7 +152,7 @@ void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
 	CRect rectRest;
 
 
-	Color = GETMIDIINFO->GetTrack(GetTrack()).GetColor();
+	Color = GetSong()->GetTrack(GetTrack())->GetColor();
 	if (IsSelected() || IsHighLighted())
 		Color ^= 0x00ffffff;
 	Pitch = GetPitch();
@@ -253,6 +253,13 @@ void CMsNote::DrawNote(CDC* pDC, int Event, int MaxEvent, int NoteY, COLORREF Co
 	{
 		DrawNoteAccidental(pDC, Event, NoteY, Color);
 	}
+	//CRect rect;
+	//ObjectRectangle(rect, Event);
+	//CPen penBlack, * oldPen;
+	//penBlack.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+	//oldPen = pDC->SelectObject(&penBlack);
+	//pDC->Rectangle(&rect);
+	//pDC->SelectObject(oldPen);
 }
 
 void CMsNote::DrawNoteHead(
@@ -263,8 +270,6 @@ void CMsNote::DrawNoteHead(
 )
 {
 	CRect rectNoteHead;
-	CPoint ptNoteHead;
-	CSize szNoteHead;
 	CPen penHead, * oldPen;
 	CBrush brushHead, * oldBrush;
 	bool bIsSolid = IsSolid();
@@ -276,33 +281,10 @@ void CMsNote::DrawNoteHead(
 	else
 		brushHead.CreateStockObject(HOLLOW_BRUSH);
 	oldBrush = pDC->SelectObject(&brushHead);
-	if (!IsHeadFlipped())
-	{
-		ptNoteHead = CPoint(
-			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET,
-			NoteY
-		);
-		szNoteHead = CSize(
-			-NOTE_HEAD_WIDTH, 
-			NOTE_HEAD_HEIGHT
-		);
-		rectNoteHead = CRect(ptNoteHead, szNoteHead);
-		pDC->Ellipse(&rectNoteHead);
-	}
-	else        //Note Head Flipped
-	{
-		//			printf("Normal Note Head\n");
-		ptNoteHead = CPoint(
-			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET,
-			NoteY
-		);
-		szNoteHead = CSize(
-			NOTE_HEAD_WIDTH,
-			NOTE_HEAD_HEIGHT
-		);
-		rectNoteHead = CRect(ptNoteHead, szNoteHead);
-		pDC->Ellipse(&rectNoteHead);
-	}
+
+	ObjectRectangle(rectNoteHead, Event);
+
+	pDC->Ellipse(&rectNoteHead);
 	pDC->SelectObject(oldPen);
 	pDC->SelectObject(oldBrush);
 }
@@ -331,7 +313,7 @@ void CMsNote::DrawNoteLines(CDC* pDC, int Event, int NoteY, COLORREF Color)
 		for (i = 0; i < NeesALine; ++i)
 		{
 			int lineEnd = EVENT_WIDTH - (EVENT_WIDTH + 10) / 2;
-			UINT x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET;
+			UINT x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
 			if (IsOnLine())
 				y = NoteY + i * 8 * f;
 			else
@@ -352,16 +334,16 @@ void CMsNote::DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	{
 		penStem.CreatePen(PS_SOLID, 1, Color);
 		oldPen = pDC->SelectObject(&penStem);
-		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET;
+		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
 		if (IsStemDown())
 		{
 			pDC->MoveTo(x, NoteY + 4);
-			pDC->LineTo(x, NoteY + 28);
+			pDC->LineTo(x, NoteY + NOTE_STEM_LENGTH);
 		}
 		else
 		{
 			pDC->MoveTo(x, NoteY + 4);
-			pDC->LineTo(x, NoteY - 20);
+			pDC->LineTo(x, NoteY - NOTE_STEM_LENGTH);
 		}
 		pDC->SelectObject(oldPen);
 		DrawNoteFlags(pDC, Event, NoteY, Color);
@@ -382,7 +364,7 @@ void CMsNote::DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	{
 		penFlags.CreatePen(PS_SOLID, 2, Color);
 		oldPen = pDC->SelectObject(&penFlags);
-		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_LINE_OFFSET;
+		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
 		for (i = 0; i < n; ++i)
 		{
 			if (IsStemDown())	//right side down
@@ -402,26 +384,23 @@ void CMsNote::DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color)
 
 void CMsNote::DrawNoteAccidental(CDC* pDC, int Event, int NoteY, COLORREF Color)
 {
+	CMsSharp sharp;
+	CMsFlat flat;
+	CMsNatural nat;
+	int X;
+
+	X = EVENT_OFFSET + NOTE_ACCIDENTAL_OFFSET + EVENT_WIDTH * Event;
 	switch (GetAccidental())
 	{
 	case MSFF_ACCIDENTAL_NATURAL:
-	{
-		CMsNatural nat;
-		nat.Draw(pDC, Color, EVENT_OFFSET + EVENT_WIDTH * Event - 8, NoteY);
-	}
-	break;
+		nat.Draw(pDC, Color, X, NoteY);
+		break;
 	case MSFF_ACCIDENTAL_SHARP:
-	{
-		CMsSharp sharp;
-		sharp.Draw(pDC, Color, EVENT_OFFSET + EVENT_WIDTH * Event - 8, NoteY);
-	}
-	break;
+		sharp.Draw(pDC, Color, X, NoteY);
+		break;
 	case MSFF_ACCIDENTAL_FLAT:
-	{
-		CMsFlat flat;
-		flat.Draw(pDC, Color, EVENT_OFFSET + EVENT_WIDTH * Event - 8, NoteY);
-	}
-	break;
+		flat.Draw(pDC, Color, X, NoteY);
+		break;
 	}
 }
 
@@ -571,7 +550,7 @@ INT CMsNote::NeedsFlags(void)
 {
 	INT rV = 0;
 
-	rV = DurTab[(int)GetDuration()].Flags;
+	rV = (int)DurTab[(int)GetDuration()].Flags;
 	return rV;
 }
 
@@ -582,6 +561,7 @@ CMsNote * CMsNote::FindTieBegin()
 	CMsNote *pMsN = 0;
 
 	int loop = 1;
+	pObj.pObj = 0;
 
 	pEv = (CMsEvent *)pEv->GetPrev();
 	while(pEv && loop)
@@ -701,16 +681,16 @@ void CMsNote::NoteOn(int Velocity)
 	}
 	else
 		Loudness = Velocity;
-	MidiChannel = GETMIDIINFO->GetChannel(GetTrack());
-	NotePitch = GetPitch() + RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
+	MidiChannel = GetSong()->GetTrack(GetTrack())->GetChannel();
+	NotePitch = GetPitch() + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
 	//-------------------------------
 	// Apply Key Signature Correction
 	// or Accidental to correct pitch
 	//-------------------------------
 	NotePitch = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(NotePitch, GetAccidental());
 	m_NotePlayed = NotePitch;
-	DeviceID = GETMIDIINFO->GetMidiOutDeviceId(GetTrack());
-	GETMIDIOUTTABLE.NoteOn(DeviceID, MidiChannel, NotePitch, Loudness);
+	DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, NotePitch, Loudness);
 }
 
 void CMsNote::NoteOff(int Velociry)
@@ -720,10 +700,9 @@ void CMsNote::NoteOff(int Velociry)
 
 	GetSong()->IncNoteOffCount();	// for diagnostics
 
-	MidiChannel = GETMIDIINFO->GetChannel(GetTrack());
-	DeviceID = GETMIDIINFO->GetMidiOutDeviceId(GetTrack());
-	GETMIDIOUTTABLE.NoteOff(DeviceID, MidiChannel, m_NotePlayed, Velociry);
-//	printf("Notes ON %d  Notes Off %d\n", GetSong()->GetNoteOnCount(), GetSong()->GetNoteOffCount());
+	MidiChannel = GetSong()->GetTrack(GetTrack())->GetChannel();
+	DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, m_NotePlayed, Velociry);
 }
 
 void CMsNote::IncrNote()
@@ -948,7 +927,7 @@ int CMsNote::GetChannel()
 	//		Returns the Midi Channel number for
 	//	the note that is going to play.
 	//------------------------------------------
-	return GETMIDIINFO->GetChannel(GetTrack());
+	return GetSong()->GetTrack(GetTrack())->GetChannel();
 }
 
 //------- These Methods Handle the playing of the song ---
@@ -1071,12 +1050,15 @@ UINT CMsNote::Process()
 	//-------------------------------------
 	// Do we need to change the patch?
 	//-------------------------------------
-	if(GetSong()->CheckChan(GetTrack(), GETMIDIINFO->GetChannel(GetTrack())))
+	if(GetSong()->CheckChan(GetTrack(), GetSong()->GetTrack(GetTrack())->GetChannel()))
 	{
+		int Track = GetTrack();
+		CMsTrack* pTrack = GetSong()->GetTrack(Track);
+
 		GetSong()->ChangePatch(
-			GETMIDIINFO->GetMidiOutDeviceId(GetTrack()),
-			GETMIDIINFO->GetChannel(GetTrack()),
-			GETMIDIINFO->GetPatch(GetTrack())
+			Track,
+			pTrack->GetChannel(),
+			pTrack->GetPatch()
 		);
 	}
 //	printf("MsNote added %d objects\n",AddedToQueue);
@@ -1098,9 +1080,27 @@ bool CMsNote::RemoveFromQueue()
 
 void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 {
-	UINT noteVerticalPos;
+	int noteVerticalPos;
+	CPoint ptNoteHead;
+	CSize szNoteHead;
+
 	noteVerticalPos = NoteToPosition(GetPitch());
-	rect.SetRect(EVENT_OFFSET + EVENT_WIDTH * Event, noteVerticalPos, EVENT_OFFSET + EVENT_WIDTH * Event + 10, noteVerticalPos + 8);
+	szNoteHead = CSize(NOTE_HEAD_WIDTH, NOTE_HEAD_HEIGHT);
+	if (IsHeadFlipped())
+	{
+		ptNoteHead = CPoint(
+			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET,
+			noteVerticalPos
+		);
+	}
+	else
+	{
+		ptNoteHead = CPoint(
+			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH,
+			noteVerticalPos
+		);
+	}
+	rect = CRect(ptNoteHead, szNoteHead);
 }
 
 UINT CMsNote::CorrectPitchWithKeySignature()
@@ -1221,7 +1221,7 @@ int CMsNote::SetPitch(int NoteLocationOnStave)
 {
 	GetData().SetPitch(NoteLocationOnStave);
 	m_NotePlayed = NoteLocationOnStave;
-	m_NotePlayed += RangeLUT[GETMIDIINFO->GetRange(GetTrack())];
+	m_NotePlayed += CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
 	m_NotePlayed = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(m_NotePlayed, GetAccidental());
 	return m_NotePlayed;
 }

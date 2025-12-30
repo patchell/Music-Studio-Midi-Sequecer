@@ -1,5 +1,6 @@
 #pragma once
 
+class CMsSongInfo;
 
 // CDlgMidiInfo dialog
 
@@ -32,15 +33,19 @@ class CDlgMidiInfo : public CDialogEx
 
 	CEdit m_Edit_SongTitle;
 
+	CMsSongInfo* m_pSongInfo;
+	int m_Instrument;
 public:
 	CDlgMidiInfo(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CDlgMidiInfo();
 	virtual BOOL OnInitDialog();
 	void UpdateControls(int InstID);
 	virtual void OnOK();
-
+	void SetSongInfo(CMsSongInfo* pSongInfo) { m_pSongInfo = pSongInfo; }
+	CMsSongInfo* GetSongInfo() const { return m_pSongInfo; }
+	void SetInstrument(int Inst) { m_Instrument = Inst; }
+	int GetInstrument() const { return m_Instrument; }
 	enum { IDD = IDD_DIALOG_INSTUMENT_MIDI };
-
 protected:
 	afx_msg LRESULT OnMyscrollbarMsg(WPARAM wParam, LPARAM lParam);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

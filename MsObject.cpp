@@ -41,6 +41,21 @@ CMsObject::CMsObject()
 	m_PlayState = PLAYSTATE_NOT_STARTED;
 }
 
+CMsObject::CMsObject(MsObjType type)
+{
+	m_Selected = 0;
+	m_HighLight = false;
+	m_ObjType = type;
+	m_pNext = 0;
+	m_pPrev = 0;
+	m_pSelectedObjectNext = 0;
+	m_pSelectedObjectPrev = 0;
+	m_ObjectID = GETAPP->GetUniqueID();
+	m_pParentEvent = 0;
+	m_pSong = 0;
+	m_PlayState = PLAYSTATE_NOT_STARTED;
+}
+
 CMsObject::~CMsObject()
 {
 }
@@ -133,7 +148,7 @@ void CMsObject::DebugDump()
 
 void CMsObject::GetTypeString(CString& csType)
 {
-	csType = csObjectTypeString[(int)GetType()];
+	csType.Format(_T("%s"), GetStringFromType(GetType()));
 }
 
 void CMsObject::Draw(CDC *pDC, int event, int maxevent)

@@ -4,17 +4,11 @@
 
 #include "pch.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMsFlat::CMsFlat()
+CMsFlat::CMsFlat() :CMsObject(CMsObject::MsObjType::FLAT)
 {
 
 }
@@ -72,4 +66,9 @@ void CMsFlat::Draw(CDC *pDC, COLORREF c, int x, int y)
 	pDC->SetPixel(x-1,y+2,c);
 	pDC->SetPixel(x-1,y+2,c);
 	pDC->SelectObject(oldpen);
+}
+
+UINT CMsFlat::ObjectToString(CString& csString, UINT mode)
+{
+	return 0;
 }

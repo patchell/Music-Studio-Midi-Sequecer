@@ -30,6 +30,7 @@ public:
 		csString.Format(_T("Sharp"));
 		return csString.GetLength();
 	}
+	virtual void Draw(CDC* pDC, int event, int maxevent) {};
 	//------------------------------------------------------
 	void Draw(CDC* pDC, COLORREF c, int x, int y);
 

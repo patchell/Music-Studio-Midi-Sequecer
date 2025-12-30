@@ -168,10 +168,6 @@ BOOL CMidiSeqMSApp::InitInstance()
 	// windows resource file
 	//---------------------------------------
 	InitBitMaps();
-	//--------------------------------------
-	// Initialize Midi Information
-	//--------------------------------------
-	m_MidiInfo.Create(pFrame->GetDC());
 	//---------------------------------------
 	// 	   Create Song Player Thread
 	//---------------------------------------
@@ -192,8 +188,12 @@ BOOL CMidiSeqMSApp::InitInstance()
 		1
 	);
 	m_MMtimer.SetTempo(CalculateTempo(68));
+	//---------------------------------------
+	// Initialize Midi In/Out Tables
+	//---------------------------------------
+	GetMidiOutTable()->Create();
 	//------------ Select midi In/Out -----------------
-	OnMenuSetupSelmidi();
+//	OnMenuSetupSelmidi();
 	return true;
 }
 
@@ -327,8 +327,8 @@ void CMidiSeqMSApp::OnMenuSetupSelmidi()
 		{
 			if (dlg.GetInstrumentSel(TrackID))
 			{
-				GETTRACKINFO(TrackID).SetMidiOutDeviceID(DeviceId);
-				GETMIDIOUTTABLE.GetDevice(DeviceId).SetName(dlg.GetNameString());
+//				GETTRACKINFO(TrackID).SetMidiOutDeviceID(DeviceId);
+				GetMidiOutTable ()->GetDevice(DeviceId).SetName(dlg.GetNameString());
 			}
 		}
 	}
@@ -712,11 +712,11 @@ void CMidiSeqMSApp::OnSettingsAdddispatcher()
 	UINT nMidiInPorts;
 	UINT i;
 
-	nMidiInPorts = GetMidiInTable().GetNumDevices();;
+	nMidiInPorts = GetMidiInTable()->GetNumDevices();;
 	dlg.SetNumStrings(nMidiInPorts);
 	for ( i = 0; i < nMidiInPorts; i++)
 	{
-		dlg.SetSelectionString(i, GETMIDIINTABLE.GetMidiInDevice(i)->GetPortName());
+		dlg.SetSelectionString(i, GetMidiInTable()->GetMidiInDevice(i)->GetPortName());
 	}
 	if (IDOK == dlg.DoModal())
 	{

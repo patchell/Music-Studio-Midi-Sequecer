@@ -146,7 +146,7 @@ UINT CMidiInDevice::MidiInThread()
 	return rV;
 }
 
-int CMidiInDevice::KillThead()
+int CMidiInDevice::KillThread()
 {
 	//-------------------------------------------
 	// Close the midi in port
@@ -398,7 +398,7 @@ void CMidiInDevice::DispatchLongMessage(WPARAM wParam, LPARAM lParam)
 	//--------------------------------------------
 	MIDIHDR* pInBuffer = (MIDIHDR*)lParam;
 	unsigned char* pBuff = (unsigned char*)pInBuffer->lpData;
-	if (pBuff[0] == MIDI_SYSEX)
+	if (pBuff[0] == (unsigned char)MidiSystemCmds::SYSEX)
 	{
 
 	}

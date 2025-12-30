@@ -3,12 +3,6 @@
 
 #include "pch.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /////////////////////////////////////////////////////////////////////////////
 // CSelDurDlg dialog
 
@@ -21,7 +15,7 @@ CSelDurDlg::CSelDurDlg(CWnd* pParent /*=NULL*/)
 	m_Radio_Sel = -1;
 	//}}AFX_DATA_INIT
 	m_pPrompt = 0;
-	m_nDurSel = 2;
+	m_nDurSel = CMsNote::NoteShape::QUARTER;
 }
 
 
@@ -63,7 +57,7 @@ BOOL CSelDurDlg::OnInitDialog()
 	m_BmThirtySec.LoadBitmap(IDB_NOTE_THIRTYSECOND);
 	m_Combo_SelDur.AddBitmap(&m_BmThirtySec, CString(""));
 	m_nDurSel = CMsNote::GetDurationTable()[m_nDuration].NoteShapeIndex;
-	m_Combo_SelDur.SetCurSel(m_nDurSel);
+	m_Combo_SelDur.SetCurSel(int(m_nDurSel));
 	if (CMsNote::GetDurationTable()[m_nDuration].Dotted)
 		m_Radio_Sel = 1;
 	else if (CMsNote::GetDurationTable()[m_nDuration].Triplet)
@@ -84,8 +78,8 @@ void CSelDurDlg::OnSelchangeComboSelDuratuion()
 void CSelDurDlg::OnOK() 
 {
 	UpdateData();
-	m_nDurSel = m_Combo_SelDur.GetCurSel();
-	m_nDuration = CMsNote::NoteDurLut[m_nDurSel];
+	m_nDurSel = (CMsNote::NoteShape)m_Combo_SelDur.GetCurSel();
+	m_nDuration = CMsNote::NoteDurLut[(int)m_nDurSel];
 	if (m_Radio_Sel == 1) m_nDuration += 2;	//dotted
 	else if(m_Radio_Sel == 2) m_nDuration -= 2;	//tripplet
 	CDialog::OnOK();

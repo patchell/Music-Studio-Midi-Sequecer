@@ -25,10 +25,10 @@ public:
 	virtual bool DoesSomething() {
 		return true;
 	}
+	virtual void Draw(CDC* pDC, int event, int maxevent);
 	//------------------------------------------------------
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
-	virtual void Draw(CDC *pDC, int event, int maxevent);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0) { return 0; }
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	int GetKeySignature(){return m_KeySignature;}

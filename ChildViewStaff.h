@@ -57,23 +57,30 @@ public:
 		MOUSE_INUPPERSEL,
 		MOUSE_INLOWERSEL
 	};
-	// different draw mode
-	enum DrawModes {
-		DRAWMODE_NOP,
-		DRAWMODE_NOTE,
-		DRAWMODE_GLISSANDO,
-		DRAWMODE_BAR,
-		DRAWMODE_ENDBAR,
-		DRAWMODE_KKEYSIG,
-		DRAWMODE_TIMESIG,
-		DRAWMODE_TIE,
-		DRAWMODE_LOUDNESS,
-		DRAWMODE_TEMPO,
-		DRAWMODE_COPY,
-		DRAWMODE_MOVE,
-		DRAWMODE_MIDINOTEIN
+	enum class DrawMode : int {
+		NOP,
+		NOTE,
+		REST,
+		ENDBAR,
+		GLISSANDO,
+		BAR,
+		TIE,
+		COPY,
+		MOVE,
+		REPEAT,
+		TEMPO,
+		TIMESIG,
+		KEYSIG,
+		LOUDNESS,
+		INSTCHANGE,
+		CHANGEDUR,
+		INCREASEDUR,
+		DECREASEDUR,	//16
+		INCRPITCH,		//17
+		DECRPITCH,		//18
+		INSERTBLOCK,	//19
+		DRAW_NOTES_VIA_MIDI	//20
 	};
-
 	enum class EventObjectSignatureTypes {
 		EVENT_TEMPO_TIMESIG,
 		EVENT_LOUDNESS_KEYSIG
@@ -153,7 +160,7 @@ private:
 	int m_nDrawEvent;
 	int m_nRawEvent;
 	CMsObject* m_pDrawObject;
-	int m_nDrawMode;
+	DrawMode m_nDrawMode;
 	int m_MouseInEditRegion;
 	int m_MaxEvents;		//maximum number of events that can be displayed
 	CMsSong* m_pSong;
@@ -294,7 +301,7 @@ public:
 	int MouseInRegion(CPoint p);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
-	void SetupDrawMode(int DrawMode, long v = 0);
+	void SetupDrawMode(DrawMode Mode, long v = 0);
 	void UpdateNoteInfo(int RestFlag);
 	void UpdateScrollbarInfo(int TotalEvents, const char* Title = 0);
 	int XtoEventIndex(int x);
@@ -313,6 +320,8 @@ public:
 	void RemoveSelectedObject(CMsObject* pObj);
 	CMsObject* MatchMouseToObjectInEvent(UINT Event, CPoint MousePointer);
 	CMsObject* MatchMouseToSelectedObject(CPoint MousePointer);
+	CMsSongInfo* GetSongInfo(){return GetSong()->GetSongInfo();}
+	CMsTrack* GetTrackInfo(int TrackID);
 	// Generated message map functions
 protected:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

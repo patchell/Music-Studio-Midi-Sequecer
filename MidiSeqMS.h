@@ -2,21 +2,16 @@
 // MidiSeqMS.h : main header file for the MidiSeqMS application
 //
 #pragma once
+
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg() noexcept;
-#ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
-#endif
+	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	DECLARE_MESSAGE_MAP()
-
-public:
-	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
-    afx_msg void OnMenuMsFileSaveAs();
-    afx_msg void OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI);
 };
 
 class CMainFrame;
@@ -189,7 +184,7 @@ class CMidiSeqMSApp : public CWinApp
 	//----------------------------------------
 	// Midi Information
 	//----------------------------------------
-	CMidiInfo m_MidiInfo;
+//	CMidiInfo m_MidiInfo;
 	//----------------------------------------
 	FILE* m_pLog;
 	FILE* pConsol;
@@ -206,11 +201,11 @@ class CMidiSeqMSApp : public CWinApp
 	unsigned m_UniqueID;
 public:
 	CMidiSeqMSApp() noexcept;
-	HMIDIOUT GetMidiOutHandle(int MidiID) { return  GetMidiOutTab().GetOutHandle(MidiID); }
+	HMIDIOUT GetMidiOutHandle(int MidiID) { return  GetMidiOutTable()->GetOutHandle(MidiID); }
 	//	HMIDIIN GetMidiIn() {return  GetMidi()->GetMidiInHandle(); }
 	inline FILE* LogFile() { return m_pLog; }
 	//------------- Midi Info -----------------------
-	CMidiInfo* GetMidiInfo() { return &m_MidiInfo; }
+//	CMidiInfo* GetMidiInfo() { return &m_MidiInfo; }
 	//------------ Bitmap Symbols -------------------
 	inline CMyBitmap* bmGetQNoteEqQNPM() { return &m_BmQuarterNoteEqQNPM; }
 	inline int GetNumTimeSig() { return APP_NUM_TIMESIG; }
@@ -240,8 +235,10 @@ public:
 	inline int GetNumAlgrithms() { return APP_TX816_NUM_ALG_BITMAPS; }
 	inline CMyBitmap* bmGetTX816AlgBitmap(int alg) { return &m_aBmAlgrithm[alg]; }
 	inline CFont* GetFont() { return &m_fFont; }
-	CMidiOutTable& GetMidiOutTab() { return m_MidiOutTable; }
-	CMidiInTable& GetMidiInTable() { return m_MidiInTable; }
+	CMidiOutTable* GetMidiOutTable() { 
+		return &m_MidiOutTable; 
+	}
+	CMidiInTable* GetMidiInTable() { return &m_MidiInTable; }
 	void InitBitMaps();
 	void OnMenuSetupSelmidi();
 	bool RegisterBitmapComboBoxClass();
@@ -311,14 +308,6 @@ extern char* WcharToChar(char* pcDest, WCHAR* pwSrc, int len);
 extern CMidiSeqMSApp theApp;
 //----------- handy macros -------------------
 constexpr auto GETAPP = &theApp;
-#define GETMIDIINTABLE	(GETAPP->GetMidiInTable())
-#define GETMIDIOUTTABLE	(GETAPP->GetMidiOutTab())
-template<typename T>
-constexpr auto GETMIDIOUTDEVICE(T DevID) { return (GETAPP->GetMidiOutTab().GetDevice(DevID)); }
-template<typename T>
-constexpr auto GETMIDIINDEVICE(T DevID) { return (GETAPP->GetMidiInTable().GetMidiInDevice(DevID)); }
-#define GETTRACKINFO(t)	(GETAPP->GetMidiInfo()->GetTrack(t))
-#define GETMIDIINFO (GETAPP->GetMidiInfo())
 #define GETMAINFRAME (GETAPP->GetMainFrame())
 #define GETTIMERCONTEXT (GETAPP->GetTimerContext())
 #define GETTIMER	(GETAPP->GetTimer())

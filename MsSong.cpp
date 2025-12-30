@@ -41,7 +41,6 @@ CMsSong::CMsSong()
 	m_NoteCountOff = 0;    // count of note off events sent
 	m_TickerState = TickerState::STOPPED;
 	m_pEventDirectory = new CMsEventDirectory();
-
 }
 
 CMsSong::~CMsSong()
@@ -250,7 +249,7 @@ int CMsSong::Parse(char *pSongData)
 				obj.pNote->SetLegato(0);		//Not supported
 				obj.pNote->SetPitch(t2 & 0x7f);
 				obj.pNote->SetRest((c & MSFF_REST_FLAG)?1:0);
-				obj.pNote->SetStacato(0);		//Not supported
+				obj.pNote->SetStaccato(0);		//Not supported
 				obj.pNote->SetTieBeg((c & MSFF_BEGTIE_FLAG)?1:0);
 				obj.pNote->SetTieEnd((c & MSFF_ENDTIE_FLAG)?1:0);
 				obj.pNote->SetTrack((c & MSFF_TRACK_MASK));
@@ -762,7 +761,7 @@ void CMsSong::Save(FILE *pO)
 	//-----------------------------------
 	// Save Midi Info
 	//-----------------------------------
-	GETMIDIINFO->Save(pO);
+	SaveTracks(pO);
 	//-----------------------------------
 	// Save song content
 	//-----------------------------------
@@ -778,6 +777,16 @@ void CMsSong::Save(FILE *pO)
 		}
 		fputc(0,pO);	//event delemiter
 		pEv = pEv->GetNext();
+	}
+}
+
+void CMsSong::SaveTracks(FILE* pO)
+{
+	int i;
+
+	for (i = 1; i < 16; ++i)
+	{
+		GetTrack(i)->Save(pO);
 	}
 }
 
@@ -1016,12 +1025,16 @@ CMsObject * CMsSong::GetMsObject(
 }
 
 
-bool CMsSong::Create(CChildViewStaff* pCCV)
+bool CMsSong::Create(
+	CChildViewStaff* pCCV,
+	CSize szTrackIconSize
+)
 {
 	m_pChildView = pCCV;
 	m_pPlayerObjectQueue = new CMsPlayerQueue;
 	m_pPlayerObjectQueue->Create(this);
 	m_pEventDirectory->Create(this);
+	GetSongInfo()->Create(this, szTrackIconSize);
 	return true;
 }
 
@@ -1344,6 +1357,7 @@ bool CMsSong::Play(CChildViewStaff* pChildView)
 	}
 	return Succes;
 }
+
 bool CMsSong::CheckChan(int track, int chan)
 {
 	bool rv = true;
@@ -1362,11 +1376,31 @@ void CMsSong::MidiClock()
 	// out of the specified midi port
 	//---------------------------------------------
 	int NumMidiOutDevices;
-	NumMidiOutDevices = GETMIDIOUTTABLE.GetNumDevices();
+	NumMidiOutDevices = GETAPP->GetMidiOutTable()->GetNumDevices();
 	int i;
 	for (i = 0; i < NumMidiOutDevices; ++i)
 	{
-		GETMIDIOUTTABLE.Clock(i);
+		GETAPP->GetMidiOutTable()->GetDevice(i).Clock();
+	}
+}
+
+void CMsSong::MidiAllNotesOff()
+{
+	//--------------------------------------
+	// MidiAllNotesOff
+	//	Send the All Notes Off message out of the 
+	// specified midi port
+	//--------------------------------------
+	int NumMidiOutDevices = GETAPP->GetMidiOutTable()->GetNumDevices();;
+	int i;
+	int Id;
+	int Channel;
+
+	for (i = 1; i < 16; ++i)
+	{
+		Channel = GetTrack(i)->GetChannel();
+		Id = GetTrack(i)->GetMidiOutDeviceID();
+		GETAPP->GetMidiOutTable()->GetDevice(Id).CtrlChange(Channel, (int)MidiCC::ALL_NOTES_OFF, 0);
 	}
 }
 
@@ -1377,12 +1411,21 @@ void CMsSong::MidiStart()
 	//	Send the Midi Start out of the 
 	// specified midi port
 	//--------------------------------------
-	int NumMidiOutDevices;
-	NumMidiOutDevices = GETMIDIOUTTABLE.GetNumDevices();
+	int NumMidiOutDevices = GETAPP->GetMidiOutTable()->GetNumDevices();;
+	int* DevIds = new int[NumMidiOutDevices];
 	int i;
+	int Id;
+
 	for (i = 0; i < NumMidiOutDevices; ++i)
+		DevIds[i] = 0;
+	for (i = 1; i < 16; ++i)
 	{
-		GETMIDIOUTTABLE.Start(i);
+		Id = GetTrack(i)->GetMidiOutDeviceID();
+		if (DevIds[Id] == 0)
+		{
+			DevIds[Id] = 1;
+			GETAPP->GetMidiOutTable()->GetDevice(Id).Start();
+		}
 	}
 }
 
@@ -1393,12 +1436,22 @@ void CMsSong::MidiStop()
 	//	Send the midi STOP message out of the
 	// specified midi port
 	//---------------------------------------
-	int NumMidiOutDevices;
-	NumMidiOutDevices = GETMIDIOUTTABLE.GetNumDevices();
+	int NumMidiOutDevices = GETAPP->GetMidiOutTable()->GetNumDevices();;
+	int* DevIds = new int[NumMidiOutDevices];
 	int i;
-	for (i = 0; i < NumMidiOutDevices; ++i)
+	int Id;
+
+	for(i=0; i < NumMidiOutDevices; ++i)
+		DevIds[i] = 0;
+
+	for (i = 1; i < 16; ++i)
 	{
-		GETMIDIOUTTABLE.Stop(i);
+		Id = GetTrack(i)->GetMidiOutDeviceID();
+		if (DevIds[Id] == 0)
+		{
+			DevIds[Id] = 1;
+			GETAPP->GetMidiOutTable()->GetDevice(Id).Stop();
+		}
 	}
 }
 
@@ -1409,12 +1462,21 @@ void CMsSong::MidiContinue()
 	//	Send the Midi CONTINUE message out of
 	// the specified midi port
 	//-----------------------------------------
-	int NumMidiOutDevices;
-	NumMidiOutDevices = GETMIDIOUTTABLE.GetNumDevices();
+	int NumMidiOutDevices = GETAPP->GetMidiOutTable()->GetNumDevices();;
+	int* DevIds = new int[NumMidiOutDevices];
 	int i;
+	int Id;
+
 	for (i = 0; i < NumMidiOutDevices; ++i)
+		DevIds[i] = 0;
+	for (i = 1; i < 16; ++i)
 	{
-		GETMIDIOUTTABLE.Continue(i);
+		Id = GetTrack(i)->GetMidiOutDeviceID();
+		if (DevIds[Id] == 0)
+		{
+			DevIds[Id] = 1;
+			GETAPP->GetMidiOutTable()->GetDevice(Id).Continue();
+		}
 	}
 }
 
@@ -1433,11 +1495,26 @@ void CMsSong::ChangePatch(int Track, int MidiChannel, int Patch)
 	//-----------------------------------------------
 	int DeviceID;
 
-	MidiChannel = GETMIDIINFO->GetChannel(Track);
-	DeviceID = GETMIDIINFO->GetMidiOutDeviceId(Track);
-	GETMIDIOUTTABLE.PgmChange(DeviceID, MidiChannel, Patch);
+	DeviceID = GetTrack(Track)->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(MidiChannel, Patch);
 }
 
+CMsTrack* CMsSong::GetTrack(int TrackNumber)
+{
+	CMsTrack* pTrack = nullptr;
+
+	if ((TrackNumber > 0) && (TrackNumber < 16))
+	{
+		pTrack = GetSongInfo()->GetTrack(TrackNumber);
+	}
+	else
+	{
+		CString cs;
+		cs.Format(_T("Invalid Track Number %d"), TrackNumber);
+		GetStaffChildView()->MessageBox(cs, _T("Internal Error"), MB_OK);
+	}
+	return pTrack;
+}
 
 bool CMsSong::ValidateFile()
 {
@@ -1458,7 +1535,6 @@ bool CMsSong::ValidateFile()
 		if (strcmp(pS, "Mstudio") != 0)
 			rV = false;
 	}
-
 	return rV;
 }
 

@@ -8,20 +8,28 @@ class CChildViewStaff;
 
 extern UINT OnLine[12];
 
-constexpr auto NOTE_SHAPE_WHOLE = 0;
-constexpr auto NOTE_SHAPE_HALF = 1;
-constexpr auto NOTE_SHAPE_QUARTER = 2;
-constexpr auto NOTE_SHAPE_EIGHTH = 3;
-constexpr auto NOTE_SHAPE_SIXTEENTH = 4;
-constexpr auto NOTE_SHAPE_THIRTYSECOND = 5;
+enum class NoteStem : int {
+	NoStem,
+	Stem
+};
 
-constexpr auto NOTE_TAIL = 1;
-constexpr auto NOTE_NOTAIL = 0;
+enum class NoteFlags : int {
+	FLAG_QUARTER,
+	FLAG_8th,
+	FLAG_16th,
+	FLAG_32nd
+};
 
-constexpr auto NOTE_FLAGS_0 = 0;
-constexpr auto NOTE_FLAGS_1 = 1;
-constexpr auto NOTE_FLAGS_2 = 2;
-constexpr auto NOTE_FLAGS_3 = 3;
+constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
+constexpr auto NOTE_HEAD_WIDTH = 10;
+constexpr auto NOTE_HEAD_HEIGHT = 8;
+constexpr auto NOTE_HEAD_RECT_P1_X = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - 2;
+constexpr auto NOTE_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
+constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_X = NOTE_STEM_OFFSET;
+constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
+constexpr auto NOTE_ACCIDENTAL_OFFSET = 8;
+constexpr auto NOTE_STEM_LENGTH = 24;
+
 
 //--------------------------------
 // Note Tick Definitions arranged
@@ -59,7 +67,7 @@ class NoteData {
 	UINT m_TieBeg;	// begining of a tied note
 	UINT m_TieEnd;	// end of a tied note
 	bool m_Accent;	// accent note
-	bool m_Stacato;	// stacato note
+	bool m_Staccato;	// stacato note
 	bool m_Legato;	// legato note
 	bool m_StemDown;	// note stem points down
 	UINT m_HeadFlipped;	// note head points to the right
@@ -81,7 +89,7 @@ public:
 		m_TieBeg = 0;
 		m_TieEnd = 0;
 		m_Accent = 0;
-		m_Stacato = 0;
+		m_Staccato = 0;
 		m_Legato = 0;
 		m_Velocity = 100;
 		m_NoteOffTick = 2;		// Number of ticks for NOTEOFF
@@ -113,7 +121,7 @@ public:
 		m_TieBeg = source.GetTieBeg();
 		m_TieEnd = source.GetTieEnd();
 		m_Accent = source.GetAccent();
-		m_Stacato = source.GetStacato();
+		m_Staccato = source.GetStaccato();
 		m_Legato = source.GetLegato();
 		m_Velocity = source.GetVelocity();
 		m_NoteOffTick = source.GetNoteOffTick();		// Number of ticks for NOTEOFF
@@ -152,8 +160,8 @@ public:
 	void SetAccent(int v) { m_Accent = v; }
 	int GetAccent() { return m_Accent; }
 
-	void SetStacato(int v) { m_Stacato = v; }
-	int GetStacato() { return m_Stacato; }
+	void SetStaccato(int v) { m_Staccato = v; }
+	int GetStaccato() const { return m_Staccato; }
 
 	void SetLegato(int v) { m_Legato = v; }
 	int GetLegato() { return m_Legato; }
@@ -186,8 +194,12 @@ public:
 	void SetAccidental(INT v) { m_Accidental = v; }
 	INT GetAccidental() const {return m_Accidental;}
 
-	void SetTrack(INT v) { m_Track = v; }
-	INT GetTrack() { return m_Track;}
+	void SetTrack(INT v) { 
+		m_Track = v; 
+	}
+	INT GetTrack() { 
+		return m_Track;
+	}
 
 	void SetDuration(INT v) {m_Duration = v;}
 	INT GetDuration() { return m_Duration; }
@@ -207,19 +219,37 @@ public:
 class CMsNote : public CMsObject
 {
 public:
+	enum class NoteShape : int {
+		DNA = -1,
+		WHOLE,
+		HALF,
+		QUARTER,
+		EIGHTH,
+		SIXTEENTH,
+		THIRTYSECOND
+	};
+
 	//------------------------------------
 	// Byte 0 Midi Status (NOTEON,NOTEOFF)
 	// Byte 1 Midi Note
 	// Byte 2 Velocity
 	//-------------------------------------
-	inline static int RangeLUT[6] = { 0,-24,-12,0,12,24 };
+	inline static int RangeLUT[6] = { 
+		0,
+		-24,
+		-12,
+		0,
+		12,
+		24 
+	};
+
 	struct DUR {
-		UINT NoteShapeIndex;
+		NoteShape NoteShapeIndex;
 		UINT Dotted;
 		UINT Triplet;
 		UINT Solid;	// Note circle open or solid
-		UINT Flags;
-		UINT Stem;	// Stem direction
+		NoteFlags Flags;
+		NoteStem Stem;	// Stem direction
 		UINT NoteDurClockTicks;	// clock ticks
 		const char* pName;
 		int DurationTimeTicks() const { return NoteDurClockTicks; }
@@ -244,27 +274,27 @@ private:
 	// DurationTime	= Clock ticks
 	//------------------------------------------
 	inline static DUR DurTab[21] = {
-		{ -1,0,0,1,0,0,0,"NA"},				//0
-		{ NOTE_SHAPE_THIRTYSECOND,	0,1,1,	NOTE_FLAGS_3,NOTE_TAIL,NOTE_TICKS_32nd_TRIPLET,"32nd Trip"},			//1
-		{ -1,0,0,1,0,0,0,"NA"},				//2
-		{ NOTE_SHAPE_THIRTYSECOND,	0,0,1,	NOTE_FLAGS_3,1,NOTE_TICKS_32nd,"32nd"},		//3 thirty second
-		{ NOTE_SHAPE_SIXTEENTH,		0,1,1,	NOTE_FLAGS_2,1,NOTE_TICKS_16th_TRIPLET,"16th Trip"},			//4
-		{ NOTE_SHAPE_THIRTYSECOND,	1,0,1,	NOTE_FLAGS_3,1,NOTE_TICKS_32nd_DOTTED,"Dotted 32nd"},			//5 Dotted Thirty Second
-		{ NOTE_SHAPE_SIXTEENTH,		0,0,1,	NOTE_FLAGS_2,1,NOTE_TICKS_16th,"16th"},			//6 sixteenth
-		{ NOTE_SHAPE_EIGHTH,		0,1,1,	NOTE_FLAGS_1,1,NOTE_TICKS_8th_TRIPLET,"8th Trip"},			//7
-		{ NOTE_SHAPE_SIXTEENTH,		1,0,1,	NOTE_FLAGS_2,1,NOTE_TICKS_16th_DOTTED,"Dotted 16th"},		//8	Dotted Sixteenth
-		{ NOTE_SHAPE_EIGHTH,		0,0,1,	NOTE_FLAGS_1,1,NOTE_TICKS_8th,"Eighth"},			//9 eighth
-		{ NOTE_SHAPE_QUARTER,		0,1,1,	NOTE_FLAGS_0,1,NOTE_TICKS_QUARTER_TRIPLET,"1/4 Trip"},			//10
-		{ NOTE_SHAPE_EIGHTH,		1,0,1,	NOTE_FLAGS_1,1,NOTE_TICKS_8th_DOTTED,"Dotted Eighth"},		//11 Dotted Eighth
-		{ NOTE_SHAPE_QUARTER,		0,0,1,	NOTE_FLAGS_0,1,NOTE_TICKS_QUARTER,"Quarter"},			//12 quarter
-		{ NOTE_SHAPE_HALF,			0,1,0,	NOTE_FLAGS_0,1,NOTE_TICKS_HALF_TRIPLET,"1/2 Trip"},			//13
-		{ NOTE_SHAPE_QUARTER,		1,0,1,	NOTE_FLAGS_0,1,NOTE_TICKS_QUARTER_DOTTED,"Dotted Quarter"},	//14 Dotted Quarter Note
-		{ NOTE_SHAPE_HALF,			0,0,0,	NOTE_FLAGS_0,1,NOTE_TICKS_HALF,"Half"},				//15 half
-		{ NOTE_SHAPE_WHOLE,			0,1,0,	NOTE_FLAGS_0,0,NOTE_TICKS_WHOLE_TRIPLET,"Whole Trip"},		//16
-		{ NOTE_SHAPE_HALF,			1,0,0,	NOTE_FLAGS_0,1,NOTE_TICKS_HALF_DOTTED,"Dotted Half"},		//17 Dotted Half
-		{ NOTE_SHAPE_WHOLE,			0,0,0,	NOTE_FLAGS_0,0,NOTE_TICKS_WHOLE,"Whole"},			//18 whole
-		{ -1,0,0,0,0,0,0,"NA"},				//19
-		{ NOTE_SHAPE_WHOLE,			1,0,0,	NOTE_FLAGS_0,0,NOTE_TICKS_WHOLE_DOTTED,"Dotted Whole"}		//20 dotted whole
+		{ NoteShape::DNA,0,0,1,NoteFlags(0),NoteStem(0),0,"NA"},				//0
+		{ NoteShape::THIRTYSECOND,	0,1,1,	NoteFlags::FLAG_32nd,NoteStem::Stem,NOTE_TICKS_32nd_TRIPLET,"32nd Trip"},			//1
+		{ NoteShape::DNA,0,0,1,NoteFlags(0),NoteStem(0),0,"NA"},				//2
+		{ NoteShape::THIRTYSECOND,	0,0,1,	NoteFlags::FLAG_32nd,NoteStem::Stem,NOTE_TICKS_32nd,"32nd"},		//3 thirty second
+		{ NoteShape::SIXTEENTH,		0,1,1,	NoteFlags::FLAG_16th,NoteStem::Stem,NOTE_TICKS_16th_TRIPLET,"16th Trip"},			//4
+		{ NoteShape::THIRTYSECOND,	1,0,1,	NoteFlags::FLAG_32nd,NoteStem::Stem,NOTE_TICKS_32nd_DOTTED,"Dotted 32nd"},			//5 Dotted Thirty Second
+		{ NoteShape::SIXTEENTH,		0,0,1,	NoteFlags::FLAG_16th,NoteStem::Stem,NOTE_TICKS_16th,"16th"},			//6 sixteenth
+		{ NoteShape::EIGHTH,		0,1,1,	NoteFlags::FLAG_8th,NoteStem::Stem,NOTE_TICKS_8th_TRIPLET,"8th Trip"},			//7
+		{ NoteShape::SIXTEENTH,		1,0,1,	NoteFlags::FLAG_16th,NoteStem::Stem,NOTE_TICKS_16th_DOTTED,"Dotted Sixteenth"},		//8	Dotted Sixteenth
+		{ NoteShape::EIGHTH,		0,0,1,	NoteFlags::FLAG_8th,NoteStem::Stem,NOTE_TICKS_8th,"Eighth"},			//9 eighth
+		{ NoteShape::QUARTER,		0,1,1,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_QUARTER_TRIPLET,"1/4 Trip"},			//10
+		{ NoteShape::EIGHTH,		1,0,1,	NoteFlags::FLAG_8th,NoteStem::Stem,NOTE_TICKS_8th_DOTTED,"Dotted Eighth"},		//11 Dotted Eighth
+		{ NoteShape::QUARTER,		0,0,1,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_QUARTER,"Quarter"},			//12 quarter
+		{ NoteShape::HALF,			0,1,0,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_HALF_TRIPLET,"1/2 Trip"},			//13
+		{ NoteShape::QUARTER,		1,0,1,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_QUARTER_DOTTED,"Dotted Quarter"},	//14 Dotted Quarter Note
+		{ NoteShape::HALF,			0,0,0,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_HALF,"Half"},				//15 half
+		{ NoteShape::WHOLE,			0,1,0,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_WHOLE_TRIPLET,"Whole Trip"},		//16
+		{ NoteShape::HALF,			1,0,0,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_HALF_DOTTED,"Dotted Half"},		//17 Dotted Half
+		{ NoteShape::WHOLE,			0,0,0,	NoteFlags::FLAG_QUARTER,NoteStem::Stem,NOTE_TICKS_WHOLE,"Whole"},			//18 whole
+		{ NoteShape::DNA,0,0,0,NoteFlags(0),NoteStem(0),0,"NA"},				//19
+		{ NoteShape::WHOLE,			1,0,0,	NoteFlags::FLAG_QUARTER,NoteStem::NoStem,NOTE_TICKS_WHOLE_DOTTED,"Dotted Whole"}		//20 dotted whole
 	};
 	//-------------------------------
 	CMyBitmap* m_pRestBitmap;
@@ -341,8 +371,8 @@ public:
 	UINT GetAccent(void) { return GetData().GetAccent(); }
 	void SetAccent(UINT v) { GetData().SetAccent(v); }
 
-	UINT IsStacato(void) { return GetData().GetStacato(); }
-	void SetStacato(UINT v) { GetData().SetStacato(v); }
+	UINT IsStaccato(void) { return GetData().GetStaccato(); }
+	void SetStaccato(UINT v) { GetData().SetStaccato(v); }
 
 	UINT IsLegato(void) { return GetData().GetLegato(); }
 	void SetLegato(UINT v) { GetData().SetLegato(v); }
@@ -350,7 +380,10 @@ public:
 	INT GetAccidental(void) { return GetData().GetAccidental(); }
 	void SetAccidental(INT k) { GetData().SetAccidental(k); }
 
-	INT GetTrack(void) { return GetData().GetTrack(); }
+	INT GetTrack(void) { 
+		int Track = GetData().GetTrack();
+		return Track; 
+	}
 	void SetTrack(INT t) { GetData().SetTrack(t); }
 
 	INT GetDuration(void) { return GetData().GetDuration(); }
@@ -369,8 +402,7 @@ public:
 	void SetDotted(int d) { GetData().SetDotted(d); }
 	int GetDotted() { return GetData().GetDotted(); }
 
-	int GetMidiOutID(int Track) { return GETMIDIINFO->GetMidiOutDeviceId(Track); }
-	int GetShape() { return  DurTab[(int)GetDuration()].NoteShapeIndex; }
+	int GetShape() { return  (int)DurTab[(int)GetDuration()].NoteShapeIndex; }
 
 	int NearestLine();
 	int IsOnLine() {
@@ -395,7 +427,7 @@ public:
 	bool IsSolid(void) { return DurTab[(int)GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
 	INT NeedsFlags(void);
-	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem ? true : false; }
+	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem == NoteStem::Stem ? true : false; }
 	int NeedsLine(void);
 	//----------------
 	// Send to Midi
