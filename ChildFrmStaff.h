@@ -9,7 +9,8 @@ class CChildFrameStaff : public CChildFrameBase
 	CChildViewStaff m_wndStaffView;
 	DECLARE_DYNCREATE(CChildFrameStaff)
 protected:
-	CSplitterWnd m_wndSplitter;
+// Splitter window is not used, YET!
+//	CSplitterWnd m_wndSplitter;
 public:
 	CChildFrameStaff() noexcept;
 	virtual ~CChildFrameStaff();

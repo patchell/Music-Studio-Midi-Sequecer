@@ -59,7 +59,7 @@ CMsTrack* CMsSongInfo::GetTrack(int TrackID)
 {
 	CMsTrack* pTrack = nullptr;
 
-	if(TrackID >= 0 && TrackID < 16)
+	if(TrackID > 0 && TrackID < 16)
 		pTrack = &Tracks[TrackID];
 	else
 		::MessageBoxW(NULL, _T("ERROR"), _T("Track ID out of Range"), MB_OK);

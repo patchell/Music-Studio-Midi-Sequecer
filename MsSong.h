@@ -13,8 +13,7 @@ class CMsPlayerQueue;
 
 class CMsSong
 {
-public:
-	enum class TickerState
+public: enum class TickerState
 	{
 		START,
 		RUNNING,
@@ -186,6 +185,7 @@ public:
 	int GetTotalEvents() const { return m_nTotalEvents; }
 	void SetTotalEvents(int t) { m_nTotalEvents = t; }
 	void RenumberEvents(int* First = nullptr, int* Last = nullptr);
+	void RenumberMeasureBars();
 	//----------------- Song ID Management ----------------
 	int GetSongId() { return m_SongID; }
 	//**************************************
@@ -242,7 +242,9 @@ public:
 	int GetNoteOffCount() const { return m_NoteCountOff; };
 	//=------------------------------------------------
 	CMsEventDirectory* GetEventDirectory(){ return m_pEventDirectory; }
-	CMsTrack* GetTrack(int TrackNum); 
+	CMsTrack* GetTrackInfo(int TrackNum); 
 	CMsSongInfo* GetSongInfo() { return &m_SongInfo; }
+	SColorPalette* GetColorPalette();
+	int GetNumberOfTracks() const { return m_SongInfo.GetNumberOfTracks(); }
 };
 

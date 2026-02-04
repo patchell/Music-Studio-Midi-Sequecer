@@ -7,7 +7,7 @@
 
 void PrintRec(const char *pTit, CRect rec)
 {
-	//printf("RECT :%s:Point(%d, %d) Size(%d, %d)\n",
+	//if(LogFile()) fprintf(LogFile(),"RECT :%s:Point(%d, %d) Size(%d, %d)\n",
 	//	pTit,
 	//	rec.left, 
 	//	rec.top, 
@@ -473,7 +473,7 @@ int CComboDropUp::GetCurSel()
 	return m_nCurSel;
 }
 
-void CComboDropUp::SetCurSel(int Sel)
+void CComboDropUp::SetCurSel(int Sel, bool Notify)
 {
 	double m;
 	int pos;
@@ -484,7 +484,7 @@ void CComboDropUp::SetCurSel(int Sel)
 	m_nCurSel = Sel;;
 	pos = int(m * double( Sel));
 	MoveThumb(pos);
-	if (m_nCurSel != oldsel)
+	if ((m_nCurSel != oldsel) && Notify)
 	{
 		int id = GetDlgCtrlID();
 		GetParent()->PostMessageW(

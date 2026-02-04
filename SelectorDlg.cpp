@@ -11,7 +11,7 @@ IMPLEMENT_DYNAMIC(CSelectorDlg, CDialog)
 CSelectorDlg::CSelectorDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_DIALOG_SELECTOR, pParent)
 {
-	m_pBitmaps = 0;
+	m_ppBitmaps = 0;
 	m_nBitmaps = 0;
 	m_nSelection = COMBO_TIMESIG_2_2;
 }
@@ -39,7 +39,7 @@ BOOL CSelectorDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	for (int i = 0; i < m_nBitmaps; ++i)
-		m_Combo_Selector.AddBitmap(m_pBitmaps++, CString(""));
+		m_Combo_Selector.AddBitmap(m_ppBitmaps[i], CString(""));
 	m_Combo_Selector.SetCurSel((int)m_nSelection);
 	SetWindowText(m_csCaption);
 	return true;  

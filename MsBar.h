@@ -5,7 +5,9 @@
 
 
 constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
-
+constexpr auto MEASUREBAR_NUMBER_HEIGHT = 14;
+constexpr auto MEASUREBAR_NUMBER_OFFSET_Y = 12;
+constexpr auto MEASUREBAR_NUMBER_OFFSET_X = 10;
 class CMsBar : public CMsObject
 {
 	static UINT LastBarNumber;
@@ -21,16 +23,17 @@ public:
 	virtual UINT Play();
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE	 MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject(){ return 0; }
 	virtual bool DoesSomething() {
 		return false;
 	}
+	virtual void Draw(CDC* pDC);
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
 	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual void Copy(CMsObject* pSource);
-	virtual void Draw(CDC* pDC, int event, int maxevent);
 	virtual UINT Process(CMsSong* pSong);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);

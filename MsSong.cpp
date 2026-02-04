@@ -56,16 +56,16 @@ CMsSong::~CMsSong()
 		{
 			pEvDel = pEv;
 			pEv = pEv->GetNext();
-			delete pEvDel;
+			if(pEvDel) delete pEvDel;
 		}
 	}
 	if(m_pPlayerObjectQueue)
 	{
-		delete m_pPlayerObjectQueue;
+		if(m_pPlayerObjectQueue) delete m_pPlayerObjectQueue;
 	}
 	if(m_pEventDirectory)
 	{
-		delete m_pEventDirectory;
+		if(m_pEventDirectory) delete m_pEventDirectory;
 	}
 }
 
@@ -77,10 +77,10 @@ void CMsSong::AddEventAtEnd(CMsEvent *pE)
 	// <param name="pE"></param>
 	if (pE)
 	{
-		if(m_pEventDirectory->GetTotalEvents() == pE->GetIndex())
-		{
-			m_pEventDirectory->SetEvent(pE);
-		}
+		//if(m_pEventDirectory->GetTotalEvents() == pE->GetIndex())
+		//{
+		//	m_pEventDirectory->SetEvent(pE);
+		//}
 		if (m_pEventListHead == 0)
 		{
 			m_pEventListHead = pE;
@@ -185,7 +185,7 @@ int CMsSong::Parse(char *pSongData)
 			case MSFF_TOKEN_KEY_SIGNATURE:
 				KeySig = ParserGetC();
 				if(KeySig != 1)
-					printf("*********** ERROR: KeySig != 1 **************\n");
+					if (LogFile()) fprintf(LogFile(), "*********** ERROR: KeySig != 1 **************\n");
 				KeySig = ParserGetC();
 				obj.pKey = new CMsKeySignature();
 				obj.pKey->Create(this,pEv,KeySig);
@@ -207,7 +207,7 @@ int CMsSong::Parse(char *pSongData)
 			case MSFF_TOKEN_LOUDNESS:
 				Loudness = ParserGetC();
 				if(Loudness != 1)
-					printf("*********** ERROR: Loudness != 1 **************\n");
+					if (LogFile()) fprintf(LogFile(), "*********** ERROR: Loudness != 1 **************\n");
 				Loudness = ParserGetC();
 				obj.pLoud = new CMsLoudness();
 				obj.pLoud->Create(this,pEv, Loudness);
@@ -266,6 +266,10 @@ int CMsSong::Parse(char *pSongData)
 	return rV;
 }
 
+void CMsSong::Print(FILE* pO)
+{
+}
+
 UINT CMsSong::LittleEndian(UINT bE)
 {
     union {
@@ -281,38 +285,22 @@ UINT CMsSong::LittleEndian(UINT bE)
     return CV.m_S;
 }
 
-void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
+void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 {
 	//------------------------------------
-	// <summary>
-	// 
-	// </summary>
-	// <param name="pDC"></param>
-	// <param name="event"></param>
-	// <param name="maxevent"></param>
-	// <param name="pRect"></param>
+	// Draw
+	// pDC........Devoce Context for the
+	//            Entire Area of the Event
+	//			  Chain to be drawn
 	//------------------------------------
 	int i = 0;
 	int MaxX = pRect->right;
-	CPen blk,*oldpen;
+	CPen penStaffLins,*oldpen;
+	CMyBitmap bmEvent;
+	CDC memDCEvent;
 
-	blk.CreatePen(PS_SOLID,1,RGB(0,0,0));
-	oldpen = pDC->SelectObject(&blk);
-	//------------------------------------
-	// draw staves
-	//------------------------------------
-	for(i=0;i<5;++i)	//treble
-	{
-		int y = i * 8 + STAVE_OFFSET;
-		pDC->MoveTo(0,y);
-		pDC->LineTo(MaxX,y);
-	}
-	int o = i * 8 + STAVE_OFFSET + 8;
-	for(i=0;i<5;++i)	//bass
-	{
-		pDC->MoveTo(0,i*8+o);
-		pDC->LineTo(MaxX,i*8+o);
-	}
+	penStaffLins.CreatePen(PS_SOLID,1, GetColorPalette()->color_StaffLines);
+	oldpen = pDC->SelectObject(&penStaffLins);
 	//-----------------------------
 	// draw clefs
 	//-----------------------------
@@ -331,10 +319,27 @@ void CMsSong::Draw(CDC *pDC, int event, int maxevent,CRect *pRect)
 	pDC->BitBlt(2, BASS_CLEF_OFFSET,szBass.cx,szBass.cy,&memDC,0,0,SRCAND);
 	memDC.SelectObject(oldBM);
 	pDC->SelectObject(oldpen);
-	CMsEvent *pEv = GetEventObject(event);
+	//-----------------------------
+	// create a memory DC for event
+	// drawing.
+	//-----------------------------
+	bmEvent.CreateCompatibleBitmap(pDC, EVENT_WIDTH, EVENT_HEIGHT);
+	memDCEvent.CreateCompatibleDC(pDC);
+	oldBM = (CMyBitmap*)memDCEvent.SelectObject(&bmEvent);
+	CMsEvent *pEv = GetEventObject(StartEvent);
 	for(i=0;(i<maxevent+1) && pEv;++i,pEv = pEv->GetNext())
 	{
-		if(pEv)pEv->Draw(pDC,i,maxevent);
+		if(pEv)pEv->Draw(&memDCEvent);
+		pDC->BitBlt(
+			i * EVENT_WIDTH, 
+			0, 
+			EVENT_WIDTH,
+			EVENT_HEIGHT, 
+			&memDCEvent, 
+			0, 
+			0, 
+			SRCCOPY
+		);
 	}
 }
 
@@ -498,6 +503,52 @@ void CMsSong::RenumberEvents(int *First, int *Last)
 //	GetEventListHead()->PrintEvents(theApp.LogFile(), "RenumberEvents", 2);
 }
 
+void CMsSong::RenumberMeasureBars()
+{
+	CMsEvent* pEv = GetEventListHead();
+	int MeasureBarCount = 0;
+	int DuplicateBarCount = 0;
+	CMsObject* pObj = nullptr;
+	CMsObject* pTempObj = nullptr;	
+
+	while (pEv)
+	{
+		pObj = pEv->FindFirstObjectOfType(CMsObject::MsObjType::BAR);
+		DuplicateBarCount = 0;
+		while (pObj)
+		{
+			printf("Renumber Measures: Event %d, Object Type: %s\n",
+				pEv->GetIndex(),
+				CMsObject::GetStringFromType(pObj->GetType())
+			);
+			if(DuplicateBarCount > 0)
+			{
+				//---------------------------
+				// This is a duplicate bar
+				// remove it
+				//---------------------------
+				pEv->RemoveObject(pObj);
+				pTempObj = pObj;
+				pObj = pEv->FindNextObjectOfType(CMsObject::MsObjType::BAR, pObj);
+				delete pTempObj;
+			}
+			else
+			{
+				//---------------------------
+				// This is the first bar
+				// keep it
+				//---------------------------
+				CMsBar* pBar = (CMsBar*)pObj;
+				pBar->SetBarNumber(++MeasureBarCount);
+				pObj = pEv->FindNextObjectOfType(CMsObject::MsObjType::BAR, pObj);
+			}
+			++DuplicateBarCount;
+		}
+		pEv = pEv->GetNext();
+	}
+	printf("Exit: RenumberMeasureBars: Total Measure Bars = %d\n", MeasureBarCount);
+}
+
 CMsEvent *CMsSong::InsertEvent(int e)
 {
 	//--------------------------------
@@ -592,7 +643,7 @@ CMsNote * CMsSong::CheckForNotePresence(int Event, int Note)
 	}
 	if(pEv)
 	{
-		pOb = pEv->GetEventObjectHead();
+		pOb = pEv->GetEventMsObjectHead();
 		loop = 1;
 		while(loop && pOb)
 		{
@@ -630,12 +681,15 @@ CMsEvent *CMsSong::GetEventObject(int EventIndex)
 	//-------------------------------------
 	CMsEvent *pEv = GetEventListHead();
 	bool loop = true;
+	int SongEventIndex;
 
-
+	if (pEv->GetPrev())
+		printf("Huh\n");
 	while(pEv && loop)
 	{
 		// Is this the one?
-		if(pEv->GetIndex() == EventIndex)
+		SongEventIndex = pEv->GetIndex();
+		if(SongEventIndex == EventIndex)
 			loop = false;	//Yes, stop seraching
 		else
 			// Keep seraching
@@ -654,6 +708,7 @@ CMsEvent *CMsSong::GetEventObject(int EventIndex)
 		// to go here.
 		//-----------------------------
 		pEv = MakeNewEvent(EventIndex);
+		loop = false;
 	}
 	return pEv;
 }
@@ -712,7 +767,7 @@ void CMsSong::Save(FILE *pO)
 	//---------------------------------------
 	if(m_pEventListTail)
 	{
-		CMsObject *pOb = m_pEventListTail->GetEventObjectHead();
+		CMsObject *pOb = m_pEventListTail->GetEventMsObjectHead();
 		while(pOb && NoEnd)
 		{
 			if(CMsObject::MsObjType::ENDBAR == pOb->GetType())
@@ -769,7 +824,7 @@ void CMsSong::Save(FILE *pO)
 	while(pEv)
 	{
 		CMsObject *pObj;
-		pObj = pEv->GetEventObjectHead();
+		pObj = pEv->GetEventMsObjectHead();
 		while(pObj)
 		{
 			pObj->Save(pO);
@@ -786,7 +841,7 @@ void CMsSong::SaveTracks(FILE* pO)
 
 	for (i = 1; i < 16; ++i)
 	{
-		GetTrack(i)->Save(pO);
+		GetTrackInfo(i)->Save(pO);
 	}
 }
 
@@ -845,7 +900,7 @@ bool CMsSong::Open(CString& csFileName)
 			}
 		}
 	}
-	delete[] pName;
+	if(pName) delete[] pName;
 	return rV;
 }
 
@@ -892,7 +947,7 @@ void CMsSong::DeleteEvent(CMsEvent * pEvent)
 		pEvent->GetPrev()->SetNext(pEvent->GetNext());
 	}
 	RenumberEvents(0, 0);
-	delete pEvent;
+	if(pEvent) delete pEvent;
 }
 
 CMsEvent* CMsSong::MakeNewEvent()
@@ -999,15 +1054,15 @@ CMsObject * CMsSong::GetMsObject(
 	{
 		CMsObject *pObj;
 
-//		printf("    Search for Object in event %d\n", pEV->GetIndex());
-		pObj = pEV->GetEventObjectHead();
+//		if(LogFile()) fprintf(LogFile(),"    Search for Object in event %d\n", pEV->GetIndex());
+		pObj = pEV->GetEventMsObjectHead();
 		while (pObj && loop)
 		{
 			if (pObj->GetType() == ObjType)
 			{
 				pRetObj = pObj;
 				loop = 0;
-//				printf("      Object Found\n");
+//				if(LogFile()) fprintf(LogFile(),"      Object Found\n");
 			}
 			pObj = pObj->GetNext();
 		}
@@ -1323,7 +1378,7 @@ CMsEvent* CMsSong::GetNextEventToProcess()
 		pEv = pEv->GetNext();
 		while (pEv && Loop)
 		{
-			pObj = pEv->GetEventObjectHead();
+			pObj = pEv->GetEventMsObjectHead();
 			if (pObj)
 				Loop = false;
 			else
@@ -1398,8 +1453,8 @@ void CMsSong::MidiAllNotesOff()
 
 	for (i = 1; i < 16; ++i)
 	{
-		Channel = GetTrack(i)->GetChannel();
-		Id = GetTrack(i)->GetMidiOutDeviceID();
+		Channel = GetTrackInfo(i)->GetChannel();
+		Id = GetTrackInfo(i)->GetMidiOutDeviceID();
 		GETAPP->GetMidiOutTable()->GetDevice(Id).CtrlChange(Channel, (int)MidiCC::ALL_NOTES_OFF, 0);
 	}
 }
@@ -1420,7 +1475,7 @@ void CMsSong::MidiStart()
 		DevIds[i] = 0;
 	for (i = 1; i < 16; ++i)
 	{
-		Id = GetTrack(i)->GetMidiOutDeviceID();
+		Id = GetTrackInfo(i)->GetMidiOutDeviceID();
 		if (DevIds[Id] == 0)
 		{
 			DevIds[Id] = 1;
@@ -1446,7 +1501,7 @@ void CMsSong::MidiStop()
 
 	for (i = 1; i < 16; ++i)
 	{
-		Id = GetTrack(i)->GetMidiOutDeviceID();
+		Id = GetTrackInfo(i)->GetMidiOutDeviceID();
 		if (DevIds[Id] == 0)
 		{
 			DevIds[Id] = 1;
@@ -1471,7 +1526,7 @@ void CMsSong::MidiContinue()
 		DevIds[i] = 0;
 	for (i = 1; i < 16; ++i)
 	{
-		Id = GetTrack(i)->GetMidiOutDeviceID();
+		Id = GetTrackInfo(i)->GetMidiOutDeviceID();
 		if (DevIds[Id] == 0)
 		{
 			DevIds[Id] = 1;
@@ -1495,11 +1550,11 @@ void CMsSong::ChangePatch(int Track, int MidiChannel, int Patch)
 	//-----------------------------------------------
 	int DeviceID;
 
-	DeviceID = GetTrack(Track)->GetMidiOutDeviceID();
+	DeviceID = GetTrackInfo(Track)->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(MidiChannel, Patch);
 }
 
-CMsTrack* CMsSong::GetTrack(int TrackNumber)
+CMsTrack* CMsSong::GetTrackInfo(int TrackNumber)
 {
 	CMsTrack* pTrack = nullptr;
 
@@ -1678,3 +1733,7 @@ int CMsSong::DumpSong(FILE* pOutFile)
 	return rV;
 }
 
+SColorPalette* CMsSong::GetColorPalette()
+{
+	return m_pChildView->GetColorPalette();
+}

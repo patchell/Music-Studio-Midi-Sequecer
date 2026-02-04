@@ -227,6 +227,7 @@
     <ClInclude Include="MsPortamentoStart.h" />
     <ClInclude Include="MsSongInfo.h" />
     <ClInclude Include="MsStack.h" />
+    <ClInclude Include="MusicStudioDefines.h" />
     <ClInclude Include="MyEvent.h" />
     <ClInclude Include="MidiOutDevice.h" />
     <ClInclude Include="MidiOutTable.h" />

@@ -28,8 +28,8 @@ END_MESSAGE_MAP()
 
 BOOL CChildFrameBase::PreCreateWindow(CREATESTRUCT& cs)
 {
-	cs.cx = 520;
-	cs.cy = 403;	//320
+	cs.cx = CHILD_FRAME_WIDTH;
+	cs.cy = CHILD_FRAME_HEIGHT;	
 	cs.style |= WS_CHILD | WS_VISIBLE | WS_THICKFRAME | WS_CAPTION;
 	cs.style &= ~WS_SIZEBOX;
 	cs.style &= ~FWS_ADDTOTITLE;

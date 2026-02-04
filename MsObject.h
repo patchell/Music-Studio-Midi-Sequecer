@@ -46,28 +46,6 @@ class CMsSong;
 class CMsEvent;
 class CChildViewStaff;
 
-constexpr auto STAVE_OFFSET = 132;	//DISTANCE from top of client rect;
-									// to the top of the treble stave
-constexpr auto STAVE_LINE_SPACING = 8;
-constexpr auto STAFF_HEIGHT = (19 * STAVE_LINE_SPACING);
-constexpr auto EVENT_WIDTH = 40;	// width of each event5;
-constexpr auto EVENT_OFFSET = 32;	// distance from left edge;
-									// of the client rect to
-									// where the first event is
-constexpr auto STAVE_HEIGHT = STAVE_LINE_SPACING * 10;	// Distance from top line of;
-									// The treble stave to the
-									// bottom line of the base stave
-constexpr auto MAXNOTE_HEIGHT = STAVE_LINE_SPACING * 6;	//how high high C is above stave;
-constexpr auto QUANTIZED_STAFF_HEIGHT = STAFF_HEIGHT / 4;
-constexpr auto CURSOR_CENTER = STAVE_LINE_SPACING;
-constexpr auto HIGHC_OFFSET = STAVE_OFFSET - MAXNOTE_HEIGHT + CURSOR_CENTER;
-constexpr auto CENTER_OF_TREBEL = (STAVE_OFFSET);
-constexpr auto CENTER_OF_BASS = (STAVE_OFFSET + 48);
-
-
-constexpr auto TREBLE_CLEF_OFFSET = (STAVE_OFFSET - 8);
-constexpr auto BASS_CLEF_OFFSET = (STAVE_OFFSET + 46);
-
 union ObjectTypes{
 	CMsBar *pBar;
 	CMsEndBar *pEnd;
@@ -88,6 +66,7 @@ class CMsObject
 {
 public:
 	enum class MsObjType : int {
+		NONE = 0,
 		BAR,
 		ENDBAR,
 		KEYSIG,
@@ -119,6 +98,7 @@ private:
 		}
 	};
 	static inline const ObjTypeStringItem ObjTypeStringTable[] = {
+		{ MsObjType::NONE,			"None" },
 		{ MsObjType::BAR,			"Bar" },
 		{ MsObjType::ENDBAR,		"End Bar" },
 		{ MsObjType::KEYSIG,		"Key Signature" },
@@ -173,11 +153,12 @@ public:
 	virtual UINT Play() = 0;
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse) = 0;
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse) = 0;
-	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition) = 0;
 	virtual int IsTimedObject() = 0;
 	virtual bool DoesSomething() = 0;
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0) = 0;
-	virtual void Draw(CDC* pDC, int event, int maxevent) = 0;
+	virtual void Draw(CDC* pDC) = 0;
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent) = 0;
 	//-------------------------------------------------
 	// Back to our regularly scheduled Methods
 	//-------------------------------------------------
@@ -193,12 +174,15 @@ public:
 	virtual void ObjectRectangle(CRect& rect, UINT Event) { rect.SetRect(0, 0, 0, 0); }
 	virtual bool HighLight(bool HL, CPoint ptObj);
 	virtual bool Select(bool Select, CPoint ptObj);
-	virtual void SetParentEvent(UINT ParrentEvent);
+//	virtual void SetParentEvent(UINT ParrentEvent);
 	virtual CMsEvent* GetParentEvent() { 
 		return m_pParentEvent; 
 	}
 	virtual void SetParentEvent(CMsEvent* pEvent) { 
-		m_pParentEvent = pEvent; 
+		//if (pEvent)
+		//{
+			m_pParentEvent = pEvent;
+//		}
 	}
 	virtual CMsObject* MakeANewObject() { return nullptr; }
 	virtual void DebugDump();
@@ -210,12 +194,16 @@ public:
 	bool Is(MsObjType t) const { return (m_ObjType == t); }
 	void GetTypeString(CString& csType);
 	void SetSelected(bool s) { m_Selected = s; }
-	bool IsSelected(void) { return m_Selected; }
+	bool IsSelected(void) const { return m_Selected; }
 	void SetHighLight(bool hl) { m_HighLight = hl; }
-	bool IsHighLighted() { return m_HighLight; }
-	UINT GetObjectID() { return m_ObjectID; }
+	bool IsHighLighted() const  { return m_HighLight; }
+	UINT GetObjectID() const { 
+		return m_ObjectID; 
+	}
 	CMsSong* GetSong() { return m_pSong; }
 	void SetSong(CMsSong* pSong) { m_pSong = pSong; }
+	CChildViewStaff* GetStaffView();
+
 	//--------------------------------------------------
 	// Linked List Methodes
 	//--------------------------------------------------

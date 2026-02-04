@@ -8,50 +8,72 @@ class CMsSong;
 
 class CMsEvent
 {
-	UINT m_Selected;
+	UINT m_Selected;	// Number of selected objects in this event
+	//------------------------------
+	// Linked List of Events
+	//------------------------------
 	CMsEvent *m_pNext;
 	CMsEvent *m_pPrev;
-	CMsObject * m_pEventObjectListHead;	//event queue head
-	CMsObject * m_pEventObjectListTail;	//event queue end
-	CChildViewStaff* m_pView;
-	CMsSong* m_pParentSong;
+	int m_NumberOfObjects;
+	//------------------------------
+	// Linked List of Music Objects
+	//------------------------------
+	CMsObject * m_pEventMsObjectListHead;	//event queue head
+	CMsObject * m_pEventMsObjectListTail;	//event queue end
+	//------------------------------
+	// Event Identifierws
+	//------------------------------
 	int m_Index;	// posisiton in chaihn
 	UINT m_EventID;
-	INT m_NumberOfObjects;
+	//------------------------------
+	CChildViewStaff* m_pView;	// Parent View
+	CMsSong* m_pParentSong;		// Parent Song
 public:
 	CMsEvent();
 	virtual ~CMsEvent();
 	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV);
-	virtual void Draw(CDC *pDC, int event, int maxevent);
+	virtual void Draw(CDC *pDC);
+	void DrawStaffLines(CDC* pDC);	
 	//--------------------------------------
 	// Object management functions
 	//--------------------------------------
-	void SetEventObjectHead(CMsObject* pMO) { m_pEventObjectListHead = pMO; }
-	CMsObject* GetEventObjectHead(void) { return m_pEventObjectListHead; }
-	void SetEventObjectTail(CMsObject* pMO) { m_pEventObjectListTail = pMO; }
-	CMsObject* GetEventObjectTail() { 
-		return m_pEventObjectListTail; 
+	void SetEventMsObjectHead(CMsObject* pMO) { 
+		m_pEventMsObjectListHead = pMO; 
 	}
+	CMsObject* GetEventMsObjectHead(void) { 
+		return m_pEventMsObjectListHead; 
+	}
+	void SetEventMsObjectTail(CMsObject* pMO) { 
+		m_pEventMsObjectListTail = pMO; 
+	}
+	CMsObject* GetEventMsObjectTail() { 
+		return m_pEventMsObjectListTail; 
+	}
+	//------------ Event Index Management ----------------
 	void SetEventIndex(int I) { 
 		m_Index = I; 
 	}
 	int GetIndex() const { 
 		return m_Index; 
 	}
+	int GetPhysicalIndex();
 	UINT GetEventID() { return m_EventID; }
-	//------------ Linked List ----------------
+	//------------ Music Object Linked List ----------------
 	void AddObject(CMsObject* pO);
 private:
 	void AddObjectAtEnd(CMsObject *pO);
 	void AddObjectAtStart(CMsObject* pO);
 	void AddObjectAtHead(CMsObject* pO);
 	void AddObjectAtTail(CMsObject* pO);
+	void AddNoteInOrder(CMsObject* pO);
 public:
 	void InsertObjectAfter(CMsObject* pO, CMsObject* pAfterObj);
 	void InsertObjectBefore(CMsObject* pO, CMsObject* pBeforeObj);
-	bool AreThereAnyNotesInThisEvent();
+	int AreThereAnyNotesInThisEvent();
+	bool IsThisObjectInThisEvent(CMsObject* pO);
 	bool IsThereOnlyOneNoteInThisEvent();
-	void AddNoteInOrder(CMsObject* pO);
+	CMsObject* FindFirstObjectOfType(CMsObject::MsObjType ObjectType);
+	CMsObject* FindNextObjectOfType(CMsObject::MsObjType ObjectType, CMsObject* pPrevObj);
 	CMsNote* FindFirstNote();
 	CMsNote* FindNextNote(CMsNote* pPrevNote);
 	int RemoveObject(CMsObject *pObj);

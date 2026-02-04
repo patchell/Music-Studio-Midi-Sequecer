@@ -531,6 +531,9 @@
     <ClInclude Include="MsSongInfo.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="MusicStudioDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\bmStaff_QuarterRest.bmp">

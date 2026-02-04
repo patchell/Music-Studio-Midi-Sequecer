@@ -20,15 +20,6 @@ enum class NoteFlags : int {
 	FLAG_32nd
 };
 
-constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
-constexpr auto NOTE_HEAD_WIDTH = 10;
-constexpr auto NOTE_HEAD_HEIGHT = 8;
-constexpr auto NOTE_HEAD_RECT_P1_X = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - 2;
-constexpr auto NOTE_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
-constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_X = NOTE_STEM_OFFSET;
-constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
-constexpr auto NOTE_ACCIDENTAL_OFFSET = 8;
-constexpr auto NOTE_STEM_LENGTH = 24;
 
 
 //--------------------------------
@@ -77,7 +68,7 @@ class NoteData {
 	UINT m_Dotted;
 	INT m_Track;		//value is 1->15, 0 is not used
 	INT m_Duration;		// Token for the note duration
-	UINT m_Pitch;		// Location on the music staff
+	UINT m_Pitch;		// Pitch of note to use for note
 	INT m_FlagsOff;		// flags for eigth, sixteenth, etc. not not drawn
 	INT m_Flags;		// Number of flags to draw on note
 	UINT m_Triplet;
@@ -218,7 +209,54 @@ public:
 
 class CMsNote : public CMsObject
 {
+	enum class ExtraLinesLocation: int {
+		NotNeeded,
+		AboveTreble,
+		BelowBass,
+		MiddleC,
+	};
+	struct NeedsLinesItem {
+		int m_Lines;
+		ExtraLinesLocation m_Location;
+		NeedsLinesItem() {
+			m_Lines = 0;
+			m_Location = ExtraLinesLocation::NotNeeded;
+		}
+		NeedsLinesItem(int Lines, ExtraLinesLocation Location) {
+			m_Lines = Lines;
+			m_Location = Location;
+		}
+	};
 public:
+
+	inline static int NoteAdjustLUT[12] = {
+		0,
+		1,
+		0,
+		1,
+		0,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0
+	};
+
+	//------------------------------------
+	// Lookup table to convert note to
+	// semitone offset from C
+	//------------------------------------
+	inline static int NoteLut[7] = {
+		0,	//C
+		2,	//D
+		4,	//E
+		5,	//F
+		7,	//G
+		9,	//A
+		11	//B
+	};
 	enum class NoteShape : int {
 		DNA = -1,
 		WHOLE,
@@ -228,7 +266,6 @@ public:
 		SIXTEENTH,
 		THIRTYSECOND
 	};
-
 	//------------------------------------
 	// Byte 0 Midi Status (NOTEON,NOTEOFF)
 	// Byte 1 Midi Note
@@ -297,6 +334,7 @@ private:
 		{ NoteShape::WHOLE,			1,0,0,	NoteFlags::FLAG_QUARTER,NoteStem::NoStem,NOTE_TICKS_WHOLE_DOTTED,"Dotted Whole"}		//20 dotted whole
 	};
 	//-------------------------------
+	StaffMouseStates m_MouseStaffTransition;
 	CMyBitmap* m_pRestBitmap;
 	bool m_BitmapFlag;
 	NoteData m_Data;
@@ -306,7 +344,6 @@ private:
 	CMsNote* m_NoteTieNext; //pointer to note object is the next tied note
 	CMsNote* m_NoteTiePrev;	//pointer to previous note that is tied
 	int m_Ticks;            // timer ticks
-	int m_NotePlayed;     // actual pitch that was played
 public:
 	CMsNote();
 	virtual ~CMsNote();
@@ -316,34 +353,85 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return false;
 	}
+	UINT ObjectToString(CString& csString, UINT mode = 0);
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
+	static char* NoteToString(char* pStr, int l, int Note);
 	void LoadRestBitmap(int Selection);
-	virtual void Draw(CDC* pDC, int event, int maxevent);
-	void DrawNote(CDC* pDC, int Event, int MaxEvent, int NoteY, COLORREF Color);
-	void DrawNoteHead(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteLines(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteAccidental(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteAccent(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteDots(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteTriplet(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawNoteTie(CDC* pDC, int Event, int NoteY, COLORREF Color);
-	void DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color);
+	virtual void Draw(CDC* pDC);
+	void DrawNote(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+	void DrawNoteHead(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF 
+		Color
+	);
+	void DrawNoteLines(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF 
+		Color
+	);
+	void DrawNoteStem(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF 
+		Color
+	);
+	void DrawNoteFlags(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF 
+		Color
+	);
+	void DrawNoteAccidental(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF 
+		Color
+	);
+	void DrawNoteAccent(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+	void DrawNoteDots(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+	void DrawNoteTriplet(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+	void DrawNoteTie(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+	void DrawRestBitmap(
+		CDC* pDC, 
+		int notev, 
+		COLORREF color
+	);
 	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual void Copy(CMsNote* pNote);
-	//----------- Draw Funcrions ----------------------
-	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState,CPoint pointMouse);
-	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
-	CChildViewStaff* GetStaffView() { return  GetSong()->GetStaffChildView(); }
-
-	int GetNoteActuallyPlayed() const { return m_NotePlayed; }
+	int MouseYToNote(int MouseY);
+	static int QuantizeY(int Note) { return Note / 4; }
+	//----------- Draw Functions ----------------------
 
 	void SetNoteOffTick(UINT NOT) { GetData().SetNoteOffTick(NOT); }
 	UINT GetNoteOffTick() { return GetData().GetNoteOffTick(); }
@@ -389,7 +477,7 @@ public:
 	INT GetDuration(void) { return GetData().GetDuration(); }
 	void SetDuration(INT d) { GetData().SetDuration(d); }
 
-	int GetPitch(void) { return GetData().GetPitch(); }
+	int GetPitch(void);
 	int SetPitch(int p);
 	bool IsStemDown(void) { return GetData().IsStemDown(); }
 	void SetStemDown(bool u) { GetData().SetStemDown(u); }
@@ -413,10 +501,6 @@ public:
 		rV = noteonline ? 1 : 0;
 		return rV;
 	}
-	//---------------------------------------------------
-	// This function converts the note value to a string
-	//--------------------------------------------------
-	UINT ObjectToString(CString& csString, UINT mode = 0);
 	//--------------------------------------
 	// returns true for various attributes
 	//-------------------------------------
@@ -426,7 +510,8 @@ public:
 	};
 	bool IsSolid(void) { return DurTab[(int)GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
-	INT NeedsFlags(void);
+	bool IsDuplicate();
+	int NeedsFlags(void);
 	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem == NoteStem::Stem ? true : false; }
 	int NeedsLine(void);
 	//----------------
@@ -464,7 +549,7 @@ public:
 	//---------- Process and Play ------------
 	virtual bool RemoveFromQueue();
 	//-------------------------------------------
-	virtual void ObjectRectangle(CRect& rect, UINT Event);
+	virtual void ObjectRectangle(CRect& rect);
 	static DUR* GetDurationTable() { return DurTab; }
 	UINT CorrectPitchWithKeySignature();
 	//---------------------------------
@@ -486,124 +571,182 @@ public:
 		MSFF_THIRTYSEC_NOTE
 	};
 
-	inline static
-		int NoteInc[12] = {
-			2,	//C
-			2,	//C#
-			2,	//D
-			2,	//D#
-			1,	//E
-			2,	//F
-			2,	//F#
-			2,	//g
-			2,	//G#
-			2,	//A
-			2,	//A#
-			1	//B
+	inline static int NoteInc[12] = {
+		2,	//C
+		2,	//C#
+		2,	//D
+		2,	//D#
+		1,	//E
+		2,	//F
+		2,	//F#
+		2,	//g
+		2,	//G#
+		2,	//A
+		2,	//A#
+		1	//B
 	};
 
-	inline static
-		int NoteDec[12] = {
-			1,	//C
-			1,	//C#
-			2,	//D
-			2,	//D#
-			2,	//E
-			1,	//F
-			1,	//F#
-			2,	//g
-			2,	//G#
-			2,	//A
-			2,	//A#
-			2	//B
+	inline static int NoteDec[12] = {
+		1,	//C
+		1,	//C#
+		2,	//D
+		2,	//D#
+		2,	//E
+		1,	//F
+		1,	//F#
+		2,	//g
+		2,	//G#
+		2,	//A
+		2,	//A#
+		2	//B
 	};
-	inline static
-		int NotePos[12] = {
-			24,	//C
-			24,	//C#
-			20,	//D
-			20,	//D#
-			16,	//E
-			12,	//F
-			12,	//F#
-			8,	//G
-			8,	//G#
-			4,	//A
-			4,	//A#
-			0	//B
+	inline static int NotePos[12] = {
+		24,	//C
+		24,	//C#
+		20,	//D
+		20,	//D#
+		16,	//E
+		12,	//F
+		12,	//F#
+		8,	//G
+		8,	//G#
+		4,	//A
+		4,	//A#
+		0	//B
 	};
-	inline static
-		UINT OnLine[12] = {
-			1,	///C
-			1,	///C#
-			0,	///D
-			0,	///D#
-			1,	///E
-			0,	///F
-			0,	///F#
-			1,	///G
-			1,	///G#
-			0,	///A
-			0,	///A#
-			1	///B
+	inline static UINT OnLine[12] = {
+		1,	//C
+		1,	//C#
+		0,	//D
+		0,	//D#
+		1,	//E
+		0,	//F
+		0,	//F#
+		1,	//G
+		1,	//G#
+		0,	//A
+		0,	//A#
+		1	//B
+	};
+	inline static CString NoteLUT[12] = {
+		_T("C"),
+		_T("C#"),
+		_T("D"),
+		_T("D#"),
+		_T("E"),
+		_T("F"),
+		_T("F#"),
+		_T("G"),
+		_T("G#"),
+		_T("A"),
+		_T("A#"),
+		_T("B")
 	};
 
-	inline static 
-		CString NoteLUT[12] = {
-			_T("C"),
-			_T("C#"),
-			_T("D"),
-			_T("D#"),
-			_T("E"),
-			_T("F"),
-			_T("F#"),
-			_T("G"),
-			_T("G#"),
-			_T("A"),
-			_T("A#"),
-			_T("B")
-		};
+	inline static const char* NoteAnsiLUT[12] = {
+		"C",
+		"C#",
+		"D",
+		"D#",
+		"E",
+		"F",
+		"F#",
+		"G",
+		"G#",
+		"A",
+		"A#",
+		"B"
+	};
 
-	inline static
-		int AccidentalLUT[4] = {
-			' ',
-			'N',
-			'#',
-			'b'
-		};
+	inline static int AccidentalLUT[4] = {
+		' ',
+		'N',
+		'#',
+		'b'
+	};
 
-	inline static
-		int NearestLineOdd[12] = {
-			0,	//C  0
-			-1,	//C# 1
-			2,	//D	 2
-			1,	//D# 3
-			0,	//E  4
-			-1,	//F  5
-			1,	//F# 6
-			0,	//G  7
-			-1,	//G# 8
-			-2,	//A  9
-			1,	//A# 10
-			0	//B  11
-		};
+	inline static int NearestLineOdd[12] = {
+		0,	//C  0
+		-1,	//C# 1
+		2,	//D	 2
+		1,	//D# 3
+		0,	//E  4
+		-1,	//F  5
+		1,	//F# 6
+		0,	//G  7
+		-1,	//G# 8
+		-2,	//A  9
+		1,	//A# 10
+		0	//B  11
+	};
 
-	inline static
-		int NearestLineEven[12] = {
-			-1,	//C		0
-			1,	//C#	1
-			0,	//D		2
-			-1,	//D#	3
-			1,	//E		4
-			0,	//F		5
-			-1,	//F#	6
-			2,	//G		7
-			1,	//G#	8
-			0,	//A		9
-			-1,	//A#	10
-			1	//B		11
-		};
+	inline static int NearestLineEven[12] = {
+		-1,	//C		0
+		1,	//C#	1
+		0,	//D		2
+		-1,	//D#	3
+		1,	//E		4
+		0,	//F		5
+		-1,	//F#	6
+		2,	//G		7
+		1,	//G#	8
+		0,	//A		9
+		-1,	//A#	10
+		1	//B		11
+	};
 
-
+	inline static NeedsLinesItem LinesNeededLUT[49] = {
+		{2, ExtraLinesLocation::BelowBass}, //C3
+		{2, ExtraLinesLocation::BelowBass},	//C#3
+		{1, ExtraLinesLocation::BelowBass},	//D3
+		{1, ExtraLinesLocation::BelowBass},	//D#3
+		{0, ExtraLinesLocation::NotNeeded},	//E3
+		{0, ExtraLinesLocation::NotNeeded},	//F3
+		{0, ExtraLinesLocation::NotNeeded},	//F#3
+		{0, ExtraLinesLocation::NotNeeded},	//G3
+		{0, ExtraLinesLocation::NotNeeded},	//G#3
+		{0, ExtraLinesLocation::NotNeeded},	//A3
+		{0, ExtraLinesLocation::NotNeeded},	//A#3
+		{0, ExtraLinesLocation::NotNeeded},	//B3
+		{0, ExtraLinesLocation::NotNeeded},	//C4
+		{0, ExtraLinesLocation::NotNeeded},	//C#4
+		{0, ExtraLinesLocation::NotNeeded},	//D4
+		{0, ExtraLinesLocation::NotNeeded},	//D#4
+		{0, ExtraLinesLocation::NotNeeded},	//E4
+		{0, ExtraLinesLocation::NotNeeded},	//F4
+		{0, ExtraLinesLocation::NotNeeded},	//F#4
+		{0, ExtraLinesLocation::NotNeeded},	//G4
+		{0, ExtraLinesLocation::NotNeeded},	//G#4
+		{0, ExtraLinesLocation::NotNeeded},	//A4
+		{0, ExtraLinesLocation::NotNeeded},	//A#4
+		{0, ExtraLinesLocation::NotNeeded},	//B4
+		{1, ExtraLinesLocation::MiddleC},	//C5
+		{0, ExtraLinesLocation::NotNeeded},	//C#5
+		{0, ExtraLinesLocation::NotNeeded},	//D5
+		{0, ExtraLinesLocation::NotNeeded},	//D#5
+		{0, ExtraLinesLocation::NotNeeded},	//E5
+		{0, ExtraLinesLocation::NotNeeded},	//F5
+		{0, ExtraLinesLocation::NotNeeded},	//F#5
+		{0, ExtraLinesLocation::NotNeeded},	//G5
+		{0, ExtraLinesLocation::NotNeeded},	//G#5
+		{0, ExtraLinesLocation::NotNeeded},	//A5
+		{0, ExtraLinesLocation::NotNeeded},  //A#5
+		{0, ExtraLinesLocation::NotNeeded},  //B5
+		{0, ExtraLinesLocation::NotNeeded},  //C6
+		{0, ExtraLinesLocation::NotNeeded},  //C#6
+		{0, ExtraLinesLocation::NotNeeded},  //D6
+		{0, ExtraLinesLocation::NotNeeded},  //D#6
+		{0, ExtraLinesLocation::NotNeeded},  //E6
+		{0, ExtraLinesLocation::NotNeeded},  //F6
+		{0, ExtraLinesLocation::NotNeeded},  //F#6
+		{0, ExtraLinesLocation::NotNeeded},  //G6
+		{0, ExtraLinesLocation::NotNeeded},  //G#6
+		{1, ExtraLinesLocation::AboveTreble},  //A6
+		{1, ExtraLinesLocation::AboveTreble},  //A#6
+		{1, ExtraLinesLocation::AboveTreble},  //B6,
+		{2, ExtraLinesLocation::AboveTreble}	//C7
+	};
+	//-------------------------------
+	static const char* GetNoteName(int note); 
 };
 

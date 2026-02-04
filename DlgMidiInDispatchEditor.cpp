@@ -158,7 +158,7 @@ void CDlgMidiInDispatchEditor::InitializeMidiStatusByteComboBox()
 	//--------------------------------------
 	for (unsigned i = 0; i < DISPATCHEDIT__NUM_MIDI_CMDS; i++)
 	{
-		m_Combo_MidiStatusByte.InsertString(i, MidiStatusCommands[i].m_csName);
+		m_Combo_MidiStatusByte.InsertString(i, CMidiSeqMSApp::GetMidiStatusCommands()[i].m_csName);
 	}
 	m_Combo_MidiStatusByte.SetCurSel(0);
 
@@ -168,24 +168,24 @@ void CDlgMidiInDispatchEditor::UpdateDialogFields()
 {
 	CString s;
 
-//	printf("****** Update Dialog Fields %S ******\n", m_pMIMD->GetDispatchName().GetString());
+//	if(LogFile()) fprintf(LogFile(),"****** Update Dialog Fields %S ******\n", m_pMIMD->GetDispatchName().GetString());
 	if (m_pMIMD)
 	{
 		if (m_pMIMD->DestWindowISset())
 		{
-//			printf("Destination Window is Set\n");
+//			if(LogFile()) fprintf(LogFile(),"Destination Window is Set\n");
 			m_Combo_DestinationWindow.SetCurSel(m_pMIMD->GetDestinationID());
 			if (m_pMIMD->WMmessageISset())
 			{
-//				printf("WM_message is Set\n");
+//				if(LogFile()) fprintf(LogFile(),"WM_message is Set\n");
 				m_Combo_WM_DispatchCommand.SetCurSel(m_pMIMD->GetWindowMessageID());
 				EnableCommand(true);
 				if (m_pMIMD->MidiStatusByteISset())
 				{
-//					printf("Midi Status is Set\n");
+//					if(LogFile()) fprintf(LogFile(),"Midi Status is Set\n");
 					m_Combo_MidiStatusByte.SetCurSel(m_pMIMD->GetMidiStatusID());
 					EnableStatusByte(true);
-					if (MidiStatusCommands[m_pMIMD->GetMidiStatusID()].m_Channel_flag)
+					if (CMidiSeqMSApp::GetMidiStatusCommands()[m_pMIMD->GetMidiStatusID()].m_Channel_flag)
 					{
 						EnableChannel(true);
 					}
@@ -394,7 +394,7 @@ void CDlgMidiInDispatchEditor::OnCbnSelchangeComboDispatchStatus()
 	int MidiStatusID = m_Combo_MidiStatusByte.GetCurSel();
 	m_pMIMD->SetMidiStatusID(MidiStatusID);
 	UpdateDataEditBoxes(MidiStatusID);
-	if (MidiStatusCommands[MidiStatusID].m_Channel_flag)
+	if (CMidiSeqMSApp::GetMidiStatusCommands()[MidiStatusID].m_Channel_flag)
 	{
 		EnableChannel(1);
 		m_Combo_MidiChannel.SetFocus();
@@ -410,7 +410,7 @@ void CDlgMidiInDispatchEditor::OnCbnKillfocusComboDispatchStatus()
 	{
 		m_pMIMD->SetMidiStatusID(MidiStatusID);
 		UpdateDataEditBoxes(MidiStatusID);
-		if (MidiStatusCommands[MidiStatusID].m_Channel_flag)
+		if (CMidiSeqMSApp::GetMidiStatusCommands()[MidiStatusID].m_Channel_flag)
 			EnableChannel(1);
 		else
 			EnableChannel(0);
@@ -537,7 +537,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 		// Check to see if the first data byte
 		// is turned on for this status byte
 		//-----------------------------------
-		if (MidiStatusCommands[statusID].m_Data1_flag)
+		if (CMidiSeqMSApp::GetMidiStatusCommands()[statusID].m_Data1_flag)
 		{
 			m_Edit_Data1_Low.ShowWindow(1);
 			m_Edit_Data1_High.ShowWindow(1);
@@ -546,7 +546,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 			s.Format(_T("%d"), m_pMIMD->GetMidiData1Min());
 			m_Edit_Data1_Low.SetWindowTextW(s);
 
-			m_Static_Data1.SetWindowTextW(MidiStatusCommands[statusID].m_csData1);
+			m_Static_Data1.SetWindowTextW(CMidiSeqMSApp::GetMidiStatusCommands()[statusID].m_csData1);
 			m_Static_Data1.ShowWindow(1);
 
 			m_static_HighValue.ShowWindow(1);
@@ -555,7 +555,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 			// Check to see if data byte #2 is turned
 			// on
 			//-----------------------------------------
-			if (MidiStatusCommands[statusID].m_Data2_flag)
+			if (CMidiSeqMSApp::GetMidiStatusCommands()[statusID].m_Data2_flag)
 			{
 				// show Data2 field
 				m_Edit_Data2_Low.ShowWindow(1);
@@ -565,7 +565,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 				s.Format(_T("%d"), m_pMIMD->GetMidiData2Max());
 				m_Edit_Data2_High.SetWindowTextW(s);
 
-				m_Static_Data2.SetWindowTextW(MidiStatusCommands[statusID].m_csData2);
+				m_Static_Data2.SetWindowTextW(CMidiSeqMSApp::GetMidiStatusCommands()[statusID].m_csData2);
 				m_Static_Data2.ShowWindow(1);
 			}
 			else
@@ -578,7 +578,7 @@ void CDlgMidiInDispatchEditor::UpdateDataEditBoxes(int statusID)
 		}
 		else
 		{
-//			printf("Everybody Off\n");
+//			if(LogFile()) fprintf(LogFile(),"Everybody Off\n");
 			//-------------------------------
 			// Data byte 1 is not turned on
 			// so everybody is OFF

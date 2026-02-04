@@ -5,26 +5,6 @@
 #include "pch.h"
 
 
-CString CMsKeySignature::KeySigStringTab[APP_NUM_KEYSIGNATURES + 1] = {
-	_T("ERROR"),	//5
-	_T("C MAJ"),	//1X
-	_T("G MAJ"),	//2X
-	_T("D MAJ"),	//3X
-	_T("A MAJ"),	//4X
-	_T("E MAJ"),	//5X
-	_T("B MAJ"),	//6X
-	_T("F# MAJ"),	//7X
-	_T("C# MAJ"),	//8X
-	_T("F MAJ"),	//9X
-	_T("Bb MAJ"),	//10X
-	_T("Eb MAJ"),	//11X
-	_T("Ab MAJ"),	//12X
-	_T("Db MAJ"),	//13X
-	_T("Gb MAJ"),	//14X
-	_T("Cb MAJ")	//15X
-};
-
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -83,7 +63,7 @@ DRAWSTATE CMsKeySignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse
 		pEV = GetSong()->GetEventObject(EventIndex);
 		pEV->AddObject(this);
 		pKS = new CMsKeySignature;
-		pKS->Create(GetSong(), 0,0);
+		pKS->Create(GetSong(), pEV, GetKeySignature());
 		GetStaffChildView()->SetDrawObject(pKS);
 		GetStaffChildView()->CheckAndDoScroll(pointMouse);
 		csText.Format(_T("Place Key Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
@@ -97,13 +77,96 @@ DRAWSTATE CMsKeySignature::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse
 	return DrawState;
 }
 
-DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
-	CString csText;
+	//-------------------------------------------------------
+	// MouseMove
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse is moved.
+	//
+	//	parameters:
+	//		pointMouse..Current Mouse Position
+	//		DrawState...Current state of drawing process
+	//		Region.....Current Regiion where mouse is
+	//		Transition.Current mouse region transition state
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+	CString csStatusString, csTemp;
+	CMsEvent* pEV = 0;
 
-	csText.Format(_T("Draw Key Signature at event %d"), GetStaffChildView()->GetDrawEvent());
-	GetStaffChildView()->GetStatusBar()->SetText(csText);
-	GetStaffChildView()->Invalidate();
+	switch (DrawState)
+	{
+	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
+		break;
+	case DRAWSTATE::WAITFORMOUSE_DOWN:		//MouseMove
+		switch (Transition)
+		{
+		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			if (Region == MouseRegions::MOUSE_IN_EDITREG)
+			{
+				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
+				{
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+					}
+					break;
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
+			pEV = GetParentEvent();
+			if (pEV)
+			{
+				pEV->RemoveObject(this);
+				SetParentEvent(nullptr);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+			if (pEV)
+			{
+				pEV->AddObject(this);
+				SetParentEvent(pEV);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
+			break;
+		}
+		//		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
+		break;
+	case DRAWSTATE::MOVE_OBJECT_AROUND:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	}
+	GetStaffView()->Invalidate();
 	return DrawState;
 }
 
@@ -113,14 +176,16 @@ void CMsKeySignature::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sKey Signature:%wS\n", pIndentString, CMsKeySignature::KeySigStringTab[m_KeySignature].GetString());
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
-void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
+void CMsKeySignature::Draw(CDC *pDC)
 {
-	CMsSharp sharp;
-	CMsFlat flat;
+	CMsSharp* pSharp = 0;
+	CMsFlat* pFlat = 0;
 	COLORREF color;
+	int X = X_CENTER_OF_EVENT;
+	int Y = TREBLE_TOP_LINE;
 
 	if (IsSelected())
 		color = RGB(255, 0, 0);
@@ -131,64 +196,84 @@ void CMsKeySignature::Draw(CDC *pDC, int event, int maxevent)
 		case MSFF_CMAJ:	///do nothing
 			break;
 		case MSFF_CSMAJ:	///seven shrps
-			sharp.Draw(pDC,color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_B2));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC,color,X+24,NoteToPosition(MSFF_NOTE_B2));	//base staff
+			pSharp->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
 			[[fallthrough]];
 		case MSFF_FSMAJ:	///six sharps
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+12,NoteToPosition(MSFF_NOTE_E2+12));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+20,NoteToPosition(MSFF_NOTE_E2+24));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_E2+12));	//base staff
+			pSharp->Draw(pDC, color,X+20,NoteToPosition(MSFF_NOTE_E2+24));	//trebble staff
 			[[fallthrough]];
 		case MSFF_BMAJ:	///five sharps
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//base staff
+			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
 			[[fallthrough]];
 		case MSFF_EMAJ:	///four D sharps
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+20,NoteToPosition(MSFF_NOTE_D2+12));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+12,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X +20,NoteToPosition(MSFF_NOTE_D2+12));	//base staff
+			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
 			[[fallthrough]];
 		case MSFF_AMAJ:	//three G sharps
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_G2+12));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_G2+36));		//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_G2+12));	//base staff
+			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_G2+36));		//trebble staff
 			[[fallthrough]];
 		case MSFF_DMAJ:	//two C sharps
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+4,NoteToPosition(MSFF_NOTE_C2+12));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+4,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+12));	//base staff
+			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
 			[[fallthrough]]; 
 		case MSFF_GMAJ:	///one F sharp
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_F2+12));	//base staff
-			sharp.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
+			if (!pSharp) pSharp = new CMsSharp;
+			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_F2+12));	//base staff
+			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
 			break;
 		case MSFF_CFMAJ:	//seven flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+12));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+12));	//bass staff
+			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
 			[[fallthrough]];
 		case MSFF_GFMAJ:	//six flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
 			[[fallthrough]];
 		case MSFF_DFMAJ:	//five flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_G2));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+24,NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2));	//bass staff
+			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
 			[[fallthrough]];
 		case MSFF_AFMAJ:	//four flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event +16,NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X +16,NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
 			[[fallthrough]];
 		case MSFF_EFMAJ:	//three flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//bass staff
+			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
 			[[fallthrough]];
 		case MSFF_BFMAJ:	//two flats
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
 			[[fallthrough]];
 		case MSFF_FMAJ:	//one flat
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_B2));	//bass staff
-			flat.Draw(pDC, color,EVENT_OFFSET+EVENT_WIDTH*event+8,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
+			if (!pFlat) pFlat = new CMsFlat;
+			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2));	//bass staff
+			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
 			break;
 	}
+	if (pFlat) delete pFlat;
+	if (pSharp) delete pSharp;
 }
 
+StaffMouseStates CMsKeySignature::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
+{
+	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+}
 
 void CMsKeySignature::ObjectRectangle(CRect& rect, UINT Event)
 {
@@ -313,5 +398,5 @@ void CMsKeySignature::Save(FILE *pO)
 
 int CMsKeySignature::NoteToPosition(int Note)
 {
-	return CMsNote::NotePos[Note % 12] + 28 * (7 - (Note / 12)) + (STAVE_OFFSET - 44);
+	return CMsNote::NotePos[Note % 12] + 28 * (7 - (Note / 12)) + (TREBLE_TOP_LINE);
 }

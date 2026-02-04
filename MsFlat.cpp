@@ -43,7 +43,7 @@ DRAWSTATE CMsFlat::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-DRAWSTATE CMsFlat::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsFlat::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	return DrawState;
 }
@@ -72,3 +72,8 @@ UINT CMsFlat::ObjectToString(CString& csString, UINT mode)
 {
 	return 0;
 }
+
+StaffMouseStates CMsFlat::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
+{
+	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+}	

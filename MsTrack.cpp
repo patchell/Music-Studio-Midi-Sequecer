@@ -185,8 +185,10 @@ bool CMsTrack::Create(
 		m_csText.Format(_T("%2d"), m_Number);
 	else
 		m_csText.Format(_T("%1d"), m_Number);
-	CDC* pDC = GetParentSongInfo()->GetParentSong()->GetStaffChildView()->GetDC();
+	CWnd* pWin = GetParentSongInfo()->GetParentSong()->GetStaffChildView();
+	CDC* pDC = pWin->GetDC();
 	Draw(pDC);
+	pWin->ReleaseDC(pDC);
 	return true;
 }
 

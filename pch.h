@@ -17,6 +17,42 @@
 #include "afxdialogex.h"
 #include <afxmt.h>
 
+extern FILE* LogFile();
+
+//--------------------------------------
+// Color Palette
+//--------------------------------------
+
+struct SColorPalette {
+	COLORREF color_BackGround;
+	COLORREF color_StaffLines;
+	COLORREF color_UpperSelBar;
+	COLORREF color_LowerSelBar;
+	COLORREF color_LastEventBKG;
+	COLORREF color_DefinedEvent;
+	COLORREF color_EventCursor;
+	COLORREF color_MeasureBars;
+	COLORREF color_SelectedNotes;
+	COLORREF color_SelectionRect;
+	COLORREF color_Text;
+	COLORREF color_Highlight;
+	SColorPalette()
+	{
+		color_BackGround = RGB(50, 50, 50);
+		color_StaffLines = RGB(127, 127, 127);
+		color_UpperSelBar = RGB(88, 128, 88);
+		color_LowerSelBar = RGB(88, 128, 88);
+		color_LastEventBKG = RGB(60, 100, 224);
+		color_DefinedEvent = RGB(92, 0, 28);
+		color_EventCursor = RGB(16, 16, 16);
+		color_MeasureBars = RGB(192, 192, 192);
+		color_SelectedNotes = RGB(200, 200, 255);
+		color_SelectionRect = RGB(0, 0, 255);
+		color_Text = RGB(192, 192, 192);
+		color_Highlight = RGB(255, 0, 0);
+	}
+};
+
 //---------------------------------------
 // Draw State Machine
 //---------------------------------------
@@ -52,14 +88,6 @@ constexpr auto APP_TX816_NUM_LFO_WAVES = 6;
 constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 //-----------------------------------------
 
-//-----------------------------------------------------------
-// TX816 Editor Bitmap IDs
-//-----------------------------------------------------------
-extern UINT TX816_LFO_WaveBmAPP_TX816_NUM_LFO_WAVES[APP_TX816_NUM_LFO_WAVES];
-extern UINT TX816_AlgrithmBitmapID[APP_TX816_NUM_ALG_BITMAPS];
-extern CString MidiNoteToNoteString[127];
-extern CString TX816_OP_KEYBORD_Level_Scaling_Curve[4];
-
 //-----------------------------------------------------
 // Midi In Dispatcher
 //-------------------------------------------------
@@ -94,6 +122,7 @@ extern int MidiStatusToMidiID(int status);
 extern int IsChannelStatus(int StatusID);
 extern const char* GenMidiPatchNames[128];
 //------------------------------------------
+#include "MusicStudioDefines.h"
 #include "ComboBoxDefines.h"
 #include "MusicStudioFileFormat.h"
 #include "WindowMessages.h"

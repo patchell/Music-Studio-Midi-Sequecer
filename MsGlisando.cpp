@@ -106,14 +106,14 @@ DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
 	switch (DrawState)
 	{
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		printf("Gliss:MouseDown:Wait Goto First Note\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseDown:Wait Goto First Note\n");
 		DrawState = DRAWSTATE::GLISSANDO_FIRST_NOTE;
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		printf("Gliss:MouseDown:Never Get Here\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseDown:Never Get Here\n");
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-		printf("Gliss:MouseDown:SecondNote\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseDown:SecondNote\n");
 		break;
 	default:
 		break;
@@ -143,10 +143,10 @@ DRAWSTATE CMsGlissando::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 		}
 		break;
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		printf("Gliss:MouseUp:Wait MD :Nver Get Here\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseUp:Wait MD :Nver Get Here\n");
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		printf("Gliss:MouseUp:FirstNote:Goto Second Note\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseUp:FirstNote:Goto Second Note\n");
 		EventIndex = GetStaffChildView()->GetDrawEvent();
 		pEV = GetSong()->GetEventObject(EventIndex);
 		pEV->AddObject(this);
@@ -157,7 +157,7 @@ DRAWSTATE CMsGlissando::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 		DrawState = DRAWSTATE::GLISSANDO_SECOND_NOTE;
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-		printf("Gliss:MouseUp:SecondNote:Goto End\n");
+		if (LogFile()) fprintf(LogFile(), "Gliss:MouseUp:SecondNote:Goto End\n");
 		EventIndex = GetStaffChildView()->GetDrawEvent();
 		pEV = GetSong()->GetEventObject(EventIndex);
 		pEV->AddObject(this);
@@ -176,41 +176,97 @@ DRAWSTATE CMsGlissando::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-DRAWSTATE CMsGlissando::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsGlissando::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
-	int Pitch = YPosToNotePitch(pointMouse.y);
-	CString csStatus;
 
-	//CMsEvent* pEv = GetSong()->GetEventDirectory()->GetEvent(
-	//	GetStaffView()->GetDrawEvent()
-	//);
+	//-------------------------------------------------------
+	// MouseMove
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse is moved.
+	//
+	//	parameters:
+	//		pointMouse..Current Mouse Position
+	//		DrawState...Current state of drawing process
+	//		Region.....Current Regiion where mouse is
+	//		Transition.Current mouse region transition state
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+	CString csStatusString, csTemp;
+	CMsEvent* pEV = 0;
+
 	switch (DrawState)
 	{
-	case DRAWSTATE::WAITFORMOUSE_DOWN:
-//		printf("Mouse Move Pitch=%d WMD\n", Pitch);
-		SetStartPitch(Pitch);
-		csStatus.Format(_T("Glissando: Set First Note At Event:%d"), 
-			GetSong()->GetStaffChildView()->GetDrawEvent()
-		);
-		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatus);
+	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
 		break;
-	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-//		printf("Mouse Move Pitch=%d FN\n", Pitch);
-		SetStartPitch(Pitch);
-		csStatus.Format(_T("Glissando: Set End Note At Event:%d"),
-			GetSong()->GetStaffChildView()->GetDrawEvent()
-		);
-		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatus);
+	case DRAWSTATE::WAITFORMOUSE_DOWN:		//MouseMove
+		switch (Transition)
+		{
+		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			if (Region == MouseRegions::MOUSE_IN_EDITREG)
+			{
+				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
+				{
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+					}
+					break;
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
+			pEV = GetParentEvent();
+			if (pEV)
+			{
+				pEV->RemoveObject(this);
+				SetParentEvent(nullptr);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+			if (pEV)
+			{
+				pEV->AddObject(this);
+				SetParentEvent(pEV);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
+			break;
+		}
+		//		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
 		break;
-	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-//		printf("Mouse Move Pitch=%d SD\n", Pitch);
-		SetEndPitch(Pitch);
+	case DRAWSTATE::MOVE_OBJECT_AROUND:
 		break;
-	default:
-		printf("Mouse Move Pitch=%d DEFAULT\n", Pitch);
+	case DRAWSTATE::PLACE:
 		break;
 	}
-	GetSong()-> GetStaffChildView()->Invalidate();
+	GetStaffView()->Invalidate();
 	return DrawState;
 }
 
@@ -225,21 +281,26 @@ UINT CMsGlissando::ObjectToString(CString& csString, UINT mode)
 	return csString.GetLength();
 }
 
+StaffMouseStates CMsGlissando::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
+{
+	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+}
+
 void CMsGlissando::NoteOn(UINT Velociry)
 {
 	GetSong()->IncNoteOnCount();
-	int chan = GetSong()->GetTrack(GetTrack())->GetChannel();
-	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
-	int DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
+	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(chan, note, Velociry);
 }
 
 void CMsGlissando::NoteOff(UINT Velociry)
 {
 	GetSong()->IncNoteOffCount();
-	int chan = GetSong()->GetTrack(GetTrack())->GetChannel();
-	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
-	int DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
+	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(chan, note, Velociry);
 }
 
@@ -254,21 +315,21 @@ void CMsGlissando::Copy(CMsObject* pSource)
 	CMsObject::Copy(pSource);
 }
 
-void CMsGlissando::Draw(CDC* pDC, int event, int maxevent)
+void CMsGlissando::Draw(CDC* pDC)
 {
 	switch (m_DrawState)
 	{
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		DrawNote(pDC, m_StartPitch, event, true, m_StartStemDown);
+		DrawNote(pDC, m_StartPitch, true, m_StartStemDown);
 		break;
 	case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-		DrawNote(pDC, m_StartPitch, event, true, m_StartStemDown);
+		DrawNote(pDC, m_StartPitch, true, m_StartStemDown);
 		break;
 	case DRAWSTATE::GLISSANDO_SECOND_NOTE:
 		[[fallthrough]];
 	case DRAWSTATE::GLISSANDO_END:
-		DrawNote(pDC, m_StartPitch, event, true, m_StartStemDown);
-		DrawNote(pDC, m_EndPitch, event, true, m_EndStemDown);
+		DrawNote(pDC, m_StartPitch, true, m_StartStemDown);
+		DrawNote(pDC, m_EndPitch, true, m_EndStemDown);
 		break;
 	default:
 		break;
@@ -283,7 +344,7 @@ void CMsGlissando::Print(FILE* pO, int Indent)
 {
 }
 
-void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool bStemDown)
+void CMsGlissando::DrawNote(CDC* pDC, int Pitch, bool bStartPos, bool bStemDown)
 {
 	COLORREF Color = RGB(0, 0, 0);
 	CPen* pOldPen, penNote;
@@ -300,7 +361,7 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	}
 	else
 	{
-		Color = GetSong()->GetTrack(GetTrack())->GetColor();
+		Color = GetSong()->GetTrackInfo(GetTrack())->GetColor();
 	}
 	penNote.CreatePen(PS_SOLID, 2, Color);
 	brushNote.CreateSolidBrush(Color);
@@ -310,13 +371,13 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	{
 		if (bStemDown)
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
+			NoteXPos = NOTE_STEM_OFFSET;
 			rectNoteHead = CRect(CPoint(NoteXPos,NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
 		else
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
+			NoteXPos = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
@@ -325,13 +386,13 @@ void CMsGlissando::DrawNote(CDC* pDC, int Pitch, int Event, bool bStartPos, bool
 	{
 		if (bStemDown)
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
+			NoteXPos = NOTE_STEM_OFFSET;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
 		else
 		{
-			NoteXPos = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
+			NoteXPos = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
 			rectNoteHead = CRect(CPoint(NoteXPos, NoteYPos), szNoteHead);
 			pDC->Ellipse(&rectNoteHead);
 		}
@@ -384,46 +445,44 @@ int CMsGlissando::CalculateTotalDuration()
 
 int CMsGlissando::NotePitchToYPos(int NotePitch)
 {
-	return NotePos[NotePitch % 12] + 28 * (7 - (NotePitch / 12)) + (STAVE_OFFSET - 44);
+//	return NotePos[NotePitch % 12] + 28 * (7 - (NotePitch / 12)) + (CLIENT_TO_STAVE_TOP_Y - 44);
+	return 0;
 }
 
-int CMsGlissando::YPosToNotePitch(int YPos)
+int CMsGlissando::YPosToNotePitch(int MouseY)
 {
 	int NoteIndex;
 	int Octave = 0;
 	int Note;
-	//----------------------------
-	// Notes place on staff will
-	// start at HIGHC_OFFSET and
-	// go to HIGHC_OFFSET- 8, so
-	// we need to offset this by
-	// 4
-	//---------------------------------
-	// subract off the offset for
-	// C8 from the mouse Y coordiant
-	// so that we know where to draw
-	//----------------------------------
-	YPos -= HIGHC_OFFSET;
+
+	MouseY -= CLIENT_Y_TO_TOP_OF_EDIT_RECT;
+	//------- Invert Y Coord --------------
+	MouseY = EDIT_RECT_HEIGHT - MouseY;
 	//----------------------------------
 	// quantize the y coordiant so that
 	// the note will only be drawn either
 	// in the space, or on the line.  We do
 	// not quantize the mouse pointer
 	//-----------------------------------
-	YPos = GetStaffChildView()->QuantizeY(YPos);
-	YPos = QUANTIZED_STAFF_HEIGHT - YPos;	//invert y
-	YPos -= STAVE_LINE_SPACING / 2;	//center
+	MouseY -= STAVE_LINE_SPACING / 2;	//center
+	MouseY = QuantizeY(MouseY);
 	//------------------------------------
 	// Limit the range that y can take
 	//------------------------------------
-	if (YPos < 0) YPos = 0;
-	NoteIndex = YPos % 7;
+	if (MouseY < 0)
+		MouseY = 0;
+	NoteIndex = MouseY % 7;
 	Note = NoteLut[NoteIndex];
-	Octave += (YPos / 7) * 12;	/// calculate octave
+	Octave += (MouseY / 7) * 12;	// calculate octave
 	Note = Note + Octave + 0x24;
 	if (Note > 0x60)
 		Note = 0x60;	// limit max value of Note
 	return Note;
+}
+
+int CMsGlissando::QuantizeY(int Y)
+{
+	return Y / 4;
 }
 
 
@@ -442,7 +501,7 @@ int CMsGlissando::NeedsLine(int Pitch)
 	else if (Pitch > 0x4f)
 	{
 		int notev = NotePitchToYPos(Pitch);
-		rV = (STAVE_OFFSET - notev) / 8;
+//		rV = (CLIENT_TO_STAVE_TOP_Y - notev) / 8;
 	}
 	return rV;
 }

@@ -33,7 +33,7 @@ UINT CMsPlayerQueue::ProcessQueue(CMsEvent* pEvent)
 	CMsObject* pMusObj = nullptr;
 	UINT AddedCount = 0;
 
-	pMusObj = pEvent->GetEventObjectHead();
+	pMusObj = pEvent->GetEventMsObjectHead();
 	while (pMusObj)
 	{
 		ProcessStatus = pMusObj->Process();
@@ -100,7 +100,7 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 			pTempObj = pObj->GetNext();
 			if(pObj->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
 			{
-				pNote = dynamic_cast<CMsNote*>(pObj->GetMsObject());
+				pNote = (CMsNote*)pObj->GetMsObject();
 				//if (pNote)
 				//{
 				//	fprintf(GETAPP->LogFile(), "   ---- Note Timed Out: Pitch:%d Ticks:%d\n",
@@ -281,7 +281,7 @@ int CMsPlayerQueue::PrintNotesInQueue(FILE* pO)
 		{
 			if(pItem->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
 			{
-				pNote = dynamic_cast<CMsNote*>(pItem->GetMsObject());
+				pNote = (CMsNote*)pItem->GetMsObject();
 				pNote->Print(pO, 4);
 			}
 		}

@@ -53,22 +53,116 @@ DRAWSTATE CMsBar::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	switch (DrawState)
 	{
 	case DRAWSTATE::PLACE:
-		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
-		GetParentEvent()->AddObject(this);
+//		GetParentEvent()->AddObject(this);
+		GetSong()->RenumberMeasureBars();
 		pBarNew = new CMsBar;
-		pBarNew->Create(GetSong(), 0);
+		pBarNew->Create(GetSong(), GetParentEvent());
 		pBarNew->Copy(GetStaffChildView()->GetDrawObject());
 		GetStaffChildView()->SetDrawObject(pBarNew);
+		GetParentEvent()->AddObject(pBarNew);
 		GetStaffChildView()->CheckAndDoScroll(pointMouse);
 		GetStaffChildView()->Invalidate();
+		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		break;
 
 	}
 	return DrawState;
 }
 
-DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
+	//-------------------------------------------------------
+	// MouseMove
+	//		This is the state machine for creating this
+	//	object on the screen.  This function is for when
+	//	the left mouse is moved.
+	//
+	//	parameters:
+	//		pointMouse..Current Mouse Position
+	//		DrawState...Current state of drawing process
+	//		Region.....Current Regiion where mouse is
+	//		Transition.Current mouse region transition state
+	//
+	//	Returns:
+	//		Next Draw State
+	//-------------------------------------------------------
+	CString csStatusString, csTemp;
+	CMsEvent* pEV = 0;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
+		break;
+	case DRAWSTATE::WAITFORMOUSE_DOWN:		//MouseMove
+		switch (Transition)
+		{
+		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			if (Region == MouseRegions::MOUSE_IN_EDITREG)
+			{
+				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
+				{
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+					}
+					break;
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
+			pEV = GetParentEvent();
+			if (pEV)
+			{
+				pEV->RemoveObject(this);
+				SetParentEvent(nullptr);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+			if (pEV)
+			{
+				pEV->AddObject(this);
+				SetParentEvent(pEV);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
+			break;
+		}
+		csStatusString.Format(_T("Measure Bar: %d Event: %d"),
+			m_BarNumber,
+			GetParentEvent() ? GetParentEvent()->GetIndex() : -1
+		);
+		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
+		break;
+	case DRAWSTATE::MOVE_OBJECT_AROUND:
+		break;
+	case DRAWSTATE::PLACE:
+		break;
+	}
+	GetStaffView()->Invalidate();
 	return DrawState;
 }
 
@@ -82,7 +176,7 @@ void CMsBar::Print(FILE *pO, int Indent)
 }
 
 
-void CMsBar::Draw(CDC *pDC, int event, int maxevent)
+void CMsBar::Draw(CDC *pDC)
 {
 	CPen penSelectHighlight;
 	CPen penBlackLine;
@@ -91,19 +185,40 @@ void CMsBar::Draw(CDC *pDC, int event, int maxevent)
 	CBrush* pOldBrush = 0, brushNULL;
 	CPoint pointUpperLeft;
 	CSize szRectSize;
+	CFont* pfontOld = 0;
+	CFont fontMeasureNumber;
+	CString csMeasureNumber;
+	int nOldBkMode;
+
+	fontMeasureNumber.CreateFontW(
+		MEASUREBAR_NUMBER_HEIGHT,
+		0,
+		0,
+		0,
+		FW_DONTCARE,
+		false,
+		false,
+		false,
+		ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		DRAFT_QUALITY,
+		DEFAULT_PITCH,
+		_T("Arial")
+	);
 
 	penBlackLine.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 	penSelectHighlight.CreatePen(2, PS_SOLID, RGB(255, 0, 0));
 	brushNULL.CreateStockObject(NULL_BRUSH);
-	int x = EVENT_OFFSET+EVENT_WIDTH*event+MEASUREBAR_OFFSET;
+	int x = MEASUREBAR_OFFSET;
 	if (IsSelected() || IsHighLighted())
 	{
 		//----------------------------------------
 		// Bar
 		//-----------------------------------------
 	
-		pointUpperLeft = CPoint(x - 2, STAVE_OFFSET - 2);
-		szRectSize = CSize(5, STAVE_OFFSET + STAVE_HEIGHT + 2);
+		pointUpperLeft = CPoint(x - 2, TREBLE_TOP_LINE - 2);
+		szRectSize = CSize(5, STAFF_HEIGHT + 2);
 		rectHighlight = CRect(pointUpperLeft, szRectSize);
 		p_penOld = pDC->SelectObject(&penSelectHighlight);
 		pOldBrush = pDC->SelectObject(&brushNULL);
@@ -112,9 +227,33 @@ void CMsBar::Draw(CDC *pDC, int event, int maxevent)
 		pDC->SelectObject(p_penOld);
 	}
 	p_penOld = pDC->SelectObject(&penBlackLine);
-	pDC->MoveTo(x,STAVE_OFFSET);
-	pDC->LineTo(x,STAVE_OFFSET+STAVE_HEIGHT);
+	pDC->MoveTo(x, TREBLE_TOP_LINE);
+	pDC->LineTo(x, BASS_TOP_LINE + SINGLE_STAVE_HEIGHT);
 	pDC->SelectObject(p_penOld);
+	//----------------------------------------
+	nOldBkMode = pDC->SetBkMode(TRANSPARENT);
+	pfontOld = pDC->SelectObject(&fontMeasureNumber);
+	csMeasureNumber.Format(_T("%d"), m_BarNumber);
+	pDC->TextOutW(
+		x - MEASUREBAR_NUMBER_OFFSET_X, 
+		TREBLE_TOP_LINE - MEASUREBAR_NUMBER_OFFSET_Y,
+		csMeasureNumber
+	);
+	pDC->SelectObject(pfontOld);
+	pDC->SetBkMode(nOldBkMode);
+}
+
+StaffMouseStates CMsBar::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
+{
+	StaffMouseStates State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	CMsEvent* pCurrentEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+	int CurrentEventIndex = pCurrentEvent ? pCurrentEvent->GetIndex() : -1;
+	int thisEventIndex = pEvent ? pEvent->GetIndex() : -1;
+	bool bEventChanged = (CurrentEventIndex != thisEventIndex);
+
+	if (bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	return State;
 }
 
 UINT CMsBar::Process(CMsSong* pSong)
@@ -124,7 +263,12 @@ UINT CMsBar::Process(CMsSong* pSong)
 
 void CMsBar::ObjectRectangle(CRect& rect, UINT Event)
 {
-	rect.SetRect((EVENT_OFFSET + EVENT_WIDTH * Event) -2, STAVE_OFFSET, EVENT_OFFSET + EVENT_WIDTH * Event + 2, STAVE_OFFSET + STAVE_HEIGHT);
+	rect.SetRect(
+		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event -2,
+		TREBLE_TOP_LINE, 
+		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event + 2, 
+		BASS_TOP_LINE + SINGLE_STAVE_HEIGHT
+	);
 }
 
 UINT CMsBar::ObjectToString(CString& csString, UINT mode)
@@ -135,7 +279,7 @@ UINT CMsBar::ObjectToString(CString& csString, UINT mode)
 
 CMsObject* CMsBar::MakeANewObject()
 {
-//	printf("Make a new Bar\n");
+//	if(LogFile()) fprintf(LogFile(),"Make a new Bar\n");
 	CMsBar* pBar;
 	pBar = new CMsBar;
 	return pBar;
@@ -143,9 +287,8 @@ CMsObject* CMsBar::MakeANewObject()
 
  void CMsBar::Copy(CMsObject* pSource)
 {
-	 CMsBar* pBar = (CMsBar*)pSource;
 	CMsObject::Copy(pSource);
-	m_BarNumber = GenBarNumber();
+//	m_BarNumber = GenBarNumber();
 }
 
 void CMsBar::Save(FILE *pO)

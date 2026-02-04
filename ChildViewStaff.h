@@ -15,47 +15,44 @@ constexpr auto	BM_NOTE_INDEX_SIXTEENTH = 4;
 constexpr auto	BM_NOTE_INDEX_THIRTYSECOND = 5;
 
 
-// Regions that the mouse can be in
-
-
-
 // CChildViewStaff window
 
 class CChildViewStaff : public CChildViewBase
 {
 public:
-	inline static
-		int NoteAdjustLUT[12] = {
-			0,
-			1,
-			0,
-			1,
-			0,
-			0,
-			1,
-			0,
-			1,
-			0,
-			1,
-			0
+	struct DrawStateItem {
+		DRAWSTATE m_State;
+		const char* m_pName;
+		DrawStateItem(){
+			m_State = DRAWSTATE::NA;
+			m_pName = "NA";
+		}
+		DrawStateItem(DRAWSTATE state, const char* name) {
+			m_State = state;
+			m_pName = name;
+		}
+		bool IsState(DRAWSTATE state) const {
+			return (m_State == state);
+		}
 	};
-
-	inline static
-		int NoteLut[7] = {
-			0,	//C
-			2,	//D
-			4,	//E
-			5,	//F
-			7,	//G
-			9,	//A
-			11	//B
+	inline static const DrawStateItem DrawStateLUT[] = {
+		{ DRAWSTATE::NA, "NA" },
+		{ DRAWSTATE::SET_ATTRIBUTES, "Set Attributes" },
+		{ DRAWSTATE::WAITFORMOUSE_DOWN, "Wait for Mouse Down" },
+		{ DRAWSTATE::MOVE_OBJECT_AROUND, "Move Object Around" },
+		{ DRAWSTATE::PLACE, "Place Object" },
+		{ DRAWSTATE::TIE_FIRSTNOTE, "Tie First Note" },
+		{ DRAWSTATE::TIE_SECONDNOTE, "Tie Second Note" },
+		{ DRAWSTATE::GLISSANDO_FIRST_NOTE, "Glissando First Note" },
+		{ DRAWSTATE::GLISSANDO_SECOND_NOTE, "Glissando Second Note" },
+		{ DRAWSTATE::GLISSANDO_END, "Glissando End" },
+		{ DRAWSTATE(-1), NULL } // End Marker
 	};
-
-	enum MouseRegions {
-		MOUSE_OUTSIDE,
-		MOUSE_INEDITREG,
-		MOUSE_INUPPERSEL,
-		MOUSE_INLOWERSEL
+	inline static int CBDecorationFlags[APP_NUM_DECORATIONS] = {
+		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_CHECKED,
+		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED,
+		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED,
+		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED
 	};
 	enum class DrawMode : int {
 		NOP,
@@ -113,6 +110,69 @@ public:
 		BM_MISC_INDEX_TEMPO,
 		BM_MISC_INDEX_INSTUMENT_CHANGE
 	};
+	//---------------------------
+	// String Lookup Tables
+	//---------------------------
+
+	struct RegionLUTItem {
+		MouseRegions Region;
+		const char* name;
+	};
+
+	inline static const RegionLUTItem RegionLUT[] = {
+		{ MouseRegions::MOUSE_OUTSIDE, "Outside" },
+		{ MouseRegions::MOUSE_IN_EDITREG, "Edit Region" },
+		{ MouseRegions::MOUSE_IN_UPPERSEL, "Upper Selection" },
+		{ MouseRegions::MOUSE_IN_LOWERSEL, "Lower Selection" },
+		{ MouseRegions::MOUSE_IN_UPPERDRAW, "Upper Draw Region" },
+		{ MouseRegions::MOUSE_IN_LOWERDRAW, "Lower Draw Region" },
+		{ MouseRegions::MOUSE_NONE, "Error" }
+	};
+
+	struct StaffMouseStatesLUTItem {
+		StaffMouseStates State;
+		const char* pName;
+	};
+
+	inline static const StaffMouseStatesLUTItem StaffMouseStateLUT[] = {
+		{StaffMouseStates::MOUSE_STAFF_STATE_NONE, "None" },
+		{ StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE, "Note Change" },
+		{ StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE, "Event Change" },
+		{ StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE, "Note and Event Change"},
+		{ StaffMouseStates::END_STATE, "Error State" }
+	};
+
+	struct RegionTransitionLUTItem {
+		MouseRegionTransitionState Transition;
+		const char* pName;
+	};
+
+	inline static const RegionTransitionLUTItem RegionTransitionLUT[] = {
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_NONE, "None" },
+		//------------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_OUTSIDE, "UpperDraw to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT, "UpperDraw to Edit" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_UPPER_SEL, "UpperDraw to UpperSel" },
+		//-----------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE, "Edit to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW, "Edit to LowerDraw" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW, "Edit to UpperDraw" },
+		//-----------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT, "LowerDraw to Edit" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_OUTSIDE, "LowerDraw to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_LOWER_SEL, "LowerDraw to LowerSel" },
+		//-----------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL, "Outside to LowerSel" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL, "Outside to UpperSel" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT, "Outside to Edit" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWER_DRAW, "Outside to LowerDraw" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPER_DRAW, "Outside to UpperDraw" },
+		//-----------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_ERROR, "Error" }
+	};
+	//---------------------------
+	// Data Members
+	//---------------------------
 private:
 	bool m_EscapeFlag;
 	UINT m_TimerID;
@@ -121,11 +181,8 @@ private:
 	UINT m_CtrlKeyDown;
 	UINT m_ShiftKeyDown;
 
-	CRect m_UpperSelRect;
-	CRect m_LowerSelRect;
 	//---------- View Colors -------------
-	COLORREF m_color_BackGround;
-
+	SColorPalette m_ColorPalette;
 	//---------- Combo Boxes --------------
 	CComboDropDown m_Combo_BlockOps;
 	CComboDropDown m_Combo_Instrument;
@@ -145,6 +202,8 @@ private:
 	int m_nLastSongPosition;
 	int m_SongScrollPos;	//Event that staff
 							//display starts at
+	int m_nDrawEvent;		// logical event under mouse
+	int m_nRawEvent;		// physical event under mouse
 	int m_FirstSelectedEvent;
 	int m_LastSelectedEventIndex;
 	//------- Tie data -------------------
@@ -154,14 +213,12 @@ private:
 	CMsNote* m_pFirstTieNote;
 	//-------------------------------------
 	DRAWSTATE m_nDrawState;
-	int m_ExitEditRegion;
 	INT m_LastPitch;
 	CMsNote* pLastNote;
-	int m_nDrawEvent;
-	int m_nRawEvent;
 	CMsObject* m_pDrawObject;
-	DrawMode m_nDrawMode;
-	int m_MouseInEditRegion;
+	DrawMode m_dmDrawMode;
+	MouseRegions m_MouseRegion;
+	MouseRegionTransitionState m_MouseRegionTransitionState;
 	int m_MaxEvents;		//maximum number of events that can be displayed
 	CMsSong* m_pSong;
 	// Keeps track of the number of notes pressed down for an event in Midi Input Mode
@@ -177,9 +234,20 @@ private:
 //-------------- Mouse ---------------------
 	StaffViewMouseState m_nMouseState;
 //--------- View Regions -------------------
-	CMyRgn m_rgnUpper;
+	CMyRgn m_rgnUpperSelect;
+	CRect m_UpperSelRect;
+
+	CMyRgn m_rgnUpperDraw;
+	CRect m_rectUpperDraw;
+
 	CMyRgn m_rgnEdit;
-	CMyRgn m_rgnLower;
+	CRect m_rectEdit;
+
+	CMyRgn m_rgnLowerDraw;
+	CRect m_rectLowerDraw;
+
+	CMyRgn m_rgnLowerSelect;
+	CRect m_LowerSelRect;
 
 	int m_SelectRectTop;
 	CSize m_szSelectRect;
@@ -205,7 +273,6 @@ public:
 	void UpdateColors();
 	CStaticStatus* GetStatusBar() { return &m_Status; }
 	//------------ Draw Screen ----------------------
-	bool IsMouseInEditRegion() { return m_MouseInEditRegion; }
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void OnDraw(CDC* pDC);
@@ -224,8 +291,12 @@ public:
 		return rv;
 	}
 	void SetLastPitch(INT lastPitch) { m_LastPitch = lastPitch; }
+
 	int GetSongScrollPosition() { return m_SongScrollPos; }
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
+
+	int GetLastSongPosition() { return m_nLastSongPosition; }
+	void SetLastSongPosition(int LSP) { m_nLastSongPosition = LSP; }
 
 	int GetPitch() { return GetNoteData().GetPitch(); }
 	void SetPitch(int p) { GetNoteData().SetPitch(p); }
@@ -257,22 +328,14 @@ public:
 	UINT GetHeadFlipped() { return GetNoteData().GetHeadFlipped(); }
 	void SetHeadFlipped(UINT flipped) { GetNoteData().SetHeadFlipped(flipped); }
 
-	UINT GetDrawEvent() { 
+	int GetDrawEvent() const { 
 		return m_nDrawEvent;
 	}
-	void IncDrawEvent() {
-		m_nDrawEvent++;
-	}
-	UINT GetDrawEventAndInc() {
-		UINT DrawEvent = GetDrawEvent();
-		IncDrawEvent();
-		return DrawEvent;
-	}
-	void SetDrawEvent(UINT drawEvent) {	m_nDrawEvent = drawEvent; }
+	void SetDrawEvent(int drawEvent) {	m_nDrawEvent = drawEvent; }
 	//---------------------------------------------------
-	int GetMaxEvents() {return m_MaxEvents;}
+	int GetMaxEvents() const {return m_MaxEvents;}
 	void SetMaxEvents(int mE) { m_MaxEvents = mE; }
-	int GetRawEvent() { return m_nRawEvent; }
+	int GetRawEvent() const { return m_nRawEvent; }
 	inline CMsSong* GetSong() { 
 		return m_pSong; 
 	}
@@ -293,12 +356,11 @@ public:
 	CMsObject* GetDrawObject() { return m_pDrawObject; }
 	void SetDrawObject(CMsObject* pDObj) { m_pDrawObject = pDObj; }
 	int CalcMaxEvents(void);
-	void GetEventRect(int Event, CRect& rect);
 	UINT GetRawEventNumber(int x);
-	CSize GetSelectionRegionSize() { return m_szSelectRect; }
-	int GetSelectionRegionTop() { return m_SelectRectTop; }
+	CSize GetSelectionRegionSize() const { return m_szSelectRect; }
+	int GetSelectionRegionTop() const { return m_SelectRectTop; }
 	int IsEventDisplayed(CMsEvent* pEV);
-	int MouseInRegion(CPoint p);
+	MouseRegions MouseInRegion(CPoint p);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
 	void SetupDrawMode(DrawMode Mode, long v = 0);
@@ -322,6 +384,23 @@ public:
 	CMsObject* MatchMouseToSelectedObject(CPoint MousePointer);
 	CMsSongInfo* GetSongInfo(){return GetSong()->GetSongInfo();}
 	CMsTrack* GetTrackInfo(int TrackID);
+	SColorPalette* GetColorPalette() { return &m_ColorPalette; }
+	//--------------- View Regions ------------------
+	CRect GetUpperSelRect() const {
+		return m_UpperSelRect;
+	}
+	CRect GetUpperDrawRect() const {
+		return m_rectUpperDraw;
+	}
+	CRect GetEditRect() const {
+		return m_rectEdit;
+	}
+	CRect GetLowerDrawRect() const {
+		return m_rectLowerDraw;
+	}
+	CRect GetLowerSelRect() const {
+		return m_LowerSelRect;
+	}
 	// Generated message map functions
 protected:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -352,4 +431,16 @@ public:
     afx_msg void OnUpdateMenuMsFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnMenuMsFileSaveAs();
 	afx_msg void OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI);
+	//-----------------------------
+	MouseRegionTransitionState RegionTransition(CPoint ptMousePos);
+	MouseRegionTransitionState GetTransitionState() const {
+		return m_MouseRegionTransitionState;
+	}
+	MouseRegions GetMouseRegion() const {
+		return m_MouseRegion;
+	}
+	static const char* GetMouseRegionName(MouseRegions region);
+	static const char* GetMouseRegionTransitionName(MouseRegionTransitionState transition);
+	static const char* GetStaffMouseStateName(StaffMouseStates state);
+	static const char* GetDrawStateName(DRAWSTATE state);
 };

@@ -73,9 +73,12 @@ int CChildFrameStaff::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	static int count = 0;
 	CString csSongName;
-
+	CString csTitle;
+	// Set the title of the window to "SongX" where X is a number
 	csSongName.Format(_T("Song%d"), ++count);
+	csTitle.Format(_T("Enter Song Name"));
 	CEnterStringDlg Dlg;
+	Dlg.SetTitle(csTitle);
 	Dlg.SetString(csSongName);
 	Dlg.DoModal();
 	csSongName = Dlg.GetString();

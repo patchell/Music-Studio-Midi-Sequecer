@@ -20,12 +20,13 @@ public:
 	virtual UINT Play();
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject() { return 0; }
 	virtual bool DoesSomething() {
 		return true;
 	}
-	virtual void Draw(CDC* pDC, int event, int maxevent);
+	virtual void Draw(CDC* pDC);
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
@@ -38,5 +39,23 @@ public:
 	void Copy(CMsObject* Source);
 	int NoteToPosition(int Note);
 	//--------------------------------------------------
-	static CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1];
+	inline static CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1] = {
+			_T("ERROR"),	//5
+			_T("C MAJ"),	//1X
+			_T("G MAJ"),	//2X
+			_T("D MAJ"),	//3X
+			_T("A MAJ"),	//4X
+			_T("E MAJ"),	//5X
+			_T("B MAJ"),	//6X
+			_T("F# MAJ"),	//7X
+			_T("C# MAJ"),	//8X
+			_T("F MAJ"),	//9X
+			_T("Bb MAJ"),	//10X
+			_T("Eb MAJ"),	//11X
+			_T("Ab MAJ"),	//12X
+			_T("Db MAJ"),	//13X
+			_T("Gb MAJ"),	//14X
+			_T("Cb MAJ")	//15X
+	};
+
 };

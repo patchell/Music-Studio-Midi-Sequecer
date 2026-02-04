@@ -38,7 +38,7 @@ DRAWSTATE CMsNatural::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-DRAWSTATE CMsNatural::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsNatural::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	return DrawState;
 }

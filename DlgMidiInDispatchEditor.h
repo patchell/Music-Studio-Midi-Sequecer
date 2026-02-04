@@ -3,9 +3,6 @@
 
 // CDlgMidiInDispatchEditor dialog
 
-constexpr auto DISPATCHEDIT__NUM_MIDI_CMDS = 23;
-
-extern MIDI_STATUS MidiStatusCommands[DISPATCHEDIT__NUM_MIDI_CMDS];
 
 class CDlgMidiInDispatchEditor : public CDialog
 {

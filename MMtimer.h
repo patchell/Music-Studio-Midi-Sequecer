@@ -37,7 +37,10 @@ public:
 
 		mmResult = BeginPeriod(resolution);
 		if (TIMERR_NOCANDO == mmResult)
-			printf("Could not begin Period Bad Resolution(?) %d\n", resolution);
+		{
+			if (LogFile()) 
+				fprintf(LogFile(), "Could not begin Period Bad Resolution(?) %d\n", resolution);
+		}
 		else
 		{
 			mmResult = timeSetEvent(

@@ -4,6 +4,10 @@
 
 #include "pch.h"
 
+FILE* LogFile()
+{
+	return GETAPP->LogFile();
+}
 
 //--------------------- Song Playing Helper Thread ---------------------------------
 
@@ -50,14 +54,67 @@ END_MESSAGE_MAP()
 CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 {
 	m_hMDIAccel = 0;
-	m_hMDIAccel = 0;
 	m_pLog = 0;
 	pConsol = 0;
 	m_hMDIMenu = 0;
 	m_UniqueID = 0;
 	m_hPlayThread = 0;
 	m_idPlayerThread = 0;
+	m_ppBmAccidentalTypes = 0;
+	m_ppBmCBAccidentalTypes = 0;
+	m_ppBmBlockOps = 0;
+	m_ppBmNoteTypes = 0;
+	m_ppBmRestTypes = 0;
+	m_ppBmCBRestTypes = 0;
+	m_ppBmDecorationsNotSel = 0;
+	m_ppBmCBDecorationsSel = 0;
+	m_ppBmMisc = 0;
+	m_ppBmCbTimeSig = 0;
+	m_ppBmTimeSig = 0;
+	m_ppBmCbKeySig = 0;
 	SetAppID(_T("MidiSeqMS.AppID.1.0"));
+}
+
+void CMidiSeqMSApp::CloseAllLogFiles()
+{
+	if (m_pLog)
+	{
+		fclose(m_pLog);
+		m_pLog = 0;
+	}
+	if (pConsol)
+	{
+		fclose(pConsol);
+		pConsol = 0;
+	}
+}
+
+bool CMidiSeqMSApp::OpenLogFile(const char* pLogName)
+{
+	bool bSuccess = true;
+
+	fopen_s(&m_pLog, pLogName, "w");
+	if (m_pLog)fprintf(m_pLog, "-------- MisiSeqMS Start -------\n");
+	else
+		bSuccess = false;
+	return bSuccess;
+}
+
+bool CMidiSeqMSApp::OpenConsol()
+{
+	//---------------------------------------
+	// Open up a "DOS" window to print debug
+	// Information to.
+	//---------------------------------------
+	bool bSuccess = true;
+
+	AllocConsole();
+	freopen_s(&pConsol, "CONOUT$", "w", stdout);
+	if(pConsol)
+		if (LogFile()) fprintf(LogFile(), "Ready\n");
+	else
+		bSuccess = false;
+	return bSuccess;
 }
 
 	// The one and only CMidiSeqMSApp object
@@ -152,11 +209,8 @@ BOOL CMidiSeqMSApp::InitInstance()
 	// Open up a "DOS" window to print debug
 	// Information to.
 	//---------------------------------------
-	fopen_s(&m_pLog, "Log.txt", "w");
-	if(m_pLog)fprintf(m_pLog, "-------- MisiSeqMS Start -------\n");
-	AllocConsole();
-	freopen_s(&pConsol, "CONOUT$", "w", stdout);
-	printf("Ready\n");
+	OpenConsol();
+	OpenLogFile("Log.txt");
 	//--------------------------------------
 	// The main window has been initialized, so show and update it
 	//--------------------------------------
@@ -176,7 +230,7 @@ BOOL CMidiSeqMSApp::InitInstance()
 	int Status = m_ThredRunningEvent.Pend();
 	if (Status != WAIT_OBJECT_0)
 	{
-		printf("Event Error %d\n", Status);
+		if (LogFile()) fprintf(LogFile(), "Event Error %d\n", Status);
 	}
 	//------------ Create Timer ------------------------
 	m_MMtimer.Create(
@@ -206,10 +260,9 @@ int CMidiSeqMSApp::ExitInstance()
 
 	KillPlayerThead();
 
-	fprintf(m_pLog, "------ Exit MidiSeqMS-------\n");
+	if(LogFile())fprintf(m_pLog, "------ Exit MidiSeqMS-------\n");
 	AfxOleTerm(false);
-	fclose(m_pLog);
-	fclose(pConsol);
+	CloseAllLogFiles();
 	return CWinApp::ExitInstance();
 }
 
@@ -237,7 +290,7 @@ bool CMidiSeqMSApp::RegisterBitmapComboBoxClass()
 	if (!AfxRegisterClass(&windowclass))
 	{
 		rV = false;
-		printf("!!!!!!!!! Could Not Register Drop Down !!!!!!!!!!\n");
+		if (LogFile()) fprintf(LogFile(), "!!!!!!!!! Could Not Register Drop Down !!!!!!!!!!\n");
 	}
 	return rV;
 }
@@ -253,46 +306,79 @@ void CMidiSeqMSApp::InitBitMaps()
 	// Initialize Misc Stuff Combo box
 	//-----------------------------------------
 	n = GetNumMisc();
-	for (i = 0; i < n; ++i)
-		m_aBmMisc[i].LoadBitmapW(MisStuffTypes[i]);
-	//-------------- Block Operations -------
-	n = GetNumBlockOps();
-	for (i = 0; i < n; ++i)
-		m_aBmBlockOps[i].LoadBitmapW(BlockOpBmIdsTypes[i]);
-	//--------------Accidental Type-----------------
-	n = GetNumAccidentalTypes();
+	m_ppBmMisc = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_aBmAccidentalTypes[i].LoadBitmapW(AccidentalBmIdsTypes[i]);
-		m_aBmCBAccidentalTypes[i].LoadBitmapW(AccidentalBmCBIdsTypes[i]);
+		m_ppBmMisc[i] = new CMyBitmap;
+		m_ppBmMisc[i]->LoadBitmapW(GetMiscTypeBmID(i));
+	}
+	//-------------- Block Operations -------
+	n = GetNumBlockOps();
+	m_ppBmBlockOps = new CMyBitmap * [n];
+	for (i = 0; i < n; ++i)
+	{
+		m_ppBmBlockOps[i] = new CMyBitmap;
+		m_ppBmBlockOps[i]->LoadBitmapW(GetBlockOpTypeBmID(i));
+	}
+	//--------------Accidental Type-----------------
+	n = GetNumAccidentalTypes();
+	m_ppBmAccidentalTypes = new CMyBitmap * [n];
+	m_ppBmCBAccidentalTypes = new CMyBitmap * [n];
+	for (i = 0; i < n; ++i)
+	{
+		m_ppBmAccidentalTypes[i] = new CMyBitmap;
+		m_ppBmAccidentalTypes[i]->LoadBitmapW(AccidentalBmIdsTypes[i]);
+		m_ppBmCBAccidentalTypes[i] = new CMyBitmap;
+		m_ppBmCBAccidentalTypes[i]->LoadBitmapW(AccidentalBmCBIdsTypes[i]);
 	}
 	//--------------Decorations--------------
 	n = GetNumDecorations();
-	for (i = 0; i < n; ++i)
-		m_aBmDecorations[i].LoadBitmapW(DecorationsBmIds[i]);
-	//------------Rest Types--------------------
-	n = GetNumRestTypes();
+	m_ppBmDecorationsNotSel = new CMyBitmap * [n];
+	m_ppBmCBDecorationsSel = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_aBmRestTypes[i].LoadBitmapW(RestBmIdsTypes[i]);
-		m_aBmCBRestTypes[i].LoadBitmapW(RestComboBoxTypes[i]);
+		m_ppBmDecorationsNotSel[i] = new CMyBitmap;
+		m_ppBmDecorationsNotSel[i]->LoadBitmapW(GetDecorationsBmCbIdsNotSel(i));
+		m_ppBmCBDecorationsSel[i] = new CMyBitmap;
+		m_ppBmCBDecorationsSel[i]->LoadBitmapW(GetDecorationsBmCbIdsSel(i));
+	}
+	//------------Rest Types--------------------
+	n = GetNumRestTypes();
+	m_ppBmRestTypes = new CMyBitmap * [n];
+	m_ppBmCBRestTypes = new CMyBitmap * [n];
+	for (i = 0; i < n; ++i)
+	{
+		m_ppBmRestTypes[i] = new CMyBitmap;
+		m_ppBmRestTypes[i]->LoadBitmapW(GetRestBmIdsTypes(i));
+		m_ppBmCBRestTypes[i] = new CMyBitmap;
+		m_ppBmCBRestTypes[i]->LoadBitmapW(GetBmIdRestComboBoxTypes(i));
 	}
 	//-------------Note Types---------------
 	n = GetNumNoteTypes();
-	for (i = 0; i < n; ++i)
-		m_aBmNoteTypes[i].LoadBitmapW(NoteBmIdsTypes[i]);
-	//----------- Time Signature ---------------
-	n = GetNumTimeSig();
+	m_ppBmNoteTypes = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_aBmTimeSig[i].LoadBitmapW(TimeSigBmIds[i]);
-		m_aBmCbTimeSig[i].LoadBitmapW(TimeSigCBbMIDs[i]);
+		m_ppBmNoteTypes[i] = new CMyBitmap;
+		m_ppBmNoteTypes[i]->LoadBitmapW(GetBmIdNoteType(i));
+	}
+	//----------- Time Signature ---------------
+	n = GetNumTimeSig();
+	m_ppBmTimeSig = new CMyBitmap * [n];
+	m_ppBmCbTimeSig = new CMyBitmap * [n];
+	for (i = 0; i < n; ++i)
+	{
+		m_ppBmTimeSig[i] = new CMyBitmap;
+		m_ppBmTimeSig[i]->LoadBitmapW(GetTimeSigBmID(i));
+		m_ppBmCbTimeSig[i] = new CMyBitmap;
+		m_ppBmCbTimeSig[i]->LoadBitmapW(GetTimeSigCbBmID(i));
 	}
 	//------------- Key Signature ----------------
 	n = GetNumKeySigs();
+	m_ppBmCbKeySig = new CMyBitmap * [n+1];
 	for (i = 0; i < n; ++i)
 	{
-		m_aBmCbKeySig[i+1].LoadBitmapW(KeySigStringBitmapIDsTab[i+1]);
+		m_ppBmCbKeySig[i+1] = new CMyBitmap;
+		m_ppBmCbKeySig[i+1]->LoadBitmapW(GetKeySigBmId(i+1));
 	}
 	//----------------------------------------
 	// Bitmaps for TX816
@@ -301,7 +387,7 @@ void CMidiSeqMSApp::InitBitMaps()
 	//-----------------------------------------
 
 	for (i = 0; i < APP_TX816_NUM_LFO_WAVES; ++i)
-		m_aBmLfoWaves[i].LoadBitmapW(TX816_LFO_WaveBmAPP_TX816_NUM_LFO_WAVES[i]);
+		m_aBmLfoWaves[i].LoadBitmapW(GetTx816BmIdLfoWave(i));
 
 	//--------------------------------------------
 	// Algrithmns
@@ -309,7 +395,7 @@ void CMidiSeqMSApp::InitBitMaps()
 
 	for ( i = 0; i < APP_TX816_NUM_ALG_BITMAPS; i++)
 	{
-		m_aBmAlgrithm[i].LoadBitmapW(TX816_AlgrithmBitmapID[i]);
+		m_aBmAlgrithm[i].LoadBitmapW(GetTx816AlgBitmapID(i));
 	}
 }
 
@@ -354,10 +440,9 @@ void CMidiSeqMSApp::SaveSettings()
 
 void CMidiSeqMSApp::OnSettingsTracksettinigs()
 {
-	CDlgMidiInfo* pDlg = new CDlgMidiInfo;
+	CDlgMidiInfo Dlg;
 
-	pDlg->DoModal();
-	delete pDlg;
+	Dlg.DoModal();
 }
 
 void CMidiSeqMSApp::OnSettingsMidiin()
@@ -374,7 +459,7 @@ void CMidiSeqMSApp::OnSettingsMidiin()
 		pMID->Open(MidiInId);
 		m_MidiInTable.AddItem(pMID);
 	}
-	delete[] s;
+	if(s) delete[] s;
 }
 
 int CMidiSeqMSApp::UpdateColors()
@@ -543,7 +628,7 @@ UINT CMidiSeqMSApp::DoPlayThread()
 	int SongID = 0;
 	int doLoop = 0;
 
-	printf("Player Thread Ready\n");
+	if (LogFile()) fprintf(LogFile(), "Player Thread Ready\n");
 	//-------------------------------------
 	//indicate that the thread is running
 	//to the main thread
@@ -787,6 +872,11 @@ int CMidiSeqMSApp::FontPixelsToLogicalUnits(CDC* pDC, int heightInPixels)
 
 unsigned CMidiSeqMSApp::GetUniqueID()
 {
+	if(m_UniqueID == 100)
+		printf("UniqueID=%d\n", m_UniqueID + 1);
+	else
+		printf("UniqueID=%d\n", m_UniqueID + 1);
+
 	return ++m_UniqueID;
 }
 
@@ -843,7 +933,7 @@ void CMidiSeqMSApp::Dump(FILE* pOut, const char* pMem, int Size, int StartAddres
 			}
 		}
 	}
-	delete[] s;
+	if(s) delete[] s;
 }
 
 char* CMidiSeqMSApp::IndentString(char* s, int StringLength, int Indent, int c)

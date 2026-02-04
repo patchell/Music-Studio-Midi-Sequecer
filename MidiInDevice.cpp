@@ -73,9 +73,9 @@ MMRESULT CMidiInDevice::Open(int InId)
 		if (MSerror == MMSYSERR_NOERROR)
 		{
 			MSerror = midiInPrepareHeader(m_hMidiIn, &m_mhMidiIn1, sizeof(MIDIHDR));
-			if (MSerror != MMSYSERR_NOERROR) printf("1 ERROR %d\n", MSerror);
+			if (MSerror != MMSYSERR_NOERROR) if(LogFile()) fprintf(LogFile(),"1 ERROR %d\n", MSerror);
 			MSerror = midiInPrepareHeader(m_hMidiIn, &m_mhMidiIn2, sizeof(MIDIHDR));
-			if (MSerror != MMSYSERR_NOERROR) printf("2 ERROR %d\n", MSerror);
+			if (MSerror != MMSYSERR_NOERROR) if(LogFile()) fprintf(LogFile(),"2 ERROR %d\n", MSerror);
 
 			m_mhMidiIn1.lpData = new char[4096];
 			m_mhMidiIn1.dwBufferLength = 4096;
@@ -84,11 +84,11 @@ MMRESULT CMidiInDevice::Open(int InId)
 			m_mhMidiIn2.dwBufferLength = 4096;
 
 			MSerror = midiInStart(m_hMidiIn);
-			if (MSerror != MMSYSERR_NOERROR) printf("ERROR %d\n", MSerror);
+			if (MSerror != MMSYSERR_NOERROR) if(LogFile()) fprintf(LogFile(),"ERROR %d\n", MSerror);
 
 		}
 		else
-			printf("Could not open midi\n");
+			if(LogFile()) fprintf(LogFile(),"Could not open midi\n");
 	}
 	return MSerror;
 }
@@ -105,7 +105,7 @@ UINT CMidiInDevice::MidiInThread()
 
 	static int Count = 0;
 
-	printf("Midi In Thread %d Started\n",++Count);
+	if(LogFile()) fprintf(LogFile(),"Midi In Thread %d Started\n",++Count);
 	Enumeration = Count;
 	while (GetMessageW(&Msg, NULL, 0, 0))
 	{
@@ -120,7 +120,7 @@ UINT CMidiInDevice::MidiInThread()
 			Note = NOTE(Msg.lParam);
 			Vel = VEL(Msg.lParam);
 			Cmd = CMD(Msg.lParam);
-			printf("Device %d: Chan=%d  CMD=%02x Note=%d Vel=%d\n", Enumeration, Chan, Cmd, Note, Vel);
+			if(LogFile()) fprintf(LogFile(),"Device %d: Chan=%d  CMD=%02x Note=%d Vel=%d\n", Enumeration, Chan, Cmd, Note, Vel);
 			DispatchShortMessage(Msg.wParam, Msg.lParam);
 			break;
 		case MM_MIM_LONGERROR:
@@ -129,7 +129,7 @@ UINT CMidiInDevice::MidiInThread()
 			GetMidiLongComplete().Post();
 			break;
 		case MM_MIM_MOREDATA:
-			printf("More Data?\n");
+			if(LogFile()) fprintf(LogFile(),"More Data?\n");
 			break;
 		case MM_MIM_OPEN:
 			break;

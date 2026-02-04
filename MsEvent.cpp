@@ -12,8 +12,8 @@ CMsEvent::CMsEvent()
 {
 	m_pNext = 0;
 	m_pPrev = 0;
-	m_pEventObjectListHead = 0;
-	m_pEventObjectListTail = 0;
+	m_pEventMsObjectListHead = 0;
+	m_pEventMsObjectListTail = 0;
 	m_Selected = 0;	// Selected If True
 	m_Index = -1;	//WHERE in event chain this is located
 	m_pView = 0;
@@ -24,16 +24,16 @@ CMsEvent::CMsEvent()
 
 CMsEvent::~CMsEvent()
 {
-	if(m_pEventObjectListHead)
+	if(m_pEventMsObjectListHead)
 	{
 		CMsObject *pObj,*pObjDel;
 
-		pObj = m_pEventObjectListHead;
+		pObj = m_pEventMsObjectListHead;
 		while(pObj)
 		{
 			pObjDel = pObj;
 			pObj = pObj->GetNext();
-			delete pObjDel;
+			if(pObjDel)delete pObjDel;
 		}
 	}
 }
@@ -50,7 +50,7 @@ bool CMsEvent::Create(CMsSong*pParentSong, CChildViewStaff* pCV)
 void CMsEvent::Print(FILE *pO, const char* s, int Indent)
 {
 	char* pIndentString = new char[256];
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO, "%s========= %s Event %d Begin ========\n", pIndentString, s, m_Index);
@@ -60,7 +60,7 @@ void CMsEvent::Print(FILE *pO, const char* s, int Indent)
 		pObj = pObj->GetNext();
 	}
 //	fprintf(pO,"%s------------ event %d end-------------\n", pIndentString, m_Index);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
@@ -86,43 +86,67 @@ void CMsEvent::PrintEvents(FILE *pO, const char *pTitel, int Indent)
 //	fprintf(pO, "^^^^^^^^^^^ End %s ^^^^^^^^^^^^^^^^^^^^^^\n\n\n", pTitel);
 }
 
+int CMsEvent::GetPhysicalIndex()
+{
+	int physicalIndex = 0;
+	physicalIndex = m_Index - GetSong()->GetStaffChildView()->GetSongScrollPosition();
+	return physicalIndex;
+}
+
 void CMsEvent::AddObject(CMsObject* pO)
 {
 	CMsNote* pNote = 0;
 
-	switch (pO->GetType())
+	if (pO)
 	{
-	case CMsObject::MsObjType::NOTE:
-		pNote = dynamic_cast<CMsNote*>(pO);
-		if (pNote->IsRest())
+		if (LogFile())
+		{
+			fprintf(GETAPP->LogFile(), "\t\tEvent %d: Add Object Type %s Object Event %d ID=%d\n",
+				GetIndex(),
+				CMsObject::GetStringFromType(pO->GetType()),
+				GetIndex(),
+				pO ? pO->GetObjectID() : -1
+			);
+		}
+		pO->SetParentEvent(this);
+		switch (pO->GetType())
+		{
+		case CMsObject::MsObjType::NOTE:
+			pNote = (CMsNote*)pO;
+			if (pNote->IsRest())
+				AddObjectAtEnd(pO);
+			else
+				AddNoteInOrder(pO);
+			break;
+		case CMsObject::MsObjType::REPEATSTART:
+		case CMsObject::MsObjType::REPEATEND:
+		case CMsObject::MsObjType::BAR:
+		case CMsObject::MsObjType::ENDBAR:
+		case CMsObject::MsObjType::KEYSIG:
+		case CMsObject::MsObjType::TIMESIG:
+		case CMsObject::MsObjType::TEMPO:
+		case CMsObject::MsObjType::LOUDNESS:
 			AddObjectAtEnd(pO);
-		else
-			AddNoteInOrder(pO);
-		break;
-	case CMsObject::MsObjType::REPEATSTART:
-	case CMsObject::MsObjType::REPEATEND:
-	case CMsObject::MsObjType::BAR:
-	case CMsObject::MsObjType::ENDBAR:
-	case CMsObject::MsObjType::KEYSIG:
-	case CMsObject::MsObjType::TIMESIG:
-	case CMsObject::MsObjType::TEMPO:
-	case CMsObject::MsObjType::LOUDNESS:
-		AddObjectAtEnd(pO);
-		break;
-	case CMsObject::MsObjType::PORTAMENTO_START:
-		break;
-	case CMsObject::MsObjType::PORTAMENTO_STOP:
-		break;
-	case CMsObject::MsObjType::GLISSANDO:
-		break;
-	case CMsObject::MsObjType::GLISSANDO_END:
-		break;
-	case CMsObject::MsObjType::CHORD:
-		break;
-	case CMsObject::MsObjType::CHORD_NOTE:
-		break;
-	default:
-		break;
+			break;
+		case CMsObject::MsObjType::PORTAMENTO_START:
+			break;
+		case CMsObject::MsObjType::PORTAMENTO_STOP:
+			break;
+		case CMsObject::MsObjType::GLISSANDO:
+			break;
+		case CMsObject::MsObjType::GLISSANDO_END:
+			break;
+		case CMsObject::MsObjType::CHORD:
+			break;
+		case CMsObject::MsObjType::CHORD_NOTE:
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		AfxMessageBox(_T("Error: Attempting to add a NULL object to an event"));
 	}
 }
 
@@ -130,16 +154,16 @@ void CMsEvent::AddObjectAtEnd(CMsObject *pO)
 {
 	if (pO)
 	{
-		if (GetEventObjectHead() == 0)
+		if (GetEventMsObjectHead() == 0)
 		{
-			SetEventObjectHead(pO);
-			SetEventObjectTail(pO);
+			SetEventMsObjectHead(pO);
+			SetEventMsObjectTail(pO);
 		}
 		else
 		{
-			pO->SetPrev(GetEventObjectTail());
-			GetEventObjectTail()->SetNext(pO);
-			SetEventObjectTail(pO);
+			pO->SetPrev(GetEventMsObjectTail());
+			GetEventMsObjectTail()->SetNext(pO);
+			SetEventMsObjectTail(pO);
 		}
 		m_NumberOfObjects++;
 	}
@@ -147,39 +171,40 @@ void CMsEvent::AddObjectAtEnd(CMsObject *pO)
 
 void CMsEvent::AddObjectAtStart(CMsObject *pO)
 {
-	if(GetEventObjectHead() == 0)
+	if(GetEventMsObjectHead() == 0)
 	{
-		SetEventObjectHead(pO);
-		SetEventObjectTail(pO);
+		SetEventMsObjectHead(pO);
+		SetEventMsObjectTail(pO);
 	}
 	else
 	{
-		pO->SetNext(GetEventObjectHead());
-		GetEventObjectHead()->SetPrev(pO);
-		SetEventObjectHead(pO);
+		pO->SetNext(GetEventMsObjectHead());
+		GetEventMsObjectHead()->SetPrev(pO);
+		SetEventMsObjectHead(pO);
 	}
 	m_NumberOfObjects++;
 }
 
 void CMsEvent::AddObjectAtHead(CMsObject* pO)
 {
-	pO->SetNext(GetEventObjectHead());
-	GetEventObjectHead()->SetPrev(pO);
-	SetEventObjectHead(pO);
+	pO->SetNext(GetEventMsObjectHead());
+	GetEventMsObjectHead()->SetPrev(pO);
+	SetEventMsObjectHead(pO);
 	m_NumberOfObjects++;
 }
 
 void CMsEvent::AddObjectAtTail(CMsObject* pO)
 {
-	pO->SetPrev(GetEventObjectTail());
-	GetEventObjectTail()->SetNext(pO);
-	SetEventObjectTail(pO);
+	pO->SetPrev(GetEventMsObjectTail());
+	if(GetEventMsObjectTail())
+		GetEventMsObjectTail()->SetNext(pO);
+	SetEventMsObjectTail(pO);
 	m_NumberOfObjects++;
 }
 
 void CMsEvent::InsertObjectAfter(CMsObject* pO, CMsObject* pAfterObj)
 {
-	if(pAfterObj == GetEventObjectTail())
+	if(pAfterObj == GetEventMsObjectTail())
 	{
 		AddObjectAtTail(pO);
 	}
@@ -189,14 +214,15 @@ void CMsEvent::InsertObjectAfter(CMsObject* pO, CMsObject* pAfterObj)
 		pAfterObj->SetNext(pO);
 		pO->SetPrev(pAfterObj);
 		pO->SetNext(pNextObj);
-		pNextObj->SetPrev(pO);
+		if(pNextObj)
+			pNextObj->SetPrev(pO);
 		m_NumberOfObjects++;
 	}
 }
 
 void CMsEvent::InsertObjectBefore(CMsObject* pO, CMsObject* pBeforeObj)
 {
-	if(pBeforeObj == GetEventObjectHead())
+	if(pBeforeObj == GetEventMsObjectHead())
 	{
 		AddObjectAtHead(pO);
 	}
@@ -211,28 +237,55 @@ void CMsEvent::InsertObjectBefore(CMsObject* pO, CMsObject* pBeforeObj)
 	}
 }
 
-bool CMsEvent::AreThereAnyNotesInThisEvent()
+int CMsEvent::AreThereAnyNotesInThisEvent()
 {
-	bool bFound = 0;
-	CMsObject *pObj = GetEventObjectHead();
+	int Found = 0;
+	CMsObject *pObj = GetEventMsObjectHead();
 	CMsNote* pNote;
 
-	while (pObj && !bFound)
+	while (pObj)
 	{
 		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
-			pNote = dynamic_cast<CMsNote*>(pObj);
+			pNote = (CMsNote*)pObj;
 			if(pNote->IsNote())
 			{
-				bFound = 1;
-			}
-			else
-			{
-				pObj = pObj->GetNext();
+				Found++;
 			}
 		}
+		pObj = pObj->GetNext();
+	}
+	return Found;
+}
+
+bool CMsEvent::IsThisObjectInThisEvent(CMsObject* pO)
+{
+	bool bFound = false;
+	CMsObject* pObj = GetEventMsObjectHead();
+
+	if(LogFile())
+	{
+		fprintf(GETAPP->LogFile(), "\t\tEvent %d: Is This Object %s of %d Events  Object::Event=%d ID=%d\n", 
+			GetIndex(),
+			CMsObject::GetStringFromType(pO->GetType()),
+			m_NumberOfObjects,
+			pO?pO->GetParentEvent()->GetIndex(): -1,
+			pO ? pO->GetObjectID() : -1
+		);
+	}
+	while (pObj && !bFound)
+	{
+		if (pObj == pO && 
+			pO->GetObjectID() == pObj->GetObjectID() && 
+			pO->GetParentEvent()->GetIndex() == GetIndex()
+		)
+		{
+			bFound = true;
+		}
 		else
+		{
 			pObj = pObj->GetNext();
+		}
 	}
 	return bFound;
 }
@@ -240,7 +293,7 @@ bool CMsEvent::AreThereAnyNotesInThisEvent()
 bool CMsEvent::IsThereOnlyOneNoteInThisEvent()
 {
 	bool bOnlyOne = true;
-	CMsObject* pObj = GetEventObjectHead();
+	CMsObject* pObj = GetEventMsObjectHead();
 	CMsNote* pNote;
 	int noteCount = 0;
 
@@ -248,7 +301,7 @@ bool CMsEvent::IsThereOnlyOneNoteInThisEvent()
 	{
 		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
-			pNote = dynamic_cast<CMsNote*>(pObj);
+			pNote = (CMsNote*)pObj;
 			if (pNote->IsNote())
 			{
 				noteCount++;
@@ -272,6 +325,44 @@ bool CMsEvent::IsThereOnlyOneNoteInThisEvent()
 	return bOnlyOne;
 }
 
+CMsObject* CMsEvent::FindFirstObjectOfType(CMsObject::MsObjType ObjectType)
+{
+	CMsObject* pObj = GetEventMsObjectHead();
+	bool bNotFound = true;
+
+	while (pObj && bNotFound)
+	{
+		if (pObj->Is(ObjectType))
+		{
+			bNotFound = false;
+		}
+		else
+		{
+			pObj = pObj->GetNext();
+		}
+	}
+	return pObj;
+}
+
+CMsObject* CMsEvent::FindNextObjectOfType(CMsObject::MsObjType ObjectType, CMsObject* pPrevObj)
+{
+	CMsObject* pObj = pPrevObj->GetNext();
+	bool bNotFound = true;
+
+	while (pObj && bNotFound)
+	{
+		if (pObj->Is(ObjectType))
+		{
+			bNotFound = false;
+		}
+		else
+		{
+			pObj = pObj->GetNext();
+		}
+	}
+	return pObj;
+}
+
 void CMsEvent::AddNoteInOrder(CMsObject* pO)
 {
 	//--------------------------------
@@ -281,14 +372,16 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 	// lower pitch notes go last
 	// (near the Tail)=-]ol
 	//--------------------------------
-	CMsNote* pNewNote = dynamic_cast<CMsNote*>(pO);
+	CMsNote* pNewNote = (CMsNote*)pO;
 	CMsNote* pNote = 0;
-	CMsObject* pObj = GetEventObjectHead();
-
+	CMsObject* pObj = GetEventMsObjectHead();
+	int NumberOfNotes = 0;
 	bool bLoop = true;
 
-	if (AreThereAnyNotesInThisEvent())
+	NumberOfNotes = AreThereAnyNotesInThisEvent();
+	if (NumberOfNotes)
 	{
+		fprintf(GETAPP->LogFile(), "\t\tEvent %d: There **ARE** %d Notes in this Event\n", GetIndex(), NumberOfNotes);
 		if (IsThereOnlyOneNoteInThisEvent())
 		{
 			pNote = FindFirstNote();
@@ -300,7 +393,7 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 			{
 				InsertObjectAfter(pO, pNote);
 			}
-			FlipNoteHeads();
+//			FlipNoteHeads();
 		}
 		else
 		{
@@ -325,13 +418,13 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 						// Add new note at end
 						//--------------------------------
 						
-						pObj = GetEventObjectTail();
+						pObj = GetEventMsObjectTail();
 						InsertObjectAfter(pO, pObj);
 						bLoop = false;
 					}
 				}
 			}
-			FlipNoteHeads();
+		//			FlipNoteHeads();
 		}
 	}
 	else
@@ -339,14 +432,16 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 		//--------------------------------
 		// No notes in this event
 		//--------------------------------
+		fprintf(GETAPP->LogFile(), "\t\tEvent %d:**NO Notes\n", GetIndex());
 		if(m_NumberOfObjects == 0)
 		{
-			SetEventObjectHead(pO);
-			SetEventObjectTail(pO);
+			SetEventMsObjectHead(pO);
+			SetEventMsObjectTail(pO);
+			m_NumberOfObjects++;
 		}
 		else
 		{
-			pObj = GetEventObjectTail();
+			pObj = GetEventMsObjectTail();
 			AddObjectAtTail(pO);
 		}
 	}
@@ -355,14 +450,14 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 CMsNote* CMsEvent::FindFirstNote()
 {
 	CMsNote* pNote = 0;
-	CMsObject* pObj = GetEventObjectHead();
+	CMsObject* pObj = GetEventMsObjectHead();
 	bool bFound = false;
 
 	while (pObj && !bFound)
 	{
 		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
-			pNote = dynamic_cast<CMsNote*>(pObj);
+			pNote = (CMsNote*)pObj;
 			if (pNote->IsNote())
 			{
 				bFound = true;
@@ -388,7 +483,7 @@ CMsNote* CMsEvent::FindNextNote(CMsNote* pPrevNote)
 	{
 		if (pObj->Is(CMsObject::MsObjType::NOTE))
 		{
-			pNote = dynamic_cast<CMsNote*>(pObj);
+			pNote = (CMsNote*)pObj;
 			if (pNote->IsNote())
 			{
 				bFound = true;
@@ -404,85 +499,168 @@ CMsNote* CMsEvent::FindNextNote(CMsNote* pPrevNote)
 	return pNote;
 }
 
-void CMsEvent::Draw(CDC *pDC, int event, int maxevent)
+void CMsEvent::Draw(CDC *pDC)
 {
-	CMsObject *pObj = GetEventObjectHead();
-	CDC dc;		//memory DC
+	//------------------------------
+	// Draw the event
+	// pDC is the device context for
+	// this event.  It includes the
+	// two selection bars, the draw
+	// for the spaces that will not
+	// include notes, and the edit
+	// area.
+	// This method will create a
+	// device context for the event
+	// objects to be drawn into.
+	// 
+	// This method will draw the
+	// two selection bars, fill in
+	// the background for the edit/
+	// draw areas, and draw the
+	// music staff before drawing
+	// the event objects.
+	//------------------------------
+	CMsObject *pObj = GetEventMsObjectHead();
+	CDC memDC;		//memory DC
 	CMyBitmap bm;
-	CPoint ptRectUpperLeft;
-	CRect srect;
-	int x = EVENT_OFFSET + EVENT_WIDTH * event;
-	CSize rectSize = GetParentView()->GetSelectionRegionSize();
-	CBrush br;
-	int RawEvent = GetParentView()->GetRawEvent();
-	
-	ptRectUpperLeft = CPoint(x, m_pView->GetSelectionRegionTop());
-	srect = CRect(ptRectUpperLeft, rectSize);
-	bm.CreateBitmap(rectSize.cx, rectSize.cy, 1, 32, 0);
-	dc.CreateCompatibleDC(pDC);
-	dc.SelectObject(&bm);
-	if (event != (GetParentView()->GetMaxEvents() ) )
-	{
-		if (IsSelected() && (event != RawEvent))
-		{
-			//--------------------
-			// Selected Event Color
-			// Used for Indicating
-			// event that is being 
-			// played
-			//--------------------
-			br.CreateSolidBrush(RGB(128, 0, 0));
-		}
-		else if (IsSelected() && (event == RawEvent))
-		{
-			br.CreateSolidBrush(RGB(220, 255, 200));
-		}
-		else if (event == RawEvent)
-		{
-			br.CreateSolidBrush(RGB(128, 200, 81));
-		}
-		else   
-		{
-			//--------------------------------
-			// Color Indicating Event that
-			// is active
-			//--------------------------------
-			br.CreateSolidBrush(RGB(255, 200, 230));
+	CBrush brUpperSel, brLowerSel, br;
+	CBrush brBlue;
+	CPoint ptRect;
+	CSize szRect;
+	CRect rectRect;
+	COLORREF colorUpperSelBar = GetSong()->GetColorPalette()->color_UpperSelBar;
+	COLORREF colorLowerSelBar = GetSong()->GetColorPalette()->color_LowerSelBar;
 
-		}
-		dc.FillRect(CRect(0, 0, rectSize.cx, rectSize.cy), &br);
-		dc.BitBlt(
-			0, 
-			0, 
-			rectSize.cx, 
-			rectSize.cy, 
-			pDC, 
-			ptRectUpperLeft.x, 
-			ptRectUpperLeft.y, 
-			SRCAND
-		);
-		pDC->BitBlt(
-			ptRectUpperLeft.x, 
-			ptRectUpperLeft.y, 
-			rectSize.cx, 
-			rectSize.cy, 
-			&dc, 
-			0, 
-			0, 
-			SRCCOPY
-		);
-	}
-//	printf("----------Start Draw Objects In Event %d --------\n", GetIndex());
-	UINT itter = 0;
-	while(pObj)
+	brUpperSel.CreateSolidBrush(colorUpperSelBar);
+	brLowerSel.CreateSolidBrush(colorLowerSelBar);
+	brBlue.CreateSolidBrush(RGB(128, 128, 255));
+	//------------------------------
+	// Draw the select bars
+	// Upper Select Bar
+	//------------------------------
+	szRect = CSize(EVENT_WIDTH, UPPER_SELECTION_BAR_HEIGHT);
+	ptRect = CPoint(0, 0);
+	rectRect = CRect(ptRect, szRect);
+	pDC->FillRect(&rectRect, &brUpperSel);
+	//-------- Lower Selection Bar ---------
+	ptRect = CPoint(0, EVENT_HEIGHT - LOWER_SELECTION_BAR_HEIGHT);
+	rectRect = CRect(ptRect, szRect);
+	pDC->FillRect(&rectRect, &brLowerSel);
+
+
+	//------------------------------
+	// Create the memory DC for the
+	// edit/draw area
+	//------------------------------
+	ptRect = CPoint(0, UPPER_SELECTION_BAR_HEIGHT);
+	szRect = CSize(
+		EVENT_WIDTH, 
+		EDIT_RECT_HEIGHT + UPPER_DRAW_RECT_HEIGHT + LOWER_DRAW_RECT_HEIGHT
+	);
+	rectRect = CRect(ptRect, szRect);
+	bm.CreateBitmap(szRect.cx, szRect.cy, 1, 32, 0);
+	memDC.CreateCompatibleDC(pDC);
+	memDC.SelectObject(&bm);
+	if (IsSelected())
 	{
-//		printf("************* Draw Itter = %d  pObj=%p Type %lS  *****************\n", ++itter, pObj, csObjectTypeString[pObj->GetType()].GetString());
-//		pObj->DebugDump();
-		pObj->Draw(pDC,event,maxevent);
-//		pObj->DebugDump();
+		//--------------------
+		// Selected Event Color
+		// Used for Indicating
+		// event that is being 
+		// played
+		//--------------------
+		br.CreateSolidBrush(GetSong()->GetColorPalette()->color_SelectionRect);
+	}
+	else   
+	{
+		//--------------------------------
+		// Color Indicating Event that
+		// is active
+		//--------------------------------
+		br.CreateSolidBrush(GetSong()->GetColorPalette()->color_DefinedEvent);
+
+	}
+	//------------------------------
+	// Fill in the draw areas
+	// Background.  This is for 
+	// DEBUGGING purposes only.
+	// TODO: Remove this later
+	//------------------------------
+	ptRect = CPoint(0, 0);
+	szRect = CSize(EVENT_WIDTH, UPPER_DRAW_RECT_HEIGHT);
+	rectRect = CRect(ptRect, szRect);
+	memDC.FillRect(&rectRect, &brBlue);
+
+	ptRect = CPoint(0, UPPER_DRAW_RECT_HEIGHT + EDIT_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH, LOWER_DRAW_RECT_HEIGHT);
+	rectRect = CRect(ptRect, szRect);
+	memDC.FillRect(&rectRect, &brBlue);
+	//------------------------------
+	// Fill in the edit area
+	// Background
+	//------------------------------
+	ptRect = CPoint(0, UPPER_DRAW_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH, EDIT_RECT_HEIGHT);
+	rectRect = CRect(ptRect, szRect);
+	memDC.FillRect(&rectRect, &br);
+	DrawStaffLines(&memDC);
+	while (pObj)
+	{
+		pObj->Draw(&memDC);
 		pObj = pObj->GetNext();
 	}
-//	printf("--------- End Draw Objects in Event %d-----------\n", GetIndex());
+	//------------------------------
+	// Add the edit/draw area
+	// to the event DC
+	//------------------------------
+	pDC->BitBlt(
+		0, 
+		UPPER_SELECTION_BAR_HEIGHT, 
+		EVENT_WIDTH,
+		EDIT_RECT_HEIGHT + UPPER_DRAW_RECT_HEIGHT + LOWER_DRAW_RECT_HEIGHT,
+		&memDC, 
+		0, 
+		0, 
+		SRCCOPY
+	);
+}
+
+void CMsEvent::DrawStaffLines(CDC* pDC)
+{
+	CPen penLines, * pOldPen;
+	int x, y, i;
+
+	//if(LogFile())
+	//{ 
+	//	fprintf(LogFile(), "Event %d: Draw Staff Lines--------\n", GetIndex());
+	//}
+	penLines.CreatePen(PS_SOLID, 1, GetSong()->GetColorPalette()->color_StaffLines);
+	pOldPen = pDC->SelectObject(&penLines);
+	x = EVENT_WIDTH;
+	y = TOP_LINE_OF_STAVE_FROM_TOP_OF_EDIT_RECT + UPPER_DRAW_RECT_HEIGHT;
+	for (i = 0; i < 5; ++i)	//treble
+	{
+		//if(LogFile())
+		//{
+		//	fprintf(LogFile(), "\tDrawing Treble Line %d at y=%d\n", i+1, y);
+		//}
+		pDC->MoveTo(0, y);
+		pDC->LineTo(x, y);
+		y += STAVE_LINE_SPACING;
+	}
+	y += STAVE_LINE_SPACING;
+	for (i = 0; i < 5; ++i)	//bass
+	{
+		//if (LogFile())
+		//{
+		//	fprintf(LogFile(), "\tDrawing Bass Line %d at y=%d\n", i + 1, y);
+		//}
+		pDC->MoveTo(0, y);
+		pDC->LineTo(x, y);
+		y += STAVE_LINE_SPACING;
+	}
+	pDC->SelectObject(pOldPen);
+	penLines.DeleteObject();
 }
 
 CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
@@ -491,7 +669,7 @@ CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 	ObjectTypes obj,sobj;
 	CMsObject *rpObj=0;
 
-	CMsObject *pH = GetEventObjectHead();
+	CMsObject *pH = GetEventMsObjectHead();
 	while(pH && loop)
 	{
 		if(pH->GetType() == pObj->GetType())
@@ -533,7 +711,7 @@ CMsObject *CMsEvent::ObjectAlreadyHere(CMsObject *pObj)
 
 int CMsEvent::GetMinEventDuration()
 {
-	CMsObject* pObj = GetEventObjectHead();
+	CMsObject* pObj = GetEventMsObjectHead();
 	int MinDuration = 10000000;
 	int Dur;
 
@@ -549,36 +727,86 @@ int CMsEvent::GetMinEventDuration()
 
 int CMsEvent::RemoveObject(CMsObject *pObj)
 {
-	if(pObj == GetEventObjectHead() )
+	//--------------------------------
+	// Remove object from event
+	//--------------------------------
+
+	//------------------------------
+	// Is Object NULL?
+	if (pObj == 0)
 	{
-		SetEventObjectHead(pObj->GetNext());
-		if(GetEventObjectHead())
-			GetEventObjectHead()->SetPrev(0);
-		else
-			SetEventObjectTail(0);
+		CString csError;
+		csError.Format(_T("Error: CMsEvent::RemoveObject: At Event %d Object is NULL"), GetIndex());
+		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::RemoveObject : At Event % d Object is NULL\n", GetIndex());
+		GETAPP->CloseAllLogFiles();
+		GETAPP->ExitInstance();
+		return -1;
 	}
-	else if(pObj == GetEventObjectTail())
+	//------------------------------
+	// Is Object in this event?
+	//------------------------------
+	if(IsThisObjectInThisEvent(pObj) == false)
 	{
-		SetEventObjectTail(pObj->GetPrev());
-		if(GetEventObjectTail())
-			GetEventObjectTail()->SetNext(0);
+		CString csError;
+		csError.Format(_T("Error: CMsEvent::RemoveObject: At Event %d Object not in this event"), GetIndex());
+		AfxMessageBox(csError);
+		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::RemoveObject : At Event % d Object ID=%d not in this event\n", 
+			GetIndex(),
+			pObj->GetObjectID()
+		);
+		GETAPP->CloseAllLogFiles();
+		GETAPP->CloseAllDocuments(true);
+		GETAPP->PostThreadMessageW(WM_CLOSE, 0, 0);;
+		return -1;
+	}
+	pObj->Print(LogFile(), 5);
+	if(pObj == GetEventMsObjectHead() )
+	{
+		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Head ID=%d\n", 
+			GetIndex(),
+			CMsObject::GetStringFromType(pObj->GetType()),
+			pObj->GetObjectID()
+		);
+		SetEventMsObjectHead(pObj->GetNext());
+		if(GetEventMsObjectHead())
+			GetEventMsObjectHead()->SetPrev(0);
 		else
-			SetEventObjectHead(0);
+			SetEventMsObjectTail(0);
+	}
+	else if(pObj == GetEventMsObjectTail())
+	{
+		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Tail ID=%d\n",
+			GetIndex(),
+			CMsObject::GetStringFromType(pObj->GetType()),
+			pObj->GetObjectID()
+		);
+		SetEventMsObjectTail(pObj->GetPrev());
+		if(GetEventMsObjectTail())
+			GetEventMsObjectTail()->SetNext(0);
+		else
+			SetEventMsObjectHead(0);
 	}
 	else
 	{
+		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Middle ID=%d\n",
+			GetIndex(),
+			CMsObject::GetStringFromType(pObj->GetType()),
+			pObj->GetObjectID()
+		);
 		pObj->GetNext()->SetPrev(pObj->GetPrev());
 		pObj->GetPrev()->SetNext(pObj->GetNext());
 	}
-	delete pObj;
-	return 0;
+	m_NumberOfObjects--;
+	pObj->SetNext(0);
+	pObj->SetPrev(0);	
+	return m_NumberOfObjects;
 }
 
 
 // Function returns Note of a given pitch
 CMsNote * CMsEvent::FindNote(int Note, int Accidental)
 {
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 	CMsNote *pN=0;
 	int loop = 1;
 	while (pObj && loop)
@@ -606,7 +834,7 @@ CMsNote * CMsEvent::FindNote(int Note, int Accidental)
 // Determines if the paricular object is in this event
 CMsObject *CMsEvent::ContainsObjectType(CMsObject::MsObjType ObjectType)
 {
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 	int loop = 1;
 
 	while (loop && pObj)
@@ -624,7 +852,7 @@ CMsObject *CMsEvent::ContainsObjectType(CMsObject::MsObjType ObjectType)
 int CMsEvent::AreObjectsSelected()
 {
 	int Count = 0;
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 	while (pObj)
 	{
 		if (pObj->IsSelected())
@@ -636,7 +864,7 @@ int CMsEvent::AreObjectsSelected()
 
 CMsObject * CMsEvent::GetFirstSelectedObject()
 {
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 	int loop=1;
 	while (pObj && loop)
 	{
@@ -671,18 +899,32 @@ bool CMsEvent::FlipNoteHeads()
 	// of the flags used on eighth
 	// notes, sixteenth notes, and
 	// thirty-second notes
+	// The highest pitched note will
+	// have its head in the "normal"
+	// position, i.e. if the stem
+	// is down, the head will be
+	// flipped, and if the stem is
+	// up, the head will not be
+	// flipped.  The second note
+	// will be then flipped in
+	// the opposite direction of the
+	// previous note if the previos
+	// note has the stem poinging
+	// in the same direction.  From
+	// there, things get messy.
 	//------------------------------
 	bool rV = false;
-	CMsObject* pObj = GetEventObjectHead();
+	CMsObject* pObj = GetEventMsObjectHead();
 	CMsObject* pPrevObj = 0;
 	CMsNote* pNote = 0, *pLastNote = 0;
 	int Interval = 0;
 	int NoteOneFlipped = 0;
 	int NoteTwoFlipped = 0;
 	int NoteFlagCount = 0;
+	int NoteTwoNeedsFlags = 50;
 
 	pNote = FindFirstNote();
-	while (pNote)
+	while (pNote && NoteTwoNeedsFlags)
 	{
 		if (pLastNote)
 		{
@@ -703,7 +945,7 @@ bool CMsEvent::FlipNoteHeads()
 			NoteFlagCount = pLastNote->NeedsFlags();
 			if (NoteFlagCount)
 			{
-//				printf("Previous Note Needs Flags %d\n", NoteFlagCount);
+//				if(LogFile()) fprintf(LogFile(),"Previous Note Needs Flags %d\n", NoteFlagCount);
 				if (pNote->NeedsFlags())
 				{
 					if (pLastNote->IsStemDown() && pNote->IsStemDown())
@@ -717,9 +959,7 @@ bool CMsEvent::FlipNoteHeads()
 					else
 					{
 					}
-					
 				}
-
 			}
 			//------------------------------
 			// If the previous note is only
@@ -739,6 +979,14 @@ bool CMsEvent::FlipNoteHeads()
 		}
 		pLastNote = pNote;
 		pNote = FindNextNote(pNote);
+		--NoteTwoNeedsFlags;
+	}
+	if (!NoteTwoNeedsFlags)
+	{
+		AfxMessageBox(_T("Error: Linked Less Error"));
+		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::FlipNoteHeads: Linked List Error\n");
+		GETAPP->CloseAllLogFiles();
+		GETAPP->ExitInstance();
 	}
     return rV;
 }
@@ -746,7 +994,7 @@ bool CMsEvent::FlipNoteHeads()
 
 CMsObject * CMsEvent::ContainsRepeatObject()
 {
-	CMsObject *pObj = GetEventObjectHead();
+	CMsObject *pObj = GetEventMsObjectHead();
 	int loop=1;
 	CMsObject::MsObjType type;
 
@@ -762,3 +1010,93 @@ CMsObject * CMsEvent::ContainsRepeatObject()
 	}
 	return pObj;
 }
+
+/*
+bool CMsEvent::FlipNoteHeads()
+{
+	//------------------------------
+	// Flip note heads so that they
+	// do not overlap each other
+	// Also, we need to take care
+	// of the flags used on eighth
+	// notes, sixteenth notes, and
+	// thirty-second notes
+	//------------------------------
+	bool rV = false;
+	CMsObject* pObj = GetEventMsObjectHead();
+	CMsObject* pPrevObj = 0;
+	CMsNote* pNote = 0, *pLastNote = 0;
+	int Interval = 0;
+	int NoteOneFlipped = 0;
+	int NoteTwoFlipped = 0;
+	int NoteFlagCount = 0;
+	int NoteTwoNeedsFlags = 50;
+
+	pNote = FindFirstNote();
+	while (pNote && NoteTwoNeedsFlags)
+	{
+		if (pLastNote)
+		{
+			//------------------------------
+			// If the prevous note has flags
+			// on it's stem, and the stem
+			// points in the same direction
+			// as the current note, the
+			// current note will need to
+			// be set so that it's flags
+			// are not displayed.
+			// And if the previous note
+			// has flags and the current
+			// note has no flags, then
+			// the stem should point
+			// in the opposite direction
+			//------------------------------
+			NoteFlagCount = pLastNote->NeedsFlags();
+			if (NoteFlagCount)
+			{
+//				if(LogFile()) fprintf(LogFile(),"Previous Note Needs Flags %d\n", NoteFlagCount);
+				if (pNote->NeedsFlags())
+				{
+					if (pLastNote->IsStemDown() && pNote->IsStemDown())
+					{
+						pLastNote->SetFlagsOff(1);
+					}
+					if(!pLastNote->IsStemDown() && ! pNote->IsStemDown())
+					{
+						pNote->SetFlagsOff(1);
+					}
+					else
+					{
+					}
+				}
+			}
+			//------------------------------
+			// If the previous note is only
+			// one step away from the
+			// current note, flip the head
+			// of the current note
+			//-----------------------------
+			Interval = pLastNote->GetPitch() - pNote->GetPitch();
+			if (Interval <= 2)
+			{
+				NoteOneFlipped = pLastNote->GetHeadFlipped();
+				if (NoteOneFlipped)
+					pNote->SetHeadFlipped(0);
+				else
+					pNote->SetHeadFlipped(1);
+			}
+		}
+		pLastNote = pNote;
+		pNote = FindNextNote(pNote);
+		--NoteTwoNeedsFlags;
+	}
+	if (!NoteTwoNeedsFlags)
+	{
+		AfxMessageBox(_T("Error: Linked Less Error"));
+		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::FlipNoteHeads: Linked List Error\n");
+		GETAPP->CloseAllLogFiles();
+		GETAPP->ExitInstance();
+	}
+	return rV;
+}
+*/

@@ -37,5 +37,6 @@ public:
 	void SetTrackEnable(int InstID, int Bank, int Enable);
 	bool GetTrackEnable(int InstID, int Bank);
 	CMsSong* GetParentSong() { return m_pParentSong; }
+	int GetNumberOfTracks() const { return 15; }
 };
 

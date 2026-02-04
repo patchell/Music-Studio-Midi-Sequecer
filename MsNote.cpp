@@ -1,17 +1,24 @@
 ///////////////////////////////////////////////////////
 // MsNote.cpp: implementation of the CMsNote class.
 //
+// Middle C (C4) is MIDI note 60
+// Lowest note on Staff (C2) is MIDI note 36
+// Highest note on Staff (C6) is MIDI note 84
+// 
+// Note C1 = 24
+// Note C0 = 12
+// Note C-1 = 0
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
 
 void PrintRecPtSz(const char* pTit, CRect rec)
 {
-//	printf("---------------rect---------------------\n");
-//	printf("RECT : %s\n",pTit);
+//	if(LogFile()) fprintf(LogFile(),"---------------rect---------------------\n");
+//	if(LogFile()) fprintf(LogFile(),"RECT : %s\n",pTit);
 //	PrintPoint("Upper Left",rec.TopLeft());
 //	PrintSize("Dimensions", rec.Size());
-//	printf("---------------end----------------------\n");
+//	if(LogFile()) fprintf(LogFile(),"---------------end----------------------\n");
 }
 
 
@@ -27,7 +34,7 @@ CMsNote::CMsNote() :CMsObject()
 	m_NoteTieNext = 0; //pointer to note object is the next tied note
 	m_NoteTiePrev = 0;	//pointer to previous note that is tied
 	m_pRestBitmap = 0;
-	m_NotePlayed = -1;
+	m_MouseStaffTransition = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
 }
 
 
@@ -36,13 +43,30 @@ CMsNote::~CMsNote()
 	
 }
 
+char* CMsNote::NoteToString(char* pStr, int l, int Note)
+{
+	int Octave;
+	int NoteTemp;
+
+	NoteTemp = Note % HALF_STEPS_PER_OCTAVE;
+	Octave = Note / HALF_STEPS_PER_OCTAVE - 1;
+	sprintf_s(
+		pStr,
+		l,
+		"NOTE:%4s%d",
+		GetNoteName(NoteTemp),
+		Octave
+	);
+	return pStr;
+}
+
 void CMsNote::LoadRestBitmap(int Selection)
 {
 	if (COMBO_REST_HALF < Selection)
 	{
 		if(GetRestBitmap()->GetSafeHandle())
 			GetRestBitmap()->DeleteObject();
-		GetRestBitmap()->LoadBitmapW(GETAPP->GetRestTypeID(Selection));
+		GetRestBitmap()->LoadBitmapW(GETAPP->GetRestBmIdsTypes(Selection));
 		m_BitmapFlag = true;
 	}
 	else
@@ -64,7 +88,7 @@ bool CMsNote::Create(
 	else
 		m_BitmapFlag = false;
 	if(pSong == NULL)
-		printf("pSong is NULL in CMsNote::Create\n");
+		if (LogFile()) fprintf(LogFile(), "pSong is NULL in CMsNote::Create\n");
 	return CMsObject::Create(pSong, pParentEvent);
 }
 
@@ -90,25 +114,25 @@ void CMsNote::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-//	fprintf(pO, "%s***********************************\n", pIndentString);
+	if(pO)fprintf(pO, "%s***********************************\n", pIndentString);
 	CMsObject::Print(pO, Indent+4);
 	GetData().PrintData(pO, GetDataPointer(), Indent+4);
-//	fprintf(pO, "%s***********************************\n", pIndentString);
+	if(pO) fprintf(pO, "%s***********************************\n", pIndentString);
 
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 {
-	int Note, Oct;
+	int Note, Octave;
 
-	Note = m_Data.GetPitch() % 12;
-	Oct = m_Data.GetPitch() / 12;
+	Note = m_Data.GetPitch() % HALF_STEPS_PER_OCTAVE;
+	Octave = m_Data.GetPitch() / HALF_STEPS_PER_OCTAVE - 1;
 	if (mode == 0)
 		csString.Format(
 			_T("NOTE:%4lS%d%c Track %d Sel %d"),
 			NoteLUT[Note].GetString(),
-			Oct,
+			Octave,
 			AccidentalLUT[GetAccidental()],
 			GetTrack(),
 			IsSelected()
@@ -118,7 +142,7 @@ UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 		csString.Format(
 			_T("NOTE:%4lS%d%c Track:%2d Tie:%c:%c <%s> <%s>"),
 			NoteLUT[Note].GetString(),
-			Oct,
+			Octave,
 			AccidentalLUT[GetAccidental()],
 			GetTrack(),
 			IsTieBeg() ? 'B' : ' ',
@@ -133,15 +157,71 @@ UINT CMsNote::ObjectToString(CString& csString, UINT mode)
 int CMsNote::NoteToPosition(int Note)
 {
 	int NotePosition;
+	int Octave;
 
-
+//	if(LogFile()) fprintf(LogFile(), "CMsNote:NoteToPos:Enter Note=%d\n", Note);
+	Note -= 24;  // Normalize Note value to be zero at C3
+	Octave = Note / 12;
+	Octave = 4 - Octave;	// Invert octave order
+	Octave *= 7;		// Each octave is 7 staff positions
+	Octave *= 4;		// Each staff position is 4 pixels
 	NotePosition = NotePos[Note % 12];
-	NotePosition += 28 * (7 - (Note / 12));
-	NotePosition += (STAVE_OFFSET - 44);
+	NotePosition += Octave + 4;
+//	NotePosition = 60 - NotePosition; // Invert for screen coordinates
+	//NotePosition = NotePos[Note % 12];
+	//if(LogFile()) fprintf(LogFile(),"   CMsNote:NoteToPos:Position=%d\n", NotePosition);
+	//NotePosition += SINGLE_STAVE_HEIGHT * (7 - (Note / 12));	// Calculates octave position
+	//if(LogFile()) fprintf(LogFile(),"   CMsNote:NoteToPos:Position=%d\n", NotePosition);
+	//NotePosition += 4;
+//	if (LogFile()) fprintf(LogFile(), "   CMsNote:NoteToPos:Note=%d Pos=%d\n", Note, NotePosition);
 	return NotePosition;
 }
 
-void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
+StaffMouseStates CMsNote::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pNewEvent)
+{
+	//---------------------------------
+	// Determine what kind of transition
+	// that the mouse made on the staff
+	// NewNote: Potential new note
+	// pNewEvent: Potential new event
+	//---------------------------------
+	bool bNoteChanged, bEventChanged;
+	int thisEventIndex, NewEventIndex;
+	StaffMouseStates State;
+	char* pStr1 = new char[256];
+	char* pStr2 = new char[256];
+
+	State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+
+	NewEventIndex = pNewEvent ? pNewEvent->GetIndex() : -1;
+	thisEventIndex = GetParentEvent() ? GetParentEvent()->GetIndex() : -1;
+
+	bNoteChanged = (NewNote != GetPitch());
+	bEventChanged = (NewEventIndex != thisEventIndex);
+
+	
+	//fix
+	if(bNoteChanged)
+		fprintf(LogFile(), 
+			">>CMsNote::StaffTransition: Note Changed from %s to %s\n", 
+			NoteToString(pStr1, 256,GetPitch()), 
+			NoteToString(pStr2, 256, NewNote)
+		);
+
+	if (!bNoteChanged && !bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	else if (bNoteChanged && !bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE;
+	else if (!bNoteChanged && bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	else if (bNoteChanged && bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE;
+	if (pStr1) delete[] pStr1;
+	if (pStr2) delete[] pStr2;
+	return State;
+}
+
+void CMsNote::Draw(CDC *pDC)
 {
 	CPoint End,Start;
 	CPen pen,*oldpen;
@@ -150,14 +230,14 @@ void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
 	int Pitch;
 	COLORREF Color;
 	CRect rectRest;
+	CMsEvent* pEvent = GetParentEvent();
 
-
-	Color = GetSong()->GetTrack(GetTrack())->GetColor();
+	Color = GetSong()->GetTrackInfo(GetTrack())->GetColor();
 	if (IsSelected() || IsHighLighted())
 		Color ^= 0x00ffffff;
 	Pitch = GetPitch();
 	NoteY = NoteToPosition(Pitch);
-
+//	if (LogFile()) fprintf(LogFile(), "CMsNote::Draw: NoteY=%d Pitch=%d\n", NoteY, Pitch);
 	if(IsRest())	///draw rest on staff
 	{
 		pen.CreatePen(PS_SOLID, 1, Color);
@@ -170,19 +250,20 @@ void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
 		case MSFF_REST_EIGTH:
 		case MSFF_REST_SIXTEENTH:
 		case MSFF_REST_THIRTYSECOND:
-			DrawRestBitmap(pDC, Event, NoteY, Color);
+			DrawRestBitmap(pDC, NoteY, Color);
 			break;
 		case MSFF_REST_HALF:
 			NoteY += 4;
 			rectRest.SetRect(
-				EVENT_OFFSET+EVENT_WIDTH*Event,
+				FIRST_EVENT_FROM_CLIENT_X +EVENT_WIDTH*pEvent->GetPhysicalIndex(),
 				NoteY,
-				EVENT_OFFSET+EVENT_WIDTH*Event+8,
-				NoteY - 6);
+				FIRST_EVENT_FROM_CLIENT_X +EVENT_WIDTH* pEvent->GetPhysicalIndex() +8,
+				NoteY - 6
+			);
 			if (NeedsLine())
 			{
-				pDC->MoveTo(EVENT_OFFSET + EVENT_WIDTH * Event - 2, NoteY);
-				pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event + 10, NoteY);
+				pDC->MoveTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() - 2, NoteY);
+				pDC->LineTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 10, NoteY);
 			}
 			pDC->Rectangle(&rectRest);
 			break;
@@ -199,22 +280,22 @@ void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
 			NoteY += 5;
 			;
 			rectRest.SetRect(
-				EVENT_OFFSET + EVENT_WIDTH * Event,
+				FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex(),
 				NoteY,
-				EVENT_OFFSET + EVENT_WIDTH * Event + 8,
+				FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 8,
 				NoteY + 6
 			);
 			rectRest.NormalizeRect();
 			if (NeedsLine())
 			{
-				pDC->MoveTo(EVENT_OFFSET + EVENT_WIDTH * Event - 2, NoteY);
-				pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event + 10, NoteY);
+				pDC->MoveTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() - 2, NoteY);
+				pDC->LineTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 10, NoteY);
 			}
 			pDC->Rectangle(&rectRest);
 			
 			break;
 		default:
-//			printf("Opps Dur=%d\n", GetDuration());
+//			if(LogFile()) fprintf(LogFile(),"Opps Dur=%d\n", GetDuration());
 			break;
 		}
 		pDC->SelectObject(oldpen);
@@ -222,36 +303,36 @@ void CMsNote::Draw(CDC *pDC, int Event, int maxevent)
 	}
 	else	//draw note on staff
 	{
-		DrawNote(pDC, Event, maxevent, NoteY, Color);
+		DrawNote(pDC, NoteY, Color);
 	}
 }
 
-void CMsNote::DrawNote(CDC* pDC, int Event, int MaxEvent, int NoteY, COLORREF Color)
+void CMsNote::DrawNote(CDC* pDC, int NoteY, COLORREF Color)
 {
 	//		CMsNote* pSecInterval;
-	DrawNoteHead(pDC, Event, NoteY, Color);
-	DrawNoteLines(pDC, Event, NoteY, RGB(0,0,0));
-	DrawNoteStem(pDC, Event, NoteY, Color);
+	DrawNoteHead(pDC, NoteY, Color);
+	DrawNoteLines(pDC, NoteY, RGB(0,0,0));
+	DrawNoteStem(pDC, NoteY, Color);
 
 	if (IsDotted())
 	{
-		DrawNoteDots(pDC, Event, NoteY, Color);
+		DrawNoteDots(pDC, NoteY, Color);
 	}
 	else if(IsTriplet())
 	{
-		DrawNoteTriplet(pDC, Event, NoteY, Color);
+		DrawNoteTriplet(pDC, NoteY, Color);
 	}
 	if (IsAccentted())
 	{
-		DrawNoteAccent(pDC, Event, NoteY, Color);
+		DrawNoteAccent(pDC, NoteY, Color);
 	}
 	if (IsTieEnd())
 	{
-		DrawNoteTie(pDC, Event, NoteY, Color);
+		DrawNoteTie(pDC, NoteY, Color);
 	}
 	if(GetAccidental() != MSFF_ACCIDENTAL_INKEY)
 	{
-		DrawNoteAccidental(pDC, Event, NoteY, Color);
+		DrawNoteAccidental(pDC, NoteY, Color);
 	}
 	//CRect rect;
 	//ObjectRectangle(rect, Event);
@@ -264,7 +345,6 @@ void CMsNote::DrawNote(CDC* pDC, int Event, int MaxEvent, int NoteY, COLORREF Co
 
 void CMsNote::DrawNoteHead(
 	CDC* pDC, 
-	int Event, 
 	int NoteY, 
 	COLORREF Color
 )
@@ -282,50 +362,69 @@ void CMsNote::DrawNoteHead(
 		brushHead.CreateStockObject(HOLLOW_BRUSH);
 	oldBrush = pDC->SelectObject(&brushHead);
 
-	ObjectRectangle(rectNoteHead, Event);
+	ObjectRectangle(rectNoteHead);
 
 	pDC->Ellipse(&rectNoteHead);
 	pDC->SelectObject(oldPen);
 	pDC->SelectObject(oldBrush);
 }
 
-void CMsNote::DrawNoteLines(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteLines(CDC* pDC, int NoteY, COLORREF Color)
 {
-	int NeesALine = NeedsLine();
+	int NeedsALine = 0;
 	int y = 0;
 	int f = 0;
-	int i;
 	CPen penLines, *penOld = 0;
 
 
-	NeesALine = NeedsLine();
-	if (NeesALine)
-	{
-		penLines.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-		penOld = pDC->SelectObject(&penLines);
-		if (NeesALine < 0)
-		{
-			f = -1;
-			NeesALine = -NeesALine;
-		}
-		else
-			f = 1;
-		for (i = 0; i < NeesALine; ++i)
-		{
-			int lineEnd = EVENT_WIDTH - (EVENT_WIDTH + 10) / 2;
-			UINT x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
-			if (IsOnLine())
-				y = NoteY + i * 8 * f;
-			else
-				y = NoteY + 4 + i * 8 * f;
-			pDC->MoveTo(x - lineEnd, y);
-			pDC->LineTo(x + lineEnd, y);
-		}
-		pDC->SelectObject(penOld);
-	}
+	//NeedsALine = LinesNeededLUT[NotePositionOnStaff].m_Lines;
+	//if (NeedsALine > 0)
+	//{
+	//	penLines.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+	//	penOld = pDC->SelectObject(&penLines);
+
+	//	int notev = NoteToPosition(pitch);
+
+	//	if (notev >= 0 && notev <= 49)
+	//	{
+	//		NeedsALine = LinesNeededLUT[notev].m_Lines;
+	//	}
+
+
+
+
+
+	//	if (NeedsALine < 0)
+	//	{
+	//		f = -1;
+	//		NeedsALine = -NeedsALine;
+	//	}
+	//	else
+	//		f = 1;
+	//	for (i = 0; i < NeedsALine; ++i)
+	//	{
+	//		int lineEnd = EVENT_WIDTH - (EVENT_WIDTH + 10) / 2;
+	//		int x = NOTE_STEM_OFFSET;
+	//		if (IsOnLine())
+	//			y = NoteY + i * 8 * f;
+	//		else
+	//			y = NoteY + 4 + i * 8 * f;
+	//		pDC->MoveTo(x - lineEnd, y);
+	//		pDC->LineTo(x + lineEnd, y);
+	//	}
+	//	pDC->SelectObject(penOld);
+	//}
+	//else if (NeedsALine == 0)
+	//{
+	//	// no extra lines needed
+	//}
+	//else
+	//{
+	//	// should not happen
+	//}
 }
 
-void CMsNote::DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteStem(CDC* pDC, int NoteY, COLORREF Color)
 {
 	UINT x = 0;
 	CPen penStem, * oldPen;
@@ -334,7 +433,7 @@ void CMsNote::DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	{
 		penStem.CreatePen(PS_SOLID, 1, Color);
 		oldPen = pDC->SelectObject(&penStem);
-		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
+		x = NOTE_STEM_OFFSET;
 		if (IsStemDown())
 		{
 			pDC->MoveTo(x, NoteY + 4);
@@ -346,11 +445,11 @@ void CMsNote::DrawNoteStem(CDC* pDC, int Event, int NoteY, COLORREF Color)
 			pDC->LineTo(x, NoteY - NOTE_STEM_LENGTH);
 		}
 		pDC->SelectObject(oldPen);
-		DrawNoteFlags(pDC, Event, NoteY, Color);
+		DrawNoteFlags(pDC, NoteY, Color);
 	}
 }
 
-void CMsNote::DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteFlags(CDC* pDC, int NoteY, COLORREF Color)
 {
 	int n = 0;
 	UINT x = 0;
@@ -364,7 +463,7 @@ void CMsNote::DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	{
 		penFlags.CreatePen(PS_SOLID, 2, Color);
 		oldPen = pDC->SelectObject(&penFlags);
-		x = EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET;
+		x = NOTE_STEM_OFFSET;
 		for (i = 0; i < n; ++i)
 		{
 			if (IsStemDown())	//right side down
@@ -382,14 +481,14 @@ void CMsNote::DrawNoteFlags(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	}
 }
 
-void CMsNote::DrawNoteAccidental(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteAccidental(CDC* pDC, int NoteY, COLORREF Color)
 {
 	CMsSharp sharp;
 	CMsFlat flat;
 	CMsNatural nat;
 	int X;
 
-	X = EVENT_OFFSET + NOTE_ACCIDENTAL_OFFSET + EVENT_WIDTH * Event;
+	X = NOTE_ACCIDENTAL_OFFSET;
 	switch (GetAccidental())
 	{
 	case MSFF_ACCIDENTAL_NATURAL:
@@ -404,7 +503,7 @@ void CMsNote::DrawNoteAccidental(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	}
 }
 
-void CMsNote::DrawNoteAccent(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteAccent(CDC* pDC, int NoteY, COLORREF Color)
 {
 	CPen penAccent, * oldPen;
 
@@ -412,20 +511,20 @@ void CMsNote::DrawNoteAccent(CDC* pDC, int Event, int NoteY, COLORREF Color)
 	oldPen = pDC->SelectObject(&penAccent);
 	if (IsStemDown())
 	{
-		pDC->MoveTo(EVENT_OFFSET + EVENT_WIDTH * Event, NoteY - 4);
-		pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event + 8, NoteY - 7);
-		pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event, NoteY - 10);
+		pDC->MoveTo(0, NoteY - 4);
+		pDC->LineTo(8, NoteY - 7);
+		pDC->LineTo(0, NoteY - 10);
 	}
 	else
 	{
-		pDC->MoveTo(EVENT_OFFSET + EVENT_WIDTH * Event, NoteY + 12);
-		pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event + 8, NoteY + 15);
-		pDC->LineTo(EVENT_OFFSET + EVENT_WIDTH * Event, NoteY + 18);
+		pDC->MoveTo(0, NoteY + 12);
+		pDC->LineTo(8, NoteY + 15);
+		pDC->LineTo(0, NoteY + 18);
 	}
 	pDC->SelectObject(oldPen);
 }
 
-void CMsNote::DrawNoteDots(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteDots(CDC* pDC, int NoteY, COLORREF Color)
 {
 	int y;
 
@@ -435,68 +534,65 @@ void CMsNote::DrawNoteDots(CDC* pDC, int Event, int NoteY, COLORREF Color)
 		y = NoteY + 4;
 	if (IsStemDown())
 	{
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 31, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 32, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 33, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 32, y + 4, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 32, y + 2, Color);
+		pDC->SetPixel(31, y + 3, Color);
+		pDC->SetPixel(32, y + 3, Color);
+		pDC->SetPixel(33, y + 3, Color);
+		pDC->SetPixel(32, y + 4, Color);
+		pDC->SetPixel(32, y + 2, Color);
 	}
 	else
 	{
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 23, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 24, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 22, y + 3, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 23, y + 4, Color);
-		pDC->SetPixel(EVENT_OFFSET + EVENT_WIDTH * Event + 23, y + 2, Color);
+		pDC->SetPixel(23, y + 3, Color);
+		pDC->SetPixel(24, y + 3, Color);
+		pDC->SetPixel(22, y + 3, Color);
+		pDC->SetPixel(23, y + 4, Color);
+		pDC->SetPixel(23, y + 2, Color);
 	}
 }
 
-void CMsNote::DrawNoteTriplet(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteTriplet(CDC* pDC, int NoteY, COLORREF Color)
 {
-	int x;
-	x = EVENT_OFFSET + EVENT_WIDTH * Event;
-
-	pDC->SetPixel(x + 12, NoteY + 6, Color);
-	pDC->SetPixel(x + 13, NoteY + 6, Color);
-	pDC->SetPixel(x + 14, NoteY + 7, Color);
-	pDC->SetPixel(x + 13, NoteY + 8, Color);
-	pDC->SetPixel(x + 14, NoteY + 9, Color);
-	pDC->SetPixel(x + 13, NoteY + 10, Color);
-	pDC->SetPixel(x + 12, NoteY + 10, Color);
+	pDC->SetPixel(12, NoteY + 6, Color);
+	pDC->SetPixel(13, NoteY + 6, Color);
+	pDC->SetPixel(14, NoteY + 7, Color);
+	pDC->SetPixel(13, NoteY + 8, Color);
+	pDC->SetPixel(14, NoteY + 9, Color);
+	pDC->SetPixel(13, NoteY + 10, Color);
+	pDC->SetPixel(12, NoteY + 10, Color);
 }
 
-void CMsNote::DrawNoteTie(CDC* pDC, int Event, int NoteY, COLORREF Color)
+void CMsNote::DrawNoteTie(CDC* pDC, int NoteY, COLORREF Color)
 {
 	CMsNote* pN;
 	CPoint Start, End;
-	int widthEv;
+//	int widthEv;
 	CRect rectTieCurve;
-	int width;
-	int x;
+	//int width;
+	//int x;
 
 	pN = FindTieBegin();
 	if (pN)
 	{
-		CMsEvent* pEv = pN->GetParentEvent();
-		widthEv = GetParentEvent()->GetIndex() - pEv->GetIndex();
-		width = EVENT_WIDTH * widthEv;
-		x = 5 + EVENT_OFFSET + (Event - widthEv) * EVENT_WIDTH;
-		rectTieCurve.SetRect(x, NoteY, x + width, NoteY + 16);
-		if (IsStemDown())
-		{
-			End = CPoint(x + 1, NoteY - 8);
-			Start = CPoint(x + width - 1, NoteY - 8);
-		}
-		else
-		{
-			Start = CPoint(x + 1, NoteY + 8);
-			End = CPoint(x + width - 1, NoteY + 8);
-		}
-		pDC->Arc(rectTieCurve, Start, End);
+		//CMsEvent* pEv = pN->GetParentEvent();
+		//widthEv = GetParentEvent()->GetIndex() - pEv->GetIndex();
+		//width = EVENT_WIDTH * widthEv;
+		//x = 5 + EVENT_OFFSET + (Event - widthEv) * EVENT_WIDTH;
+		//rectTieCurve.SetRect(x, NoteY, x + width, NoteY + 16);
+		//if (IsStemDown())
+		//{
+		//	End = CPoint(x + 1, NoteY - 8);
+		//	Start = CPoint(x + width - 1, NoteY - 8);
+		//}
+		//else
+		//{
+		//	Start = CPoint(x + 1, NoteY + 8);
+		//	End = CPoint(x + width - 1, NoteY + 8);
+		//}
+		//pDC->Arc(rectTieCurve, Start, End);
 	}
 }
 
-void CMsNote::DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color)
+void CMsNote::DrawRestBitmap(CDC* pDC, int notev, COLORREF color)
 {
 	CMyBitmap* pOldBm;
 	int x, y;
@@ -508,7 +604,7 @@ void CMsNote::DrawRestBitmap(CDC* pDC, int event, int notev, COLORREF color)
 		dc.CreateCompatibleDC(pDC);
 		bmSize = m_pRestBitmap->GetBmDim();
 		pOldBm = (CMyBitmap*)dc.SelectObject(m_pRestBitmap);
-		x = EVENT_OFFSET + EVENT_WIDTH * event;
+		x = 0;
 		y = notev;
 		pDC->BitBlt(x, y, bmSize.cx, bmSize.cy, &dc, 0, 0, SRCAND);
 		ChangeRestColor(&dc, color, bmSize.cx, bmSize.cy);
@@ -523,20 +619,19 @@ int CMsNote::NeedsLine()
 	//-------------------------
 	// Middle C is 0x3C
 	//-------------------------
-	int rV = 0;
+	int LinesNeeded = 0;
 	int pitch = GetPitch();
+	int notev = NoteToPosition(pitch);
 
-	if(pitch == 0x3c) rV = 1;
-	else if(pitch <= 0x2A)
+	if (notev >= 0 && notev <= 49)
 	{
-		rV = (pitch - 0x2A)/2;
+		LinesNeeded = LinesNeededLUT[notev].m_Lines;
 	}
-	else if(pitch > 0x4f)
+	else
 	{
-		int notev = NoteToPosition(GetPitch());
-		rV = (STAVE_OFFSET - notev)/8;
+		LinesNeeded = -1;
 	}
-	return rV;
+	return LinesNeeded;
 }
 
 bool CMsNote::IsTriplet()
@@ -546,9 +641,36 @@ bool CMsNote::IsTriplet()
 	return rV;
 }
 
-INT CMsNote::NeedsFlags(void)
+bool CMsNote::IsDuplicate()
 {
-	INT rV = 0;
+	bool rV = false;
+	int Pitch = GetPitch();
+	CMsEvent* pEv = GetParentEvent();
+	CMsNote* pNote = 0;
+
+	pNote = pEv->FindFirstNote();
+	while (pNote && !rV)
+	{
+		if (pNote == this)
+		{
+			pNote = pEv->FindNextNote(pNote);
+		}
+		else if (Pitch == pNote->GetPitch())
+		{
+			pEv->RemoveObject(pNote);
+			delete pNote;
+			rV = true;
+		}
+		else
+			pNote = pEv->FindNextNote(pNote);
+
+	}
+	return rV;
+}
+
+int CMsNote::NeedsFlags(void)
+{
+	int rV = 0;
 
 	rV = (int)DurTab[(int)GetDuration()].Flags;
 	return rV;
@@ -566,7 +688,7 @@ CMsNote * CMsNote::FindTieBegin()
 	pEv = (CMsEvent *)pEv->GetPrev();
 	while(pEv && loop)
 	{
-		pObj.pObj = pEv->GetEventObjectHead();
+		pObj.pObj = pEv->GetEventMsObjectHead();
 		while(pObj.pObj && loop)
 		{
 			switch(pObj.pObj->GetType())
@@ -672,6 +794,7 @@ void CMsNote::NoteOn(int Velocity)
 	int NotePitch;
 	int DeviceID;
 	int Loudness;
+	char* pStr = new char[256];
 
 	GetSong()->IncNoteOnCount();	// for diagnostics
 
@@ -681,28 +804,41 @@ void CMsNote::NoteOn(int Velocity)
 	}
 	else
 		Loudness = Velocity;
-	MidiChannel = GetSong()->GetTrack(GetTrack())->GetChannel();
-	NotePitch = GetPitch() + CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
+	MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	NotePitch = GetPitch();
 	//-------------------------------
 	// Apply Key Signature Correction
 	// or Accidental to correct pitch
 	//-------------------------------
 	NotePitch = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(NotePitch, GetAccidental());
-	m_NotePlayed = NotePitch;
-	DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
+	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, NotePitch, Loudness);
+	if(NotePitch == 2)
+	{
+		printf("Huh?");	//DebugBreak();
+	}
+	if(LogFile())
+		fprintf(LogFile(), "\t\tNoteOn: Ch=%d Pitch=%d:%s Vel=%d\n", 
+			MidiChannel, 
+			NotePitch, 
+			NoteToString(pStr, 256, GetPitch()),
+			Loudness
+		);
+	if (pStr) delete[] pStr;
 }
 
-void CMsNote::NoteOff(int Velociry)
+void CMsNote::NoteOff(int Velocity)
 {
 	int MidiChannel;
 	int DeviceID;
-
+	int NotePitch;
 	GetSong()->IncNoteOffCount();	// for diagnostics
 
-	MidiChannel = GetSong()->GetTrack(GetTrack())->GetChannel();
-	DeviceID = GetSong()->GetTrack(GetTrack())->GetMidiOutDeviceID();
-	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, m_NotePlayed, Velociry);
+	MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	NotePitch = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(GetPitch(), GetAccidental());
+	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
+	fprintf(LogFile(), "\t\tNoteOff: Ch=%d Pitch=%d Vel=%d\n", MidiChannel, NotePitch, Velocity);
 }
 
 void CMsNote::IncrNote()
@@ -727,14 +863,64 @@ void CMsNote::Copy(CMsNote* pN)
 
 	if(pSong == NULL)
 	{
-		printf("pSong is NULL in CMsNote::Copy\n");
+		if (LogFile()) fprintf(LogFile(), "pSong is NULL in CMsNote::Copy\n");
 	}
 	SetRestBitmap(pN->GetRestBitmap());
 	GetData().CopyData(pN->GetData());
-	SetParentEvent(pN->GetParentEvent()->GetIndex());
+	SetParentEvent(pN->GetParentEvent());
 	if (m_BitmapFlag)
 		GetRestBitmap()->LoadBitmapW(CMidiSeqMSApp::GetRestBmIdsTypes()[pN->GetShape()]);
 	CMsObject::Copy(pN);
+}
+
+int CMsNote::MouseYToNote(int MouseY)
+{
+	int NoteIndex;
+	int Octave = 0;
+	int Note;
+	//----------------------------
+	// Notes place on staff will
+	// start at HIGH_C and
+	// go to LOW_C
+	//---------------------------------
+	//----------- Normalize Y Coord To Edit Region -------------
+	MouseY -= CLIENT_Y_TO_TOP_OF_EDIT_RECT;
+	//------- Invert Y Coord --------------
+	MouseY = EDIT_RECT_HEIGHT - MouseY; 
+	//----------------------------------
+	// quantize the y coordiant so that
+	// the note will only be drawn either
+	// in the space, or on the line.  We do
+	// not quantize the mouse pointer
+	//-----------------------------------
+	MouseY -= STAVE_LINE_SPACING / 2;	//center
+	MouseY = QuantizeY(MouseY);
+	//------------------------------------
+	// Limit the range that y can take
+	//------------------------------------
+	if (MouseY < 0)
+		MouseY = 0;
+	else if (MouseY > TOTAL_WHITE_KEYS)
+		MouseY = TOTAL_WHITE_KEYS;
+	//------ Note Position to Real Note ------
+	NoteIndex = MouseY % WHITE_KEYS_PER_OCTAVE;
+	Note = NoteLut[NoteIndex];
+	Octave += (MouseY / WHITE_KEYS_PER_OCTAVE) * HALF_STEPS_PER_OCTAVE;	// calculate octave
+	//------------------------------------
+	// Set Note Pitch Value
+	// This is the sum of the note, the
+	// octave, plus an offset so that
+	// C2 is the lowest note.  This also
+	// makes middle C (C4) = 60
+	//------------------------------------
+	//char* psTemp = new char[256];
+	//fprintf(LogFile(), "\tCMsNote::YtoNote: MouseY=%d Note=%d:%lS\n", 
+	//	MouseY, 
+	//	Note + Octave + 24,
+	//	NoteToString(psTemp, 256, Note + Octave + 24)
+	//);
+	//if (psTemp) delete[] psTemp;
+	return Note + Octave + 24;
 }
 
 DRAWSTATE CMsNote::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
@@ -801,32 +987,34 @@ DRAWSTATE CMsNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 		}
 		break;
 	case DRAWSTATE::WAITFORMOUSE_DOWN:
-//		m_P1 = m_P2 = pASV->m_SnapPos;
-//		pASV->EnableAutoScroll(1);
-//		DrawState = DRAWSTATE_PLACE;;
+		csText.Format(_T("Click on the staff to place the note"));
+		GetStaffView()->GetStatusBar()->SetText(csText);
 		GetStaffView()->Invalidate();
 		break;
 	case DRAWSTATE::PLACE:
-		EventIndex = GetStaffView()->GetDrawEvent();
-		pEV = GetSong()->GetEventObject(EventIndex);
-		pEV->AddObject(this);
+		GetStaffView()->SetLastSongPosition(0);
 		//-----------------------------
 		// Create new Note Object to be
 		// placed on the staff view
 		//------------------------------
-		pN = new CMsNote;
-		pNote = (CMsNote * )GetStaffView()->GetDrawObject();
-
-		SetPitch(pNote->GetPitch());
-		if (IsRest())
-			pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
-		else
-			pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
-		//-----------------------------
-		// Copy attributes
-		//------------------------------
-		pN->GetData().CopyData(GetStaffView()->GetNoteData());
-		GetStaffView()->SetDrawObject(pN);
+		if (!IsDuplicate())
+		{
+			pN = new CMsNote;
+//			pNote = (CMsNote*)GetStaffView()->GetDrawObject();
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+//			SetPitch(pNote->GetPitch());
+			if (IsRest())
+				pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
+			else
+				pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
+			//-----------------------------
+			// Copy attributes
+			//------------------------------vb 
+			pN->GetData().CopyData(GetStaffView()->GetNoteData());
+			pN->SetParentEvent(pEV);
+			pEV->AddObject(pN);
+			GetStaffView()->SetDrawObject(pN);
+		}
 		GetStaffView()->CheckAndDoScroll(pointMouse);
 		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		break;
@@ -834,7 +1022,7 @@ DRAWSTATE CMsNote::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	//-------------------------------------------------------
 	// MouseMove
@@ -845,34 +1033,133 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
 	//	parameters:
 	//		pointMouse..Current Mouse Position
 	//		DrawState...Current state of drawing process
+	//		Region.....Current Regiion where mouse is
+	//		Transition.Current mouse region transition state
 	//
 	//	Returns:
 	//		Next Draw State
 	//-------------------------------------------------------
 	int Note = -1;
-	CString csStatus;
-
 	CString csStatusString, csTemp;
+	CMsEvent* pEV = 0, *pNewEvent = 0;
 
+	if(LogFile() && Region == MouseRegions::MOUSE_IN_EDITREG)
+		fprintf(LogFile(),"CMsNote::MouseMove: DrawState=%s ** Region=%s ** Transition=%s\n",
+			CChildViewStaff::GetDrawStateName(DrawState),
+			CChildViewStaff::GetMouseRegionName(Region)	,
+			CChildViewStaff::GetMouseRegionTransitionName(Transition)
+		);
 	switch (DrawState)
 	{
-	case DRAWSTATE::SET_ATTRIBUTES:
+	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
 		break;
-	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		Note = GetStaffView()->YtoNote(pointMouse.y);
-		if (Note != m_NotePlayed)
+	case DRAWSTATE::WAITFORMOUSE_DOWN:		//MouseMove
+		Note = MouseYToNote(pointMouse.y);	// Potential new note
+		pNewEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+		switch (Transition)
 		{
-			NoteOff(0);
-			SetPitch(Note);
-			NoteOn(GetSong()->GetCurrentLoudness()->GetLoudness());
+		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			if (Region == MouseRegions::MOUSE_IN_EDITREG)
+			{
+				//-----------------------------
+				// How is the mouse moving 
+				// between regions
+				//-----------------------------
+				switch (StaffTransition(pointMouse, Note, GetParentEvent()))
+				{
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					fprintf(LogFile(), "--CMsNote::MouseMove: Note Change\n");
+					NoteOff(0);
+					SetPitch(Note);
+					NoteOn(GetVelocity());
+					fprintf(LogFile(), "++CMsNote::MouseMove: Note Change\n");
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+						NoteOff(0);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+						NoteOn(GetVelocity());
+					}
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+						NoteOff(0);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+						SetPitch(Note);
+						NoteOn(GetVelocity());
+					}
+					break;
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
+			if (GetParentEvent())
+			{
+				if (GetParentEvent()->IsThisObjectInThisEvent(this))
+				{
+					GetParentEvent()->RemoveObject(this);
+					SetParentEvent(nullptr);
+					NoteOff(0);
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+			if (pEV)
+			{
+				pEV->AddObject(this);
+				SetParentEvent(pEV);
+//				Note = MouseYToNote(pointMouse.y);
+				SetPitch(Note);
+				NoteOn(GetVelocity());
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
+			break;
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
+			break;
 		}
-		csStatus.Format(_T("Note: %s%d  Track: %d  Event: %d"), 
+		//Note = GetStaffView()->YtoNote(pointMouse.y);
+		//if (Note != m_NotePlayed)
+		//{
+		//	NoteOff(0);
+		//	SetPitch(Note);
+		//	NoteOn(GetSong()->GetCurrentLoudness()->GetLoudness());
+		//}
+		csStatusString.Format(_T("Note: %s%d  Track: %d  Event: %d"), 
 			NoteLUT[GetPitch() % 12].GetString(),
 			GetPitch() / 12,
 			GetTrack(),
-			GetSong()->GetStaffChildView()->GetDrawEvent()
+			GetParentEvent() ? GetParentEvent()->GetIndex() : -1
 		);
-		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatus);
+		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
 		break;
 	case DRAWSTATE::MOVE_OBJECT_AROUND:
 		break;
@@ -927,7 +1214,7 @@ int CMsNote::GetChannel()
 	//		Returns the Midi Channel number for
 	//	the note that is going to play.
 	//------------------------------------------
-	return GetSong()->GetTrack(GetTrack())->GetChannel();
+	return GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 }
 
 //------- These Methods Handle the playing of the song ---
@@ -1050,10 +1337,10 @@ UINT CMsNote::Process()
 	//-------------------------------------
 	// Do we need to change the patch?
 	//-------------------------------------
-	if(GetSong()->CheckChan(GetTrack(), GetSong()->GetTrack(GetTrack())->GetChannel()))
+	if(GetSong()->CheckChan(GetTrack(), GetSong()->GetTrackInfo(GetTrack())->GetChannel()))
 	{
 		int Track = GetTrack();
-		CMsTrack* pTrack = GetSong()->GetTrack(Track);
+		CMsTrack* pTrack = GetSong()->GetTrackInfo(Track);
 
 		GetSong()->ChangePatch(
 			Track,
@@ -1061,7 +1348,7 @@ UINT CMsNote::Process()
 			pTrack->GetPatch()
 		);
 	}
-//	printf("MsNote added %d objects\n",AddedToQueue);
+//	if(LogFile()) fprintf(LogFile(),"MsNote added %d objects\n",AddedToQueue);
 	return AddToQueue;
 }
 
@@ -1078,7 +1365,7 @@ bool CMsNote::RemoveFromQueue()
 	return rB;
 }
 
-void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
+void CMsNote::ObjectRectangle(CRect& rect)
 {
 	int noteVerticalPos;
 	CPoint ptNoteHead;
@@ -1089,14 +1376,14 @@ void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 	if (IsHeadFlipped())
 	{
 		ptNoteHead = CPoint(
-			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET,
+			NOTE_STEM_OFFSET,
 			noteVerticalPos
 		);
 	}
 	else
 	{
 		ptNoteHead = CPoint(
-			EVENT_OFFSET + EVENT_WIDTH * Event + NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH,
+			NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH,
 			noteVerticalPos
 		);
 	}
@@ -1106,6 +1393,15 @@ void CMsNote::ObjectRectangle(CRect& rect, UINT Event)
 UINT CMsNote::CorrectPitchWithKeySignature()
 {
 	return 0;
+}
+
+const char* CMsNote::GetNoteName(int note)
+{
+	static const char* NotDef = "UDF";
+
+	if(note < 0 || note > 127)
+		return NotDef;
+	return NoteAnsiLUT[note % 12];
 }
 
 
@@ -1137,6 +1433,11 @@ CMsNote* CMsNote::IsSecondInterval()
 				if ((pitchDiff <= 2) && (0 < pitchDiff))	//can these be a second?
 				{
 					pWholeStep = pN;
+					Loop = 0;
+				}
+				else if ((pitchDiff >= -2) && (0 > pitchDiff))	//can these be a second?
+				{
+					pWholeStep = this;
 					Loop = 0;
 				}
 				else
@@ -1173,7 +1474,7 @@ void NoteData::PrintData(FILE* pO, NoteData* nd, int Indent)
 	//fprintf_s(pO, "%sTrack = %d\n", pIndentString, nd->m_Track);
 	//fprintf_s(pO, "%sDuration = %d\n", pIndentString, nd->m_Duration);
 	//fprintf_s(pO, "%sDuration: %s\n", pIndentString, pDur[(int)nd->m_Duration].pName);
-	//fprintf_s(pO, "%sPitch = %d\n", pIndentString, nd->m_Pitch);
+	if (pO) fprintf_s(pO, "%sPitch = %d\n", pIndentString, nd->m_Pitch);
 	//fprintf_s(pO, "%sDotted = %d\n", pIndentString, nd->m_Dotted);
 	//fprintf_s(pO, "%sTriplet = %d\n", pIndentString, nd->m_Triplet);
 	//fprintf_s(pO, "%sMidi DeviceID = %d\n", pIndentString, nd->m_MidiOutID);
@@ -1210,18 +1511,32 @@ void NoteData::PrintData(FILE* pO, NoteData* nd, int Indent)
 		Size = l - ls;
 		ls += sprintf_s(&pS[ls], Size, " Stem Down");
 	}
-	fprintf_s(pO, "%s==================Note Data==========\n", pIndentString);
-	fprintf_s(pO, "%  s%s\n", pIndentString, pS);
-	fprintf_s(pO, "%s=================END=================\n", pIndentString);
-	delete[] pS;
-	delete[] pIndentString;
+//	if(pO) fprintf_s(pO, "%s==================Note Data==========\n", pIndentString);
+//	if(pO) fprintf_s(pO, "%  s%s\n", pIndentString, pS);
+//	if(pO) fprintf_s(pO, "%s=================END=================\n", pIndentString);
+	if(pS) delete[] pS;
+	if(pIndentString) delete[] pIndentString;
 }
 
-int CMsNote::SetPitch(int NoteLocationOnStave)
+int CMsNote::SetPitch(int Pitch)
 {
-	GetData().SetPitch(NoteLocationOnStave);
-	m_NotePlayed = NoteLocationOnStave;
-	m_NotePlayed += CMsNote::RangeLUT[GetSong()->GetTrack(GetTrack())->GetPitchRange()];
-	m_NotePlayed = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(m_NotePlayed, GetAccidental());
-	return m_NotePlayed;
+	//----------------------------------------
+	// SetPitch
+	//		Sets the pitch of the note based
+	//	on its physical location on the staff
+	//----------------------------------------
+
+	fprintf(LogFile(), "\t\t\t\tCMsNote::SetPitch: Pitch=%d\n", Pitch);
+	if(Pitch == 2)
+	{
+		printf("Huh?");	//DebugBreak();
+	}
+	GetData().SetPitch(Pitch);
+	return Pitch;
+}
+
+int CMsNote::GetPitch()
+{
+	int Pitch = GetData().GetPitch();
+	return Pitch;
 }

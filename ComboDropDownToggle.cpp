@@ -192,7 +192,7 @@ bool CComboDropDownToggle::Create(
 		pContext
 	);
 	if (rV == false)
-		printf("Could not create DropDown\n");
+		if(LogFile()) fprintf(LogFile(),"Could not create DropDown\n");
 	return rV;
 }
 

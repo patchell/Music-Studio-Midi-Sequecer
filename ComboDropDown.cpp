@@ -5,12 +5,12 @@
 
 void PrintPoint(const char *string,CPoint pt)
 {
-//	printf("POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
+//	if(LogFile()) fprintf(LogFile(),"POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
 }
 
 void PrintSize(const char* string, CSize sz)
 {
-//	printf("SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
+//	if(LogFile()) fprintf(LogFile(),"SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
 
 }
 // CComboDropDown
@@ -57,7 +57,11 @@ CComboDropDown::CComboDropDown()
 
 CComboDropDown::~CComboDropDown()
 {
-	delete[] m_apBmItems;
+	if(m_apBmItems)
+	{
+		delete[] m_apBmItems;
+		m_apBmItems = 0;
+	}
 	for (int i = 0; i < m_nItems; ++i)
 	{
 		if (m_apRectItemControls[i]) delete m_apRectItemControls[i];
@@ -183,7 +187,7 @@ bool CComboDropDown::Create(
 		pContext
 	);
 	if (rV == false)
-		printf("Could not create DropDown\n");
+		if (LogFile()) fprintf(LogFile(), "Could not create DropDown\n");
 	return rV;
 }
 
@@ -463,7 +467,7 @@ void CComboDropDown::OnDraw(CDC* pDC)
 	pDC->SetViewportOrg(oldOrg);
 }
 
-void CComboDropDown::SetCurSel(int nSel)
+void CComboDropDown::SetCurSel(int nSel, bool Notify)
 {
 	double m;
 	int pos;
@@ -474,7 +478,7 @@ void CComboDropDown::SetCurSel(int nSel)
 	m_nCurSel = nSel;
 	pos = int(m * double(nSel));
 	MoveThumb(pos);
-	if (m_nCurSel != oldsel)
+	if ((m_nCurSel != oldsel) && Notify)
 	{
 		int id = GetDlgCtrlID();
 		GetParent()->SendMessageW(

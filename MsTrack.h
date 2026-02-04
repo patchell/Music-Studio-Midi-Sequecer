@@ -271,22 +271,22 @@ class CMsTrack
 	};
 
 	inline static COLORREF DefaultTextColors[16] = {
-		RGB(255,255,255),			//Not used
-		RGB(255,255,255),			//Track 1
-		RGB(255,255,255 - 192),		//Track 2
-		RGB(155,255,255 - 192),		//Track 3
-		RGB(255,155,255 - 192),		//Track 4
-		RGB(255,255 - 96,0),			//Track 5
-		RGB(255,255 - 192,255),		//Track 6
-		RGB(255 - 96,255 - 208,255),	//Track 7
-		RGB(255,255 - 208,255 - 96),	//Track 8
+		RGB(255,255,255),					//Not used
+		RGB(255,255,255),					//Track 1
+		RGB(255,255,255 - 192),				//Track 2
+		RGB(155,255,255 - 192),				//Track 3
+		RGB(255,155,255 - 192),				//Track 4
+		RGB(255,255 - 96,0),				//Track 5
+		RGB(255,255 - 192,255),				//Track 6
+		RGB(255 - 96,255 - 208,255),		//Track 7
+		RGB(255,255 - 208,255 - 96),		//Track 8
 		RGB(255 - 96,255 - 208,155 - 128),	//Track 9
-		RGB(255 - 208,0,255 - 64),		//Track 10
-		RGB(255 - 192,255,255),		//Track 11
-		RGB(255 - 192,255,255 - 128),	//Track 12
+		RGB(255 - 208,0,255 - 64),			//Track 10
+		RGB(255 - 192,255,255),				//Track 11
+		RGB(255 - 192,255,255 - 128),		//Track 12
 		RGB(255 - 224,255 - 86,255 - 96),	//Track 13
-		RGB(255 - 224,255 - 67,255 - 148),//Track 14
-		RGB(0,255 - 80,255 - 192)		//Track 15
+		RGB(255 - 224,255 - 67,255 - 148),	//Track 14
+		RGB(0,255 - 222,255 - 192)			//Track 15
 	};
 	CMsSongInfo* m_pParentSongInfo;
 	CMyBitmap m_bmTrack;

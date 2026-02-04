@@ -45,7 +45,7 @@ DRAWSTATE CMsSharp::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
 	return DrawState;
 }
 
-DRAWSTATE CMsSharp::MouseMove(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	return DrawState;
 }

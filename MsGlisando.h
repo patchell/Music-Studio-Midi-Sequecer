@@ -67,21 +67,22 @@ public:
 	virtual UINT Play();
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return true;
 	}
 	UINT ObjectToString(CString& csString, UINT mode = 0);
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
 	virtual void Copy(CMsObject* Source);
-	virtual void Draw(CDC* pDC, int event, int maxevent);
+	virtual void Draw(CDC* pDC);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE* pO, int Indent);
 	//------------------------------------------------------
 	// Drawing Methodes
 	//------------------------------------------------------
-	void DrawNote(CDC* pDC, int Event, int yPos, bool bStart, bool bStemDown);
+	void DrawNote(CDC* pDC, int yPos, bool bStart, bool bStemDown);
 	void DrawGlisandoSquiggleLine(CDC* pDC, int xStart, int yStart, int xEnd, int yEnd);
 	//------------------------------------------------------
 	// Midi Methodes
@@ -102,6 +103,7 @@ public:
 	void SetSelected(bool sel) { m_bSelected = sel; }
 	int NotePitchToYPos(int Pitch);
 	int YPosToNotePitch(int YPos);
+	int QuantizeY(int Y);
 	int NeedsLine(int Pitch);
 };
 

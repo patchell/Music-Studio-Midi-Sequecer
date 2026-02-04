@@ -119,7 +119,7 @@ public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	int AddBitmap(CMyBitmap* pBM);
-	void SetCurSel(int nSel);
+	void SetCurSel(int nSel, bool bNotify = true);
 	void MoveThumb(int amount);
 	int GetCurSel();
 	void dblMoveThumb(double amount);

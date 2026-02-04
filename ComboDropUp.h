@@ -112,7 +112,7 @@ public:
 	int AddBitmap(CMyBitmap* bmItem);
 	int GetCurSel();
 	void MoveThumb(int amount);
-	void SetCurSel(int Sel);
+	void SetCurSel(int Sel, bool Notify = true);
 	void dblMoveThumb(double amount);
 	int YtoPos(int y);
 	void Colapse();

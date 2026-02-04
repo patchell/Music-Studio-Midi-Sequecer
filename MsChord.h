@@ -27,14 +27,15 @@ public:
 	virtual UINT Play();
 	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse) = 0;
 	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse) = 0;
-	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse) = 0;
+	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition) = 0;
 	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
 		return true;
 	}
+	virtual void Draw(CDC* pDC);
+	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
 	virtual void Copy(CMsObject* Source);
-	virtual void Draw(CDC* pDC, int event, int maxevent);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE* pO, int Indent);
 	void AddChordNoteAtHead(CMsChordNote* pCN);

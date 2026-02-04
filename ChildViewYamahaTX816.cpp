@@ -2764,7 +2764,7 @@ void CChildViewYamahaTX816::DrawAlg(CDC* pDC, int alg)
 				bkColor = AlgDrawData[alg][ObjIndex++];
 				break;
 			default:
-//				printf("Boo-Boo\n");
+//				if(LogFile()) fprintf(LogFile(),"Boo-Boo\n");
 				break;
 		}
 	}
@@ -3371,7 +3371,7 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 		12	//height of the caption
 	);
 	m_sliderKeyboardLevelScalingBreakPoint.EnableWindow(0);
-	m_sliderKeyboardLevelScalingBreakPoint.SetStringTable(MidiNoteToNoteString);
+	m_sliderKeyboardLevelScalingBreakPoint.SetStringTable(CMidiSeqMSApp::GetMidiNoteToNoteString());
 	//-----------------------------------------
 	m_sliderKeyboardLevelScalingLeftDepth.Create(
 		CPoint(DX7_SLIDER_COL_1, 10 + 5 * DX7_SLIDER_SPACING),	//origin 1
@@ -3486,7 +3486,7 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 		12	//height of the caption
 	);
 	m_sliderKeyboardLevelScalingRightCurve.EnableWindow(0);
-	m_sliderKeyboardLevelScalingRightCurve.SetStringTable(TX816_OP_KEYBORD_Level_Scaling_Curve);
+	m_sliderKeyboardLevelScalingRightCurve.SetStringTable(CMidiSeqMSApp::GetTX816OpKeybordLevelScalingCurve());
 	//------------------------------------------
 	m_sliderKeyboardLevelScalingLeftCurve.Create(
 		CPoint(DX7_SLIDER_COL_2+8, 10 + 5 * DX7_SLIDER_SPACING),	//origin 1
@@ -3525,7 +3525,7 @@ void CChildViewYamahaTX816::InitializeOperatorControls()
 		12	//height of the caption
 	);
 	m_sliderKeyboardLevelScalingLeftCurve.EnableWindow(0);
-	m_sliderKeyboardLevelScalingLeftCurve.SetStringTable(TX816_OP_KEYBORD_Level_Scaling_Curve);
+	m_sliderKeyboardLevelScalingLeftCurve.SetStringTable(CMidiSeqMSApp::GetTX816OpKeybordLevelScalingCurve());
 	//------------------------------------------
 	m_sliderKeyboardRateScaling.Create(
 		CPoint(DX7_SLIDER_COL_2 + 8, 10 + 6 * DX7_SLIDER_SPACING),	//origin 1
@@ -4898,10 +4898,10 @@ void CChildViewYamahaTX816::InitializePerformanceControls()
 		12	//height of the caption
 	);								   
 	//---------------------------------------------------------
-	CString csBlank = csBlank;
+	CString csBlank = _T("");
 	m_checkModulationWheelAssignEGBias.Create(	//on-off
 		csBlank,	//String to display when checked (true)
-		csBlank,//String to display when unchecked (false)
+		csBlank,	//String to display when unchecked (false)
 		CRect(CPoint(DX7_SLIDER_COL_2 + DX7_CB_EG_BIAS, DX7_ROW_4), CSize(DX7_CB_NL_CONTROL_WIDTH, DX7_CB_CONTROL_HEIGHT)),	//outline rectangle of control
 		this,	//parent of the control
 		DX7_CONTROL_ID_MODULATION_WHEEL_ASSIGN_EGBIAS,	//ID of the control
