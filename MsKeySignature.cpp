@@ -304,7 +304,7 @@ int CMsKeySignature::GetKeySigCorrection(int Note)
 	int rNoteCorection;
 
 	rNoteCorection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
-	return Note;
+	return rNoteCorection;
 }
 
 int CMsKeySignature::CorrectNoteByKeySig(int Note, int accidental)
@@ -323,7 +323,7 @@ int CMsKeySignature::CorrectNoteByKeySig(int Note, int accidental)
 		Note -= 1;
 		break;
 	}
-	return 0;
+	return Note;
 }
 
 void CMsKeySignature::Copy(CMsObject* pSource)

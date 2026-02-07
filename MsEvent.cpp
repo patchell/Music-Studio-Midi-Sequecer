@@ -750,7 +750,10 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 	if(IsThisObjectInThisEvent(pObj) == false)
 	{
 		CString csError;
-		csError.Format(_T("Error: CMsEvent::RemoveObject: At Event %d Object not in this event"), GetIndex());
+		csError.Format(_T("Error: CMsEvent::RemoveObject: At Event %d Object %S not in this event"), 
+			GetIndex(),
+			pObj ? pObj->GetStringFromType() : "NULL"
+		);
 		AfxMessageBox(csError);
 		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::RemoveObject : At Event % d Object ID=%d not in this event\n", 
 			GetIndex(),

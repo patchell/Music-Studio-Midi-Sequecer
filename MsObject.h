@@ -228,5 +228,6 @@ public:
 	//--------------------------------------------------
 	static MsObjType GetTypeFromString(const char* pTypeString);
 	static const char* GetStringFromType(MsObjType type);
+	const char* GetStringFromType() const;
 
 };

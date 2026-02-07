@@ -218,7 +218,9 @@ public:
 	void SetDuration(INT v) {m_Duration = v;}
 	INT GetDuration() { return m_Duration; }
 
-	void SetPitch(int v) { m_Pitch = v; }
+	void SetPitch(int v) { 
+		m_Pitch = v; 
+	}
 	int GetPitch() { return m_Pitch; }
 
 	void SetDotted(int d) { m_Dotted = d; }
@@ -389,7 +391,10 @@ public:
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
 	char* NoteToString(char* pStr, int l);
+	static char* NoteToString(char* pStr, int l, int Note, CMsSong* pSong);
+
 	void LoadRestBitmap(int Selection);
+
 	//------ Note/Rest Drawing Utility Functions -----------------
 	void DrawNote(
 		CDC* pDC, 
@@ -808,6 +813,7 @@ public:
 		{2, ExtraLinesLocation::AboveTreble}	//C7
 	};
 	//-------------------------------
-	const char* GetNoteName(int note); 
+	const char* GetNoteName(); 
+	static const char* GetNoteName(int note, CMsSong* pSong);
 };
 

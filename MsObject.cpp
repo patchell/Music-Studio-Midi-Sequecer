@@ -206,6 +206,22 @@ const char* CMsObject::GetStringFromType(MsObjType type)
 	return pR;
 }
 
+const char* CMsObject::GetStringFromType() const
+{
+	const char* pR = nullptr;
+	int i;
+	MsObjType Type = GetType();
+
+	for (i = 0; ObjTypeStringTable[i].m_pTypeString != nullptr; i++)
+	{
+		if (ObjTypeStringTable[i].Is(Type))
+		{
+			pR = ObjTypeStringTable[i].m_pTypeString;
+		}
+	}
+	return pR;
+}
+
 void CMsObject::Save(FILE *pO)
 {
 
