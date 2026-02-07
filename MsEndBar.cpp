@@ -205,9 +205,9 @@ void CMsEndBar::Draw(CDC *pDC)
 
 		Event = GetParentEvent()->GetIndex();
 		rectHL.SetRect(
-			FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event - 4, 
+			(EVENT_WIDTH + 1) * Event - 4, 
 			TREBLE_TOP_LINE, 
-			FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event + 5, 
+			(EVENT_WIDTH + 1) * Event + 5,
 			BASS_TOP_LINE + SINGLE_STAVE_HEIGHT
 		);
 
@@ -234,9 +234,9 @@ UINT CMsEndBar::ObjectToString(CString& csString, UINT mode)
 void CMsEndBar::ObjectRectangle(CRect& rect, UINT Event)
 {
 	rect.SetRect(
-		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event - 4, 
+		(EVENT_WIDTH + 1) * Event * Event - 4,
 		TREBLE_TOP_LINE, 
-		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event + 5,
+		(EVENT_WIDTH + 1) * Event + 5,
 		BASS_TOP_LINE + SINGLE_STAVE_HEIGHT
 	);
 }

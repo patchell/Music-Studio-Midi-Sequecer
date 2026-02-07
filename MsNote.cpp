@@ -35,6 +35,7 @@ CMsNote::CMsNote() :CMsObject()
 	m_NoteTiePrev = 0;	//pointer to previous note that is tied
 	m_pRestBitmap = 0;
 	m_MouseStaffTransition = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	m_NotePlayed = 0;
 }
 
 
@@ -43,19 +44,22 @@ CMsNote::~CMsNote()
 	
 }
 
-char* CMsNote::NoteToString(char* pStr, int l, int Note)
+char* CMsNote::NoteToString(char* pStr, int l)
 {
 	int Octave;
 	int NoteTemp;
-
+	int Note = GetPitch();
+	
+	Note = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Note, GetAccidental());
 	NoteTemp = Note % HALF_STEPS_PER_OCTAVE;
 	Octave = Note / HALF_STEPS_PER_OCTAVE - 1;
 	sprintf_s(
 		pStr,
 		l,
-		"NOTE:%4s%d",
+		"%s%d [%d]",
 		GetNoteName(NoteTemp),
-		Octave
+		Octave,
+		Note
 	);
 	return pStr;
 }
@@ -160,7 +164,7 @@ int CMsNote::NoteToPosition(int Note)
 	int Octave;
 
 //	if(LogFile()) fprintf(LogFile(), "CMsNote:NoteToPos:Enter Note=%d\n", Note);
-	Note -= 24;  // Normalize Note value to be zero at C3
+	Note -= NOTE_C2;  // Normalize Note value to be zero at C3
 	Octave = Note / 12;
 	Octave = 4 - Octave;	// Invert octave order
 	Octave *= 7;		// Each octave is 7 staff positions
@@ -173,7 +177,11 @@ int CMsNote::NoteToPosition(int Note)
 	//NotePosition += SINGLE_STAVE_HEIGHT * (7 - (Note / 12));	// Calculates octave position
 	//if(LogFile()) fprintf(LogFile(),"   CMsNote:NoteToPos:Position=%d\n", NotePosition);
 	//NotePosition += 4;
-//	if (LogFile()) fprintf(LogFile(), "   CMsNote:NoteToPos:Note=%d Pos=%d\n", Note, NotePosition);
+	if (LogFile()) 
+		fprintf(LogFile(), "   CMsNote:NoteToPos:Note=%d Pos=%d\n", 
+			Note, 
+			NotePosition
+		);
 	return NotePosition;
 }
 
@@ -201,12 +209,12 @@ StaffMouseStates CMsNote::StaffTransition(CPoint pointMouse, int NewNote, CMsEve
 
 	
 	//fix
-	if(bNoteChanged)
-		fprintf(LogFile(), 
-			">>CMsNote::StaffTransition: Note Changed from %s to %s\n", 
-			NoteToString(pStr1, 256,GetPitch()), 
-			NoteToString(pStr2, 256, NewNote)
-		);
+	//if(bNoteChanged)
+	//	fprintf(LogFile(), 
+	//		">>CMsNote::StaffTransition: Note Changed from %s to %s\n", 
+	//		NoteToString(pStr1, 256,GetPitch()), 
+	//		NoteToString(pStr2, 256, NewNote)
+	//	);
 
 	if (!bNoteChanged && !bEventChanged)
 		State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
@@ -224,82 +232,28 @@ StaffMouseStates CMsNote::StaffTransition(CPoint pointMouse, int NewNote, CMsEve
 void CMsNote::Draw(CDC *pDC)
 {
 	CPoint End,Start;
-	CPen pen,*oldpen;
-	CBrush brush,*oldbrush;
+//	CPen pen,*oldpen;
+	CBrush brush;
 	int NoteY;
 	int Pitch;
 	COLORREF Color;
 	CRect rectRest;
 	CMsEvent* pEvent = GetParentEvent();
+	char* pStr = new char[256];
 
 	Color = GetSong()->GetTrackInfo(GetTrack())->GetColor();
 	if (IsSelected() || IsHighLighted())
 		Color ^= 0x00ffffff;
 	Pitch = GetPitch();
 	NoteY = NoteToPosition(Pitch);
-//	if (LogFile()) fprintf(LogFile(), "CMsNote::Draw: NoteY=%d Pitch=%d\n", NoteY, Pitch);
+	if (LogFile()) 
+		fprintf(LogFile(), "CMsNote::Draw: NoteY=%d Pitch=%s\n", 
+			NoteY, 
+			NoteToString(pStr, 256)
+		);
 	if(IsRest())	///draw rest on staff
 	{
-		pen.CreatePen(PS_SOLID, 1, Color);
-		oldpen = pDC->SelectObject(&pen);
-		brush.CreateSolidBrush(Color);
-		oldbrush = pDC->SelectObject(&brush);
-		switch(GetDuration())
-		{
-		case MSFF_REST_QUARTER:
-		case MSFF_REST_EIGTH:
-		case MSFF_REST_SIXTEENTH:
-		case MSFF_REST_THIRTYSECOND:
-			DrawRestBitmap(pDC, NoteY, Color);
-			break;
-		case MSFF_REST_HALF:
-			NoteY += 4;
-			rectRest.SetRect(
-				FIRST_EVENT_FROM_CLIENT_X +EVENT_WIDTH*pEvent->GetPhysicalIndex(),
-				NoteY,
-				FIRST_EVENT_FROM_CLIENT_X +EVENT_WIDTH* pEvent->GetPhysicalIndex() +8,
-				NoteY - 6
-			);
-			if (NeedsLine())
-			{
-				pDC->MoveTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() - 2, NoteY);
-				pDC->LineTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 10, NoteY);
-			}
-			pDC->Rectangle(&rectRest);
-			break;
-		case MSFF_REST_WHOLE:
-			//---------------------------------
-			// The second parameter, the Y
-			// Coordinate of t he CRect Upper
-			// Left corner is the value of
-			// notev + 2.  The rest needs to be
-			// one pixel lower for the line,and
-			// one pixel to make the rect butt
-			// up against the line.
-			//----------------------------------
-			NoteY += 5;
-			;
-			rectRest.SetRect(
-				FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex(),
-				NoteY,
-				FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 8,
-				NoteY + 6
-			);
-			rectRest.NormalizeRect();
-			if (NeedsLine())
-			{
-				pDC->MoveTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() - 2, NoteY);
-				pDC->LineTo(FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * pEvent->GetPhysicalIndex() + 10, NoteY);
-			}
-			pDC->Rectangle(&rectRest);
-			
-			break;
-		default:
-//			if(LogFile()) fprintf(LogFile(),"Opps Dur=%d\n", GetDuration());
-			break;
-		}
-		pDC->SelectObject(oldpen);
-		pDC->SelectObject(oldbrush);
+		DrawRest(pDC, NoteY, Color);
 	}
 	else	//draw note on staff
 	{
@@ -371,57 +325,42 @@ void CMsNote::DrawNoteHead(
 
 void CMsNote::DrawNoteLines(CDC* pDC, int NoteY, COLORREF Color)
 {
-	int NeedsALine = 0;
+	int NeedsALine = NeedsLine();
 	int y = 0;
-	int f = 0;
 	CPen penLines, *penOld = 0;
-
-
-	//NeedsALine = LinesNeededLUT[NotePositionOnStaff].m_Lines;
-	//if (NeedsALine > 0)
-	//{
-	//	penLines.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-	//	penOld = pDC->SelectObject(&penLines);
-
-	//	int notev = NoteToPosition(pitch);
-
-	//	if (notev >= 0 && notev <= 49)
-	//	{
-	//		NeedsALine = LinesNeededLUT[notev].m_Lines;
-	//	}
-
-
-
-
-
-	//	if (NeedsALine < 0)
-	//	{
-	//		f = -1;
-	//		NeedsALine = -NeedsALine;
-	//	}
-	//	else
-	//		f = 1;
-	//	for (i = 0; i < NeedsALine; ++i)
-	//	{
-	//		int lineEnd = EVENT_WIDTH - (EVENT_WIDTH + 10) / 2;
-	//		int x = NOTE_STEM_OFFSET;
-	//		if (IsOnLine())
-	//			y = NoteY + i * 8 * f;
-	//		else
-	//			y = NoteY + 4 + i * 8 * f;
-	//		pDC->MoveTo(x - lineEnd, y);
-	//		pDC->LineTo(x + lineEnd, y);
-	//	}
-	//	pDC->SelectObject(penOld);
-	//}
-	//else if (NeedsALine == 0)
-	//{
-	//	// no extra lines needed
-	//}
-	//else
-	//{
-	//	// should not happen
-	//}
+	char* pStr = new char[256];
+	if(LogFile())
+		fprintf(LogFile(), "\t\tCMsNote::DrawNoteLines: Note=%s NeedsALine=%d\n", 
+			NoteToString(pStr, 256),
+			NeedsALine
+		);
+	if(NeedsALine > 0)
+	{
+		penLines.CreatePen(PS_SOLID, 1, Color);
+		penOld = pDC->SelectObject(&penLines);
+		int notev = NoteToPosition(GetPitch());
+		for (int i = 0; i < NeedsALine; ++i)
+		{
+			int lineEnd = (EVENT_WIDTH + 10) / 2;
+			int x = NOTE_STEM_OFFSET;
+			if (IsOnLine())
+				y = NoteY + i * 8;
+			else
+				y = NoteY + 4 + i * 8;
+			pDC->MoveTo(x - lineEnd, y);
+			pDC->LineTo(x + lineEnd, y);
+		}
+		pDC->SelectObject(penOld);
+	}
+	else if (NeedsALine == 0)
+	{
+		// no extra lines needed
+	}
+	else
+	{
+		// should not happen
+	}
+	if (pStr) delete[] pStr;
 }
 
 void CMsNote::DrawNoteStem(CDC* pDC, int NoteY, COLORREF Color)
@@ -592,6 +531,38 @@ void CMsNote::DrawNoteTie(CDC* pDC, int NoteY, COLORREF Color)
 	}
 }
 
+void CMsNote::DrawRest(CDC* pDC, int NoteY, COLORREF Color)
+{
+	CPen pen, * oldpen;
+	CBrush brush, * oldbrush;
+
+	pen.CreatePen(PS_SOLID, 1, Color);
+	oldpen = pDC->SelectObject(&pen);
+	brush.CreateSolidBrush(Color);
+	oldbrush = pDC->SelectObject(&brush);
+	switch (GetDuration())
+	{
+	case MSFF_REST_QUARTER:
+	case MSFF_REST_EIGTH:
+	case MSFF_REST_SIXTEENTH:
+	case MSFF_REST_THIRTYSECOND:
+		DrawRestBitmap(pDC, NoteY, Color);
+		break;
+	case MSFF_REST_HALF:
+		DrawHalfRest(pDC, NoteY, Color);
+		break;
+	case MSFF_REST_WHOLE:
+		DrawWholeRest(pDC, NoteY, Color);
+
+		break;
+	default:
+		//			if(LogFile()) fprintf(LogFile(),"Opps Dur=%d\n", GetDuration());
+		break;
+	}
+	pDC->SelectObject(oldpen);
+	pDC->SelectObject(oldbrush);
+}
+
 void CMsNote::DrawRestBitmap(CDC* pDC, int notev, COLORREF color)
 {
 	CMyBitmap* pOldBm;
@@ -614,6 +585,56 @@ void CMsNote::DrawRestBitmap(CDC* pDC, int notev, COLORREF color)
 
 }
 
+void CMsNote::DrawHalfRest(CDC* pDC, int NoteY, COLORREF Color)
+{
+	NoteY += 4;
+	CRect rectRest;
+
+	rectRest.SetRect(
+		0,
+		NoteY,
+		HALF_REST_WIDTH,
+		NoteY - HALF_REST_HEIGHT
+	);
+	if (NeedsLine())
+	{
+		pDC->MoveTo(EVENT_WIDTH  - 2, NoteY);
+		pDC->LineTo(EVENT_WIDTH + 10, NoteY);
+	}
+	pDC->Rectangle(&rectRest);
+}
+
+void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
+{
+	//---------------------------------
+	// The second parameter, the Y
+	// Coordinate of the CRect Upper
+	// Left corner is the value of
+	// notev + 2.  The rest needs to be
+	// one pixel lower for the line,and
+	// one pixel to make the rect butt
+	// up against the line.
+	//----------------------------------
+	CRect rectRest;
+	NoteY += 5;
+	;
+	rectRest.SetRect(
+		0,
+		NoteY,
+		8,
+		NoteY + 6
+	);
+	rectRest.NormalizeRect();
+	if (NeedsLine())
+	{
+		pDC->MoveTo(EVENT_WIDTH - 2, NoteY);
+		pDC->LineTo(EVENT_WIDTH  + 10, NoteY);
+	}
+	pDC->Rectangle(&rectRest);
+}
+
+//-----------------------------------------------------
+
 int CMsNote::NeedsLine()
 {
 	//-------------------------
@@ -621,15 +642,15 @@ int CMsNote::NeedsLine()
 	//-------------------------
 	int LinesNeeded = 0;
 	int pitch = GetPitch();
-	int notev = NoteToPosition(pitch);
+	int NotePosition = NoteToPosition(pitch);
 
-	if (notev >= 0 && notev <= 49)
+	if (NotePosition >= 0 && NotePosition <= 49)
 	{
-		LinesNeeded = LinesNeededLUT[notev].m_Lines;
+		LinesNeeded = LinesNeededLUT[NotePosition].m_Lines;
 	}
 	else
 	{
-		LinesNeeded = -1;
+		LinesNeeded = -1;	// error 
 	}
 	return LinesNeeded;
 }
@@ -810,18 +831,14 @@ void CMsNote::NoteOn(int Velocity)
 	// Apply Key Signature Correction
 	// or Accidental to correct pitch
 	//-------------------------------
-	NotePitch = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(NotePitch, GetAccidental());
+	NotePitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(NotePitch, GetAccidental());
+	m_NotePlayed = NotePitch;
 	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, NotePitch, Loudness);
-	if(NotePitch == 2)
-	{
-		printf("Huh?");	//DebugBreak();
-	}
 	if(LogFile())
-		fprintf(LogFile(), "\t\tNoteOn: Ch=%d Pitch=%d:%s Vel=%d\n", 
+		fprintf(LogFile(), "NoteOn: Ch=%d Note=%s Vel=%d\n", 
 			MidiChannel, 
-			NotePitch, 
-			NoteToString(pStr, 256, GetPitch()),
+			NoteToString(pStr, 256),
 			Loudness
 		);
 	if (pStr) delete[] pStr;
@@ -833,12 +850,19 @@ void CMsNote::NoteOff(int Velocity)
 	int DeviceID;
 	int NotePitch;
 	GetSong()->IncNoteOffCount();	// for diagnostics
+	char* pStr = new char[256];
 
 	MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
-	NotePitch = GetSong()->GetCurrentKeySignature()->GetKeySigCorrection(GetPitch(), GetAccidental());
+	NotePitch = m_NotePlayed;
 	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
-	fprintf(LogFile(), "\t\tNoteOff: Ch=%d Pitch=%d Vel=%d\n", MidiChannel, NotePitch, Velocity);
+	if(LogFile())
+		fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
+			MidiChannel, 
+			NoteToString(pStr,256),
+			Velocity
+		);
+	if (pStr) delete[] pStr;
 }
 
 void CMsNote::IncrNote()
@@ -863,7 +887,8 @@ void CMsNote::Copy(CMsNote* pN)
 
 	if(pSong == NULL)
 	{
-		if (LogFile()) fprintf(LogFile(), "pSong is NULL in CMsNote::Copy\n");
+		if (LogFile()) 
+			fprintf(LogFile(), "pSong is NULL in CMsNote::Copy\n");
 	}
 	SetRestBitmap(pN->GetRestBitmap());
 	GetData().CopyData(pN->GetData());
@@ -920,7 +945,7 @@ int CMsNote::MouseYToNote(int MouseY)
 	//	NoteToString(psTemp, 256, Note + Octave + 24)
 	//);
 	//if (psTemp) delete[] psTemp;
-	return Note + Octave + 24;
+	return Note + Octave + NOTE_C2;
 }
 
 DRAWSTATE CMsNote::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
@@ -1042,13 +1067,14 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 	int Note = -1;
 	CString csStatusString, csTemp;
 	CMsEvent* pEV = 0, *pNewEvent = 0;
+	char* pStr = new char[256];
 
-	if(LogFile() && Region == MouseRegions::MOUSE_IN_EDITREG)
-		fprintf(LogFile(),"CMsNote::MouseMove: DrawState=%s ** Region=%s ** Transition=%s\n",
-			CChildViewStaff::GetDrawStateName(DrawState),
-			CChildViewStaff::GetMouseRegionName(Region)	,
-			CChildViewStaff::GetMouseRegionTransitionName(Transition)
-		);
+	//if(LogFile() && Region == MouseRegions::MOUSE_IN_EDITREG)
+	//	fprintf(LogFile(),"CMsNote::MouseMove: DrawState=%s ** Region=%s ** Transition=%s\n",
+	//		CChildViewStaff::GetDrawStateName(DrawState),
+	//		CChildViewStaff::GetMouseRegionName(Region)	,
+	//		CChildViewStaff::GetMouseRegionTransitionName(Transition)
+	//	);
 	switch (DrawState)
 	{
 	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
@@ -1065,16 +1091,16 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 				// How is the mouse moving 
 				// between regions
 				//-----------------------------
-				switch (StaffTransition(pointMouse, Note, GetParentEvent()))
+				switch (StaffTransition(pointMouse, Note, pNewEvent))
 				{
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-					fprintf(LogFile(), "--CMsNote::MouseMove: Note Change\n");
+//					fprintf(LogFile(), "--CMsNote::MouseMove: Note Change\n");
 					NoteOff(0);
 					SetPitch(Note);
 					NoteOn(GetVelocity());
-					fprintf(LogFile(), "++CMsNote::MouseMove: Note Change\n");
+//					fprintf(LogFile(), "++CMsNote::MouseMove: Note Change\n");
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
@@ -1153,9 +1179,9 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 		//	SetPitch(Note);
 		//	NoteOn(GetSong()->GetCurrentLoudness()->GetLoudness());
 		//}
-		csStatusString.Format(_T("Note: %s%d  Track: %d  Event: %d"), 
-			NoteLUT[GetPitch() % 12].GetString(),
-			GetPitch() / 12,
+		NoteToString(pStr, 256);
+		csStatusString.Format(_T("Note: %S  Track: %d  Event: %d"),
+			pStr,
 			GetTrack(),
 			GetParentEvent() ? GetParentEvent()->GetIndex() : -1
 		);
@@ -1167,6 +1193,7 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 		break;
 	}
 	GetStaffView()->Invalidate();
+	if (pStr) delete[] pStr;
 	return DrawState;
 }
 
@@ -1234,7 +1261,7 @@ UINT CMsNote::Play()
 	case PLAYSTATE_START:
 		if (IsTieBeg())
 		{
-			fprintf(GETAPP->LogFile(),"Tie Note Start\n");
+//			fprintf(GETAPP->LogFile(),"Tie Note Start\n");
 		}
 		SetTick(GetDuration(), 1);
 		if(IsNote() && !IsTieEnd())
@@ -1398,10 +1425,15 @@ UINT CMsNote::CorrectPitchWithKeySignature()
 const char* CMsNote::GetNoteName(int note)
 {
 	static const char* NotDef = "UDF";
+	const char* NoteName = 0;
 
 	if(note < 0 || note > 127)
 		return NotDef;
-	return NoteAnsiLUT[note % 12];
+	if(GetSong()->GetCurrentKeySignature()->IsFlatKeySig())
+		NoteName = NoteAnsiLUTFlat[note % 12];
+	else
+		NoteName = NoteAnsiLUTSharp[note % 12];
+	return NoteName;
 }
 
 
@@ -1526,7 +1558,7 @@ int CMsNote::SetPitch(int Pitch)
 	//	on its physical location on the staff
 	//----------------------------------------
 
-	fprintf(LogFile(), "\t\t\t\tCMsNote::SetPitch: Pitch=%d\n", Pitch);
+//	fprintf(LogFile(), "\t\t\t\tCMsNote::SetPitch: Pitch=%d\n", Pitch);
 	if(Pitch == 2)
 	{
 		printf("Huh?");	//DebugBreak();

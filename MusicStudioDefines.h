@@ -21,25 +21,12 @@ constexpr auto UPPER_DRAW_RECT_HEIGHT = (NOTE_STEM_LENGTH);
 constexpr auto EDIT_RECT_HEIGHT = 15 * STAVE_LINE_SPACING;
 constexpr auto LOWER_DRAW_RECT_HEIGHT = (NOTE_STEM_LENGTH);
 constexpr auto LOWER_SELECTION_BAR_HEIGHT = SELECTION_BAR_HEIGHT;
-constexpr auto FIRST_EVENT_FROM_CLIENT_X = 32;	// distance from left edge;
+//constexpr auto FIRST_EVENT_FROM_CLIENT_X = 32;	// distance from left edge;
 												// of the client rect to
 												// where the first event is
 constexpr auto CLIENT_TO_TOP_UPPER_SELECT_RECT = 48;	// distance from top of client rect
 
 
-//-------------------------------
-// Constants for drawing notes
-// on the music staff.
-//-------------------------------
-
-constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
-constexpr auto NOTE_HEAD_WIDTH = 10;
-constexpr auto NOTE_HEAD_HEIGHT = 8;
-constexpr auto NOTE_HEAD_RECT_P1_X = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - 2;
-constexpr auto NOTE_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
-constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_X = NOTE_STEM_OFFSET;
-constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
-constexpr auto NOTE_ACCIDENTAL_OFFSET = 8;
 
 
 //-------------------------------
@@ -76,22 +63,19 @@ constexpr auto STAVE_HEIGHT = STAVE_LINE_SPACING * 10;	// Distance from top line
 //----------------------------------------------
 // Song Drawing Constants
 //----------------------------------------------
-constexpr auto TREBLE_TOP_LINE = (2 * STAVE_LINE_SPACING) + NOTE_STEM_LENGTH;
+constexpr auto TREBLE_TOP_LINE = (3 * STAVE_LINE_SPACING) + NOTE_STEM_LENGTH;	//Fix?
 constexpr auto BASS_TOP_LINE = TREBLE_TOP_LINE + SINGLE_STAVE_HEIGHT + STAVE_LINE_SPACING * 2;
 
 constexpr auto HIGH_C = NOTE_STEM_LENGTH + STAVE_LINE_SPACING /2;	//how high high C is below top of event rectangle 
 constexpr auto Y_CENTER_OF_TREBLE = (TREBLE_TOP_LINE);
 constexpr auto Y_CENTER_OF_BASS = (BASS_TOP_LINE);
 constexpr auto X_CENTER_OF_EVENT = EVENT_WIDTH / 2;
-
-constexpr auto TREBLE_CLEF_OFFSET = ( - 8);
-constexpr auto BASS_CLEF_OFFSET = (UPPER_SEL_RECT_TO_TOP_EDIT_RECT + 46);
 //------------------------------------
 // Selection Bars
 //------------------------------------
 
 #define SELECTION_BAR_WIDTH(ClientWidth) ((ClientWidth) - FIRST_EVENT_FROM_CLIENT_X)
-constexpr auto SELECTION_BAR_X = FIRST_EVENT_FROM_CLIENT_X;
+constexpr auto SELECTION_BAR_X = EVENT_WIDTH;
 
 //-------------------------------
 // Status Bar Constants

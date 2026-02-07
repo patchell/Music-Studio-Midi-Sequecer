@@ -1,5 +1,7 @@
 #pragma once
 
+class CMsChordNote;
+
 class CMsChord : public CMsObject
 {
 	CMsChordNote* m_pNoteChainHead;

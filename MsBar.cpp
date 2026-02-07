@@ -6,16 +6,15 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-UINT CMsBar::LastBarNumber = 0;
 
-CMsBar::CMsBar():CMsObject()
+CMsBar::CMsBar():CMsObject(MsObjType::BAR)
 {
-	m_ObjType = CMsObject::MsObjType::BAR;
 	m_BarNumber = GenBarNumber();
 }
 
 CMsBar::~CMsBar()
 {
+	LastBarNumber--;
 
 }
 
@@ -264,9 +263,9 @@ UINT CMsBar::Process(CMsSong* pSong)
 void CMsBar::ObjectRectangle(CRect& rect, UINT Event)
 {
 	rect.SetRect(
-		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event -2,
+		(EVENT_WIDTH + 1) * Event -2,
 		TREBLE_TOP_LINE, 
-		FIRST_EVENT_FROM_CLIENT_X + EVENT_WIDTH * Event + 2, 
+		(EVENT_WIDTH + 1) * Event + 2, 
 		BASS_TOP_LINE + SINGLE_STAVE_HEIGHT
 	);
 }

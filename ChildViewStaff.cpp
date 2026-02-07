@@ -1118,9 +1118,9 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					{
 						Dlg.SetSelectionString(i, CMsKeySignature::KeySigStringTab[i + 1]);
 					}
-					Dlg.m_nSelection = Obj.pKey->GetKeySignature() - 1;
+					Dlg.m_nSelection = (int)Obj.pKey->GetKeySignature() - 1;
 					if (IDOK == Dlg.DoModal())
-						Obj.pKey->SetKeySignature(Dlg.m_nSelection);
+						Obj.pKey->SetKeySignature(CMsKeySignature::KeySigID(Dlg.m_nSelection));
 				}
 				break;
 				case CMsObject::MsObjType::LOUDNESS:	//OnContextMenu
@@ -1243,7 +1243,7 @@ UINT CChildViewStaff::GetRawEventNumber(int x)
 	// For the logical "event" use
 	// the function XtoEventIndex
 	//-----------------------------------
-	int ev = x - FIRST_EVENT_FROM_CLIENT_X;
+	int ev = x - EVENT_WIDTH;
 	int r = ev % EVENT_WIDTH;
 	ev /= (int)EVENT_WIDTH;
 	if (ev < 0) ev = 0;
@@ -1263,7 +1263,7 @@ int CChildViewStaff::CalcMaxEvents()
 
 	GetClientRect(&rect);
 	int Width = rect.Width();
-	Width -= FIRST_EVENT_FROM_CLIENT_X;
+	Width -= EVENT_WIDTH;
 	return Width / EVENT_WIDTH;
 }
 
@@ -1497,6 +1497,9 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	break;
 	case DrawMode::KEYSIG:		// SetupDrawMode
 	{
+		CMsKeySignature::KeySigID KS;
+
+		KS = (CMsKeySignature::KeySigID)(v & 0x1f);
 		if (GetDrawObject())
 		{
 			pEv = GetDrawObject()->GetParentEvent();
@@ -1508,8 +1511,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			SetDrawObject(0);
 		}
 		CMsKeySignature* pKS = new CMsKeySignature;
-		pKS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), v);
-		pKS->SetKeySignature(v);
+		pKS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), KS);
 		m_dmDrawMode = DrawMode::KEYSIG;
 		SetDrawObject(pKS);
 	}
@@ -2460,7 +2462,7 @@ void CChildViewStaff::OnInitialUpdate()
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
 	pEV = m_pSong->GetEventObject(1);
-	pKS->Create(GetSong(), pEV, MSFF_CMAJ);
+	pKS->Create(GetSong(), pEV, CMsKeySignature::KeySigID::CMAJ);
 	pEV->AddObject(pKS);
 	CMsLoudness* pLD = new CMsLoudness();
 	pLD->Create(GetSong(), pEV,100);
@@ -2660,7 +2662,7 @@ void CChildViewStaff::OnInitialUpdate()
 
 	y = CLIENT_TO_TOP_UPPER_SELECT_RECT;
 	//-------------- Upper Selection Bar -----
-	ptRectUL = CPoint(FIRST_EVENT_FROM_CLIENT_X, y);
+	ptRectUL = CPoint(EVENT_WIDTH, y);
 	szRect = CSize(szRect.cx, SELECTION_BAR_HEIGHT);
 	m_UpperSelRect = CRect(ptRectUL, szRect);
 	PrintRec("ChildView UpperRgn", m_UpperSelRect);
@@ -2668,31 +2670,31 @@ void CChildViewStaff::OnInitialUpdate()
 	m_rgnUpperSelect.CreateRectRgn(m_UpperSelRect);
 	//-----------Upper Draw Region -------------
 	y += UPPER_SELECTION_BAR_HEIGHT;
-	ptRectUL = CPoint(FIRST_EVENT_FROM_CLIENT_X, y);
-	szRect = CSize(clientRect.Width() - FIRST_EVENT_FROM_CLIENT_X, UPPER_DRAW_RECT_HEIGHT);
+	ptRectUL = CPoint(EVENT_WIDTH, y);
+	szRect = CSize(clientRect.Width() - EVENT_WIDTH, UPPER_DRAW_RECT_HEIGHT);
 	m_rectUpperDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView UpperDrawRgn", m_rectUpperDraw);
 	m_rectUpperDraw.NormalizeRect();
 	m_rgnUpperDraw.CreateRectRgn(m_rectUpperDraw);
 	//-------------- Edit Region -----
 	y += UPPER_DRAW_RECT_HEIGHT;
-	ptRectUL = CPoint(FIRST_EVENT_FROM_CLIENT_X, y);
-	szRect = CSize(clientRect.Width() - FIRST_EVENT_FROM_CLIENT_X, EDIT_RECT_HEIGHT);
+	ptRectUL = CPoint(EVENT_WIDTH, y);
+	szRect = CSize(clientRect.Width() - EVENT_WIDTH, EDIT_RECT_HEIGHT);
 	m_rectEdit = CRect(ptRectUL, szRect);
 	PrintRec("ChildView EditRgn", m_rectEdit);
 	m_rectEdit.NormalizeRect();
 	m_rgnEdit.CreateRectRgn(m_rectEdit);
 	//------------- Lower Draw Region -------------
 	y += EVENT_HEIGHT;
-	ptRectUL = CPoint(FIRST_EVENT_FROM_CLIENT_X, y);
-	szRect = CSize(clientRect.Width() - FIRST_EVENT_FROM_CLIENT_X, LOWER_DRAW_RECT_HEIGHT);
+	ptRectUL = CPoint(EVENT_WIDTH, y);
+	szRect = CSize(clientRect.Width() - EVENT_WIDTH, LOWER_DRAW_RECT_HEIGHT);
 	m_rectLowerDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView LowerDrawRgn", m_rectLowerDraw);
 	m_rectLowerDraw.NormalizeRect();
 	m_rgnLowerDraw.CreateRectRgn(m_rectLowerDraw);
 	//-------------- Lower Selection Bar -----
 	y += LOWER_DRAW_RECT_HEIGHT;
-	ptRectUL = CPoint(FIRST_EVENT_FROM_CLIENT_X, y);
+	ptRectUL = CPoint(EVENT_WIDTH, y);
 	szRect = CSize(szRect.cx, LOWER_SELECTION_BAR_HEIGHT);
 	m_LowerSelRect = CRect(ptRectUL, szRect);
 	m_LowerSelRect.NormalizeRect();
@@ -2748,7 +2750,7 @@ void CChildViewStaff::OnInitialUpdate()
 
 	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::KEYSIG, (int)EventObjectSignatureTypes::EVENT_LOUDNESS_KEYSIG);
 	if(pKS)
-		m_Combo_KeySig.SetCurSel(pKS->GetKeySignature() - 1);
+		m_Combo_KeySig.SetCurSel((int)pKS->GetKeySignature() - 1);
 
 	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::TIMESIG,  (int)EventObjectSignatureTypes::EVENT_TEMPO_TIMESIG);
 	if(pTS)
@@ -2794,23 +2796,28 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 		DCm.CreateCompatibleDC(pDC);
 		DCmEdit.CreateCompatibleDC(pDC);
 		// Create a bitmap for the memory DC
-		bm.CreateCompatibleBitmap(pDC, rectClient.Width(), rectClient.Height());
+		bm.CreateCompatibleBitmap(
+			pDC, 
+			rectClient.Width(), 
+			rectClient.Height()
+		);
 		bmEdit.CreateCompatibleBitmap(
 			pDC, 
-			EVENT_WIDTH * m_MaxEvents,
+			(EVENT_WIDTH + 1) * m_MaxEvents,
 			EVENT_HEIGHT
 		);
 		pOldBM = (CMyBitmap*)DCm.SelectObject(&bm);
 		pOldBMEdit = (CMyBitmap*)DCmEdit.SelectObject(&bmEdit);
 		// Create brushes
-		brushBackGround.CreateSolidBrush(GetColorPalette()->color_BackGround);
+		brushBackGround.CreateSolidBrush(RGB(255,255,255));
+		//brushBackGround.CreateSolidBrush(GetColorPalette()->color_BackGround);
 		brushLastEventBKG.CreateSolidBrush(GetColorPalette()->color_LastEventBKG);
 		brushUpperSelBar.CreateSolidBrush(GetColorPalette()->color_UpperSelBar);
 		brushLowerSelBar.CreateSolidBrush(GetColorPalette()->color_LowerSelBar);
 		// Fill in background rectangles
 		DCm.FillRect(&rectClient, &brushBackGround);
-		DCm.FillRect(&m_LowerSelRect, &brushLowerSelBar);
-		DCm.FillRect(&m_UpperSelRect, &brushUpperSelBar);
+		//DCm.FillRect(&m_LowerSelRect, &brushLowerSelBar);
+		//DCm.FillRect(&m_UpperSelRect, &brushUpperSelBar);
 		//CRect rectLastEvent;
 		//GetEventRect(m_MaxEvents, rectLastEvent);
 		//DCm.FillRect(&rectLastEvent, &brushLastEventBKG);
@@ -2834,7 +2841,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 		}
 		// Draw the view controls
 		DCm.BitBlt(
-			FIRST_EVENT_FROM_CLIENT_X, 
+			0, 
 			CLIENT_TO_TOP_UPPER_SELECT_RECT,
 			EVENT_WIDTH * m_MaxEvents, 
 			EVENT_HEIGHT, 

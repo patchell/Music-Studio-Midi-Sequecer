@@ -8,9 +8,10 @@ constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
 constexpr auto MEASUREBAR_NUMBER_HEIGHT = 14;
 constexpr auto MEASUREBAR_NUMBER_OFFSET_Y = 12;
 constexpr auto MEASUREBAR_NUMBER_OFFSET_X = 10;
+
 class CMsBar : public CMsObject
 {
-	static UINT LastBarNumber;
+	inline static UINT LastBarNumber = 0;
 	int m_BarNumber;	// Measure Bar Number
 public:
 	CMsBar();

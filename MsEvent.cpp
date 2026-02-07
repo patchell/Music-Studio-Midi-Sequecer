@@ -126,6 +126,8 @@ void CMsEvent::AddObject(CMsObject* pO)
 		case CMsObject::MsObjType::TIMESIG:
 		case CMsObject::MsObjType::TEMPO:
 		case CMsObject::MsObjType::LOUDNESS:
+		case CMsObject::MsObjType::TREBLE_CLEF:
+		case CMsObject::MsObjType::BASS_CLEF:
 			AddObjectAtEnd(pO);
 			break;
 		case CMsObject::MsObjType::PORTAMENTO_START:

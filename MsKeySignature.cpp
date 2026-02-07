@@ -9,11 +9,9 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMsKeySignature::CMsKeySignature():CMsObject()
+CMsKeySignature::CMsKeySignature():CMsObject(CMsObject::MsObjType::KEYSIG)
 {
-	m_ObjType = CMsObject::MsObjType::KEYSIG;
-	m_KeySignature = 0;
-	SetKeySigCorrection();
+	m_KeySignature = KeySigID::KS_ERROR;
 }
 
 CMsKeySignature::~CMsKeySignature()
@@ -21,7 +19,7 @@ CMsKeySignature::~CMsKeySignature()
 
 }
 
-bool CMsKeySignature::Create(CMsSong* pSong, CMsEvent* pEvent, UINT key)
+bool CMsKeySignature::Create(CMsSong* pSong, CMsEvent* pEvent, KeySigID key)
 {
 	m_KeySignature = key;
 	pSong->SetCurrentKeySignature(this);
@@ -170,6 +168,25 @@ DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mou
 	return DrawState;
 }
 
+bool CMsKeySignature::IsFlatKeySig()
+{
+	bool IsFlat = false;
+
+	switch (m_KeySignature)
+	{
+	case KeySigID::FMAJ:
+	case KeySigID::BbMAJ:
+	case KeySigID::EbMAJ:
+	case KeySigID::AbMAJ:
+	case KeySigID::DbMAJ:
+	case KeySigID::GbMAJ:
+	case KeySigID::CbMAJ:
+			IsFlat = true;
+			break;
+	}
+	return IsFlat;
+}
+
 void CMsKeySignature::Print(FILE *pO, int Indent)
 {
 	char* pIndentString = new char[256];
@@ -193,74 +210,75 @@ void CMsKeySignature::Draw(CDC *pDC)
 		color = RGB(0, 0, 0);
 	switch(m_KeySignature)
 	{
-		case MSFF_CMAJ:	///do nothing
+	case KeySigID::CMAJ:	///do nothing
 			break;
-		case MSFF_CSMAJ:	///seven shrps
+		case KeySigID::CsMAJ:	//seven sharps B sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC,color,X+24,NoteToPosition(MSFF_NOTE_B2));	//base staff
 			pSharp->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
 			[[fallthrough]];
-		case MSFF_FSMAJ:	///six sharps
+		case KeySigID::FsMAJ:	//six sharps E sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_E2+12));	//base staff
 			pSharp->Draw(pDC, color,X+20,NoteToPosition(MSFF_NOTE_E2+24));	//trebble staff
 			[[fallthrough]];
-		case MSFF_BMAJ:	///five sharps
+		case KeySigID::BMAJ:	//five sharps A sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//base staff
 			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
 			[[fallthrough]];
-		case MSFF_EMAJ:	///four D sharps
+		case KeySigID::EMAJ:	//four D sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X +20,NoteToPosition(MSFF_NOTE_D2+12));	//base staff
 			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
 			[[fallthrough]];
-		case MSFF_AMAJ:	//three G sharps
+		case KeySigID::AMAJ:	//three G sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_G2+12));	//base staff
 			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_G2+36));		//trebble staff
 			[[fallthrough]];
-		case MSFF_DMAJ:	//two C sharps
+		case KeySigID::DMAJ:	//two C sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+12));	//base staff
 			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
 			[[fallthrough]]; 
-		case MSFF_GMAJ:	///one F sharp
+		case KeySigID::GMAJ:	///one F sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_F2+12));	//base staff
 			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
 			break;
-		case MSFF_CFMAJ:	//seven flats
+			// Key signatures with flats.  Notice that the order of flats is the opposite of sharps, so the first flat is B flat, then E flat, etc.
+		case KeySigID::CbMAJ:	//seven flats F flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+12));	//bass staff
 			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
 			[[fallthrough]];
-		case MSFF_GFMAJ:	//six flats
+		case KeySigID::GbMAJ:	//six flats C flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
 			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
 			[[fallthrough]];
-		case MSFF_DFMAJ:	//five flats
+		case KeySigID::DbMAJ:	//five flats G flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2));	//bass staff
 			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
 			[[fallthrough]];
-		case MSFF_AFMAJ:	//four flats
+		case KeySigID::AbMAJ:	//four flats D flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X +16,NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
 			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
 			[[fallthrough]];
-		case MSFF_EFMAJ:	//three flats
+		case KeySigID::EbMAJ:	//three flats A flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//bass staff
 			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
 			[[fallthrough]];
-		case MSFF_BFMAJ:	//two flats
+		case KeySigID::BbMAJ:	//two flats E flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
 			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
 			[[fallthrough]];
-		case MSFF_FMAJ:	//one flat
+		case KeySigID::FMAJ:	//one flat B flat
 			if (!pFlat) pFlat = new CMsFlat;
 			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2));	//bass staff
 			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
@@ -280,112 +298,37 @@ void CMsKeySignature::ObjectRectangle(CRect& rect, UINT Event)
 	rect.SetRect(0, 0, 0, 0);
 }
 
-void CMsKeySignature::SetKeySigCorrection(void)
+int CMsKeySignature::GetKeySigCorrection(int Note)
 {
-	int KeySig = m_KeySignature;
-	int i;
-	for(i=0;i<12;++i)
-	{
-		m_KeySigCorrection[i] = 0;
-		//---------------------------------
-		// You might be wondering just
-		// how exactly the following switch
-		// statement works.  Except for
-		// C major (MSFF_CMAJ), all of the
-		// cases do not have a break.  For
-		// example, C# major (MSFF_CSMAJ)
-		// will go through all of the cases
-		switch(KeySig)
-		{
-			case MSFF_CMAJ:
-				break;
-			case MSFF_CSMAJ:
-				if(i == MSFF_NOTE_C)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_FSMAJ:
-				if(i == MSFF_NOTE_F)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_BMAJ:
-				if(i == MSFF_NOTE_A)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_EMAJ:
-				if(i == MSFF_NOTE_D)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_AMAJ:
-				if(i == MSFF_NOTE_G)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_DMAJ:	//two sharps
-				if(i == MSFF_NOTE_F)
-					m_KeySigCorrection[i] = 1;
-				[[fallthrough]];
-			case MSFF_GMAJ:	//one sharp
-				if(i == MSFF_NOTE_C)
-					m_KeySigCorrection[i] = 1;
-				break;
-			case MSFF_CFMAJ:
-				if(i == MSFF_NOTE_F)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_GFMAJ:
-				if(i == MSFF_NOTE_C)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_DFMAJ:
-				if(i == MSFF_NOTE_G)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_AFMAJ:
-				if(i == MSFF_NOTE_D)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_EFMAJ:
-				if(i == MSFF_NOTE_A)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_BFMAJ:
-				if(i == MSFF_NOTE_E)
-					m_KeySigCorrection[i] = -1;
-				[[fallthrough]];
-			case MSFF_FMAJ:
-				if(i == MSFF_NOTE_B)
-					m_KeySigCorrection[i] = -1;
-				break;
-		}
-	}
+	UINT n = Note % 12;
+	int rNoteCorection;
+
+	rNoteCorection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
+	return Note;
 }
 
-UINT CMsKeySignature::GetKeySigCorrection(UINT note, INT accidental)
+int CMsKeySignature::CorrectNoteByKeySig(int Note, int accidental)
 {
-	UINT n = note % 12;
-	switch(accidental)
+	switch (accidental)
 	{
-		case MSFF_ACCIDENTAL_INKEY:	//default
-			note += m_KeySigCorrection[n];
-			break;
-		case MSFF_ACCIDENTAL_NATURAL:
-			break;
-		case MSFF_ACCIDENTAL_SHARP:
-			note += 1;
-			break;
-		case MSFF_ACCIDENTAL_FLAT:
-			note -= 1;
-			break;
+	case MSFF_ACCIDENTAL_INKEY:	//default
+		Note += GetKeySigCorrection(Note);
+		break;
+	case MSFF_ACCIDENTAL_NATURAL:
+		break;
+	case MSFF_ACCIDENTAL_SHARP:
+		Note += 1;
+		break;
+	case MSFF_ACCIDENTAL_FLAT:
+		Note -= 1;
+		break;
 	}
-	return note;
+	return 0;
 }
 
 void CMsKeySignature::Copy(CMsObject* pSource)
 {
 	m_KeySignature = ((CMsKeySignature*)pSource)->m_KeySignature;
-	for(int i=0;i<12;++i)
-	{
-		m_KeySigCorrection[i] = ((CMsKeySignature*)pSource)->m_KeySigCorrection[i];
-	}
 	CMsObject::Copy(pSource);
 }
 
@@ -393,7 +336,7 @@ void CMsKeySignature::Save(FILE *pO)
 {
 	fputc(MSFF_TOKEN_KEY_SIGNATURE,pO);
 	fputc(0x01,pO);
-	fputc(m_KeySignature,pO);
+	fputc(int(m_KeySignature),pO);
 }
 
 int CMsKeySignature::NoteToPosition(int Note)

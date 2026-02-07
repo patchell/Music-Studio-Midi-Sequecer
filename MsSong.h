@@ -13,7 +13,20 @@ class CMsPlayerQueue;
 
 class CMsSong
 {
-public: enum class TickerState
+public: 
+	struct SongPlayerGlobals {
+		CMsKeySignature* m_pLastKeySignature = 0;
+		CMsTimeSignature* m_pLastTimeSignature = 0;
+		CMsTempo* m_pLastTempo;
+		CMsLoudness* m_pLastLoudness;
+		SongPlayerGlobals() {
+			m_pLastKeySignature = 0;
+			m_pLastTimeSignature = 0;
+			m_pLastTempo = 0;
+			m_pLastLoudness = 0;
+		}
+	};
+	enum class TickerState
 	{
 		START,
 		RUNNING,
@@ -36,6 +49,7 @@ private:
 	//--- Data for Song Editor View ----
 	CMsEvent* m_pEventListHead;
 	CMsEvent* m_pEventListTail;
+	CMsEvent* m_pCleffEvent;
 	int m_nMeasureBarCount;
 	int m_nTotalEvents;
 	//--------------------------------------
@@ -83,12 +97,10 @@ private:
 	//----------------------------------------
 	UINT m_MidiClockToggleFlag;
 	UINT m_TotalTicks;
-	CMsKeySignature* m_pLastKeySignature;
-	CMsTimeSignature* m_pLastTimeSignature;
-	CMsTempo* m_pLastTempo;
-	CMsLoudness* m_pLastLoudness;
 
 	CMsStack m_stackRepeat;
+
+	SongPlayerGlobals m_SongGlobals;
 	//--------------------------------------
 	// Parent Objects
 	//---------------------------------------
@@ -108,32 +120,32 @@ public:
 		return m_pChildView;
 	}
 	
-	CMsLoudness* GetCurrentLoudness() { 
-		return m_pLastLoudness; 
+	CMsLoudness* GetCurrentLoudness() const { 
+		return m_SongGlobals.m_pLastLoudness; 
 	}
 	void SetCurrentLoudness(CMsLoudness* pNewLoudness) {
-		m_pLastLoudness = pNewLoudness;
+		m_SongGlobals.m_pLastLoudness = pNewLoudness;
 	}
 	//------------- Tempo -------------------------
-	CMsTempo* GetCurrentTempo() {
-		return m_pLastTempo;
+	CMsTempo* GetCurrentTempo() const{
+		return m_SongGlobals.m_pLastTempo;
 	}
 	void SetCurrentTempo(CMsTempo* pNewTempo) {
-		m_pLastTempo = pNewTempo;
+		m_SongGlobals.m_pLastTempo = pNewTempo;
 	}
 	//----------Time Signature ---------------------
-	CMsTimeSignature* GetCurrentTimeSignature() {
-		return m_pLastTimeSignature;
+	CMsTimeSignature* GetCurrentTimeSignature() const {
+		return m_SongGlobals.m_pLastTimeSignature;
 	}
 	void SetCurrentTimeSignature(CMsTimeSignature* pNewTS) {
-		m_pLastTimeSignature = pNewTS;
+		m_SongGlobals.m_pLastTimeSignature = pNewTS;
 	}
 	//------------------ Key Signature ----------------
 	CMsKeySignature* GetCurrentKeySignature() {
-		return m_pLastKeySignature;
+		return m_SongGlobals.m_pLastKeySignature;
 	}
 	void SetCurrentKeySignature(CMsKeySignature* pNewKS) {
-		m_pLastKeySignature = pNewKS;
+		m_SongGlobals.m_pLastKeySignature = pNewKS;
 	}
 	//--------- Screen Management ---------------------
 	virtual void Draw(CDC* pDC, int event, int maxevent, CRect* pRect);

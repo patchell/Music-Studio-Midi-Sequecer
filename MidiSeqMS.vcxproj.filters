@@ -256,6 +256,12 @@
     <ClCompile Include="MsSongInfo.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MsBassCleff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MsTrebleCleff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -532,6 +538,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MusicStudioDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsBassCleff.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsTrebleCleff.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

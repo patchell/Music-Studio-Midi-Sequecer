@@ -85,6 +85,8 @@ public:
 		GLISSANDO_END,
 		CHORD,
 		CHORD_NOTE,
+		TREBLE_CLEF,
+		BASS_CLEF
 	};
 private:
 	struct ObjTypeStringItem {
@@ -117,6 +119,8 @@ private:
 		{ MsObjType::GLISSANDO_END,	"Glissando End" },
 		{ MsObjType::CHORD,			"Chord" },
 		{ MsObjType::CHORD_NOTE,	"Chord Note" },
+		{ MsObjType::TREBLE_CLEF,	"Treble Clef" },
+		{ MsObjType::BASS_CLEF,		"Bass Clef" },
 		{ MsObjType(-1),			nullptr  }
 	};
 	//---------------------------------

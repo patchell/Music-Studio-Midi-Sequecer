@@ -19,6 +19,7 @@ CMsSong::CMsSong()
 	m_nMeasureBarCount = 0;
 	m_pEventListHead = 0;
 	m_pEventListTail = 0;
+	m_pCleffEvent = 0;
 	m_nTotalEvents = 0;
 	m_pChildView = 0;
 	m_SongID = GETAPP->GetUniqueID();
@@ -28,10 +29,6 @@ CMsSong::CMsSong()
 	m_PlaySongTimerEnable = 0;
 	for(int i=0;i<16;++i)
 		m_Patches[i] = 0;
-	m_pLastLoudness = 0;
-	m_pLastKeySignature = 0;
-	m_pLastTimeSignature = 0;
-	m_pLastTempo = 0;
 	m_BufIndex = 0;
 	m_pFileBuffer = 0;
 	m_nFileBufferSize = 0;
@@ -152,7 +149,7 @@ int CMsSong::Parse(char *pSongData)
 	int i=0;
 	UINT Event=0;
 
-	UINT KeySig;
+	CMsKeySignature::KeySigID KeySig;
 	UINT Tempo;
 	UINT TimeSig;
 	UINT Loudness;
@@ -183,10 +180,10 @@ int CMsSong::Parse(char *pSongData)
 				pEv->SetEventIndex(Event++);
 				break;
 			case MSFF_TOKEN_KEY_SIGNATURE:
-				KeySig = ParserGetC();
-				if(KeySig != 1)
+				KeySig = (CMsKeySignature::KeySigID)ParserGetC();;
+				if(int(KeySig) != 1)
 					if (LogFile()) fprintf(LogFile(), "*********** ERROR: KeySig != 1 **************\n");
-				KeySig = ParserGetC();
+				KeySig = (CMsKeySignature::KeySigID)ParserGetC();
 				obj.pKey = new CMsKeySignature();
 				obj.pKey->Create(this,pEv,KeySig);
 				break;
@@ -289,36 +286,18 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 {
 	//------------------------------------
 	// Draw
-	// pDC........Devoce Context for the
+	// pDC........Device Context for the
 	//            Entire Area of the Event
 	//			  Chain to be drawn
 	//------------------------------------
 	int i = 0;
 	int MaxX = pRect->right;
 	CPen penStaffLins,*oldpen;
-	CMyBitmap bmEvent;
+	CMyBitmap bmEvent, *oldBM;
 	CDC memDCEvent;
 
 	penStaffLins.CreatePen(PS_SOLID,1, GetColorPalette()->color_StaffLines);
 	oldpen = pDC->SelectObject(&penStaffLins);
-	//-----------------------------
-	// draw clefs
-	//-----------------------------
-	CMyBitmap Treb,Bass, *oldBM;
-	CSize szBass, szTreb;
-
-	Treb.LoadBitmap(IDB_TREBLE_CLEFF);
-	Bass.LoadBitmap(IDB_BASS_CLEFF);
-	szTreb = Treb.GetBmDim();
-	szBass = Bass.GetBmDim();
-	CDC memDC;
-	memDC.CreateCompatibleDC(pDC);
-	oldBM = (CMyBitmap *)memDC.SelectObject(&Treb);
-	pDC->BitBlt(2, TREBLE_CLEF_OFFSET,szTreb.cx,szTreb.cy,&memDC,0,0,SRCAND);
-	memDC.SelectObject(&Bass);
-	pDC->BitBlt(2, BASS_CLEF_OFFSET,szBass.cx,szBass.cy,&memDC,0,0,SRCAND);
-	memDC.SelectObject(oldBM);
-	pDC->SelectObject(oldpen);
 	//-----------------------------
 	// create a memory DC for event
 	// drawing.
@@ -326,12 +305,30 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 	bmEvent.CreateCompatibleBitmap(pDC, EVENT_WIDTH, EVENT_HEIGHT);
 	memDCEvent.CreateCompatibleDC(pDC);
 	oldBM = (CMyBitmap*)memDCEvent.SelectObject(&bmEvent);
+	//-----------------------------
+	// draw clefs
+	//-----------------------------
+	m_pCleffEvent->Draw(&memDCEvent);
+	pDC->BitBlt(
+		0, 
+		0, 
+		EVENT_WIDTH,
+		EVENT_HEIGHT, 
+		&memDCEvent, 
+		0, 
+		0, 
+		SRCCOPY
+	);
+	//-----------------------------
+	// draw music objects onto
+	// music staff
+	//-----------------------------
 	CMsEvent *pEv = GetEventObject(StartEvent);
 	for(i=0;(i<maxevent+1) && pEv;++i,pEv = pEv->GetNext())
 	{
 		if(pEv)pEv->Draw(&memDCEvent);
 		pDC->BitBlt(
-			i * EVENT_WIDTH, 
+			(i + 1) * EVENT_WIDTH, 
 			0, 
 			EVENT_WIDTH,
 			EVENT_HEIGHT, 
@@ -1085,10 +1082,24 @@ bool CMsSong::Create(
 	CSize szTrackIconSize
 )
 {
+	CMsBassCleff* pBassCleff = new CMsBassCleff;
+	CMsTrebleCleff* pTrebleCleff = new CMsTrebleCleff;
+
+
 	m_pChildView = pCCV;
 	m_pPlayerObjectQueue = new CMsPlayerQueue;
 	m_pPlayerObjectQueue->Create(this);
 	m_pEventDirectory->Create(this);
+	//------------------------------
+	// Create the Cleff Event
+	//------------------------------
+	m_pCleffEvent = new CMsEvent;
+	m_pCleffEvent->Create(this, GetStaffChildView());
+	pBassCleff->Create(this, m_pCleffEvent);
+	pTrebleCleff->Create(this, m_pCleffEvent);
+	m_pCleffEvent->AddObject(pBassCleff);
+	m_pCleffEvent->AddObject(pTrebleCleff);
+
 	GetSongInfo()->Create(this, szTrackIconSize);
 	return true;
 }

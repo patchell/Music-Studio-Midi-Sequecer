@@ -4,6 +4,29 @@
 
 #pragma once
 
+constexpr auto NOTE_C4 = 60;	// MIDI note number for middle C
+constexpr auto NOTE_C2 = 36;	// MIDI note number for lowest note on staff
+constexpr auto NOTE_C6 = 84;	// MIDI note number for highest note on staff
+constexpr auto NOTE_C0 = 12;	// MIDI note number for C0
+
+//-------------------------------
+// Constants for drawing notes
+// on the music staff.
+//-------------------------------
+
+constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
+constexpr auto NOTE_HEAD_WIDTH = 10;
+constexpr auto NOTE_HEAD_HEIGHT = 8;
+constexpr auto NOTE_HEAD_RECT_P1_X = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - 2;
+constexpr auto NOTE_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
+constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_X = NOTE_STEM_OFFSET;
+constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
+constexpr auto NOTE_ACCIDENTAL_OFFSET = 8;
+
+
+constexpr auto HALF_REST_WIDTH = 8;
+constexpr auto HALF_REST_HEIGHT = 6;
+
 class CChildViewStaff;
 
 extern UINT OnLine[12];
@@ -338,6 +361,7 @@ private:
 	CMyBitmap* m_pRestBitmap;
 	bool m_BitmapFlag;
 	NoteData m_Data;
+	int m_NotePlayed;	// Note that was used in NoteON
 	//-------------------------------------
 	// Note data that concerns playing song
 	//--------------------------------------
@@ -360,12 +384,13 @@ public:
 	virtual bool DoesSomething() {
 		return false;
 	}
+	virtual void Draw(CDC* pDC);
 	UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
-	static char* NoteToString(char* pStr, int l, int Note);
+	char* NoteToString(char* pStr, int l);
 	void LoadRestBitmap(int Selection);
-	virtual void Draw(CDC* pDC);
+	//------ Note/Rest Drawing Utility Functions -----------------
 	void DrawNote(
 		CDC* pDC, 
 		int NoteY, 
@@ -421,11 +446,32 @@ public:
 		int NoteY, 
 		COLORREF Color
 	);
+
+	void DrawRest(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+
 	void DrawRestBitmap(
 		CDC* pDC, 
 		int notev, 
 		COLORREF color
 	);
+
+	void DrawHalfRest(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+
+	void DrawWholeRest(
+		CDC* pDC, 
+		int NoteY, 
+		COLORREF Color
+	);
+
+	//-------------------------------
 	virtual void Print(FILE* pO, int Indent);
 	virtual void Save(FILE* pO);
 	virtual void Copy(CMsNote* pNote);
@@ -643,7 +689,7 @@ public:
 		_T("B")
 	};
 
-	inline static const char* NoteAnsiLUT[12] = {
+	inline static const char* NoteAnsiLUTSharp[12] = {
 		"C",
 		"C#",
 		"D",
@@ -656,6 +702,21 @@ public:
 		"A",
 		"A#",
 		"B"
+	};
+
+	inline static const char* NoteAnsiLUTFlat[12] = {
+	"C",
+	"Db",
+	"D",
+	"Eb",
+	"E",
+	"F",
+	"Gb",
+	"G",
+	"Ab",
+	"A",
+	"Bb",
+	"B"
 	};
 
 	inline static int AccidentalLUT[4] = {
@@ -747,6 +808,6 @@ public:
 		{2, ExtraLinesLocation::AboveTreble}	//C7
 	};
 	//-------------------------------
-	static const char* GetNoteName(int note); 
+	const char* GetNoteName(int note); 
 };
 

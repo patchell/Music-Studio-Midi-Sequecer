@@ -193,6 +193,7 @@
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
     <ClInclude Include="DlgGlissandoProperties.h" />
+    <ClInclude Include="MsBassCleff.h" />
     <ClInclude Include="MsEventDirectorItem.h" />
     <ClInclude Include="MsEventDirectory.h" />
     <ClInclude Include="MsGlissandoEnd.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="MsPortamentoStart.h" />
     <ClInclude Include="MsSongInfo.h" />
     <ClInclude Include="MsStack.h" />
+    <ClInclude Include="MsTrebleCleff.h" />
     <ClInclude Include="MusicStudioDefines.h" />
     <ClInclude Include="MyEvent.h" />
     <ClInclude Include="MidiOutDevice.h" />
@@ -287,6 +289,7 @@
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
     <ClCompile Include="DlgGlissandoProperties.cpp" />
+    <ClCompile Include="MsBassCleff.cpp" />
     <ClCompile Include="MsEventDirectorItem.cpp" />
     <ClCompile Include="MsEventDirectory.cpp" />
     <ClCompile Include="MsGlissandoEnd.cpp" />
@@ -318,6 +321,7 @@
     <ClCompile Include="MsPortamentoStart.cpp" />
     <ClCompile Include="MsSongInfo.cpp" />
     <ClCompile Include="MsStack.cpp" />
+    <ClCompile Include="MsTrebleCleff.cpp" />
     <ClCompile Include="MusicStudioFileFormat.cpp" />
     <ClCompile Include="MyEvent.cpp" />
     <ClCompile Include="MidiOutDevice.cpp" />
