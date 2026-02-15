@@ -37,7 +37,7 @@ void CDlgMidiInfo::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_TITLE, m_Edit_SongTitle);
 	DDX_Control(pDX, IDC_STATIC_PATCH, m_Static_Patch);
 	DDX_Control(pDX, IDC_STATIC_PATCHVALUE, m_Static_PatchValue);
-	DDX_Control(pDX, IDC_STATIC_RANGE, m_Staticf_Range);
+	DDX_Control(pDX, IDC_STATIC_RANGE, m_Static_Range);
 	DDX_Control(pDX, IDC_STATIC_RANGEVALUE, m_Static_RangeValue);
 	DDX_Control(pDX, IDC_STATIC_CHANNEL_VALUE, m_Static_ChannelValue);
 }
@@ -61,7 +61,7 @@ BOOL CDlgMidiInfo::OnInitDialog()
 	m_SB_Patch_Selection.SetScrollRange(0, 127);
 	m_SB_Patch_Selection.SetWindowMessage(this, WM_MYSCROLLBAR_MSG);
 
-	m_SB_RangeSelection.SetScrollRange(1, 5);
+	m_SB_RangeSelection.SetScrollRange(0, 5);
 	m_SB_RangeSelection.SetWindowMessage(this, WM_MYSCROLLBAR_MSG);
 
 	m_SB__MidiChannel.SetScrollRange(1, 16);	// Logical channels are 1-16, but in MIDI they are 0-15. We will subtract 1 when setting the MIDI channel.
@@ -93,6 +93,10 @@ void CDlgMidiInfo::UpdateControls(int InstID)
 	m_SB_Patch_Selection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPatch());
 	csString.Format(_T("%S"), m_pSongInfo->GetTrack(InstID)->GetInstrumentName());
 	m_Static_Patch.SetWindowTextW(csString);
+
+	csString.Format(_T("%S"), CMsNote::RangeItemLUT[m_pSongInfo->GetTrack(InstID)->GetPitchRange()].m_pName);
+	m_Static_Range.SetWindowTextW(csString);
+
 	m_SB_RangeSelection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPitchRange());
 	m_SB__MidiChannel.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetChannel());
 	m_Combo_MidiDevice.SetCurSel(m_pSongInfo->GetTrack(InstID)->GetMidiOutDeviceID());
@@ -116,11 +120,15 @@ afx_msg LRESULT CDlgMidiInfo::OnMyscrollbarMsg(WPARAM ControlID, LPARAM Position
 		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetPatch(Position);
 		csString.Format(_T("%d"), Position);
 		m_Static_PatchValue.SetWindowTextW(csString);
+		csString.Format(_T("%S"), m_pSongInfo->GetTrack(m_CurrentInstrument)->GetInstrumentName());
+		m_Static_Patch.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_RANGE:
 		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetPitchRange(Position);
 		csString.Format(_T("%d"), Position);
 		m_Static_RangeValue.SetWindowTextW(csString);
+		csString.Format(_T("%S"), CMsNote::RangeItemLUT[m_pSongInfo->GetTrack(m_CurrentInstrument)->GetPitchRange()].m_pName);
+		m_Static_Range.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_CHANNEL:
 		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetChannel(Position);

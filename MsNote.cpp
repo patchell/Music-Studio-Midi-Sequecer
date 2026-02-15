@@ -48,10 +48,13 @@ char* CMsNote::NoteToString(char* pStr, int l)
 {
 	int Octave;
 	int Note = GetPitch();
-	
-	Note = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Note, GetAccidental());
+	int NotePitch = Note;
+	int MidiChannel = GetChannel();
+	int ls = 0;
+
 	Octave = Note / HALF_STEPS_PER_OCTAVE - 1;
-	sprintf_s(
+	Note = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Note, GetAccidental());
+	ls = sprintf_s(
 		pStr,
 		l,
 		"%s%d [%d]",
@@ -59,6 +62,18 @@ char* CMsNote::NoteToString(char* pStr, int l)
 		Octave,
 		Note
 	);
+	if(MidiChannel == 10)	// is percusion channel?
+	{
+		NotePitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(NotePitch, GetAccidental());
+		NotePitch += CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
+		//Drum note
+		sprintf_s(
+			pStr + ls,
+			l - ls,
+			" (Drum: %s)",
+			CMidi::GeneralMidiPercusionNote(NotePitch)
+		);
+	}
 	return pStr;
 }
 
@@ -342,10 +357,12 @@ void CMsNote::DrawNoteHead(
 
 void CMsNote::DrawNoteLines(CDC* pDC, int NoteY, COLORREF Color)
 {
-	int NeedsALine = NeedsLine();
+	ExtraLinesLocation Location;
+	int NeedsALine = NeedsLine(Location);
 	int y = 0;
 	CPen penLines, *penOld = 0;
 	char* pStr = new char[256];
+
 	//if(LogFile())
 	//	fprintf(LogFile(), "\t\tCMsNote::DrawNoteLines: Note=%s NeedsALine=%d\n", 
 	//		NoteToString(pStr, 256),
@@ -356,26 +373,41 @@ void CMsNote::DrawNoteLines(CDC* pDC, int NoteY, COLORREF Color)
 		penLines.CreatePen(PS_SOLID, 1, Color);
 		penOld = pDC->SelectObject(&penLines);
 		int notev = NoteToPosition(GetPitch());
-		for (int i = 0; i < NeedsALine; ++i)
+		int lineEnd = (EVENT_WIDTH + 10) / 2;
+		int x = NOTE_STEM_OFFSET;
+		switch (Location)
 		{
-			int lineEnd = (EVENT_WIDTH + 10) / 2;
-			int x = NOTE_STEM_OFFSET;
-			if (IsOnLine())
-				y = NoteY + i * 8;
-			else
-				y = NoteY + 4 + i * 8;
-			pDC->MoveTo(x - lineEnd, y);
-			pDC->LineTo(x + lineEnd, y);
+		case ExtraLinesLocation::AboveTreble:
+			switch (NeedsALine)
+			{
+			case 2:
+				pDC->MoveTo(x - lineEnd, NOTE_POS_C6);
+				pDC->LineTo(x + lineEnd, NOTE_POS_C6);
+				[[fallthrough]];
+			case 1:
+				pDC->MoveTo(x - lineEnd, NOTE_POS_A5);
+				pDC->LineTo(x + lineEnd, NOTE_POS_A5);
+				break;
+			}
+			break;
+		case ExtraLinesLocation::BelowBass:
+			switch (NeedsALine)
+			{
+			case 2:
+				pDC->MoveTo(x - lineEnd, NOTE_POS_C2);
+				pDC->LineTo(x + lineEnd, NOTE_POS_C2);
+				[[fallthrough]];
+			case 1:
+				pDC->MoveTo(x - lineEnd, NOTE_POS_E2);
+				pDC->LineTo(x + lineEnd, NOTE_POS_E2);
+				break;
+			}
+			break;
+		case ExtraLinesLocation::MiddleC:
+			pDC->MoveTo(x - lineEnd, NOTE_POS_C4);
+			pDC->LineTo(x + lineEnd, NOTE_POS_C4);
+			break;
 		}
-		pDC->SelectObject(penOld);
-	}
-	else if (NeedsALine == 0)
-	{
-		// no extra lines needed
-	}
-	else
-	{
-		// should not happen
 	}
 	if (pStr) delete[] pStr;
 }
@@ -606,6 +638,7 @@ void CMsNote::DrawHalfRest(CDC* pDC, int NoteY, COLORREF Color)
 {
 	NoteY += 4;
 	CRect rectRest;
+	ExtraLinesLocation Location;
 
 	rectRest.SetRect(
 		0,
@@ -613,7 +646,7 @@ void CMsNote::DrawHalfRest(CDC* pDC, int NoteY, COLORREF Color)
 		HALF_REST_WIDTH,
 		NoteY - HALF_REST_HEIGHT
 	);
-	if (NeedsLine())
+	if (NeedsLine(Location))
 	{
 		pDC->MoveTo(EVENT_WIDTH  - 2, NoteY);
 		pDC->LineTo(EVENT_WIDTH + 10, NoteY);
@@ -633,6 +666,7 @@ void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
 	// up against the line.
 	//----------------------------------
 	CRect rectRest;
+	ExtraLinesLocation Location;
 	NoteY += 5;
 	;
 	rectRest.SetRect(
@@ -642,7 +676,7 @@ void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
 		NoteY + 6
 	);
 	rectRest.NormalizeRect();
-	if (NeedsLine())
+	if (NeedsLine(Location))
 	{
 		pDC->MoveTo(EVENT_WIDTH - 2, NoteY);
 		pDC->LineTo(EVENT_WIDTH  + 10, NoteY);
@@ -652,23 +686,20 @@ void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
 
 //-----------------------------------------------------
 
-int CMsNote::NeedsLine()
+int CMsNote::NeedsLine(ExtraLinesLocation& Location)
 {
 	//-------------------------
 	// Middle C is 0x3C
 	//-------------------------
 	int LinesNeeded = 0;
-	int pitch = GetPitch();
-	int NotePosition = NoteToPosition(pitch);
+	int Pitch = GetPitch();
+	int TestPitch = 0;
 
-	if (NotePosition >= 0 && NotePosition <= 49)
-	{
-		LinesNeeded = LinesNeededLUT[NotePosition].m_Lines;
-	}
-	else
-	{
-		LinesNeeded = -1;	// error 
-	}
+	Pitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Pitch, GetAccidental());
+	Pitch -= NOTE_C2;	// Normalize to C2 = 0
+	TestPitch = NOTE_C4 - NOTE_C2;	// Middle C normalized to 0
+	LinesNeeded = LinesNeededLUT[Pitch].m_Lines;
+	Location = LinesNeededLUT[Pitch].m_Location;
 	return LinesNeeded;
 }
 

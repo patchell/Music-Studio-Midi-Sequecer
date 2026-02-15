@@ -17,7 +17,7 @@ class CDlgMidiInfo : public CDialogEx
 	CStatic m_Static_PatchValue;
 
 	CMyScrollBar m_SB_RangeSelection;
-	CStatic m_Staticf_Range;
+	CStatic m_Static_Range;
 	CStatic m_Static_RangeValue;
 
 	CMyScrollBar m_SB__MidiChannel;

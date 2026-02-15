@@ -9,6 +9,11 @@ constexpr auto NOTE_C2 = 36;	// MIDI note number for lowest note on staff
 constexpr auto NOTE_C6 = 84;	// MIDI note number for highest note on staff
 constexpr auto NOTE_C0 = 12;	// MIDI note number for C0
 
+constexpr auto NOTE_POS_C6 = 8 + UPPER_DRAW_RECT_HEIGHT;
+constexpr auto NOTE_POS_A5 = STAVE_LINE_SPACING + NOTE_POS_C6;
+constexpr auto NOTE_POS_E2 = STAVE_LINE_SPACING * (5 + 2 + 5) + NOTE_POS_A5;
+constexpr auto NOTE_POS_C2 = STAVE_LINE_SPACING + NOTE_POS_E2;
+constexpr auto NOTE_POS_C4 = STAVE_LINE_SPACING * 6 + NOTE_POS_A5;
 //-------------------------------
 // Constants for drawing notes
 // on the music staff.
@@ -305,6 +310,20 @@ public:
 		24 
 	};
 
+	struct RangeItem {
+		int m_RangeID;
+		const char* m_pName;
+	};
+
+	inline static RangeItem RangeItemLUT[6] = {
+		{ -36, "C-1 -> C3" },
+		{ -24, "C0 -> C4" },
+		{ -12, "C1 -> C5" },
+		{ 0, "C2 -> C6" },
+		{ 12, "C3 -> C7" },
+		{ 24, "C4 -> C8" }
+	};
+
 	struct DUR {
 		NoteShape NoteShapeIndex;
 		UINT Dotted;
@@ -564,7 +583,7 @@ public:
 	bool IsDuplicate();
 	int NeedsFlags(void);
 	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem == NoteStem::Stem ? true : false; }
-	int NeedsLine(void);
+	int NeedsLine(ExtraLinesLocation& Location);
 	//----------------
 	// Send to Midi
 	//---------------
@@ -762,10 +781,22 @@ public:
 	};
 
 	inline static NeedsLinesItem LinesNeededLUT[49] = {
-		{2, ExtraLinesLocation::BelowBass}, //C3
-		{2, ExtraLinesLocation::BelowBass},	//C#3
-		{1, ExtraLinesLocation::BelowBass},	//D3
-		{1, ExtraLinesLocation::BelowBass},	//D#3
+		{2, ExtraLinesLocation::BelowBass}, //C2
+		{2, ExtraLinesLocation::BelowBass},	//C#2
+		{1, ExtraLinesLocation::BelowBass},	//D2
+		{1, ExtraLinesLocation::BelowBass},	//D#2
+		{1, ExtraLinesLocation::BelowBass},	//E2
+		{0, ExtraLinesLocation::NotNeeded},	//F2
+		{0, ExtraLinesLocation::NotNeeded},	//F#2
+		{0, ExtraLinesLocation::NotNeeded},	//G2
+		{0, ExtraLinesLocation::NotNeeded},	//G#2
+		{0, ExtraLinesLocation::NotNeeded},	//A2
+		{0, ExtraLinesLocation::NotNeeded},	//A#2
+		{0, ExtraLinesLocation::NotNeeded},	//B2
+		{0, ExtraLinesLocation::NotNeeded},	//C3
+		{0, ExtraLinesLocation::NotNeeded},	//C#3
+		{0, ExtraLinesLocation::NotNeeded},	//D3
+		{0, ExtraLinesLocation::NotNeeded},	//D#3
 		{0, ExtraLinesLocation::NotNeeded},	//E3
 		{0, ExtraLinesLocation::NotNeeded},	//F3
 		{0, ExtraLinesLocation::NotNeeded},	//F#3
@@ -774,7 +805,7 @@ public:
 		{0, ExtraLinesLocation::NotNeeded},	//A3
 		{0, ExtraLinesLocation::NotNeeded},	//A#3
 		{0, ExtraLinesLocation::NotNeeded},	//B3
-		{0, ExtraLinesLocation::NotNeeded},	//C4
+		{1, ExtraLinesLocation::MiddleC},	//C4
 		{0, ExtraLinesLocation::NotNeeded},	//C#4
 		{0, ExtraLinesLocation::NotNeeded},	//D4
 		{0, ExtraLinesLocation::NotNeeded},	//D#4
@@ -784,33 +815,21 @@ public:
 		{0, ExtraLinesLocation::NotNeeded},	//G4
 		{0, ExtraLinesLocation::NotNeeded},	//G#4
 		{0, ExtraLinesLocation::NotNeeded},	//A4
-		{0, ExtraLinesLocation::NotNeeded},	//A#4
-		{0, ExtraLinesLocation::NotNeeded},	//B4
-		{1, ExtraLinesLocation::MiddleC},	//C5
-		{0, ExtraLinesLocation::NotNeeded},	//C#5
-		{0, ExtraLinesLocation::NotNeeded},	//D5
-		{0, ExtraLinesLocation::NotNeeded},	//D#5
-		{0, ExtraLinesLocation::NotNeeded},	//E5
-		{0, ExtraLinesLocation::NotNeeded},	//F5
-		{0, ExtraLinesLocation::NotNeeded},	//F#5
-		{0, ExtraLinesLocation::NotNeeded},	//G5
-		{0, ExtraLinesLocation::NotNeeded},	//G#5
-		{0, ExtraLinesLocation::NotNeeded},	//A5
-		{0, ExtraLinesLocation::NotNeeded},  //A#5
-		{0, ExtraLinesLocation::NotNeeded},  //B5
-		{0, ExtraLinesLocation::NotNeeded},  //C6
-		{0, ExtraLinesLocation::NotNeeded},  //C#6
-		{0, ExtraLinesLocation::NotNeeded},  //D6
-		{0, ExtraLinesLocation::NotNeeded},  //D#6
-		{0, ExtraLinesLocation::NotNeeded},  //E6
-		{0, ExtraLinesLocation::NotNeeded},  //F6
-		{0, ExtraLinesLocation::NotNeeded},  //F#6
-		{0, ExtraLinesLocation::NotNeeded},  //G6
-		{0, ExtraLinesLocation::NotNeeded},  //G#6
-		{1, ExtraLinesLocation::AboveTreble},  //A6
-		{1, ExtraLinesLocation::AboveTreble},  //A#6
-		{1, ExtraLinesLocation::AboveTreble},  //B6,
-		{2, ExtraLinesLocation::AboveTreble}	//C7
+		{0, ExtraLinesLocation::NotNeeded},  //A#4
+		{0, ExtraLinesLocation::NotNeeded},  //B4
+		{0, ExtraLinesLocation::NotNeeded},  //C5
+		{0, ExtraLinesLocation::NotNeeded},  //C#5
+		{0, ExtraLinesLocation::NotNeeded},  //D5
+		{0, ExtraLinesLocation::NotNeeded},  //D#5
+		{0, ExtraLinesLocation::NotNeeded},  //E5
+		{0, ExtraLinesLocation::NotNeeded},  //F5
+		{0, ExtraLinesLocation::NotNeeded},  //F#5
+		{0, ExtraLinesLocation::NotNeeded},  //G5
+		{0, ExtraLinesLocation::NotNeeded},  //G#5
+		{1, ExtraLinesLocation::AboveTreble},  //A5
+		{1, ExtraLinesLocation::AboveTreble},  //A#5
+		{1, ExtraLinesLocation::AboveTreble},  //B5
+		{2, ExtraLinesLocation::AboveTreble}	//C6
 	};
 	//-------------------------------
 	const char* GetNoteName(); 
