@@ -1,81 +1,51 @@
 #include "pch.h"
 
 
-CMsTrackSettings  CMsTrack::Settings[16];
-
-
 void CMsTrack::GetDefaultTrackSettings(int TrackNumber, int MidiOutDviceID)
 {
 	m_MidiChannel = DefaultMidiChannel[TrackNumber];
-	m_PatchNumber = DefaultPatch[TrackNumber];
-	strncpy_s(m_InstrumentName, sizeof(m_InstrumentName), GenMidiPatchNames[m_PatchNumber], _TRUNCATE);
+	m_PatchNumber = (int) DefaultPatch[TrackNumber];
+	strncpy_s(m_InstrumentName, sizeof(m_InstrumentName), CMidi::GenMidiPatchNames[m_PatchNumber], _TRUNCATE);
 	m_PitchRange = DefaultPitchRange[TrackNumber];
 	m_Color = DefaultColors[TrackNumber];
 	m_TextColor = DefaultTextColors[TrackNumber];
 	m_MidiDeviceID = MidiOutDviceID;
 }
 
-void CMsTrack::GetTrackSettings(int TrackNumber)
+void CMsTrack::GetColorSettings()
 {
 	CString s;
 
-	s.Format(_T("COLOR_%d"), TrackNumber);
-	CMsTrack::Settings[TrackNumber].m_Color = GETAPP->GetProfileIntW(
-		_T("MsTrack"),
+	s.Format(_T("COLOR_%d"), m_Number);
+	m_Color = GETAPP->GetProfileIntW(
+		_T("MsTrack"), 
 		s,
-		(INT)DefaultColors[TrackNumber]
+		(INT)DefaultColors[m_Number]
 	);
-	s.Format(_T("TEXT_COLOR_%d"), TrackNumber);
-	CMsTrack::Settings[TrackNumber].m_TextColor = GETAPP->GetProfileIntW(
-		_T("MsTrack"),
-		s,
-		DefaultTextColors[TrackNumber]
+	s.Format(_T("TEXT_COLOR_%d"), m_Number);
+	m_TextColor = GETAPP->GetProfileIntW(
+		_T("MsTrack"), 
+		s, 
+		DefaultTextColors[m_Number]
 	);
 }
 
-void CMsTrack::GetSettings()
+void CMsTrack::SaveColorSettings()
 {
-	int i;
 	CString s;
 
-	for (i = 1; i < 16; ++i)
-	{
-		s.Format(_T("COLOR_%d"), i);
-		CMsTrack::Settings[i].m_Color = GETAPP->GetProfileIntW(
-			_T("MsTrack"), 
-			s,
-			(INT)DefaultColors[i]
-		);
-		s.Format(_T("TEXT_COLOR_%d"), i);
-		CMsTrack::Settings[i].m_TextColor = GETAPP->GetProfileIntW(
-			_T("MsTrack"), 
-			s, 
-			DefaultTextColors[i]
-		);
-	}
-}
-
-void CMsTrack::SaveSettings()
-{
-	int i;
-	CString s;
-
-	for (i = 1; i < 16; ++i)
-	{
-		s.Format(_T("COLOR_%d"), i);
+	s.Format(_T("COLOR_%d"), m_Number);
+	GETAPP->WriteProfileInt(
+		_T("MsTrack"),
+		s,
+		m_Color
+	);
+	s.Format(_T("TEXT_COLOR_%d"), m_Number);
 		GETAPP->WriteProfileInt(
-			_T("MsTrack"),
-			s,
-			CMsTrack::Settings[i].m_Color
-		);
-		s.Format(_T("TEXT_COLOR_%d"), i);
-		 GETAPP->WriteProfileInt(
-			_T("MsTrack"),
-			s,
-			 CMsTrack::Settings[i].m_TextColor
-		);
-	}
-
+		_T("MsTrack"),
+		s,
+		m_TextColor
+	);
 }
 
 bool CMsTrack::Create(
@@ -93,10 +63,8 @@ bool CMsTrack::Create(
 	m_PitchRange = Range;
 	m_MidiChannel = MidiChannel;
 	m_PatchNumber = Patch;
-	m_Color = CMsTrack::Settings[TrackID].m_Color;
-	m_TextColor = CMsTrack::Settings[TrackID].m_TextColor;
 	m_Number = TrackID;
-
+	GetColorSettings();
 	m_ptUpperLeft = CPoint(0, 0);
 	m_szDimensions = szTrackIconSize;
 	m_bmTrack.CreateBitmap(
@@ -189,6 +157,7 @@ bool CMsTrack::Create(
 	CDC* pDC = pWin->GetDC();
 	Draw(pDC);
 	pWin->ReleaseDC(pDC);
+	GetColorSettings();
 	return true;
 }
 
@@ -206,7 +175,7 @@ void CMsTrack::Draw(CDC* pDC)
 	CBrush brush, *pOldBrush;
 
 	dc.CreateCompatibleDC(pDC);
-	brush.CreateSolidBrush(CMsTrack::Settings[m_Number].m_Color);
+	brush.CreateSolidBrush(m_Color);
 	pOldBrush = dc.SelectObject(&brush);
 	pOldBM = (CMyBitmap *)dc.SelectObject(&m_bmTrack);
 	dc.SetTextColor(m_TextColor);

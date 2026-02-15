@@ -64,7 +64,7 @@ BOOL CDlgMidiInfo::OnInitDialog()
 	m_SB_RangeSelection.SetScrollRange(1, 5);
 	m_SB_RangeSelection.SetWindowMessage(this, WM_MYSCROLLBAR_MSG);
 
-	m_SB__MidiChannel.SetScrollRange(1, 16);
+	m_SB__MidiChannel.SetScrollRange(1, 16);	// Logical channels are 1-16, but in MIDI they are 0-15. We will subtract 1 when setting the MIDI channel.
 	m_SB__MidiChannel.SetWindowMessage(this, WM_MYSCROLLBAR_MSG);
 
 	m_SB_TrackSelection.SetScrollRange(1, 15);
@@ -86,12 +86,15 @@ BOOL CDlgMidiInfo::OnInitDialog()
 void CDlgMidiInfo::UpdateControls(int InstID)
 {
 	char* s = new char[256];
+	CString csString;
 
 	m_Static_InstBitmap.SetColor(m_pSongInfo->GetTrack(InstID)->GetColor());
 
 	m_SB_Patch_Selection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPatch());
+	csString.Format(_T("%S"), m_pSongInfo->GetTrack(InstID)->GetInstrumentName());
+	m_Static_Patch.SetWindowTextW(csString);
 	m_SB_RangeSelection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPitchRange());
-	m_SB__MidiChannel.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetChannel() + 1);
+	m_SB__MidiChannel.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetChannel());
 	m_Combo_MidiDevice.SetCurSel(m_pSongInfo->GetTrack(InstID)->GetMidiOutDeviceID());
 	delete[] s;
 }
@@ -120,7 +123,7 @@ afx_msg LRESULT CDlgMidiInfo::OnMyscrollbarMsg(WPARAM ControlID, LPARAM Position
 		m_Static_RangeValue.SetWindowTextW(csString);
 		break;
 	case IDC_HSB_CHANNEL:
-		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetChannel(Position - 1);
+		m_pSongInfo->GetTrack(m_CurrentInstrument)->SetChannel(Position);
 		csString.Format(_T("%d"), Position);
 		m_Static_ChannelValue.SetWindowTextW(csString);
 		break;

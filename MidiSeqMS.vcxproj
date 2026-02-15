@@ -193,6 +193,7 @@
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
     <ClInclude Include="DlgGlissandoProperties.h" />
+    <ClInclude Include="Midi.h" />
     <ClInclude Include="MsBassCleff.h" />
     <ClInclude Include="MsEventDirectorItem.h" />
     <ClInclude Include="MsEventDirectory.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
     <ClCompile Include="DlgGlissandoProperties.cpp" />
+    <ClCompile Include="Midi.cpp" />
     <ClCompile Include="MsBassCleff.cpp" />
     <ClCompile Include="MsEventDirectorItem.cpp" />
     <ClCompile Include="MsEventDirectory.cpp" />

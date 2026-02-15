@@ -106,6 +106,8 @@ BEGIN_MESSAGE_MAP(CChildViewStaff, CChildViewBase)
 	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_SAVE, &CChildViewStaff::OnUpdateMenuMsFileSave)
 	ON_COMMAND(MENU_MS_FILE_SAVE_as, &CChildViewStaff::OnMenuMsFileSaveAs)
 	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_SAVE_as, &CChildViewStaff::OnUpdateMenuMsFileSaveAs)
+	ON_COMMAND(ID_SETTINGS_TRACKSETTINIGS, &CChildViewStaff::OnSettingsTracksettinigs)
+	ON_UPDATE_COMMAND_UI(ID_SETTINGS_TRACKSETTINIGS, &CChildViewStaff::OnUpdateSettingsTracksettinigs)
 END_MESSAGE_MAP()
 
 // CChildViewStaff message handlers
@@ -1083,7 +1085,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 			int Patch = GetTrackInfo(Track)->GetPatch();
 			int DeviceID = GetTrackInfo(Track)->GetMidiOutDeviceID();
 			int Channel = GetTrackInfo(Track)->GetChannel();
-			GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(Channel, Patch);
+			GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(Channel, Patch);	// change the patch on the currently selected midi out device and channel to match the patch for the track that is currently selected for note input
 		}
 	}
 	break;
@@ -1947,7 +1949,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 	Vel = VEL(wMsg);
 	switch (Cmd)
 	{
-	case (int) MidiChannelCmds::NOTEOFF:		//OnShortmidimsg
+	case (int) CMidi::MidiChannelCmds::NOTEOFF:		//OnShortmidimsg
 		//--------------------------------
 		// what we are going to here is
 		// keep track of the notes that
@@ -2035,7 +2037,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 		}
 		Invalidate();
 		break;
-	case (int)MidiChannelCmds::NOTEON:		//OnShortmidimsg
+	case (int)CMidi::MidiChannelCmds::NOTEON:		//OnShortmidimsg
 		if (Chan == 0)	//keyboard channel
 		{
 			//--------------------------------
@@ -2170,9 +2172,9 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 			}
 		}
 		break;
-	case (int)MidiChannelCmds::POLYPRESS:
+	case (int)CMidi::MidiChannelCmds::POLYPRESS:
 		break;
-	case (int)MidiChannelCmds::CTRLCHNG:
+	case (int)CMidi::MidiChannelCmds::CTRLCHNG:
 		if (Chan == 0)	//Midi channel 1
 		{
 			switch (Note)	//note is the controller number
@@ -2297,19 +2299,19 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 			}
 		}	//end of if(chan == 0)
 		break;
-	case (int)MidiChannelCmds::CHNLPRESS:
+	case (int)CMidi::MidiChannelCmds::CHNLPRESS:
 		break;
-	case (int)MidiChannelCmds::PITCHBEND:
+	case (int)CMidi::MidiChannelCmds::PITCHBEND:
 		break;
-	case (int)MidiChannelCmds::PGMCHANGE:
+	case (int)CMidi::MidiChannelCmds::PGMCHANGE:
 		break;
-	case (int)MidiRealTimeMsgs::CLOCK:
+	case (int)CMidi::MidiRealTimeMsgs::CLOCK:
 		break;
-	case (int)MidiRealTimeMsgs::START:
+	case (int)CMidi::MidiRealTimeMsgs::START:
 		break;
-	case (int)MidiRealTimeMsgs::STOP:
+	case (int)CMidi::MidiRealTimeMsgs::STOP:
 		break;
-	case (int)MidiRealTimeMsgs::CONTINUE:
+	case (int)CMidi::MidiRealTimeMsgs::CONTINUE:
 		break;
 	}
 	return 0;
@@ -2905,7 +2907,7 @@ void CChildViewStaff::UpdateComboBoxes()
 	int Patch = GetTrackInfo(Track)->GetPatch();
 	int DeviceID = GetTrackInfo(Track)->GetMidiOutDeviceID();
 	int Channel = GetTrackInfo(Track)->GetChannel();
-	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(Channel, Patch);
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(Channel, Patch);	// Change patch
 	SetNoteDuration(CMsNote::NoteDurLut[m_Combo_NoteType.GetCurSel()]);
 }
 
@@ -3995,3 +3997,21 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	CWnd::OnMouseMove(nFlags, pointMouse);
 }
 */
+void CChildViewStaff::OnSettingsTracksettinigs()
+{
+	CDlgMidiInfo Dlg;
+
+	if (GetSong())
+	{
+		if (GetSong()->GetSongInfo())
+		{
+			Dlg.SetSongInfo(GetSong()->GetSongInfo());
+			Dlg.DoModal();
+		}
+	}
+}
+
+void CChildViewStaff::OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI)
+{
+	
+}

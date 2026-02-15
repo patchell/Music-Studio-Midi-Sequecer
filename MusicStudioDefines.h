@@ -1,6 +1,5 @@
 #pragma once
 
-constexpr auto DISPATCHEDIT__NUM_MIDI_CMDS = 23;
 
 //-------------------------------
 // Fundamental Constants

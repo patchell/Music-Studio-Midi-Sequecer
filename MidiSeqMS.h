@@ -21,6 +21,8 @@ class CMainFrame;
 
 class CMidiSeqMSApp : public CWinApp
 {
+public:
+private:
 	inline static int BmIdMisStuffTypes[APP_NUM_MISC] = {
 		IDB_MEASUREBAR,
 		IDB_NOTETIE,
@@ -135,37 +137,6 @@ class CMidiSeqMSApp : public CWinApp
 	};
 
 
-	//---------------------------------------
-	// Bitmap Tables for music editor
-	//---------------------------------------
-
-	inline static MIDI_STATUS MidiStatusCommands[DISPATCHEDIT__NUM_MIDI_CMDS] = {
-		//------------ Channel Status ---------------------
-		{CString("Note Off"), (unsigned)MidiChannelCmds::NOTEOFF,1,1,1, CString("Note"), CString("Velocity")},
-		{CString("Note On"), (unsigned)MidiChannelCmds::NOTEON,1,1,1, CString("Note"), CString("Velocity")},
-		{CString("Poly AftrTch"), (unsigned)MidiChannelCmds::POLYPRESS,1,1,1, CString("Note"), CString("Pres")},
-		{CString("Control/Mode"),(unsigned)MidiChannelCmds::CTRLCHNG,1,1,1, CString("Type"), CString("Value")},
-		{CString("Prog Cnance"),(unsigned)MidiChannelCmds::PGMCHANGE,1,0,1, CString("Prgm"), CString("-----")},
-		{CString("After Touch"), (unsigned)MidiChannelCmds::CHNLPRESS,1,0,1, CString("Pres"), CString("----")},
-		{CString("Pitch Bend"),(unsigned)MidiChannelCmds::PITCHBEND,1,1,1, CString("LSB"), CString("MSB")},
-		//----- System Status ----------------------
-		{CString("TimeCode"),(unsigned)MidiSystemCmds::TIMECODE, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Song Pos"),(unsigned)MidiSystemCmds::SONG_POSITION, 1, 1, 0, CString("LSB"), CString("MSB")},
-		{CString("Song Sel"),(unsigned)MidiSystemCmds::SONG_SELECT, 1, 0, 0, CString("Song #"), CString("----")},
-		{CString("Reserved"),(unsigned)MidiSystemCmds::RSVRD_F4, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Reserved"),(unsigned)MidiSystemCmds::RSVRD_F5, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Tune Request"),(unsigned)MidiSystemCmds::TUNE_REQUEST, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Timing Clock"),(unsigned)MidiRealTimeMsgs::CLOCK, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Reserved"),(unsigned)MidiRealTimeMsgs::RSVRD_F9, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Start"),(unsigned)MidiRealTimeMsgs::START, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Continue"),(unsigned)MidiRealTimeMsgs::CONTINUE, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Stop"),(unsigned)MidiRealTimeMsgs::STOP, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Reserved"),(unsigned)MidiRealTimeMsgs::RSVRD_FD, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Active Sensing"),(unsigned)MidiRealTimeMsgs::ACTIVE_SENSING, 0, 0, 0, CString("----"), CString("----")},
-		{CString("Reset"),(unsigned)MidiRealTimeMsgs::RESET, 0, 0, 0, CString("----"), CString("----")},
-		{CString("SYSEX"),(unsigned)MidiSystemCmds::SYSEX, 0, 0, 0, CString("----"), CString("----")},
-		{CString("SYSEX END"),(unsigned)MidiSystemCmds::SYSEXEND, 0, 0, 0, CString("----"), CString("----")}
-	};
 
 
 	//-------------------------------------------
@@ -565,9 +536,6 @@ public:
 		if (Id < 0 || Id > 3)
 			return nullptr;
 		return &TX816_OP_KEYBORD_Level_Scaling_Curve[Id];
-	}
-	static MIDI_STATUS* GetMidiStatusCommands() {
-		return MidiStatusCommands;
 	}
 	//----------------------- Static Data----------------------------
 };

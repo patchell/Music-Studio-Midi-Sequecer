@@ -262,6 +262,9 @@
     <ClCompile Include="MsTrebleCleff.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Midi.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -544,6 +547,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="MsTrebleCleff.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Midi.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

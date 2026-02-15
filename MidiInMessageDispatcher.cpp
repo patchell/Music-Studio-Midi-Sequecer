@@ -50,7 +50,7 @@ bool CMidiInMessageDispatcher::DispatchMidiInMessage(int data1, int data2)
             m_pDestWindow->PostMessageW(
                 m_WM_MessageID, 
                 Msg.CreateMidiMsg(
-                    CMidiSeqMSApp::GetMidiStatusCommands()[m_MidiStatusID].m_MidiStatus, 
+                    CMidi::GetMidiStatusCommands()[m_MidiStatusID].m_MidiStatus, 
                     m_MidiChannel, data1,
                     data2
                 )

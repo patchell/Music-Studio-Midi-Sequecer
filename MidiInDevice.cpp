@@ -295,7 +295,7 @@ void CMidiInDevice::DispatchShortMessage(WPARAM wParam, LPARAM lParam)
 	int Data1 = NOTE(lParam);
 	int Data2 = VEL(lParam);
 	int Chan = CHAN(lParam);
-	unsigned StatusToken = 0;
+	CMidi::MidiStatusDispatchIDs StatusToken = CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_ERROR;
 
 	while (pMIMD)
 	{
@@ -304,14 +304,14 @@ void CMidiInDevice::DispatchShortMessage(WPARAM wParam, LPARAM lParam)
 		// its corresponding token (Midi
 		// Status ID)
 		//----------------------------------
-		StatusToken = MidiStatusToMidiID(Status);
-		if (StatusToken == pMIMD->GetWindowMessageID())
+		StatusToken = CMidi::MidiStatusToMidiID(Status);
+		if (int(StatusToken) == pMIMD->GetWindowMessageID())
 		{
 			//-----------------------------------
 			// Status matches
 			// Check for Channel Number
 			//-----------------------------------
-			if (IsChannelStatus(StatusToken))
+			if (CMidi::IsChannelStatus(StatusToken))
 			{
 				if (pMIMD->GetMidiChannel() == Chan)
 				{
@@ -324,11 +324,11 @@ void CMidiInDevice::DispatchShortMessage(WPARAM wParam, LPARAM lParam)
 						//----------------------------
 						// Three Byte Midi Status
 						//----------------------------
-					case STATUS_ID_MIDI_NOTEOFF:
-					case STATUS_ID_MIDI_NOTEON:
-					case STATUS_ID_MIDI_POLYPRESS:
-					case STATUS_ID_MIDI_CTRLCHNG:
-					case STATUS_ID_MIDI_PITCHBEND:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_NOTEOFF:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_NOTEON:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_POLYPRESS:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_CTRLCHNG:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_PITCHBEND:
 						if (Data1 >= pMIMD->GetMidiData1Min() &&
 							Data1 <= pMIMD->GetMidiData1Max() &&
 							Data2 >= pMIMD->GetMidiData2Min() &&
@@ -345,8 +345,8 @@ void CMidiInDevice::DispatchShortMessage(WPARAM wParam, LPARAM lParam)
 						//-----------------------
 						//two byte Midi Status
 						//-----------------------
-					case STATUS_ID_MIDI_PGMCHANGE:
-					case STATUS_ID_MIDI_CHNLPRESS:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_PGMCHANGE:
+					case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_CHNLPRESS:
 						break;
 					}
 				}
@@ -359,30 +359,30 @@ void CMidiInDevice::DispatchShortMessage(WPARAM wParam, LPARAM lParam)
 					//---------------------------
 					// Single Byte Midi System Status
 					//---------------------------
-				case STATUS_ID_MIDI_TIMECODE:
-				case STATUS_ID_MIDI_RESERVED_F4:
-				case STATUS_ID_MIDI_RESERVED_F5:
-				case STATUS_ID_MIDI_TUNEREQUEST:
-				case STATUS_ID_MIDI_CLOCK:
-				case STATUS_ID_MIDI_RTM_RSVRD_F9:
-				case STATUS_ID_MIDI_START:
-				case STATUS_ID_MIDI_CONTINUE:
-				case STATUS_ID_MIDI_STOP:
-				case STATUS_ID_MIDI_RTM_RSVRD_FD:
-				case STATUS_ID_MIDI_ACTIVE_SENSING:
-				case STATUS_ID_MIDI_RESET:
-				case STATUS_ID_MIDI_SYSEX:
-				case STATUS_ID_MIDI_SYSEXEND:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_TIMECODE:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_RESERVED_F4:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_RESERVED_F5:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_TUNEREQUEST:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_CLOCK:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_RTM_RSVRD_F9:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_START:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_CONTINUE:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_STOP:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_RTM_RSVRD_FD:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_ACTIVE_SENSING:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_RESET:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_SYSEX:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_SYSEXEND:
 					break;
 					//------------------------------
 					// Two Byte Midi System Status
 					//-----------------------------
-				case STATUS_ID_MIDI_SONGSELECT:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_SONGSELECT:
 					break;
 					//------------------------------
 					// Three byte Midi System Status
 					//-------------------------------
-				case STATUS_ID_MIDI_SONGPOSITION:
+				case CMidi::MidiStatusDispatchIDs::DISPATCH_STATUS_ID_MIDI_SONGPOSITION:
 					break;
 				}
 			}
@@ -398,7 +398,7 @@ void CMidiInDevice::DispatchLongMessage(WPARAM wParam, LPARAM lParam)
 	//--------------------------------------------
 	MIDIHDR* pInBuffer = (MIDIHDR*)lParam;
 	unsigned char* pBuff = (unsigned char*)pInBuffer->lpData;
-	if (pBuff[0] == (unsigned char)MidiSystemCmds::SYSEX)
+	if (pBuff[0] == (unsigned char)CMidi::MidiSystemCmds::SYSEX)
 	{
 
 	}

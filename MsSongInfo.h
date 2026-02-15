@@ -26,8 +26,8 @@ public:
 	void SetTrackTextColor(int InstID, COLORREF Color) { GetTrack(InstID)->SetTextColor(Color); }
 	int GetPatch(int InstID) { return GetTrack(InstID)->GetPatch(); }
 	void SetPatch(int InstID, int Patch) { GetTrack(InstID)->SetPatch(Patch); }
-	int GetChannel(int InstID) { return GetTrack(InstID)->GetChannel(); }
-	void SetChannel(int InstID, int Chan) { GetTrack(InstID)->SetChannel(Chan); }
+	int GetChannel(int InstID) { return GetTrack(InstID)->GetChannel(); }	// return logical channel
+	void SetChannel(int InstID, int Chan) { GetTrack(InstID)->SetChannel(Chan); }	// set logical channle
 	int GetRange(int InstID) { return GetTrack(InstID)->GetPitchRange(); }
 	void SetRange(int InstID, int Range) { GetTrack(InstID)->SetPitchRange(Range); }
 	//-------------------------------------

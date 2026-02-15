@@ -105,8 +105,8 @@ private:
 	// Parent Objects
 	//---------------------------------------
 	CChildViewStaff* m_pChildView;	//staff view window
-	int m_NoteCountOn;     // count of note on events sent
-	int m_NoteCountOff;    // count of note off events sent
+	int m_NoteCountOn[128];     // count of note on events sent
+	int m_NoteCountOff[128];    // count of note off events sent
 public:
 	CMsSong();
 	virtual ~CMsSong();
@@ -248,10 +248,11 @@ public:
 	bool ValidateFile();
 	int DumpSong(FILE* pOutFile);
 	UINT GetTotalTicks() { return m_TotalTicks; }
-	void IncNoteOnCount() { m_NoteCountOn++; };
-	void IncNoteOffCount() { m_NoteCountOff++; }
-	int GetNoteOnCount() const { return m_NoteCountOn; };
-	int GetNoteOffCount() const { return m_NoteCountOff; };
+	//--------- Midi Diagnostics ----------------------
+	void IncNoteOnCount(int Note) { m_NoteCountOn[Note]++; };
+	void IncNoteOffCount(int Note) { m_NoteCountOff[Note]++; }
+	int GetNoteOnCount(int Note) const { return m_NoteCountOn[Note]; };
+	int GetNoteOffCount(int Note) const { return m_NoteCountOff[Note]; };
 	//=------------------------------------------------
 	CMsEventDirectory* GetEventDirectory(){ return m_pEventDirectory; }
 	CMsTrack* GetTrackInfo(int TrackNum); 

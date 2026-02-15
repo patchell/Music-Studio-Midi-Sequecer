@@ -834,7 +834,6 @@ void CMsNote::NoteOn(int Velocity)
 	int Loudness;
 	char* pStr = new char[256];
 
-	GetSong()->IncNoteOnCount();	// for diagnostics
 
 	if(IsAccentted())
 	{
@@ -842,6 +841,7 @@ void CMsNote::NoteOn(int Velocity)
 	}
 	else
 		Loudness = Velocity;
+	// Get Logical MIDI Channel
 	MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	NotePitch = GetPitch();
 	//-------------------------------
@@ -849,9 +849,11 @@ void CMsNote::NoteOn(int Velocity)
 	// or Accidental to correct pitch
 	//-------------------------------
 	NotePitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(NotePitch, GetAccidental());
+	NotePitch += CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 	m_NotePlayed = NotePitch;
 	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, NotePitch, Loudness);
+	GetSong()->IncNoteOnCount(m_NotePlayed);	// for diagnostics
 	if(LogFile())
 		fprintf(LogFile(), 
 			"\tNoteOn: Ch=%d Note=%s Vel=%d\n", 
@@ -867,13 +869,13 @@ void CMsNote::NoteOff(int Velocity)
 	int MidiChannel;
 	int DeviceID;
 	int NotePitch;
-	GetSong()->IncNoteOffCount();	// for diagnostics
 	char* pStr = new char[256];
 
 	MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	NotePitch = m_NotePlayed;
 	DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
+	GetSong()->IncNoteOffCount(m_NotePlayed);	// for diagnostics
 	if(LogFile())
 		fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
 			MidiChannel, 

@@ -288,20 +288,20 @@ StaffMouseStates CMsGlissando::StaffTransition(CPoint pointMouse, int NewNote, C
 
 void CMsGlissando::NoteOn(UINT Velociry)
 {
-	GetSong()->IncNoteOnCount();
 	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(chan, note, Velociry);
+	GetSong()->IncNoteOnCount(note);
 }
 
 void CMsGlissando::NoteOff(UINT Velociry)
 {
-	GetSong()->IncNoteOffCount();
 	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(chan, note, Velociry);
+	GetSong()->IncNoteOffCount(note);
 }
 
 void CMsGlissando::Copy(CMsObject* pSource)

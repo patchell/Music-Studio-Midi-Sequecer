@@ -40,7 +40,7 @@ char*  WcharToChar(char* pcDest, WCHAR* pwSrc, int len)
 BEGIN_MESSAGE_MAP(CMidiSeqMSApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CMidiSeqMSApp::OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW_SONG, &CMidiSeqMSApp::OnFileNewStaff)
-	ON_COMMAND(ID_SETTINGS_TRACKSETTINIGS, &CMidiSeqMSApp::OnSettingsTracksettinigs)
+//	ON_COMMAND(ID_SETTINGS_TRACKSETTINIGS, &CMidiSeqMSApp::OnSettingsTracksettinigs)
 	ON_COMMAND(ID_SETTINGS_MIDIIN, &CMidiSeqMSApp::OnSettingsMidiin)
 	ON_COMMAND(ID_SETTINGS_ADDMIDI_OUT, &CMidiSeqMSApp::OnSettingsAddmidiOut)
 	ON_COMMAND(ID_SETTINGS_ADDDISPATCHER, &CMidiSeqMSApp::OnSettingsAdddispatcher)
@@ -429,7 +429,6 @@ void CMidiSeqMSApp::OnAppAbout()
 
 void CMidiSeqMSApp::LoadSettings()
 {
-	CMsTrack::GetSettings();
 }
 
 

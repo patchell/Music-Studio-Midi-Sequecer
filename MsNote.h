@@ -297,7 +297,7 @@ public:
 	// Byte 2 Velocity
 	//-------------------------------------
 	inline static int RangeLUT[6] = { 
-		0,
+		-36,
 		-24,
 		-12,
 		0,

@@ -7,6 +7,18 @@
 #ifndef PCH_H
 #define PCH_H
 
+//------------------------------
+// Usefull Macros
+//------------------------------
+
+#define STATUS(x) (x & 0x000000FF)	
+#define CHANNEL(x) ((x & 0x0000000F) + 1)
+#define CHANNELMSG(x) (x & 0x000000F0)
+#define SECONDBYTE(x) ((x & 0x0000FF00) >> 8)
+#define THIRDBYTE(x) ((x & 0x00FF0000) >> 16)
+
+//------------------------------
+
 #include "framework.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +28,7 @@
 #include <afxwin.h>
 #include "afxdialogex.h"
 #include <afxmt.h>
+#include "Midi.h"
 
 extern FILE* LogFile();
 
@@ -87,41 +100,6 @@ constexpr auto APP_NUM_KEYSIGNATURES = 15;
 constexpr auto APP_TX816_NUM_LFO_WAVES = 6;
 constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 //-----------------------------------------
-
-//-----------------------------------------------------
-// Midi In Dispatcher
-//-------------------------------------------------
-
-enum MidiStatusIDs {
-	STATUS_ID_MIDI_NOTEOFF,
-	STATUS_ID_MIDI_NOTEON,
-	STATUS_ID_MIDI_POLYPRESS,
-	STATUS_ID_MIDI_CTRLCHNG,
-	STATUS_ID_MIDI_PGMCHANGE,
-	STATUS_ID_MIDI_CHNLPRESS,
-	STATUS_ID_MIDI_PITCHBEND,
-	STATUS_ID_MIDI_TIMECODE,
-	STATUS_ID_MIDI_SONGPOSITION,
-	STATUS_ID_MIDI_SONGSELECT,
-	STATUS_ID_MIDI_RESERVED_F4,
-	STATUS_ID_MIDI_RESERVED_F5,
-	STATUS_ID_MIDI_TUNEREQUEST,
-	STATUS_ID_MIDI_CLOCK,
-	STATUS_ID_MIDI_RTM_RSVRD_F9,
-	STATUS_ID_MIDI_START,
-	STATUS_ID_MIDI_CONTINUE,
-	STATUS_ID_MIDI_STOP,
-	STATUS_ID_MIDI_RTM_RSVRD_FD,
-	STATUS_ID_MIDI_ACTIVE_SENSING,
-	STATUS_ID_MIDI_RESET,
-	STATUS_ID_MIDI_SYSEX,
-	STATUS_ID_MIDI_SYSEXEND
-};
-
-extern int MidiStatusToMidiID(int status);
-extern int IsChannelStatus(int StatusID);
-extern const char* GenMidiPatchNames[128];
-//------------------------------------------
 #include "MusicStudioDefines.h"
 #include "ComboBoxDefines.h"
 #include "MusicStudioFileFormat.h"

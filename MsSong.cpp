@@ -34,8 +34,11 @@ CMsSong::CMsSong()
 	m_nFileBufferSize = 0;
 	m_InFileSize = 0;
 	m_pPlayerObjectQueue = 0;
-	m_NoteCountOn = 0;     // count of note on events sent
-	m_NoteCountOff = 0;    // count of note off events sent
+	for(int i=0;i<128;++i)
+	{
+		m_NoteCountOn[i] = 0;
+		m_NoteCountOff[i] = 0;
+	}
 	m_TickerState = TickerState::STOPPED;
 	m_pEventDirectory = new CMsEventDirectory();
 }
@@ -1082,6 +1085,7 @@ bool CMsSong::Create(
 	CSize szTrackIconSize
 )
 {
+	
 	CMsBassCleff* pBassCleff = new CMsBassCleff;
 	CMsTrebleCleff* pTrebleCleff = new CMsTrebleCleff;
 
@@ -1464,9 +1468,9 @@ void CMsSong::MidiAllNotesOff()
 
 	for (i = 1; i < 16; ++i)
 	{
-		Channel = GetTrackInfo(i)->GetChannel();
-		Id = GetTrackInfo(i)->GetMidiOutDeviceID();
-		GETAPP->GetMidiOutTable()->GetDevice(Id).CtrlChange(Channel, (int)MidiCC::ALL_NOTES_OFF, 0);
+		Channel = GetTrackInfo(i - 1)->GetChannel() - 1;	// logical to physical channel
+		Id = GetTrackInfo(i - 1)->GetMidiOutDeviceID();
+		GETAPP->GetMidiOutTable()->GetDevice(Id).CtrlChange(Channel, (int)CMidi::MidiCC::ALL_NOTES_OFF, 0);
 	}
 }
 
@@ -1562,7 +1566,15 @@ void CMsSong::ChangePatch(int Track, int MidiChannel, int Patch)
 	int DeviceID;
 
 	DeviceID = GetTrackInfo(Track)->GetMidiOutDeviceID();
-	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(MidiChannel, Patch);
+	if(LogFile())fprintf(
+		LogFile(), 
+		"Change Patch: Track %d, Midi Channel %d, Patch %d, DeviceID %d\n", 
+		Track, 
+		MidiChannel, 
+		Patch, 
+		DeviceID
+	);
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).PgmChange(MidiChannel, Patch);	// Change patch
 }
 
 CMsTrack* CMsSong::GetTrackInfo(int TrackNumber)

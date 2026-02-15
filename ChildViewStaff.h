@@ -443,4 +443,6 @@ public:
 	static const char* GetMouseRegionTransitionName(MouseRegionTransitionState transition);
 	static const char* GetStaffMouseStateName(StaffMouseStates state);
 	static const char* GetDrawStateName(DRAWSTATE state);
+    afx_msg void OnSettingsTracksettinigs();
+    afx_msg void OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI);
 };
