@@ -35,7 +35,7 @@ CMsNote::CMsNote() :CMsObject()
 	m_NoteTiePrev = 0;	//pointer to previous note that is tied
 	m_pRestBitmap = 0;
 	m_MouseStaffTransition = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
-	m_NotePlayed = 0;
+	m_NotePlayed = INVALID_PITCH;
 }
 
 
@@ -924,6 +924,10 @@ void CMsNote::NoteOn(int Velocity)
 	int Loudness;
 	char* pStr = new char[256];
 
+	fprintf(LogFile(), "CMsNote::NoteOn: Enter Velocity=%d Note=%d\n", 
+		Velocity, 
+		m_NotePlayed
+	);
 	if (m_NotePlayed == INVALID_PITCH)
 	{
 		if (IsAccentted())
@@ -964,10 +968,10 @@ void CMsNote::NoteOff(int Velocity)
 		//-----------------------------
 		MidiChannel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 		NotePitch = m_NotePlayed;
-		m_NotePlayed = INVALID_PITCH;
 		DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 		GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
 		GetSong()->IncNoteOffCount(m_NotePlayed);	// for diagnostics
+		m_NotePlayed = INVALID_PITCH;
 		if (LogFile())
 			fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
 				MidiChannel,
@@ -1210,6 +1214,7 @@ DRAWSTATE CMsNote:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mouse
 		//------------------------------
 		if (!IsDuplicate())
 		{
+			NoteOff(0);
 			pN = new CMsNote;
 //			pNote = (CMsNote*)GetStaffView()->GetDrawObject();
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
