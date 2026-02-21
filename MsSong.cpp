@@ -517,10 +517,6 @@ void CMsSong::RenumberMeasureBars()
 		DuplicateBarCount = 0;
 		while (pObj)
 		{
-			printf("Renumber Measures: Event %d, Object Type: %s\n",
-				pEv->GetIndex(),
-				CMsObject::GetStringFromType(pObj->GetType())
-			);
 			if(DuplicateBarCount > 0)
 			{
 				//---------------------------
@@ -546,7 +542,6 @@ void CMsSong::RenumberMeasureBars()
 		}
 		pEv = pEv->GetNext();
 	}
-	printf("Exit: RenumberMeasureBars: Total Measure Bars = %d\n", MeasureBarCount);
 }
 
 CMsEvent *CMsSong::InsertEvent(int e)
@@ -683,8 +678,6 @@ CMsEvent *CMsSong::GetEventObject(int EventIndex)
 	bool loop = true;
 	int SongEventIndex;
 
-	if (pEv->GetPrev())
-		printf("Huh\n");
 	while(pEv && loop)
 	{
 		// Is this the one?

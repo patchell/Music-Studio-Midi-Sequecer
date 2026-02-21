@@ -30,8 +30,10 @@ UINT CMsGlissandoEnd::Play()
 	return 0;
 }
 
-DRAWSTATE CMsGlissandoEnd::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsGlissandoEnd::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
+	CMsEvent* pEV = 0;
+
 	switch (DrawState)
 	{
 	case DRAWSTATE::SET_ATTRIBUTES:
@@ -44,7 +46,7 @@ DRAWSTATE CMsGlissandoEnd::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMou
 	return DrawState;
 }
 
-DRAWSTATE CMsGlissandoEnd::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsGlissandoEnd:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	switch (DrawState)
 	{

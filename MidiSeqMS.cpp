@@ -871,11 +871,6 @@ int CMidiSeqMSApp::FontPixelsToLogicalUnits(CDC* pDC, int heightInPixels)
 
 unsigned CMidiSeqMSApp::GetUniqueID()
 {
-	if(m_UniqueID == 100)
-		printf("UniqueID=%d\n", m_UniqueID + 1);
-	else
-		printf("UniqueID=%d\n", m_UniqueID + 1);
-
 	return ++m_UniqueID;
 }
 

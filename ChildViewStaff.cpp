@@ -2,8 +2,6 @@
 // ChildViewStaff.cpp : implementation of the CChildViewStaff class
 //--------------------------------------
 
-///
-
 
 #include "pch.h"
 
@@ -41,7 +39,6 @@ CChildViewStaff::CChildViewStaff()
 	m_MaxEvents = 0;			// maximum events displayed
 	m_pDrawObject = 0;			// current objedt being drawn
 	pLastNote = 0;				// pointer to the last note placed
-	m_LastPitch = INVALID_PITCH;	//last pitch is invalid
 	m_LastSelectedEventIndex = -1;
 	m_FirstSelectedEvent = -1;
 	m_SongScrollPos = 0;
@@ -235,6 +232,7 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	CMsObject* pObject;
 	int Note = YtoNote(pointMouse.y);
 	MouseRegions Region;
+	MouseRegionTransitionState TransitionState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
 	UINT Loop = 1;
 
 	if (this->GetFocus() != this)
@@ -258,14 +256,14 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 				pObject = MatchMouseToObjectInEvent(Event, pointMouse);
 			break;
 		case DrawMode::GLISSANDO:	//OnLButtonDown
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse);;
+			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
 			Invalidate();
 			break;
 		case DrawMode::NOTE:	//OnLButtonDown
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse);;
+			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
 			break;
 		default:
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse);;
+			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
 			break;
 		}//end of switch(m_dmDrawMode)
 	}
@@ -280,10 +278,13 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 	CMsGlissando* pGliss = 0;
 	CMsNote* pN = 0;
 	int note = 0;
+	MouseRegionTransitionState TransitionState;
 
 	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
+	m_MouseRegionTransitionState = RegionTransition(pointMouseLButtUp);
 	Region = MouseInRegion(pointMouseLButtUp);
+	TransitionState = RegionTransition(pointMouseLButtUp);
 	switch (Region)
 	{
 	case MouseRegions::MOUSE_OUTSIDE:		//OnLButtonUp
@@ -320,7 +321,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				CString csBlank(_T(""));
 				m_Status.SetText(csBlank);
 			}
-			else//select events		//OnLButtonUp
+			else    //select events		OnLButtonUp
 			{
 				if (m_LastSelectedEventIndex >= 0)
 				{
@@ -390,7 +391,12 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		case DrawMode::NOP:		//OnLButtonUp
 			break;
 		case DrawMode::NOTE:		//OnLButtonUp
-			m_nDrawState = GetDrawObject()->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);;
+			m_nDrawState = GetDrawObject()->MouseLButtonUp(
+				m_nDrawState, 
+				pointMouseLButtUp,
+				Region,
+				TransitionState
+			);;
 			Invalidate();
 			break;
 		case DrawMode::TEMPO:
@@ -401,7 +407,12 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		case DrawMode::ENDBAR:
 			[[fallthrough]];
 		case DrawMode::BAR:		//OnLButtonUp
-			m_nDrawState = GetDrawObject()->MouseLButtonUp(m_nDrawState, pointMouseLButtUp);
+			m_nDrawState = GetDrawObject()->MouseLButtonUp(
+				m_nDrawState, 
+				pointMouseLButtUp,
+				Region,
+				TransitionState
+			);
 			break;
 		case DrawMode::TIE:		//OnLButtonUp
 			//-----------------------------------
@@ -550,7 +561,8 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	case DrawMode::KEYSIG:
 	case DrawMode::LOUDNESS:
 	case DrawMode::NOTE:
-	case DrawMode::REPEAT:
+	case DrawMode::REPEAT_START:
+	case DrawMode::REPEAT_END:
 	case DrawMode::REST:
 		[[fallthrough]]; 
 	case DrawMode::TEMPO:
@@ -566,7 +578,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CMsNote* pN;
-	CMsObject* pTemp;
+	CMsObject* pTemp = 0, *pObj = 0;
 	int Trip, Dot;
 	INT Dur;
 	CString csBlank(_T(""));
@@ -876,17 +888,147 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		switch (m_dmDrawMode)
 		{
 		case DrawMode::NOTE:	// OnKeyDown exit draw mode
-			if (LastPitchIsValid())
+			pN = (CMsNote*)GetDrawObject();
+			if (pN && pN->IsValidNote())
 			{
 				//------------------------------
 				// If the draw object is a NOTE,
 				// we need to make sure that it
 				// is turned off.
 				//------------------------------
-				pN = (CMsNote*)GetDrawObject();
-				MidiPlayNote(pN, 0);// Note Off
-				SetLastPitch(INVALID_PITCH);
+				pN->NoteOff(0);
+				CMsEvent* pEv = pN->GetParentEvent();
+				if (pEv)
+				{
+					if(pEv->IsThisObjectInThisEvent(pN))
+						pEv->RemoveObject(pN);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: Note not found in event.\n");
+				}
 			}
+			break;
+		case DrawMode::GLISSANDO:		// OnKeyDown exit draw mode
+			break;
+		case DrawMode::BAR:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+				CMsBar* pBar = (CMsBar*)pObj;
+				CMsEvent* pEv = pBar->GetParentEvent();
+				if (pEv)
+				{
+					if (pEv->IsThisObjectInThisEvent(pBar))
+						pEv->RemoveObject(pBar);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: Bar not found in event.\n");
+				}
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::ENDBAR:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+				CMsEndBar* pEndBar = (CMsEndBar*)pObj;
+				CMsEvent* pEv = pEndBar->GetParentEvent();
+				if (pEv)
+				{
+					if (pEv->IsThisObjectInThisEvent(pEndBar))
+						pEv->RemoveObject(pEndBar);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: End Bar not found in event.\n");
+				}
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::KEYSIG:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+				CMsKeySignature* pKeySig = (CMsKeySignature*)pObj;
+				CMsEvent* pEv = pKeySig->GetParentEvent();
+				if (pEv)
+				{
+					if (pEv->IsThisObjectInThisEvent(pKeySig))
+						pEv->RemoveObject(pKeySig);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: Key Signature not found in event.\n");
+				}
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::LOUDNESS:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+				CMsLoudness* pLoudness = (CMsLoudness*)pObj;
+				CMsEvent* pEv = pLoudness->GetParentEvent();
+				if (pEv)
+				{
+					if (pEv->IsThisObjectInThisEvent(pLoudness))
+						pEv->RemoveObject(pLoudness);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: Loudness not found in event.\n");
+				}
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::REPEAT_START:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+				CMsRepeatStart* pRepeat = (CMsRepeatStart*)pObj;
+				CMsEvent* pEv = pRepeat->GetParentEvent();
+				if (pEv)
+				{
+					if (pEv->IsThisObjectInThisEvent(pRepeat))
+						pEv->RemoveObject(pRepeat);
+					else
+						fprintf(stderr, "Error: OnKeyDown Escape Key: Repeat not found in event.\n");
+				}
+
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::REST:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::TEMPO:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::TIMESIG:		// OnKeyDown exit draw mode
+			pObj = GetDrawObject();
+			if (pObj)
+			{
+
+			}
+			SetDrawObject(0);
+			m_dmDrawMode = DrawMode::NOP;
+			break;
+		case DrawMode::TIE:		// OnKeyDown exit draw mode
+			break;
+		case DrawMode::COPY:		// OnKeyDown exit draw mode
+			[[fallthrough]];
+		case DrawMode::MOVE:		// OnKeyDown exit draw mode
+			break;
+		case DrawMode::NOP:
 			break;
 		}	//end of switch(m_dmDrawMode) in case MOUSE_IN_UPPERSEL
 		m_dmDrawMode = DrawMode::NOP;
@@ -910,7 +1052,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_EscapeFlag = 1;
 		//		Invalidate();
 		break;
-	case VK_SPACE:	// OnKeyDown flip note
+	case VK_SPACE:	// OnKeyDown toggle stemp UP/Down
 		if (GetDrawObject())
 		{
 			if (GetDrawObject()->GetType() == CMsObject::MsObjType::NOTE)
@@ -1312,8 +1454,6 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		break;
 	case DrawMode::NOTE:	// SetupDrawMode
 		{
-			if(GetDrawObject())
-				printf("SetupDrawMode: Deleting previous draw object type %d\n", GetDrawObject()->GetType());
 			CMsNote* pN = new CMsNote;
 			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
 			if (GetDrawObject())
@@ -1451,7 +1591,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		csStatus.Format(_T("Move Block To Event %d"), m_nDrawEvent);
 		m_Status.SetText(csStatus);
 		break;
-	case DrawMode::REPEAT:		// SetupDrawMode
+	case DrawMode::REPEAT_START:		// SetupDrawMode
 		AddRepeat(v);
 		Invalidate();
 		csTemp = CString("Add Repeat");
@@ -3237,7 +3377,7 @@ void CChildViewStaff::DoBlockOps(int Op)
 		Dlg.SetValue(2);
 		Dlg.DoModal();
 		v = Dlg.GetValue();
-		mode = DrawMode::REPEAT;
+		mode = DrawMode::REPEAT_START;
 	}
 	break;
 	case COMBO_BLOCK_INSERT:	//insert blok
@@ -3702,6 +3842,22 @@ const char* CChildViewStaff::GetDrawStateName(DRAWSTATE state)
 		}
 	}
     return pName;
+}
+
+const char* CChildViewStaff::GetDrawModeName(DrawMode mode)
+{
+	const char* pName = nullptr;
+	bool Found = false;
+
+	for (int i = 0; i < sizeof(DrawModeLUT) / sizeof(DrawModeItem) && !Found; ++i)
+	{
+		if (DrawModeLUT[i].m_Mode == mode)
+		{
+			pName = DrawModeLUT[i].m_pName;
+			Found = true;
+		}
+	}
+	return pName;
 }
 
 void CChildViewStaff::OnMenuMsFileSave()

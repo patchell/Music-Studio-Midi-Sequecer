@@ -66,7 +66,6 @@ public:
 		return midiOutClose(m_MidiOutHandle);
 	}
 	MMRESULT Send(DWORD msg) {
-		printf("Sending MIDI Message: %08x\n", msg);
 		return midiOutShortMsg(m_MidiOutHandle, msg);
 	}
 	MMRESULT CtrlChange(int channel, int ctrl, int val) {

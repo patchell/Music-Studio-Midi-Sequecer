@@ -46,6 +46,9 @@ public:
 		{ DRAWSTATE::GLISSANDO_FIRST_NOTE, "Glissando First Note" },
 		{ DRAWSTATE::GLISSANDO_SECOND_NOTE, "Glissando Second Note" },
 		{ DRAWSTATE::GLISSANDO_END, "Glissando End" },
+		{ DRAWSTATE::REPEAT_START_PLACE, "Place Repeat Start" },
+		{ DRAWSTATE::REPEAT_END_WAIT_MD, "Place Repeat End" },
+		{ DRAWSTATE::REPEAT_END_PLACE, "Place Repeat End" },
 		{ DRAWSTATE(-1), NULL } // End Marker
 	};
 	inline static int CBDecorationFlags[APP_NUM_DECORATIONS] = {
@@ -64,7 +67,8 @@ public:
 		TIE,
 		COPY,
 		MOVE,
-		REPEAT,
+		REPEAT_START,
+		REPEAT_END,
 		TEMPO,
 		TIMESIG,
 		KEYSIG,
@@ -78,6 +82,37 @@ public:
 		INSERTBLOCK,	//19
 		DRAW_NOTES_VIA_MIDI	//20
 	};
+private:
+	struct DrawModeItem {
+		DrawMode m_Mode;
+		const char* m_pName;
+	};
+	inline static const DrawModeItem DrawModeLUT[] = {
+		{ DrawMode::NOP, "No Operation" },
+		{ DrawMode::NOTE, "Draw Note" },
+		{ DrawMode::REST, "Draw Rest" },
+		{ DrawMode::ENDBAR, "Draw End Bar" },
+		{ DrawMode::GLISSANDO, "Draw Glissando" },
+		{ DrawMode::BAR, "Draw Measure Bar" },
+		{ DrawMode::TIE, "Draw Tie" },
+		{ DrawMode::COPY, "Copy" },
+		{ DrawMode::MOVE, "Move" },
+		{ DrawMode::REPEAT_START, "Place Repeat Start" },
+		{ DrawMode::REPEAT_END, "Place Repeat End" },
+		{ DrawMode::TEMPO, "Place Tempo Change" },
+		{ DrawMode::TIMESIG, "Place Time Signature Change" },
+		{ DrawMode::KEYSIG, "Place Key Signature Change" },
+		{ DrawMode::LOUDNESS, "Place Loudness Change" },
+		{ DrawMode::INSTCHANGE, "Place Instrument Change" },
+		{ DrawMode::CHANGEDUR, "Change Duration of Note/Rest/Event" },
+		{ DrawMode::INCREASEDUR, "Increase Duration of Note/Rest/Event" },
+		{ DrawMode::DECREASEDUR, "Decrease Duration of Note/Rest/Event" },
+		{ DrawMode::INCRPITCH, "Increase Pitch of Note/Event" },
+		{ DrawMode::DECRPITCH, "Decrease Pitch of Note/Event" },
+		{ DrawMode::INSERTBLOCK, "Insert Block at Event (Shift+Click)" },
+		{ DrawMode::DRAW_NOTES_VIA_MIDI, "Draw Notes via MIDI Input (Ctrl+Click)" }
+	};
+public:
 	enum class EventObjectSignatureTypes {
 		EVENT_TEMPO_TIMESIG,
 		EVENT_LOUDNESS_KEYSIG
@@ -213,7 +248,6 @@ private:
 	CMsNote* m_pFirstTieNote;
 	//-------------------------------------
 	DRAWSTATE m_nDrawState;
-	INT m_LastPitch;
 	CMsNote* pLastNote;
 	CMsObject* m_pDrawObject;
 	DrawMode m_dmDrawMode;
@@ -281,16 +315,6 @@ public:
 	NoteData& GetNoteData() { return m_CurrentNoteData; }
 	CMsNote* GetLastNote() { return pLastNote; }
 	void SetLastNote(CMsNote* pLN) { pLastNote = pLN; }
-	INT GetLastPitch() const { return m_LastPitch; }
-	bool LastPitchIsValid() const {
-		bool rv = false;
-		if (m_LastPitch >= 0)
-		{
-			rv = true;
-		}
-		return rv;
-	}
-	void SetLastPitch(INT lastPitch) { m_LastPitch = lastPitch; }
 
 	int GetSongScrollPosition() { return m_SongScrollPos; }
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
@@ -443,6 +467,7 @@ public:
 	static const char* GetMouseRegionTransitionName(MouseRegionTransitionState transition);
 	static const char* GetStaffMouseStateName(StaffMouseStates state);
 	static const char* GetDrawStateName(DRAWSTATE state);
+	static const char* GetDrawModeName(DrawMode mode);
     afx_msg void OnSettingsTracksettinigs();
     afx_msg void OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI);
 };

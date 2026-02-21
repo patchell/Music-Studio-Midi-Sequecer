@@ -19,15 +19,28 @@ constexpr auto NOTE_POS_C4 = STAVE_LINE_SPACING * 6 + NOTE_POS_A5;
 // on the music staff.
 //-------------------------------
 
-constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
+constexpr auto NOTE_STEM_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 8;
 constexpr auto NOTE_HEAD_WIDTH = 10;
 constexpr auto NOTE_HEAD_HEIGHT = 8;
 constexpr auto NOTE_HEAD_RECT_P1_X = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - 2;
 constexpr auto NOTE_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
 constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_X = NOTE_STEM_OFFSET;
 constexpr auto NOTE_FLIPPED_HEAD_RECT_P1_Y = -NOTE_HEAD_HEIGHT / 2;
-constexpr auto NOTE_ACCIDENTAL_OFFSET = 8;
+constexpr auto NOTE_ACCIDENTAL_OFFSET = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
+constexpr auto NOTE_ACCIDENTAL_OFFSET_STEM_DOWN = NOTE_STEM_OFFSET;
+constexpr auto NOTE_ACCENT_X_OFFSET = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
+constexpr auto NOTE_ACCENT_X_STEMDOWN_OFFSET = NOTE_STEM_OFFSET;
+constexpr auto NOTE_ACCENT_HEIGHT = 6;
+constexpr auto NOTE_ACCENT_WIDTH = NOTE_HEAD_WIDTH;
+constexpr auto NOTE_ACCENT_Y_OFFSET = NOTE_HEAD_HEIGHT;
 
+constexpr auto NOTE_TRIPLET_WIDTH = 3;
+constexpr auto NOTE_TRIPLET_HEIGHT = 4;
+constexpr auto NOTE_TRIPLET_X_OFFSET = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - NOTE_TRIPLET_WIDTH;
+constexpr auto NOTE_TRIPLET_Y_OFFSET = NOTE_HEAD_HEIGHT + NOTE_TRIPLET_HEIGHT;
+
+constexpr auto NOTE_DOTTED_X_OFFSET = NOTE_STEM_OFFSET + 2;
+constexpr auto NOTE_DOTTED_Y_OFFSET = 4;
 
 constexpr auto HALF_REST_WIDTH = 8;
 constexpr auto HALF_REST_HEIGHT = 6;
@@ -398,8 +411,8 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
-	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
+	virtual DRAWSTATE  MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject();
 	virtual bool DoesSomething() {
@@ -550,6 +563,7 @@ public:
 	int GetPitch(void);
 	int SetPitch(int p);
 	bool IsStemDown(void) { return GetData().IsStemDown(); }
+	bool IsStemUp(void) { return !GetData().IsStemDown(); }
 	void SetStemDown(bool u) { GetData().SetStemDown(u); }
 	bool GetStemDown(void) { return GetData().GetStemDown(); }
 
@@ -563,14 +577,7 @@ public:
 	int GetShape() { return  (int)DurTab[(int)GetDuration()].NoteShapeIndex; }
 
 	int NearestLine();
-	int IsOnLine() {
-		int rV;
-		int oct = GetPitch() / 12;
-		int noteonline = OnLine[GetPitch() % 12];
-		if (oct & 1) noteonline ^= 1;
-		rV = noteonline ? 1 : 0;
-		return rV;
-	}
+	int IsOnLine();
 	//--------------------------------------
 	// returns true for various attributes
 	//-------------------------------------
@@ -581,6 +588,13 @@ public:
 	bool IsSolid(void) { return DurTab[(int)GetDuration()].Solid ? true : false; }
 	bool IsTriplet();
 	bool IsDuplicate();
+	bool IsValidNote() const {
+		bool bValid = false;
+		if(m_NotePlayed >= NOTE_C2 && m_NotePlayed <= NOTE_C6) {
+			bValid =  true;
+		}
+		return bValid;
+	}
 	int NeedsFlags(void);
 	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem == NoteStem::Stem ? true : false; }
 	int NeedsLine(ExtraLinesLocation& Location);
@@ -588,6 +602,7 @@ public:
 	// Send to Midi
 	//---------------
 	void NoteOff(int Velocity);
+	int GetCorrectedPitchWithKeySignature();
 	void NoteOn(int Velocity);
 	//---------- Graphic methodes ------------
 	void ChangeRestColor(CDC* pDC, COLORREF c, int w, int h);
@@ -621,7 +636,6 @@ public:
 	//-------------------------------------------
 	virtual void ObjectRectangle(CRect& rect);
 	static DUR* GetDurationTable() { return DurTab; }
-	UINT CorrectPitchWithKeySignature();
 	//---------------------------------
 	// accidental encoding
 	//---------------------------------
@@ -684,19 +698,19 @@ public:
 		4,	//A#
 		0	//B
 	};
-	inline static UINT OnLine[12] = {
-		1,	//C
-		1,	//C#
-		0,	//D
-		0,	//D#
-		1,	//E
-		0,	//F
-		0,	//F#
-		1,	//G
-		1,	//G#
-		0,	//A
-		0,	//A#
-		1	//B
+	inline static bool OnLine[12] = {
+		true,	//C
+		true,	//C#
+		false,	//D
+		false,	//D#
+		true,	//E
+		false,	//F
+		false,	//F#
+		true,	//G
+		true,	//G#
+		false,	//A
+		false,	//A#
+		true	//B
 	};
 	inline static CString NoteLUT[12] = {
 		_T("C"),
@@ -832,7 +846,7 @@ public:
 		{2, ExtraLinesLocation::AboveTreble}	//C6
 	};
 	//-------------------------------
-	const char* GetNoteName(); 
+	const char* GetNoteName(int Note); 
 	static const char* GetNoteName(int note, CMsSong* pSong);
 };
 

@@ -35,12 +35,12 @@ UINT CMsSharp::Play()
 	return 0;
 }
 
-DRAWSTATE CMsSharp::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	return DrawState;
 }
 
-DRAWSTATE CMsSharp::MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse)
+DRAWSTATE CMsSharp:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	return DrawState;
 }

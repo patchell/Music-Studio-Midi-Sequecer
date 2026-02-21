@@ -10,17 +10,15 @@ Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
 Note 86:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=UpperDraw to Edit
 
 Enter Edit Note:86
-		Event 5: Add Object Type Note Object Event 5 ID=20
-		Event 5:**NO Notes
+		Event 4: Add Object Type Note Object Event 4 ID=20
+		Event 4:**NO Notes
 				CMsNote::SetPitch: D6 [86]
-	NoteOn: Ch=7 Note=D6 [86] Vel=100
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 84
 NoteOff: Ch=7 Note=D6 [86] Vel=0
 				CMsNote::SetPitch: C6 [84]
 	NoteOn: Ch=7 Note=C6 [84] Vel=100
 <<CMsNote::MouseMove: Note Change 84
-Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -113,6 +111,859 @@ NoteOff: Ch=7 Note=A4 [69] Vel=0
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 65
+NoteOff: Ch=7 Note=G4 [67] Vel=0
+				CMsNote::SetPitch: F4 [65]
+	NoteOn: Ch=7 Note=F4 [65] Vel=100
+<<CMsNote::MouseMove: Note Change 65
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=F4 [65] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Add Object Type Note Object Event 4 ID=21
+		Event 4: There **ARE** 1 Notes in this Event
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 62
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+				CMsNote::SetPitch: D4 [62]
+	NoteOn: Ch=7 Note=D4 [62] Vel=100
+<<CMsNote::MouseMove: Note Change 62
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Add Object Type Note Object Event 4 ID=22
+		Event 4: There **ARE** 2 Notes in this Event
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 62
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: D4 [62]
+	NoteOn: Ch=7 Note=D4 [62] Vel=100
+<<CMsNote::MouseMove: Note Change 62
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 60
+NoteOff: Ch=7 Note=D4 [62] Vel=0
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+<<CMsNote::MouseMove: Note Change 60
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 59
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+				CMsNote::SetPitch: B3 [59]
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+<<CMsNote::MouseMove: Note Change 59
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 57
+NoteOff: Ch=7 Note=B3 [59] Vel=0
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+<<CMsNote::MouseMove: Note Change 57
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Is This Object Note of 3 Events  Object::Event=4 ID=22
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=22
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=22
+		Event 5:**NO Notes
+				CMsNote::SetPitch: G3 [55]
+	NoteOn: Ch=7 Note=G3 [55] Vel=100
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 53
+NoteOff: Ch=7 Note=G3 [55] Vel=0
+				CMsNote::SetPitch: F3 [53]
+	NoteOn: Ch=7 Note=F3 [53] Vel=100
+<<CMsNote::MouseMove: Note Change 53
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=F3 [53] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=22
+     ***********************************
+         Pitch = 52
+     ***********************************
+		Event:5:Remove Object Note From Head ID=22
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+		Event 6: Add Object Type Note Object Event 6 ID=22
+		Event 6:**NO Notes
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=22
+     ***********************************
+         Pitch = 52
+     ***********************************
+		Event:6:Remove Object Note From Head ID=22
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=22
+		Event 5:**NO Notes
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Add Object Type Note Object Event 5 ID=23
+		Event 5: There **ARE** 1 Notes in this Event
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 50
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+				CMsNote::SetPitch: D3 [50]
+	NoteOn: Ch=7 Note=D3 [50] Vel=100
+<<CMsNote::MouseMove: Note Change 50
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 48
+NoteOff: Ch=7 Note=D3 [50] Vel=0
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
+<<CMsNote::MouseMove: Note Change 48
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 47
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+				CMsNote::SetPitch: B2 [47]
+	NoteOn: Ch=7 Note=B2 [47] Vel=100
+<<CMsNote::MouseMove: Note Change 47
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 45
+NoteOff: Ch=7 Note=B2 [47] Vel=0
+				CMsNote::SetPitch: A2 [45]
+	NoteOn: Ch=7 Note=A2 [45] Vel=100
+<<CMsNote::MouseMove: Note Change 45
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 43
+NoteOff: Ch=7 Note=A2 [45] Vel=0
+				CMsNote::SetPitch: G2 [43]
+	NoteOn: Ch=7 Note=G2 [43] Vel=100
+<<CMsNote::MouseMove: Note Change 43
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=23
+     ***********************************
+         Pitch = 43
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=23
+NoteOff: Ch=7 Note=G2 [43] Vel=0
+		Event 4: Add Object Type Note Object Event 4 ID=23
+		Event 4: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: G2 [43]
+	NoteOn: Ch=7 Note=G2 [43] Vel=100
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 41
+NoteOff: Ch=7 Note=G2 [43] Vel=0
+				CMsNote::SetPitch: F2 [41]
+	NoteOn: Ch=7 Note=F2 [41] Vel=100
+<<CMsNote::MouseMove: Note Change 41
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 40
+NoteOff: Ch=7 Note=F2 [41] Vel=0
+				CMsNote::SetPitch: E2 [40]
+	NoteOn: Ch=7 Note=E2 [40] Vel=100
+<<CMsNote::MouseMove: Note Change 40
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Is This Object Note of 3 Events  Object::Event=4 ID=23
+     ***********************************
+         Pitch = 40
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=23
+NoteOff: Ch=7 Note=E2 [40] Vel=0
+		Event 3: Add Object Type Note Object Event 3 ID=23
+		Event 3:**NO Notes
+				CMsNote::SetPitch: E2 [40]
+	NoteOn: Ch=7 Note=E2 [40] Vel=100
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 41
+NoteOff: Ch=7 Note=E2 [40] Vel=0
+				CMsNote::SetPitch: F2 [41]
+	NoteOn: Ch=7 Note=F2 [41] Vel=100
+<<CMsNote::MouseMove: Note Change 41
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Add Object Type Note Object Event 3 ID=24
+		Event 3: There **ARE** 1 Notes in this Event
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 41
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: F2 [41]
+	NoteOn: Ch=7 Note=F2 [41] Vel=100
+<<CMsNote::MouseMove: Note Change 41
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 43
+NoteOff: Ch=7 Note=F2 [41] Vel=0
+				CMsNote::SetPitch: G2 [43]
+	NoteOn: Ch=7 Note=G2 [43] Vel=100
+<<CMsNote::MouseMove: Note Change 43
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 45
+NoteOff: Ch=7 Note=G2 [43] Vel=0
+				CMsNote::SetPitch: A2 [45]
+	NoteOn: Ch=7 Note=A2 [45] Vel=100
+<<CMsNote::MouseMove: Note Change 45
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 47
+NoteOff: Ch=7 Note=A2 [45] Vel=0
+				CMsNote::SetPitch: B2 [47]
+	NoteOn: Ch=7 Note=B2 [47] Vel=100
+<<CMsNote::MouseMove: Note Change 47
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=24
+     ***********************************
+         Pitch = 47
+     ***********************************
+		Event:3:Remove Object Note From Tail ID=24
+NoteOff: Ch=7 Note=B2 [47] Vel=0
+		Event 4: Add Object Type Note Object Event 4 ID=24
+		Event 4: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 50
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+				CMsNote::SetPitch: D3 [50]
+	NoteOn: Ch=7 Note=D3 [50] Vel=100
+<<CMsNote::MouseMove: Note Change 50
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=D3 [50] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 53
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+				CMsNote::SetPitch: F3 [53]
+	NoteOn: Ch=7 Note=F3 [53] Vel=100
+<<CMsNote::MouseMove: Note Change 53
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 55
+NoteOff: Ch=7 Note=F3 [53] Vel=0
+				CMsNote::SetPitch: G3 [55]
+	NoteOn: Ch=7 Note=G3 [55] Vel=100
+<<CMsNote::MouseMove: Note Change 55
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 57
+NoteOff: Ch=7 Note=G3 [55] Vel=0
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+<<CMsNote::MouseMove: Note Change 57
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 59
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+				CMsNote::SetPitch: B3 [59]
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+<<CMsNote::MouseMove: Note Change 59
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 60
+NoteOff: Ch=7 Note=B3 [59] Vel=0
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+<<CMsNote::MouseMove: Note Change 60
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 62
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+				CMsNote::SetPitch: D4 [62]
+	NoteOn: Ch=7 Note=D4 [62] Vel=100
+<<CMsNote::MouseMove: Note Change 62
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=D4 [62] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 65
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+				CMsNote::SetPitch: F4 [65]
+	NoteOn: Ch=7 Note=F4 [65] Vel=100
+<<CMsNote::MouseMove: Note Change 65
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 67
+NoteOff: Ch=7 Note=F4 [65] Vel=0
+				CMsNote::SetPitch: G4 [67]
+	NoteOn: Ch=7 Note=G4 [67] Vel=100
+<<CMsNote::MouseMove: Note Change 67
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 69
+NoteOff: Ch=7 Note=G4 [67] Vel=0
+				CMsNote::SetPitch: A4 [69]
+	NoteOn: Ch=7 Note=A4 [69] Vel=100
+<<CMsNote::MouseMove: Note Change 69
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 71
+NoteOff: Ch=7 Note=A4 [69] Vel=0
+				CMsNote::SetPitch: B4 [71]
+	NoteOn: Ch=7 Note=B4 [71] Vel=100
+<<CMsNote::MouseMove: Note Change 71
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 72
+NoteOff: Ch=7 Note=B4 [71] Vel=0
+				CMsNote::SetPitch: C5 [72]
+	NoteOn: Ch=7 Note=C5 [72] Vel=100
+<<CMsNote::MouseMove: Note Change 72
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 74
+NoteOff: Ch=7 Note=C5 [72] Vel=0
+				CMsNote::SetPitch: D5 [74]
+	NoteOn: Ch=7 Note=D5 [74] Vel=100
+<<CMsNote::MouseMove: Note Change 74
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 76
+NoteOff: Ch=7 Note=D5 [74] Vel=0
+				CMsNote::SetPitch: E5 [76]
+	NoteOn: Ch=7 Note=E5 [76] Vel=100
+<<CMsNote::MouseMove: Note Change 76
+Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 77
+NoteOff: Ch=7 Note=E5 [76] Vel=0
+				CMsNote::SetPitch: F5 [77]
+	NoteOn: Ch=7 Note=F5 [77] Vel=100
+<<CMsNote::MouseMove: Note Change 77
+Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 79:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 79
+NoteOff: Ch=7 Note=F5 [77] Vel=0
+				CMsNote::SetPitch: G5 [79]
+	NoteOn: Ch=7 Note=G5 [79] Vel=100
+<<CMsNote::MouseMove: Note Change 79
+Note 79:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 81:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 81
+NoteOff: Ch=7 Note=G5 [79] Vel=0
+				CMsNote::SetPitch: A5 [81]
+	NoteOn: Ch=7 Note=A5 [81] Vel=100
+<<CMsNote::MouseMove: Note Change 81
+Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 83
+NoteOff: Ch=7 Note=A5 [81] Vel=0
+				CMsNote::SetPitch: B5 [83]
+	NoteOn: Ch=7 Note=B5 [83] Vel=100
+<<CMsNote::MouseMove: Note Change 83
+Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 84
+NoteOff: Ch=7 Note=B5 [83] Vel=0
+				CMsNote::SetPitch: C6 [84]
+	NoteOn: Ch=7 Note=C6 [84] Vel=100
+<<CMsNote::MouseMove: Note Change 84
+Note 86:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 86
+NoteOff: Ch=7 Note=C6 [84] Vel=0
+				CMsNote::SetPitch: D6 [86]
+	NoteOn: Ch=7 Note=D6 [86] Vel=100
+<<CMsNote::MouseMove: Note Change 86
+		Event 4: Is This Object Note of 3 Events  Object::Event=4 ID=24
+		Event 4: Is This Object Note of 3 Events  Object::Event=4 ID=24
+     ***********************************
+         Pitch = 86
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=24
+NoteOff: Ch=7 Note=D6 [86] Vel=0
+Note 86:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=UpperDraw to Edit
+
+Enter Edit Note:86
+		Event 6: Add Object Type Note Object Event 6 ID=24
+		Event 6:**NO Notes
+				CMsNote::SetPitch: D6 [86]
+	NoteOn: Ch=7 Note=D6 [86] Vel=100
+Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 83
+NoteOff: Ch=7 Note=D6 [86] Vel=0
+				CMsNote::SetPitch: B5 [83]
+	NoteOn: Ch=7 Note=B5 [83] Vel=100
+<<CMsNote::MouseMove: Note Change 83
+Note 81:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=24
+     ***********************************
+         Pitch = 83
+     ***********************************
+		Event:6:Remove Object Note From Head ID=24
+NoteOff: Ch=7 Note=B5 [83] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=24
+		Event 5: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: A5 [81]
+	NoteOn: Ch=7 Note=A5 [81] Vel=100
+Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 77
+NoteOff: Ch=7 Note=A5 [81] Vel=0
+				CMsNote::SetPitch: F5 [77]
+	NoteOn: Ch=7 Note=F5 [77] Vel=100
+<<CMsNote::MouseMove: Note Change 77
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 74
+NoteOff: Ch=7 Note=F5 [77] Vel=0
+				CMsNote::SetPitch: D5 [74]
+	NoteOn: Ch=7 Note=D5 [74] Vel=100
+<<CMsNote::MouseMove: Note Change 74
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 71
+NoteOff: Ch=7 Note=D5 [74] Vel=0
+				CMsNote::SetPitch: B4 [71]
+	NoteOn: Ch=7 Note=B4 [71] Vel=100
+<<CMsNote::MouseMove: Note Change 71
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 69
+NoteOff: Ch=7 Note=B4 [71] Vel=0
+				CMsNote::SetPitch: A4 [69]
+	NoteOn: Ch=7 Note=A4 [69] Vel=100
+<<CMsNote::MouseMove: Note Change 69
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=A4 [69] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 60
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+<<CMsNote::MouseMove: Note Change 60
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 57
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+<<CMsNote::MouseMove: Note Change 57
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 48
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
+<<CMsNote::MouseMove: Note Change 48
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 43
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+				CMsNote::SetPitch: G2 [43]
+	NoteOn: Ch=7 Note=G2 [43] Vel=100
+<<CMsNote::MouseMove: Note Change 43
+Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 40
+NoteOff: Ch=7 Note=G2 [43] Vel=0
+				CMsNote::SetPitch: E2 [40]
+	NoteOn: Ch=7 Note=E2 [40] Vel=100
+<<CMsNote::MouseMove: Note Change 40
+Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 36
+NoteOff: Ch=7 Note=E2 [40] Vel=0
+				CMsNote::SetPitch: C2 [36]
+	NoteOn: Ch=7 Note=C2 [36] Vel=100
+<<CMsNote::MouseMove: Note Change 36
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=24
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=24
+     ***********************************
+         Pitch = 36
+     ***********************************
+		Event:5:Remove Object Note From Head ID=24
+NoteOff: Ch=7 Note=C2 [36] Vel=0
+		Event 10: Add Object Type Bar Object Event 10 ID=43
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=43
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=43
+		Event:10:Remove Object Bar From Head ID=43
+		Event 9: Add Object Type Bar Object Event 9 ID=43
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=43
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=43
+		Event:9:Remove Object Bar From Head ID=43
+		Event 8: Add Object Type Bar Object Event 8 ID=43
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=43
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=43
+		Event:8:Remove Object Bar From Head ID=43
+		Event 7: Add Object Type Bar Object Event 7 ID=43
+		Event 7: Is This Object Bar of 1 Events  Object::Event=7 ID=43
+		Event 7: Is This Object Bar of 1 Events  Object::Event=7 ID=43
+		Event:7:Remove Object Bar From Head ID=43
+		Event 6: Add Object Type Bar Object Event 6 ID=43
+		Event 6: Is This Object Bar of 1 Events  Object::Event=6 ID=43
+		Event 6: Is This Object Bar of 1 Events  Object::Event=6 ID=43
+		Event:6:Remove Object Bar From Head ID=43
+		Event 5: Add Object Type Bar Object Event 5 ID=43
+		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=43
+		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=43
+		Event:5:Remove Object Bar From Tail ID=43
+		Event 4: Add Object Type Bar Object Event 4 ID=43
+		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=43
+		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=43
+		Event:4:Remove Object Bar From Tail ID=43
+		Event 3: Add Object Type Bar Object Event 3 ID=43
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=43
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=43
+		Event:3:Remove Object Bar From Tail ID=43
+		Event 2: Add Object Type Bar Object Event 2 ID=43
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=43
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=43
+		Event:2:Remove Object Bar From Head ID=43
+		Event 1: Add Object Type Bar Object Event 1 ID=43
+		Event 1: Add Object Type Bar Object Event 1 ID=59
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=59
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=59
+		Event:1:Remove Object Bar From Tail ID=59
+		Event 2: Add Object Type Bar Object Event 2 ID=59
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=59
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=59
+		Event:2:Remove Object Bar From Head ID=59
+		Event 3: Add Object Type Bar Object Event 3 ID=59
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=59
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=59
+		Event:3:Remove Object Bar From Tail ID=59
+		Event 4: Add Object Type Bar Object Event 4 ID=59
+		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=59
+		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=59
+		Event:4:Remove Object Bar From Tail ID=59
+		Event 5: Add Object Type Bar Object Event 5 ID=59
+		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=59
+		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=59
+		Event:5:Remove Object Bar From Tail ID=59
+		Event 4: Add Object Type Bar Object Event 4 ID=59
+		Event 4: Add Object Type Bar Object Event 4 ID=61
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=61
+		Event:4:Remove Object Bar From Tail ID=61
+		Event 5: Add Object Type Bar Object Event 5 ID=61
+		Event 5: Add Object Type Bar Object Event 5 ID=63
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=63
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=63
+		Event:5:Remove Object Bar From Tail ID=63
+		Event 6: Add Object Type Bar Object Event 6 ID=63
+		Event 6: Add Object Type Bar Object Event 6 ID=65
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=65
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=65
+		Event:6:Remove Object Bar From Tail ID=65
+		Event 7: Add Object Type Bar Object Event 7 ID=65
+		Event 7: Add Object Type Bar Object Event 7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event:7:Remove Object Bar From Tail ID=67
+		Event 6: Add Object Type Bar Object Event 6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event:6:Remove Object Bar From Tail ID=67
+		Event 5: Add Object Type Bar Object Event 5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event:5:Remove Object Bar From Tail ID=67
+		Event 4: Add Object Type Bar Object Event 4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event:4:Remove Object Bar From Tail ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+		Event 2: Add Object Type Bar Object Event 2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event:2:Remove Object Bar From Head ID=67
+		Event 1: Add Object Type Bar Object Event 1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event:1:Remove Object Bar From Tail ID=67
+		Event 0: Add Object Type Bar Object Event 0 ID=67
+		Event 0: Is This Object Bar of 3 Events  Object::Event=0 ID=67
+		Event:0:Remove Object Bar From Tail ID=67
+		Event 0: Add Object Type Bar Object Event 0 ID=67
+		Event 0: Is This Object Bar of 3 Events  Object::Event=0 ID=67
+		Event 0: Is This Object Bar of 3 Events  Object::Event=0 ID=67
+		Event:0:Remove Object Bar From Tail ID=67
+		Event 1: Add Object Type Bar Object Event 1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event:1:Remove Object Bar From Tail ID=67
+		Event 2: Add Object Type Bar Object Event 2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event:2:Remove Object Bar From Head ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+		Event 2: Add Object Type Bar Object Event 2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event:2:Remove Object Bar From Head ID=67
+		Event 1: Add Object Type Bar Object Event 1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event:1:Remove Object Bar From Tail ID=67
+		Event 0: Add Object Type Bar Object Event 0 ID=67
+		Event 0: Is This Object Bar of 3 Events  Object::Event=0 ID=67
+		Event 0: Is This Object Bar of 3 Events  Object::Event=0 ID=67
+		Event:0:Remove Object Bar From Tail ID=67
+		Event 1: Add Object Type Bar Object Event 1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event 1: Is This Object Bar of 4 Events  Object::Event=1 ID=67
+		Event:1:Remove Object Bar From Tail ID=67
+		Event 2: Add Object Type Bar Object Event 2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event:2:Remove Object Bar From Head ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+		Event 4: Add Object Type Bar Object Event 4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event:4:Remove Object Bar From Tail ID=67
+		Event 5: Add Object Type Bar Object Event 5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event:5:Remove Object Bar From Tail ID=67
+		Event 6: Add Object Type Bar Object Event 6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event:6:Remove Object Bar From Tail ID=67
+		Event 7: Add Object Type Bar Object Event 7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event:7:Remove Object Bar From Tail ID=67
+		Event 8: Add Object Type Bar Object Event 8 ID=67
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=67
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=67
+		Event:8:Remove Object Bar From Head ID=67
+		Event 9: Add Object Type Bar Object Event 9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event:9:Remove Object Bar From Head ID=67
+		Event 10: Add Object Type Bar Object Event 10 ID=67
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=67
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=67
+		Event:10:Remove Object Bar From Head ID=67
+		Event 9: Add Object Type Bar Object Event 9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event:9:Remove Object Bar From Head ID=67
+		Event 10: Add Object Type Bar Object Event 10 ID=67
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=67
+		Event 10: Is This Object Bar of 1 Events  Object::Event=10 ID=67
+		Event:10:Remove Object Bar From Head ID=67
+		Event 9: Add Object Type Bar Object Event 9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=67
+		Event:9:Remove Object Bar From Head ID=67
+		Event 8: Add Object Type Bar Object Event 8 ID=67
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=67
+		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=67
+		Event:8:Remove Object Bar From Head ID=67
+		Event 7: Add Object Type Bar Object Event 7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event 7: Is This Object Bar of 2 Events  Object::Event=7 ID=67
+		Event:7:Remove Object Bar From Tail ID=67
+		Event 6: Add Object Type Bar Object Event 6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=67
+		Event:6:Remove Object Bar From Tail ID=67
+		Event 5: Add Object Type Bar Object Event 5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event 5: Is This Object Bar of 3 Events  Object::Event=5 ID=67
+		Event:5:Remove Object Bar From Tail ID=67
+		Event 4: Add Object Type Bar Object Event 4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event 4: Is This Object Bar of 4 Events  Object::Event=4 ID=67
+		Event:4:Remove Object Bar From Tail ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+		Event 2: Add Object Type Bar Object Event 2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event 2: Is This Object Bar of 1 Events  Object::Event=2 ID=67
+		Event:2:Remove Object Bar From Head ID=67
+		Event 3: Add Object Type Bar Object Event 3 ID=67
+		Event 3: Is This Object Bar of 2 Events  Object::Event=3 ID=67
+		Event:3:Remove Object Bar From Tail ID=67
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=Outside to Edit
+
+Enter Edit Note:74
+		Event 3: Add Object Type Note Object Event 3 ID=85
+		Event 3: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: D5 [74]
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 72
+NoteOff: Ch=7 Note=D5 [74] Vel=0
+				CMsNote::SetPitch: C5 [72]
+	NoteOn: Ch=7 Note=C5 [72] Vel=100
+<<CMsNote::MouseMove: Note Change 72
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 71
+NoteOff: Ch=7 Note=C5 [72] Vel=0
+				CMsNote::SetPitch: B4 [71]
+	NoteOn: Ch=7 Note=B4 [71] Vel=100
+<<CMsNote::MouseMove: Note Change 71
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 69
+NoteOff: Ch=7 Note=B4 [71] Vel=0
+				CMsNote::SetPitch: A4 [69]
+	NoteOn: Ch=7 Note=A4 [69] Vel=100
+<<CMsNote::MouseMove: Note Change 69
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 67
+NoteOff: Ch=7 Note=A4 [69] Vel=0
+				CMsNote::SetPitch: G4 [67]
+	NoteOn: Ch=7 Note=G4 [67] Vel=100
+<<CMsNote::MouseMove: Note Change 67
+Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 65
@@ -120,6 +971,7 @@ NoteOff: Ch=7 Note=G4 [67] Vel=0
 				CMsNote::SetPitch: F4 [65]
 	NoteOn: Ch=7 Note=F4 [65] Vel=100
 <<CMsNote::MouseMove: Note Change 65
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -141,6 +993,8 @@ NoteOff: Ch=7 Note=E4 [64] Vel=0
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 60
 NoteOff: Ch=7 Note=D4 [62] Vel=0
@@ -150,7 +1004,239 @@ NoteOff: Ch=7 Note=D4 [62] Vel=0
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=85
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:3:Remove Object Note From Tail ID=85
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 2: Add Object Type Note Object Event 2 ID=85
+		Event 2:**NO Notes
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 2: Add Object Type Note Object Event 2 ID=86
+		Event 2: There **ARE** 1 Notes in this Event
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 60
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+<<CMsNote::MouseMove: Note Change 60
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 2: Is This Object Note of 2 Events  Object::Event=2 ID=86
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:2:Remove Object Note From Tail ID=86
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 3: Add Object Type Note Object Event 3 ID=86
+		Event 3: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=86
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:3:Remove Object Note From Head ID=86
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 4: Add Object Type Note Object Event 4 ID=86
+		Event 4: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Is This Object Note of 4 Events  Object::Event=4 ID=86
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=86
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=86
+		Event 5: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 59
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+				CMsNote::SetPitch: B3 [59]
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+<<CMsNote::MouseMove: Note Change 59
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Add Object Type Note Object Event 5 ID=87
+		Event 5: There **ARE** 2 Notes in this Event
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 59
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: B3 [59]
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+<<CMsNote::MouseMove: Note Change 59
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Is This Object Note of 4 Events  Object::Event=5 ID=87
+     ***********************************
+         Pitch = 59
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=87
+NoteOff: Ch=7 Note=B3 [59] Vel=0
+		Event 6: Add Object Type Note Object Event 6 ID=87
+		Event 6:**NO Notes
+				CMsNote::SetPitch: B3 [59]
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 60
+NoteOff: Ch=7 Note=B3 [59] Vel=0
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+<<CMsNote::MouseMove: Note Change 60
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=87
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:6:Remove Object Note From Tail ID=87
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 7: Add Object Type Note Object Event 7 ID=87
+		Event 7:**NO Notes
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 7: Is This Object Note of 2 Events  Object::Event=7 ID=87
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:7:Remove Object Note From Tail ID=87
+NoteOff: Ch=7 Note=C4 [60] Vel=0
+		Event 6: Add Object Type Note Object Event 6 ID=87
+		Event 6:**NO Notes
+				CMsNote::SetPitch: C4 [60]
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -159,6 +1245,8 @@ NoteOff: Ch=7 Note=C4 [60] Vel=0
 				CMsNote::SetPitch: D4 [62]
 	NoteOn: Ch=7 Note=D4 [62] Vel=100
 <<CMsNote::MouseMove: Note Change 62
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -174,13 +1262,95 @@ Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region 
 Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=87
+     ***********************************
+         Pitch = 64
+     ***********************************
+		Event:6:Remove Object Note From Tail ID=87
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+		Event 7: Add Object Type Note Object Event 7 ID=87
+		Event 7:**NO Notes
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 7: Add Object Type Note Object Event 7 ID=88
+		Event 7: There **ARE** 1 Notes in this Event
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 7: Is This Object Note of 3 Events  Object::Event=7 ID=88
+     ***********************************
+         Pitch = 64
+     ***********************************
+		Event:7:Remove Object Note From Tail ID=88
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+		Event 6: Add Object Type Note Object Event 6 ID=88
+		Event 6:**NO Notes
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 65
+NoteOff: Ch=7 Note=E4 [64] Vel=0
+				CMsNote::SetPitch: F4 [65]
+	NoteOn: Ch=7 Note=F4 [65] Vel=100
+<<CMsNote::MouseMove: Note Change 65
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Add Object Type Note Object Event 6 ID=89
+		Event 6: There **ARE** 1 Notes in this Event
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 65
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: F4 [65]
+	NoteOn: Ch=7 Note=F4 [65] Vel=100
+<<CMsNote::MouseMove: Note Change 65
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 64
+NoteOff: Ch=7 Note=F4 [65] Vel=0
+				CMsNote::SetPitch: E4 [64]
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+<<CMsNote::MouseMove: Note Change 64
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 62
 NoteOff: Ch=7 Note=E4 [64] Vel=0
 				CMsNote::SetPitch: D4 [62]
 	NoteOn: Ch=7 Note=D4 [62] Vel=100
 <<CMsNote::MouseMove: Note Change 62
-Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -191,14 +1361,12 @@ NoteOff: Ch=7 Note=D4 [62] Vel=0
 <<CMsNote::MouseMove: Note Change 60
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 59
 NoteOff: Ch=7 Note=C4 [60] Vel=0
 				CMsNote::SetPitch: B3 [59]
 	NoteOn: Ch=7 Note=B3 [59] Vel=100
 <<CMsNote::MouseMove: Note Change 59
-Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -210,13 +1378,13 @@ NoteOff: Ch=7 Note=B3 [59] Vel=0
 Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 55
 NoteOff: Ch=7 Note=A3 [57] Vel=0
 				CMsNote::SetPitch: G3 [55]
 	NoteOn: Ch=7 Note=G3 [55] Vel=100
 <<CMsNote::MouseMove: Note Change 55
-Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -227,7 +1395,6 @@ NoteOff: Ch=7 Note=G3 [55] Vel=0
 <<CMsNote::MouseMove: Note Change 53
 Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 52
 NoteOff: Ch=7 Note=F3 [53] Vel=0
@@ -235,15 +1402,12 @@ NoteOff: Ch=7 Note=F3 [53] Vel=0
 	NoteOn: Ch=7 Note=E3 [52] Vel=100
 <<CMsNote::MouseMove: Note Change 52
 Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 50
 NoteOff: Ch=7 Note=E3 [52] Vel=0
 				CMsNote::SetPitch: D3 [50]
 	NoteOn: Ch=7 Note=D3 [50] Vel=100
 <<CMsNote::MouseMove: Note Change 50
-Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
@@ -254,6 +1418,17 @@ NoteOff: Ch=7 Note=D3 [50] Vel=0
 <<CMsNote::MouseMove: Note Change 48
 Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 3 Events  Object::Event=6 ID=89
+     ***********************************
+         Pitch = 48
+     ***********************************
+		Event:6:Remove Object Note From Tail ID=89
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=89
+		Event 5: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
 Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 47
@@ -281,51 +1456,350 @@ NoteOff: Ch=7 Note=A2 [45] Vel=0
 <<CMsNote::MouseMove: Note Change 43
 Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 41
+		Event 5: Is This Object Note of 4 Events  Object::Event=5 ID=89
+     ***********************************
+         Pitch = 43
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=89
 NoteOff: Ch=7 Note=G2 [43] Vel=0
-				CMsNote::SetPitch: F2 [41]
+		Event 6: Add Object Type Note Object Event 6 ID=89
+		Event 6: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: G2 [43]
+	NoteOn: Ch=7 Note=G2 [43] Vel=100
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 45
+NoteOff: Ch=7 Note=G2 [43] Vel=0
+				CMsNote::SetPitch: A2 [45]
+	NoteOn: Ch=7 Note=A2 [45] Vel=100
+<<CMsNote::MouseMove: Note Change 45
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 47
+NoteOff: Ch=7 Note=A2 [45] Vel=0
+				CMsNote::SetPitch: B2 [47]
+	NoteOn: Ch=7 Note=B2 [47] Vel=100
+<<CMsNote::MouseMove: Note Change 47
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 6: Is This Object Note of 3 Events  Object::Event=6 ID=89
+     ***********************************
+         Pitch = 47
+     ***********************************
+		Event:6:Remove Object Note From Tail ID=89
+NoteOff: Ch=7 Note=B2 [47] Vel=0
+		Event 5: Add Object Type Note Object Event 5 ID=89
+		Event 5: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: B2 [47]
+	NoteOn: Ch=7 Note=B2 [47] Vel=100
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 48
+NoteOff: Ch=7 Note=B2 [47] Vel=0
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
+<<CMsNote::MouseMove: Note Change 48
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 50
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+				CMsNote::SetPitch: D3 [50]
+	NoteOn: Ch=7 Note=D3 [50] Vel=100
+<<CMsNote::MouseMove: Note Change 50
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=D3 [50] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 53
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+				CMsNote::SetPitch: F3 [53]
+	NoteOn: Ch=7 Note=F3 [53] Vel=100
+<<CMsNote::MouseMove: Note Change 53
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 55
+NoteOff: Ch=7 Note=F3 [53] Vel=0
+				CMsNote::SetPitch: G3 [55]
+	NoteOn: Ch=7 Note=G3 [55] Vel=100
+<<CMsNote::MouseMove: Note Change 55
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 57
+NoteOff: Ch=7 Note=G3 [55] Vel=0
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+<<CMsNote::MouseMove: Note Change 57
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 5: Is This Object Note of 4 Events  Object::Event=5 ID=89
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=89
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 4: Add Object Type Note Object Event 4 ID=89
+		Event 4: There **ARE** 2 Notes in this Event
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 4: Is This Object Note of 4 Events  Object::Event=4 ID=89
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=89
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 3: Add Object Type Note Object Event 3 ID=89
+		Event 3: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=89
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:3:Remove Object Note From Head ID=89
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 2: Add Object Type Note Object Event 2 ID=89
+		Event 2: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 2: Is This Object Note of 2 Events  Object::Event=2 ID=89
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:2:Remove Object Note From Tail ID=89
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 3: Add Object Type Note Object Event 3 ID=89
+		Event 3: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Add Object Type Note Object Event 3 ID=90
+		Event 3: There **ARE** 2 Notes in this Event
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 57
+NoteOff: Ch=7 Note=C-1 [0] Vel=0
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+<<CMsNote::MouseMove: Note Change 57
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 3: Is This Object Note of 3 Events  Object::Event=3 ID=90
+     ***********************************
+         Pitch = 57
+     ***********************************
+		Event:3:Remove Object Note From Tail ID=90
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+		Event 2: Add Object Type Note Object Event 2 ID=90
+		Event 2: There **ARE** 1 Notes in this Event
+				CMsNote::SetPitch: A3 [57]
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 55
+NoteOff: Ch=7 Note=A3 [57] Vel=0
+				CMsNote::SetPitch: G3 [55]
+	NoteOn: Ch=7 Note=G3 [55] Vel=100
+<<CMsNote::MouseMove: Note Change 55
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 2: Is This Object Note of 2 Events  Object::Event=2 ID=90
+     ***********************************
+         Pitch = 55
+     ***********************************
+		Event:2:Remove Object Note From Tail ID=90
+NoteOff: Ch=7 Note=G3 [55] Vel=0
+		Event 1: Add Object Type Note Object Event 1 ID=90
+		Event 1:**NO Notes
+				CMsNote::SetPitch: F3 [53]
+	NoteOn: Ch=7 Note=F3 [53] Vel=100
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 52
+NoteOff: Ch=7 Note=F3 [53] Vel=0
+				CMsNote::SetPitch: E3 [52]
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+<<CMsNote::MouseMove: Note Change 52
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 50
+NoteOff: Ch=7 Note=E3 [52] Vel=0
+				CMsNote::SetPitch: D3 [50]
+	NoteOn: Ch=7 Note=D3 [50] Vel=100
+<<CMsNote::MouseMove: Note Change 50
+Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 1: Is This Object Note of 4 Events  Object::Event=1 ID=90
+     ***********************************
+         Pitch = 50
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=90
+NoteOff: Ch=7 Note=D3 [50] Vel=0
+		Event 0: Add Object Type Note Object Event 0 ID=90
+		Event 0:**NO Notes
+				CMsNote::SetPitch: C3 [48]
+	NoteOn: Ch=7 Note=C3 [48] Vel=100
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 47
+NoteOff: Ch=7 Note=C3 [48] Vel=0
+				CMsNote::SetPitch: B2 [47]
+	NoteOn: Ch=7 Note=B2 [47] Vel=100
+<<CMsNote::MouseMove: Note Change 47
+Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+>>CMsNote::MouseMove: Note Change 45
+NoteOff: Ch=7 Note=B2 [47] Vel=0
+				CMsNote::SetPitch: A2 [45]
+	NoteOn: Ch=7 Note=A2 [45] Vel=100
+<<CMsNote::MouseMove: Note Change 45
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=90
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=90
+     ***********************************
+         Pitch = 45
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=90
+NoteOff: Ch=7 Note=A2 [45] Vel=0
+Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
+NoteOff: Ch=7 Note=C4 [60] Vel=100
+NoteOff: Ch=7 Note=A3 [57] Vel=100
+NoteOff: Ch=7 Note=F2 [41] Vel=100
+NoteOff: Ch=7 Note=E4 [64] Vel=100
+NoteOff: Ch=7 Note=D4 [62] Vel=100
+NoteOff: Ch=7 Note=B3 [59] Vel=100
+NoteOff: Ch=7 Note=E3 [52] Vel=100
+NoteOff: Ch=7 Note=F4 [65] Vel=100
+NoteOff: Ch=7 Note=E4 [64] Vel=100
+	NoteOn: Ch=7 Note=C4 [60] Vel=100
+NoteOff: Ch=7 Note=C4 [60] Vel=100
+	NoteOn: Ch=7 Note=A3 [57] Vel=100
 	NoteOn: Ch=7 Note=F2 [41] Vel=100
-<<CMsNote::MouseMove: Note Change 41
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 40
-NoteOff: Ch=7 Note=F2 [41] Vel=0
-				CMsNote::SetPitch: E2 [40]
-	NoteOn: Ch=7 Note=E2 [40] Vel=100
-<<CMsNote::MouseMove: Note Change 40
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 38
-NoteOff: Ch=7 Note=E2 [40] Vel=0
-				CMsNote::SetPitch: D2 [38]
-	NoteOn: Ch=7 Note=D2 [38] Vel=100
-<<CMsNote::MouseMove: Note Change 38
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 36
-NoteOff: Ch=7 Note=D2 [38] Vel=0
+NoteOff: Ch=7 Note=A3 [57] Vel=100
+NoteOff: Ch=7 Note=F2 [41] Vel=100
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+	NoteOn: Ch=7 Note=D4 [62] Vel=100
+NoteOff: Ch=7 Note=E4 [64] Vel=100
+NoteOff: Ch=7 Note=D4 [62] Vel=100
+	NoteOn: Ch=7 Note=B3 [59] Vel=100
+	NoteOn: Ch=7 Note=E3 [52] Vel=100
+NoteOff: Ch=7 Note=B3 [59] Vel=100
+NoteOff: Ch=7 Note=E3 [52] Vel=100
+	NoteOn: Ch=7 Note=F4 [65] Vel=100
+NoteOff: Ch=7 Note=F4 [65] Vel=100
+	NoteOn: Ch=7 Note=E4 [64] Vel=100
+NoteOff: Ch=7 Note=E4 [64] Vel=100
+Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=Outside to Edit
+
+Enter Edit Note:36
+		Event 0: Add Object Type Note Object Event 0 ID=90
+		Event 0:**NO Notes
 				CMsNote::SetPitch: C2 [36]
 	NoteOn: Ch=7 Note=C2 [36] Vel=100
-<<CMsNote::MouseMove: Note Change 36
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 36:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 38
@@ -333,139 +1807,84 @@ NoteOff: Ch=7 Note=C2 [36] Vel=0
 				CMsNote::SetPitch: D2 [38]
 	NoteOn: Ch=7 Note=D2 [38] Vel=100
 <<CMsNote::MouseMove: Note Change 38
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 38:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 40
 NoteOff: Ch=7 Note=D2 [38] Vel=0
 				CMsNote::SetPitch: E2 [40]
 	NoteOn: Ch=7 Note=E2 [40] Vel=100
 <<CMsNote::MouseMove: Note Change 40
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 40:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 41
 NoteOff: Ch=7 Note=E2 [40] Vel=0
 				CMsNote::SetPitch: F2 [41]
 	NoteOn: Ch=7 Note=F2 [41] Vel=100
 <<CMsNote::MouseMove: Note Change 41
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 41:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 43
 NoteOff: Ch=7 Note=F2 [41] Vel=0
 				CMsNote::SetPitch: G2 [43]
 	NoteOn: Ch=7 Note=G2 [43] Vel=100
 <<CMsNote::MouseMove: Note Change 43
-Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 43:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 45
-NoteOff: Ch=7 Note=G2 [43] Vel=0
-				CMsNote::SetPitch: A2 [45]
-	NoteOn: Ch=7 Note=A2 [45] Vel=100
-<<CMsNote::MouseMove: Note Change 45
-Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 45:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 47
-NoteOff: Ch=7 Note=A2 [45] Vel=0
+NoteOff: Ch=7 Note=G2 [43] Vel=0
 				CMsNote::SetPitch: B2 [47]
 	NoteOn: Ch=7 Note=B2 [47] Vel=100
 <<CMsNote::MouseMove: Note Change 47
-Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 47:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 48
-NoteOff: Ch=7 Note=B2 [47] Vel=0
-				CMsNote::SetPitch: C3 [48]
-	NoteOn: Ch=7 Note=C3 [48] Vel=100
-<<CMsNote::MouseMove: Note Change 48
-Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 48:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 50
-NoteOff: Ch=7 Note=C3 [48] Vel=0
+NoteOff: Ch=7 Note=B2 [47] Vel=0
 				CMsNote::SetPitch: D3 [50]
 	NoteOn: Ch=7 Note=D3 [50] Vel=100
 <<CMsNote::MouseMove: Note Change 50
-Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 50:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 52
 NoteOff: Ch=7 Note=D3 [50] Vel=0
 				CMsNote::SetPitch: E3 [52]
 	NoteOn: Ch=7 Note=E3 [52] Vel=100
 <<CMsNote::MouseMove: Note Change 52
-Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 52:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 53
-NoteOff: Ch=7 Note=E3 [52] Vel=0
-				CMsNote::SetPitch: F3 [53]
-	NoteOn: Ch=7 Note=F3 [53] Vel=100
-<<CMsNote::MouseMove: Note Change 53
-Note 53:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 55
-NoteOff: Ch=7 Note=F3 [53] Vel=0
+NoteOff: Ch=7 Note=E3 [52] Vel=0
 				CMsNote::SetPitch: G3 [55]
 	NoteOn: Ch=7 Note=G3 [55] Vel=100
 <<CMsNote::MouseMove: Note Change 55
-Note 55:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 57
 NoteOff: Ch=7 Note=G3 [55] Vel=0
 				CMsNote::SetPitch: A3 [57]
 	NoteOn: Ch=7 Note=A3 [57] Vel=100
 <<CMsNote::MouseMove: Note Change 57
-Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 57:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 59
 NoteOff: Ch=7 Note=A3 [57] Vel=0
 				CMsNote::SetPitch: B3 [59]
 	NoteOn: Ch=7 Note=B3 [59] Vel=100
 <<CMsNote::MouseMove: Note Change 59
-Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 59:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 60
 NoteOff: Ch=7 Note=B3 [59] Vel=0
 				CMsNote::SetPitch: C4 [60]
 	NoteOn: Ch=7 Note=C4 [60] Vel=100
 <<CMsNote::MouseMove: Note Change 60
-Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 60:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 62
 NoteOff: Ch=7 Note=C4 [60] Vel=0
 				CMsNote::SetPitch: D4 [62]
 	NoteOn: Ch=7 Note=D4 [62] Vel=100
 <<CMsNote::MouseMove: Note Change 62
-Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 62:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 64
 NoteOff: Ch=7 Note=D4 [62] Vel=0
 				CMsNote::SetPitch: E4 [64]
 	NoteOn: Ch=7 Note=E4 [64] Vel=100
 <<CMsNote::MouseMove: Note Change 64
-Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 64:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 65
 NoteOff: Ch=7 Note=E4 [64] Vel=0
 				CMsNote::SetPitch: F4 [65]
 	NoteOn: Ch=7 Note=F4 [65] Vel=100
 <<CMsNote::MouseMove: Note Change 65
-Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 65:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 67
 NoteOff: Ch=7 Note=F4 [65] Vel=0
@@ -473,6 +1892,16 @@ NoteOff: Ch=7 Note=F4 [65] Vel=0
 	NoteOn: Ch=7 Note=G4 [67] Vel=100
 <<CMsNote::MouseMove: Note Change 67
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=90
+     ***********************************
+         Pitch = 67
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=90
+NoteOff: Ch=7 Note=G4 [67] Vel=0
+		Event 1: Add Object Type Note Object Event 1 ID=90
+		Event 1:**NO Notes
+				CMsNote::SetPitch: G4 [67]
+	NoteOn: Ch=7 Note=G4 [67] Vel=100
 Note 67:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 69
@@ -481,7 +1910,6 @@ NoteOff: Ch=7 Note=G4 [67] Vel=0
 	NoteOn: Ch=7 Note=A4 [69] Vel=100
 <<CMsNote::MouseMove: Note Change 69
 Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 69:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 71
 NoteOff: Ch=7 Note=A4 [69] Vel=0
@@ -489,14 +1917,12 @@ NoteOff: Ch=7 Note=A4 [69] Vel=0
 	NoteOn: Ch=7 Note=B4 [71] Vel=100
 <<CMsNote::MouseMove: Note Change 71
 Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 71:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 72
 NoteOff: Ch=7 Note=B4 [71] Vel=0
 				CMsNote::SetPitch: C5 [72]
 	NoteOn: Ch=7 Note=C5 [72] Vel=100
 <<CMsNote::MouseMove: Note Change 72
-Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 72:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 74
@@ -506,14 +1932,13 @@ NoteOff: Ch=7 Note=C5 [72] Vel=0
 <<CMsNote::MouseMove: Note Change 74
 Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
+Note 74:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 76
 NoteOff: Ch=7 Note=D5 [74] Vel=0
 				CMsNote::SetPitch: E5 [76]
 	NoteOn: Ch=7 Note=E5 [76] Vel=100
 <<CMsNote::MouseMove: Note Change 76
-Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 76:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 77
@@ -522,15 +1947,12 @@ NoteOff: Ch=7 Note=E5 [76] Vel=0
 	NoteOn: Ch=7 Note=F5 [77] Vel=100
 <<CMsNote::MouseMove: Note Change 77
 Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 77:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 79:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 79
 NoteOff: Ch=7 Note=F5 [77] Vel=0
 				CMsNote::SetPitch: G5 [79]
 	NoteOn: Ch=7 Note=G5 [79] Vel=100
 <<CMsNote::MouseMove: Note Change 79
-Note 79:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 81:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 81
 NoteOff: Ch=7 Note=G5 [79] Vel=0
@@ -538,14 +1960,12 @@ NoteOff: Ch=7 Note=G5 [79] Vel=0
 	NoteOn: Ch=7 Note=A5 [81] Vel=100
 <<CMsNote::MouseMove: Note Change 81
 Note 81:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 81:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 83
 NoteOff: Ch=7 Note=A5 [81] Vel=0
 				CMsNote::SetPitch: B5 [83]
 	NoteOn: Ch=7 Note=B5 [83] Vel=100
 <<CMsNote::MouseMove: Note Change 83
-Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 83:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 >>CMsNote::MouseMove: Note Change 84
@@ -555,17 +1975,11 @@ NoteOff: Ch=7 Note=B5 [83] Vel=0
 <<CMsNote::MouseMove: Note Change 84
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
 Note 84:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
-Note 86:CMsNote::MouseMove: DrawState=Wait for Mouse Down ** Region=Edit Region ** Transition=None
->>CMsNote::MouseMove: Note Change 86
+		Event 1: Is This Object Note of 4 Events  Object::Event=1 ID=90
+		Event 1: Is This Object Note of 4 Events  Object::Event=1 ID=90
+     ***********************************
+         Pitch = 84
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=90
 NoteOff: Ch=7 Note=C6 [84] Vel=0
-				CMsNote::SetPitch: D6 [86]
-	NoteOn: Ch=7 Note=D6 [86] Vel=100
-<<CMsNote::MouseMove: Note Change 86
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-     ***********************************
-         Pitch = 86
-     ***********************************
-		Event:5:Remove Object Note From Head ID=20
-NoteOff: Ch=7 Note=D6 [86] Vel=0
 ------ Exit MidiSeqMS-------

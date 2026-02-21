@@ -4,7 +4,7 @@
 #pragma once
 
 
-constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH / 2 + EVENT_WIDTH / 4;
+constexpr auto MEASUREBAR_OFFSET = EVENT_WIDTH - 1;
 constexpr auto MEASUREBAR_NUMBER_HEIGHT = 14;
 constexpr auto MEASUREBAR_NUMBER_OFFSET_Y = 12;
 constexpr auto MEASUREBAR_NUMBER_OFFSET_X = 10;
@@ -22,8 +22,8 @@ public:
 	//-------------------------------------------------
 	virtual UINT Process();
 	virtual UINT Play();
-	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse);
-	virtual DRAWSTATE MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
+	virtual DRAWSTATE  MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual DRAWSTATE MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition);
 	virtual int IsTimedObject(){ return 0; }
 	virtual bool DoesSomething() {

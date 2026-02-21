@@ -9,6 +9,9 @@ constexpr auto STAVE_LINE_SPACING = 8;
 constexpr auto STAFF_HEIGHT = STAVE_LINE_SPACING * 20;	// Distance from top line of
 														// treble stave to bottom line
 														// of bass stave
+constexpr auto NOTE_ACCIDENTAL_HEIGHT = 8;
+constexpr auto NOTE_ACCIDENTAL_WIDTH = 8;
+
 constexpr auto BLACK_KEYS_PER_OCTAVE = 5;
 constexpr auto WHITE_KEYS_PER_OCTAVE = 7;
 constexpr auto HALF_STEPS_PER_OCTAVE = 12;
