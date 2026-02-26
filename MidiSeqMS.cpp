@@ -54,7 +54,6 @@ END_MESSAGE_MAP()
 CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 {
 	m_hMDIAccel = 0;
-	m_pLog = 0;
 	pConsol = 0;
 	m_hMDIMenu = 0;
 	m_UniqueID = 0;
@@ -66,8 +65,11 @@ CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 	m_ppBmNoteTypes = 0;
 	m_ppBmRestTypes = 0;
 	m_ppBmCBRestTypes = 0;
-	m_ppBmDecorationsNotSel = 0;
-	m_ppBmCBDecorationsSel = 0;
+	for(int i = 0; i < APP_NUM_DECORATIONS; ++i)
+	{
+		m_apBmCbDecorationsNotSel[i] = 0;
+		m_apBmCbDecorationsSel[i] = 0;
+	}
 	m_ppBmMisc = 0;
 	m_ppBmCbTimeSig = 0;
 	m_ppBmTimeSig = 0;
@@ -260,7 +262,7 @@ int CMidiSeqMSApp::ExitInstance()
 
 	KillPlayerThead();
 
-	if(LogFile())fprintf(m_pLog, "------ Exit MidiSeqMS-------\n");
+	if(LogFile())fprintf(LogFile(), "------ Exit MidiSeqMS-------\n");
 	AfxOleTerm(false);
 	CloseAllLogFiles();
 	return CWinApp::ExitInstance();
@@ -333,14 +335,12 @@ void CMidiSeqMSApp::InitBitMaps()
 	}
 	//--------------Decorations--------------
 	n = GetNumDecorations();
-	m_ppBmDecorationsNotSel = new CMyBitmap * [n];
-	m_ppBmCBDecorationsSel = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmDecorationsNotSel[i] = new CMyBitmap;
-		m_ppBmDecorationsNotSel[i]->LoadBitmapW(GetDecorationsBmCbIdsNotSel(i));
-		m_ppBmCBDecorationsSel[i] = new CMyBitmap;
-		m_ppBmCBDecorationsSel[i]->LoadBitmapW(GetDecorationsBmCbIdsSel(i));
+		m_apBmCbDecorationsNotSel[i] = new CMyBitmap;
+		m_apBmCbDecorationsNotSel[i]->LoadBitmapW(GetDecorationsBmCbIdsNotSel(i));
+		m_apBmCbDecorationsSel[i] = new CMyBitmap;
+		m_apBmCbDecorationsSel[i]->LoadBitmapW(GetDecorationsBmCbIdsSel(i));
 	}
 	//------------Rest Types--------------------
 	n = GetNumRestTypes();
@@ -364,8 +364,10 @@ void CMidiSeqMSApp::InitBitMaps()
 	//----------- Time Signature ---------------
 	n = GetNumTimeSig();
 	m_ppBmTimeSig = new CMyBitmap * [n];
+	m_ppBmTimeSig[0] = 0;
 	m_ppBmCbTimeSig = new CMyBitmap * [n];
-	for (i = 0; i < n; ++i)
+	m_ppBmCbTimeSig[0] = 0;
+	for (i = 1; i < n; ++i)
 	{
 		m_ppBmTimeSig[i] = new CMyBitmap;
 		m_ppBmTimeSig[i]->LoadBitmapW(GetTimeSigBmID(i));
@@ -375,6 +377,7 @@ void CMidiSeqMSApp::InitBitMaps()
 	//------------- Key Signature ----------------
 	n = GetNumKeySigs();
 	m_ppBmCbKeySig = new CMyBitmap * [n+1];
+	m_ppBmCbKeySig[0] = 0;
 	for (i = 0; i < n; ++i)
 	{
 		m_ppBmCbKeySig[i+1] = new CMyBitmap;

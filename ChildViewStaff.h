@@ -51,12 +51,6 @@ public:
 		{ DRAWSTATE::REPEAT_END_PLACE, "Place Repeat End" },
 		{ DRAWSTATE(-1), NULL } // End Marker
 	};
-	inline static int CBDecorationFlags[APP_NUM_DECORATIONS] = {
-		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_CHECKED,
-		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED,
-		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED,
-		COMBOTOGGLE_TOGGLE_ENABLE | COMBOTOGGLE_TOGGLE_EXCLUSIVE | COMBOTOGGLE_TOGGLE_CHECKED
-	};
 	enum class DrawMode : int {
 		NOP,
 		NOTE,
@@ -220,14 +214,14 @@ private:
 	SColorPalette m_ColorPalette;
 	//---------- Combo Boxes --------------
 	CComboDropDown m_Combo_BlockOps;
-	CComboDropDown m_Combo_Instrument;
-	CComboDropDown m_Combo_TimeSig;
-	CComboDropDown m_Combo_Rests;
+	CComboTracks m_Combo_Instrument;
+	CComboTimeSignature m_Combo_TimeSig;
+	CComboRest m_Combo_Rests;
 	CComboDropDown m_Combo_Accidentals;
-	CComboDropDownToggle m_Combo_Decorations;
+	CComboDecorations m_Combo_Decorations;
 	CComboDropUp m_Combo_Misc;
-	CComboDropDown m_Combo_NoteType;
-	CComboDropDown m_Combo_KeySig;
+	CComboNoteType m_Combo_NoteType;
+	CComboKeySig m_Combo_KeySig;
 	//--------- View Controls ------------------
 	CMyButton m_Button_Play;
 	CMyButton m_Button_Pause;
@@ -388,7 +382,6 @@ public:
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
 	void SetupDrawMode(DrawMode Mode, long v = 0);
-	void UpdateNoteInfo(int RestFlag);
 	void UpdateScrollbarInfo(int TotalEvents, const char* Title = 0);
 	int XtoEventIndex(int x);
 	int YtoNote(int y);
@@ -406,7 +399,9 @@ public:
 	void RemoveSelectedObject(CMsObject* pObj);
 	CMsObject* MatchMouseToObjectInEvent(UINT Event, CPoint MousePointer);
 	CMsObject* MatchMouseToSelectedObject(CPoint MousePointer);
-	CMsSongInfo* GetSongInfo(){return GetSong()->GetSongInfo();}
+	CMsSongInfo* GetSongInfo(){
+		return GetSong()->GetSongInfo();
+	}
 	CMsTrack* GetTrackInfo(int TrackID);
 	SColorPalette* GetColorPalette() { return &m_ColorPalette; }
 	//--------------- View Regions ------------------

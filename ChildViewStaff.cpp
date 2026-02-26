@@ -1327,7 +1327,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					Dlg.SetSelection((int)Obj.pTime->GetTimeSignature());
 					Dlg.SetCaption(CString("Change Time Signature"));
 					if (IDOK == Dlg.DoModal())
-						Obj.pTime->SetTimeSignature((Dlg.GetSelection() + 1));
+						Obj.pTime->SetTimeSignature(CMsTimeSignature::TimeSigID(Dlg.GetSelection() + 1));
 				}
 				break;
 				}//end of switch(Obj.pObj->GetType()
@@ -1461,7 +1461,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 				pEv = GetDrawObject()->GetParentEvent();
 				if (pEv)
 				{
-					pEv->RemoveObject(GetDrawObject());
+					if(pEv->IsThisObjectInThisEvent(GetDrawObject()))
+						pEv->RemoveObject(GetDrawObject());
 				}
 				delete m_pDrawObject;
 				SetDrawObject(0);
@@ -1619,18 +1620,21 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	break;
 	case DrawMode::TIMESIG:		// SetupDrawMode
 	{
+//		CMsTimeSignature::TimeSigID TS;
+
 		if (GetDrawObject())
 		{
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if(pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
 		}
 		CMsTimeSignature* pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), COMBO_TIMESIG_4_4);
+		pTS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), CMsTimeSignature::TimeSigID(v));
 		m_dmDrawMode = DrawMode::TIMESIG;
 		SetDrawObject(pTS);
 	}
@@ -2277,9 +2281,9 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				break;
 			case LK25_BUTTON_TOP2:		//OnShortmidimsg
 				//toggle checkbox
-				m_Combo_Decorations.ToggleItem(COMBO_DECORATION_ACCENT);
+				m_Combo_Decorations.ToggleItem((int)ComboBoxDecorationIndex::ACCENT);
 				Invalidate();
-				UpdateNoteInfo(0);
+				//UpdateNoteInfo(0);
 				break;
 			case LK25_BUTTON_TOP3:
 				break;
@@ -2435,7 +2439,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 			}//end of switch(Note) Note is the controller number
 			if (UpdateNoteInfoFlag)	//do we need to update note draw mode?
 			{
-				UpdateNoteInfo(RestFlag);
+//				UpdateNoteInfo(RestFlag);
 			}
 		}	//end of if(chan == 0)
 		break;
@@ -2493,36 +2497,6 @@ afx_msg LRESULT CChildViewStaff::OnStaffDispEvent(WPARAM Event, LPARAM cmd)
 	}
 	Invalidate();
 	return 0;
-}
-
-void CChildViewStaff::UpdateNoteInfo(int RestFlag)
-{
-	CMsNote* pN;
-
-	if ((m_dmDrawMode != DrawMode::NOTE) && (m_dmDrawMode != DrawMode::DRAW_NOTES_VIA_MIDI))
-	{
-		if (GetDrawObject())
-		{
-			delete m_pDrawObject;
-			SetDrawObject(0);
-		}
-		m_dmDrawMode = DrawMode::NOTE;
-	}
-	if (GetDrawObject() == 0) SetDrawObject(new CMsNote);
-	pN = (CMsNote *)GetDrawObject();
-	pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
-	UpdateComboBoxes();
-	pN->GetData().CopyData(GetNoteData());
-	//WTF?
-	int Dur = m_nMidiInputNoteSetup & DRAW_NOTE_DURATION;	//this line does nothing
-	//-----------------------------
-	// Get the duration by first
-	// Oh, this is just too
-	// convoluted....
-	//-----------------------------
-	Dur = CMsNote::NoteDurLut[(int)CMsNote::GetDurationTable()[(int)pN->GetDuration()].NoteShapeIndex];
-	pN->SetDuration(Dur);
-	pN->SetRest(RestFlag);
 }
 
 int CChildViewStaff::IsEventDisplayed(CMsEvent* pEV)
@@ -2599,7 +2573,7 @@ void CChildViewStaff::OnInitialUpdate()
 	pTM->Create(GetSong(), pEV,100);
 	pEV->AddObject(pTM);
 	CMsTimeSignature* pTS = new CMsTimeSignature();
-	pTS->Create(GetSong(), pEV, COMBO_TIMESIG_4_4);
+	pTS->Create(GetSong(), pEV, CMsTimeSignature::TimeSigID::TS_4_4);
 	pEV->AddObject(pTS);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
@@ -2615,118 +2589,51 @@ void CChildViewStaff::OnInitialUpdate()
 	// Initialize Combo Boxes
 	// Instrument Selection
 	//---------------------------------------
-	n = GetSong()->GetNumberOfTracks();
-	itemSize = 28;
 	m_Combo_Instrument.Create(
-		5,	//number of instruments to display
-		15,	//total number of instruments
-		CSize(28, 28),	//size of items in combobox
 		CPoint(ControlX, 0),	//upper left corner
-		CSize(16, 28),	//size of drop arrow
-		this,			//parent window
-		IDC_COMBO_INSTRUMENT	// control ID
+		this			//parent window
 	);
-	for (i = 1; i < (n+1); ++i)
-	{
-		m_Combo_Instrument.AddBitmap(
-			GetTrackInfo(i)->GetBitmap());
-
-	}
 	ControlX += m_Combo_Instrument.GetTotalWidth();
 	//---------------------------------------
-	// Initailize keysignature combo box
+	// Initialize keysignature combo box
 	//----------------------------------------
-	n = GETAPP->GetNumKeySigs();
-	itemSize = GETAPP->bmGetCBKeySignature(1)->GetBmDim();
-	itemSize += CSize(8, 8);
 	m_Combo_KeySig.Create(
-		5,
-		n,
-		itemSize,
 		CPoint(ControlX, 0),
-		CSize(16,itemSize.cy),
-		this,
-		IDC_COMBO_KEYSIG
+		this
 	);
-	for (i = 0; i < n; ++i)
-		m_Combo_KeySig.AddBitmap(GETAPP->bmGetCBKeySignature(i + 1));
 	ControlX += m_Combo_KeySig.GetTotalWidth();
 	//----------------------------------------
 	// Initialize time signature combo box
 	//-----------------------------------------
-	n = GETAPP->GetNumTimeSig();
-	itemSize = GETAPP->bmGetCbTimeSig(COMBO_TIMESIG_2_2)->GetBmDim();
-	itemSize += CSize(8, 4);
 	m_Combo_TimeSig.Create(
-		4,
-		n,
-		itemSize,
-		CPoint(ControlX,0),
-		CSize(20,itemSize.cy),
-		this,
-		IDC_COMBO_TIMESIG
+		CPoint(ControlX, 0),	//upper left corner
+		this
 	);
-	for(i=0;i<n;++i)
-		m_Combo_TimeSig.AddBitmap(GETAPP->bmGetCbTimeSig(i));
 	ControlX += m_Combo_TimeSig.GetTotalWidth();
 	//------------------------------------------
 	// Initialize note duration combox box
 	//------------------------------------------
-	n = GETAPP->GetNumNoteTypes ();
-	itemSize = GETAPP->bmGetNoteType(0)->GetBmDim();
-	itemSize += CSize(4, 4);
 	m_Combo_NoteType.Create(
-		n - 2, // Number of items to display
-		n, // Total Items
-		itemSize,	//size of items in combobox
 		CPoint(ControlX, 0),	//uper left corner
-		CSize(16, itemSize.cy),	//size of drop arrow
-		this,				//parent window
-		IDC_COMBO_NOTETYPES	// control ID
+		this				//parent window
 	);
-	for (i = 0; i < n; ++i)
-		m_Combo_NoteType.AddBitmap(GETAPP->bmGetNoteType(i));
 	ControlX += m_Combo_NoteType.GetTotalWidth();
 
 	//---------------------------------------
 	// Initialize rest duration combo box
 	//---------------------------------------
-	n = GETAPP->GetNumRestTypes();
-	itemSize = GETAPP->bmGetCBRestTypes(0)->GetBmDim();
-	itemSize += CSize(8, 4);
 	m_Combo_Rests.Create(
-		4,
-		n,
-		itemSize,
 		CPoint(ControlX,0),
-		CSize(16,itemSize.cy),
-		this,
-		IDC_COMBO_RESTTYPES
+		this
 	);
-	for(i=0;i<n;++i)
-		m_Combo_Rests.AddBitmap(GETAPP->bmGetCBRestTypes(i));
 	ControlX += m_Combo_Rests.GetTotalWidth();
 	//-------------------------------------------
 	// Initialize decorations combo box
 	//--------------------------------------------
-	n = GETAPP->GetNumDecorations();
-	itemSize = GetBmDimensions(CMidiSeqMSApp::GetDecorationsBmCbIdsSel(COMBO_DECORATION_ACCENT));
-	itemSize += CSize(8, 8);
 	m_Combo_Decorations.Create(
-		n,
-		n,
-		itemSize,
 		CPoint(ControlX, 0),
-		CSize(18,itemSize.cy),
-		this,
-		IDC_COMBO_DECORATIONS
+		this
 	);
-	for (i = 0; i < n; ++i)
-	{
-		m_Combo_Decorations.AddNotSelBitmapID(CMidiSeqMSApp::GetDecorationsBmCbIdsNotSel(i));
-		m_Combo_Decorations.AddSelBitmapID(CMidiSeqMSApp::GetDecorationsBmCbIdsSel(i));
-		m_Combo_Decorations.SetItemFlags(i, CBDecorationFlags[i]);
-	}
 	ControlX += m_Combo_Decorations.GetTotalWidth();
 	//--------------------------------------
 	// Initialize accidental combo box
@@ -2898,7 +2805,7 @@ void CChildViewStaff::OnInitialUpdate()
 	if(pTS)
 		m_Combo_TimeSig.SetCurSel((int)pTS->GetTimeSignature() - 1, false);
 
-	m_Combo_Decorations.SetCurSel(COMBO_DECORATION_NONE);
+	m_Combo_Decorations.SetCurSel((int)ComboBoxDecorationIndex::NONE);
 
 	m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
 	SetAccidental(MSFF_ACCIDENTAL_INKEY);
@@ -3151,7 +3058,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		SetupDrawMode(DrawMode::NOTE);
 		break;
 	case IDC_COMBO_RESTTYPES:		// MyControlsMessages
-		m_Combo_Decorations.ClearAllItems(COMBO_DECORATION_NONE);
+		m_Combo_Decorations.ClearAllItems((int)ComboBoxDecorationIndex::NONE);
 		m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
 		m_Combo_Accidentals.EnableWindow(0);
 		m_Combo_Decorations.EnableWindow(0);
@@ -3209,10 +3116,10 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		case CBT_SETVALUE:
 			switch (ToggleMSG.index)
 			{
-			case COMBO_DECORATION_ACCENT:
+			case (int)ComboBoxDecorationIndex::ACCENT:
 				SetAccent(ToggleMSG.value);
 				break;
-			case COMBO_DECORATION_NONE:
+			case (int)ComboBoxDecorationIndex::NONE:
 				if (ToggleMSG.value)
 				{
 					SetTriplet(0);
@@ -3220,7 +3127,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 					SetNoteDuration(CMsNote::NoteDurLut[(int)CMsNote::GetDurationTable()[GetNoteDuration()].NoteShapeIndex]);
 				}
 				break;
-			case COMBO_DECORATION_DOT:
+			case (int)ComboBoxDecorationIndex::DOT:
 				if (ToggleMSG.value)
 				{
 					SetDotted(ToggleMSG.value);
@@ -3230,7 +3137,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 					SetDotted(ToggleMSG.value);
 				SetNoteDuration(CMsNote::NoteDurLut[(int)CMsNote::GetDurationTable()[GetNoteDuration()].NoteShapeIndex] + 2);
 				break;
-			case COMBO_DECORATION_TRIPLET:
+			case (int)ComboBoxDecorationIndex::TRIPLET:
 				if (ToggleMSG.value)
 				{
 					SetTriplet(ToggleMSG.value);
@@ -3440,8 +3347,8 @@ afx_msg LRESULT CChildViewStaff::OnMidiEdit(WPARAM SubFunction, LPARAM SubSubFun
 //		PostMessageW(WM_MY_CONTROL_MESSAGES, IDC_COMBO_DECORATIONS, SubSubFunction);
 		break;
 	case MIDIEDIT_DECORATIONS_ACCENT:
-		m_Combo_Decorations.ToggleItem(COMBO_DECORATION_ACCENT);
-		m_Combo_Decorations.SetCurSel(COMBO_DECORATION_ACCENT);
+		m_Combo_Decorations.ToggleItem((int)ComboBoxDecorationIndex::ACCENT);
+		m_Combo_Decorations.SetCurSel((int)ComboBoxDecorationIndex::ACCENT);
 //		PostMessageW(WM_MY_CONTROL_MESSAGES, IDC_COMBO_DECORATIONS, SubSubFunction);
 		break;
 	case MIDIEDIT_ACCIDENTALS:

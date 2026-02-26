@@ -192,6 +192,12 @@
     <ClInclude Include="ChildViewBase.h" />
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
+    <ClInclude Include="ComboDecorations.h" />
+    <ClInclude Include="ComboKeySig.h" />
+    <ClInclude Include="ComboNoteType.h" />
+    <ClInclude Include="ComboRest.h" />
+    <ClInclude Include="ComboTimeSignature.h" />
+    <ClInclude Include="ComboTracks.h" />
     <ClInclude Include="DlgGlissandoProperties.h" />
     <ClInclude Include="Midi.h" />
     <ClInclude Include="MsBassCleff.h" />
@@ -289,6 +295,12 @@
     <ClCompile Include="ChildViewBase.cpp" />
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
+    <ClCompile Include="ComboDecorations.cpp" />
+    <ClCompile Include="ComboKeySig.cpp" />
+    <ClCompile Include="ComboNoteType.cpp" />
+    <ClCompile Include="ComboRest.cpp" />
+    <ClCompile Include="ComboTimeSignature.cpp" />
+    <ClCompile Include="ComboTracks.cpp" />
     <ClCompile Include="DlgGlissandoProperties.cpp" />
     <ClCompile Include="Midi.cpp" />
     <ClCompile Include="MsBassCleff.cpp" />

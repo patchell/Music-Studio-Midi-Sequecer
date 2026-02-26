@@ -40,14 +40,14 @@ END_MESSAGE_MAP()
 
 void CMyOwnCheckBox::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	PrintPoint("Check Box Button Down", point);
+	CMidiSeqMSApp::PrintPoint("Check Box Button Down", point);
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
 
 void CMyOwnCheckBox::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	PrintPoint("My OWN Checkbox", point);
+	CMidiSeqMSApp::PrintPoint("My OWN Checkbox", point);
 	m_CheckState ^= 1;	//toggle state
 	GetParent()->Invalidate();
 	GetParent()->PostMessageW(

@@ -54,10 +54,12 @@ DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMou
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
-					break;
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					DrawState = DRAWSTATE::PLACE;
 					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -70,6 +72,7 @@ DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMou
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 					}
+					DrawState = DRAWSTATE::PLACE;
 					break;
 				}
 			}
@@ -132,9 +135,6 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 			{
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
-				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
-					break;
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
@@ -149,6 +149,19 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 					}
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					[[fallthrough]];
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					EventIndex = GetStaffChildView()->GetDrawEvent();
+					pEV = GetSong()->GetEventObject(EventIndex);
+					pEV->AddObject(this);
+					pKS = new CMsKeySignature;
+					pKS->Create(GetSong(), pEV, GetKeySignature());
+					GetStaffChildView()->SetDrawObject(pKS);
+					GetStaffChildView()->CheckAndDoScroll(pointMouse);
+					csText.Format(_T("Place Key Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
+					GetStaffChildView()->GetStatusBar()->SetText(csText);
+					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 					break;
 				}
 			}
@@ -182,20 +195,6 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
 			break;
 		}
-		//		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
-
-
-
-		EventIndex = GetStaffChildView()->GetDrawEvent();
-		pEV = GetSong()->GetEventObject(EventIndex);
-		pEV->AddObject(this);
-		pKS = new CMsKeySignature;
-		pKS->Create(GetSong(), pEV, GetKeySignature());
-		GetStaffChildView()->SetDrawObject(pKS);
-		GetStaffChildView()->CheckAndDoScroll(pointMouse);
-		csText.Format(_T("Place Key Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
-		GetStaffChildView()->GetStatusBar()->SetText(csText);
-		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		GetStaffChildView()->Invalidate();
 		break;
 	default:

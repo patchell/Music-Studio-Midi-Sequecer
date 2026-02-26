@@ -8,6 +8,35 @@ constexpr auto DROP_DOWN_SELECTED = 1;
 
 class CComboDropDown : public CWnd
 {
+public:
+	enum class ComboDropDownTypes : int {
+		UNDEFINED = 0,
+		KEY_SIGNATURE,
+		TIME_SIGNATURE,
+		NOTE_TYPE,
+		REST_TYPE,
+		TRACK,
+		DECORATION,
+		BLOCK,
+		MISC
+	};
+private:
+	struct DropDownItems {
+		ComboDropDownTypes m_Type;
+		const char* m_pName;
+	};
+	inline static const DropDownItems DropDownItemsLUT[] = {
+		{ ComboDropDownTypes::KEY_SIGNATURE, "Key Signature" },
+		{ ComboDropDownTypes::TIME_SIGNATURE, "Time Signature" },
+		{ ComboDropDownTypes::NOTE_TYPE, "Note Type" },
+		{ ComboDropDownTypes::REST_TYPE, "Rest Type" },
+		{ ComboDropDownTypes::TRACK, "Track" },
+		{ ComboDropDownTypes::DECORATION, "Decoration" },
+		{ ComboDropDownTypes::BLOCK, "Block" },
+		{ ComboDropDownTypes::MISC, "Misc" },
+		{ ComboDropDownTypes::UNDEFINED, NULL }
+	};
+
 	DECLARE_DYNAMIC(CComboDropDown)
 	CWnd* m_pWndLastFocus;
 	//---------- Selection Items ------------
@@ -96,8 +125,10 @@ class CComboDropDown : public CWnd
 	COLORREF	m_Color_Track;
 	COLORREF	m_Color_Thumb;
 	COLORREF	m_Color_Highlight;
+	ComboDropDownTypes m_Type;
 public:
 	CComboDropDown();
+	CComboDropDown(ComboDropDownTypes type);
 	virtual ~CComboDropDown();
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -130,8 +161,5 @@ public:
 	void Expand();
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	void Reset() { m_nBitmapsAdded = 0; }
+	static const char* GetTypeString(ComboDropDownTypes type);
 };
-
-extern void PrintPoint(const char* string, CPoint pt);
-extern void PrintSize(const char* string, CSize sz);
-

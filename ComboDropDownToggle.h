@@ -8,6 +8,21 @@ constexpr auto DROP_DOWN_TOGGLE_SELECTED = 1;
 
 class CComboDropDownToggle : public CWnd
 {
+public:
+	enum class ComboDropDownToggleTypes : int {
+		UNDEFINED = 0,
+		ACCIDENTALS
+	};
+private:
+	struct DropDownToggleItems {
+		ComboDropDownToggleTypes m_Type;
+		const char* m_pName;
+	};
+	inline static const DropDownToggleItems DropDownToggleItemsLUT[] = {
+		{ ComboDropDownToggleTypes::ACCIDENTALS, "Accidentals" },
+		{ ComboDropDownToggleTypes::UNDEFINED, NULL }
+	};
+private:
 	DECLARE_DYNAMIC(CComboDropDownToggle)
 	CWnd* m_pWndLastFocus;
 	//---------- Selection Items ------------
@@ -103,8 +118,10 @@ class CComboDropDownToggle : public CWnd
 	//------------------------------------
 	int* m_pToggleFlags;
 	int* m_pToggleValue;
+	ComboDropDownToggleTypes m_Type;
 public:
 	CComboDropDownToggle();
+	CComboDropDownToggle(ComboDropDownToggleTypes Type);
 	virtual ~CComboDropDownToggle();
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -145,6 +162,7 @@ public:
 	// Clears all items and set current selection
 	void ClearAllItems(int nItem);
 	void Reset() { m_nSelBitmapsAdded = 0; }
+	static const char* GetItemName(ComboDropDownToggleTypes type);
 };
 
 

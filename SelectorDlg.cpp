@@ -13,7 +13,7 @@ CSelectorDlg::CSelectorDlg(CWnd* pParent /*=NULL*/)
 {
 	m_ppBitmaps = 0;
 	m_nBitmaps = 0;
-	m_nSelection = COMBO_TIMESIG_2_2;
+	m_nSelection = int(CBoxTimeSig::TIMESIG_2_2);
 }
 
 CSelectorDlg::~CSelectorDlg()

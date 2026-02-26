@@ -48,6 +48,49 @@ CComboDropDownToggle::CComboDropDownToggle()
 	m_Color_Highlight = RGB(64, 0, 208);
 	//-------------------------------------
 	m_pWndLastFocus = 0;
+	m_Type = ComboDropDownToggleTypes::UNDEFINED;
+}
+
+CComboDropDownToggle::CComboDropDownToggle(ComboDropDownToggleTypes Type)
+{
+#ifndef _WIN32_WCE
+	EnableActiveAccessibility();
+#endif
+	m_pToggleValue = 0;
+	m_pToggleFlags = 0;
+	m_State = 0;
+	m_LButtonDown = 0;
+	m_nItems = 0;
+	m_nTotalItems = 0;
+	for (int i = 0; i < m_nItems; ++i)
+	{
+		m_apRectItemControls[i] = 0;
+		m_apRgnItemControls[i] = 0;
+	}
+	// Slider Stuff
+	m_Pos = 0;
+	m_apBmSelItems = 0;
+	m_apBmNotSelItems = 0;
+	m_nSelBitmapsAdded = 0;
+	m_nNotSelBitmapsAdded = 0;
+	m_nCurSel = 0;
+	m_nDragThumb = 0;
+	m_nDragLastY = 0;
+	//----------------------
+	// Color pallate
+	//----------------------
+	m_Color_ListBG = RGB(32, 16, 64);
+	m_Color_ListSelBG = RGB(64, 32, 192);
+	m_Color_SelectionBG = RGB(192, 32, 0);
+	m_Color_UpDownArrowBG = RGB(255, 64, 32);
+	m_Color_UpDownArrow = RGB(192, 32, 192);
+	m_Color_DropArrowBG = RGB(64, 192, 128);
+	m_Color_Track = RGB(0, 48, 75);
+	m_Color_Thumb = RGB(255, 0, 0);
+	m_Color_Highlight = RGB(64, 0, 208);
+	//-------------------------------------
+	m_pWndLastFocus = 0;
+	m_Type = Type;
 }
 
 CComboDropDownToggle::~CComboDropDownToggle()
@@ -729,4 +772,21 @@ void CComboDropDownToggle::ClearAllItems(int nItem)
 	}
 	GetParent()->Invalidate();
 	SetCurSel(nItem);
+}
+
+const char* CComboDropDownToggle::GetItemName(ComboDropDownToggleTypes type)
+{
+	const char* prName = "Undefined";
+	int i;
+	bool bFound = false;
+
+	for(i = 0; !bFound && DropDownToggleItemsLUT[i].m_pName; ++i)
+	{
+		if (DropDownToggleItemsLUT[i].m_Type == type)
+		{
+			prName = DropDownToggleItemsLUT[i].m_pName;
+			bFound = true;
+		}
+	}
+	return prName;
 }

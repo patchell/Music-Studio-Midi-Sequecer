@@ -3,16 +3,7 @@
 
 #include "pch.h"
 
-void PrintPoint(const char *string,CPoint pt)
-{
-//	if(LogFile()) fprintf(LogFile(),"POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
-}
 
-void PrintSize(const char* string, CSize sz)
-{
-//	if(LogFile()) fprintf(LogFile(),"SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
-
-}
 // CComboDropDown
 
 
@@ -53,6 +44,45 @@ CComboDropDown::CComboDropDown()
 	m_Color_Highlight = RGB(64, 0, 208);
 	//-------------------------------------
 	m_pWndLastFocus = 0;
+	m_Type = ComboDropDownTypes::UNDEFINED;
+}
+
+CComboDropDown::CComboDropDown(ComboDropDownTypes type)
+{
+#ifndef _WIN32_WCE
+	EnableActiveAccessibility();
+#endif
+	m_State = 0;
+	m_LButtonDown = 0;
+	m_nItems = 0;
+	m_nTotalItems = 0;
+	for (int i = 0; i < m_nItems; ++i)
+	{
+		m_apRectItemControls[i] = 0;
+		m_apRgnItemControls[i] = 0;
+	}
+	// Slider Stuff
+	m_Pos = 0;
+	m_apBmItems = 0;
+	m_nBitmapsAdded = 0;
+	m_nCurSel = 0;
+	m_nDragThumb = 0;
+	m_nDragLastY = 0;
+	//----------------------
+	// Color pallate
+	//----------------------
+	m_Color_ListBG = RGB(32, 16, 64);
+	m_Color_ListSelBG = RGB(64, 32, 192);
+	m_Color_SelectionBG = RGB(192, 32, 0);
+	m_Color_UpDownArrowBG = RGB(255, 64, 32);
+	m_Color_UpDownArrow = RGB(192, 32, 192);
+	m_Color_DropArrowBG = RGB(64, 192, 128);
+	m_Color_Track = RGB(0, 48, 75);
+	m_Color_Thumb = RGB(255, 0, 0);
+	m_Color_Highlight = RGB(64, 0, 208);
+	//-------------------------------------
+	m_pWndLastFocus = 0;
+	m_Type = type;
 }
 
 CComboDropDown::~CComboDropDown()
@@ -588,6 +618,23 @@ void CComboDropDown::OnKillFocus(CWnd* pNewWnd)
 		m_State = DROP_DOWN_NOTSELECTED;
 		Colapse();
 	}
+}
+
+const char* CComboDropDown::GetTypeString(ComboDropDownTypes type)
+{
+	const char* prString = "Undefined";
+	bool bFound = false;
+
+	for (int i = 0; DropDownItemsLUT[i].m_pName != NULL && !bFound; ++i)
+	{
+		if (DropDownItemsLUT[i].m_Type == type)
+		{
+			prString = DropDownItemsLUT[i].m_pName;
+			bFound = true;
+			break;
+		}
+	}
+	return prString;
 }
 
 

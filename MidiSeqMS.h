@@ -33,7 +33,7 @@ private:
 		IDB_GLISSANDO
 	};
 	inline static int  BmIdKeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1] = {
-		-1,
+		-1,					// Undefined
 		IDB_CB_KEY_CMAJ,	//1X
 		IDB_CB_KEY_GMAJ,	//2X
 		IDB_CB_KEY_DMAJ,	//3X
@@ -366,8 +366,8 @@ private:
 	//---------------------
 	// Decoration
 	//---------------------
-	CMyBitmap** m_ppBmDecorationsNotSel;
-	CMyBitmap** m_ppBmCBDecorationsSel;
+	inline static CMyBitmap* m_apBmCbDecorationsNotSel[APP_NUM_DECORATIONS];
+	inline static CMyBitmap* m_apBmCbDecorationsSel[APP_NUM_DECORATIONS];
 	//---------------------------------------------
 	// 	   TX816 Editor Bitmaps
 	//--------------------------------------------
@@ -378,7 +378,7 @@ private:
 	//----------------------------------------
 //	CMidiInfo m_MidiInfo;
 	//----------------------------------------
-	FILE* m_pLog;
+	inline static FILE* m_pLog = 0;
 	FILE* pConsol;
 	//------------------- Midi ---------------------
 	CMidiOutTable m_MidiOutTable;
@@ -398,19 +398,23 @@ public:
 	bool OpenConsol();
 	HMIDIOUT GetMidiOutHandle(int MidiID) { return  GetMidiOutTable()->GetOutHandle(MidiID); }
 	//	HMIDIIN GetMidiIn() {return  GetMidi()->GetMidiInHandle(); }
-	FILE* LogFile() { return m_pLog; }
+	static FILE* LogFile() { return m_pLog; }
 	//------------- Midi Info -----------------------
 //	CMidiInfo* GetMidiInfo() { return &m_MidiInfo; }
 	//------------ Bitmap Symbols -------------------
 	CMyBitmap* bmGetQNoteEqQNPM() { return &m_BmQuarterNoteEqQNPM; }
 
 	int GetNumTimeSig() { return APP_NUM_TIMESIG; }
-	CMyBitmap* bmGetTimeSig(INT TimeSig) { return m_ppBmTimeSig[TimeSig]; }
-	CMyBitmap* bmGetCbTimeSig(INT TimSig) { return m_ppBmCbTimeSig[TimSig]; }
+	CMyBitmap* bmGetTimeSig(INT TimeSig) { 
+		return m_ppBmTimeSig[TimeSig]; 
+	}
+	CMyBitmap* bmGetCbTimeSig(INT TimSig) { 
+		return m_ppBmCbTimeSig[TimSig]; 
+	}
 	CMyBitmap** bmGetTimeSig() { return m_ppBmTimeSig; }
 	CMyBitmap** bmGetCbTimeSig() { return m_ppBmCbTimeSig; }
 	int GetTimeSigCbBmID(int TimeSig) { return BmIdTimeSigCBbMIDs[TimeSig]; }
-	int GetTimeSigBmID(int TimeSig) { return BmIdTimeSig[TimeSig]; }	
+	int GetTimeSigBmID(int TimeSig) { return BmIdTimeSig[TimeSig - 1]; }	
 
 	int GetNumNoteTypes() { return APP_NUM_NOTETYPES; }
 	CMyBitmap* bmGetNoteType(int NoteType) { return m_ppBmNoteTypes[NoteType]; }
@@ -433,11 +437,19 @@ public:
 		return BmIdRestComboBoxTypes;
 	}
 
-	int GetNumDecorations() { return APP_NUM_DECORATIONS; }
-	CMyBitmap* bmGetDecorationNotSel(int Dec) { return m_ppBmDecorationsNotSel[Dec]; }
-	CMyBitmap* bmGetDecorationSel(int Dec) { return m_ppBmCBDecorationsSel[Dec]; }
-	static int GetDecorationsBmCbIdsNotSel(int Id) { return DecorationsBmCbIdsNotSel[Id]; }
-	static int GetDecorationsBmCbIdsSel(int Id) { return DecorationsBmCbIdsSel[Id]; }
+	static int GetNumDecorations() { return APP_NUM_DECORATIONS; }
+	static CMyBitmap* bmGetCbDecorationNotSel(int Dec) { 
+		return m_apBmCbDecorationsNotSel[Dec]; 
+	}
+	static CMyBitmap* bmGetCbDecorationSel(int Dec) { 
+		return m_apBmCbDecorationsSel[Dec]; 
+	}
+	static int GetDecorationsBmCbIdsNotSel(int Id) { 
+		return DecorationsBmCbIdsNotSel[Id]; 
+	}
+	static int GetDecorationsBmCbIdsSel(int Id) { 
+		return DecorationsBmCbIdsSel[Id]; 
+	}
 
 	int GetNumAccidentalTypes() { return APP_NUM_ACCIDENTALTYPES; }
 	CMyBitmap* bmGetAccidentalType(int Accidnet) { return m_ppBmAccidentalTypes[Accidnet]; }
@@ -458,7 +470,9 @@ public:
 	}
 
 	int GetNumKeySigs() { return APP_NUM_KEYSIGNATURES; }
-	CMyBitmap* bmGetCBKeySignature(int KS) { return m_ppBmCbKeySig[KS]; }
+	CMyBitmap* bmGetCBKeySignature(int KS) { 
+		return m_ppBmCbKeySig[KS]; 
+	}
 	static int GetKeySigBmId(int KS) { return BmIdKeySigStringBitmapIDsTab[KS]; }
 
 	int GetNumTX816LfoWaves() { return APP_TX816_NUM_LFO_WAVES; }
@@ -537,6 +551,26 @@ public:
 			return nullptr;
 		return &TX816_OP_KEYBORD_Level_Scaling_Curve[Id];
 	}
+	//-------------- Utility Functions ------------------------------
+	static void PrintPoint(const char* string, CPoint pt)
+	{
+		if(LogFile()) fprintf(LogFile(),"POIJNT:%s: X = %d Y = %d\n", string, pt.x, pt.y);
+	}
+	static void PrintSize(const char* string, CSize sz)
+	{
+		if(LogFile()) fprintf(LogFile(),"SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
+
+	}
+	static CSize GetBmDimensions(int ID)
+	{
+		CSize size;
+		CMyBitmap Bm;
+
+		Bm.LoadBitmapW(ID);
+		size = Bm.GetBmDim();
+		return size;
+	}
+
 	//----------------------- Static Data----------------------------
 };
 

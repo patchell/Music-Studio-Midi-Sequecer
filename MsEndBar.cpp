@@ -58,10 +58,10 @@ DRAWSTATE CMsEndBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mo
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
-					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					DrawState = DRAWSTATE::PLACE;
 					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -74,6 +74,7 @@ DRAWSTATE CMsEndBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mo
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 					}
+					DrawState = DRAWSTATE::PLACE;
 					break;
 				}
 			}
@@ -134,11 +135,7 @@ DRAWSTATE CMsEndBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mou
 			{
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
-				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
-					break;
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
-					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -151,6 +148,21 @@ DRAWSTATE CMsEndBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mou
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 					}
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					[[fallthrough]];
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					//---------------------------------
+
+					GetSong()->RenumberMeasureBars();
+					pEndBarNew = new CMsEndBar;
+					pEndBarNew->Create(GetSong(), GetParentEvent());
+					pEndBarNew->Copy(GetStaffChildView()->GetDrawObject());
+					GetStaffChildView()->SetDrawObject(pEndBarNew);
+					GetParentEvent()->AddObject(pEndBarNew);
+					GetStaffChildView()->CheckAndDoScroll(pointMouse);
+					GetStaffChildView()->Invalidate();
+					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+					//---------------------------------
 					break;
 				}
 			}
@@ -294,7 +306,7 @@ void CMsEndBar::Print(FILE *pO, int Indent)
 
 void CMsEndBar::Draw(CDC *pDC)
 {
-	CPen penThin, Heavy, *pOldPen;
+	CPen penThin, penHeavy, *pOldPen;
 	LOGBRUSH Lb;
 	Lb.lbColor = RGB(0, 0, 0);
 	Lb.lbStyle = BS_SOLID;
@@ -305,12 +317,12 @@ void CMsEndBar::Draw(CDC *pDC)
 	CGdiObject* p_oldObject;
 
 	penThin.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-	Heavy.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT, 6, &Lb);
-	int x = MEASUREBAR_OFFSET;
+	penHeavy.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT, 6, &Lb);
+	int x = ENDBAR_OFFSET;
 	pOldPen = pDC->SelectObject(&penThin);
 	pDC->MoveTo(x - 6, TREBLE_TOP_LINE);
 	pDC->LineTo(x - 6, BASS_TOP_LINE + SINGLE_STAVE_HEIGHT);
-	pDC->SelectObject(&Heavy);
+	pDC->SelectObject(&penHeavy);
 	pDC->MoveTo(x, TREBLE_TOP_LINE);
 	pDC->LineTo(x, BASS_TOP_LINE + SINGLE_STAVE_HEIGHT);
 	pDC->SelectObject(pOldPen);

@@ -265,6 +265,24 @@
     <ClCompile Include="Midi.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ComboTimeSignature.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboNoteType.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboRest.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboKeySig.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboTracks.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboDecorations.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -550,6 +568,24 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Midi.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboTimeSignature.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboNoteType.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboRest.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboKeySig.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboTracks.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboDecorations.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

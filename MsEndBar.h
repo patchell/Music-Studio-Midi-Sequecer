@@ -3,6 +3,11 @@
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
+constexpr auto ENDBAR_OFFSET = EVENT_WIDTH - 1;
+constexpr auto ENDBAR_NUMBER_HEIGHT = 14;
+constexpr auto ENDBAR_NUMBER_OFFSET_Y = 12;
+constexpr auto ENDBAR_NUMBER_OFFSET_X = 10;
+
 class CMsEndBar : public CMsObject  
 {
 public:

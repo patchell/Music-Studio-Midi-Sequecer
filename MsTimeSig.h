@@ -5,25 +5,43 @@
 
 #pragma once
 
+constexpr auto TS_OFFSET_X = EVENT_WIDTH - (EVENT_WIDTH * 3) / 4;	// offset of time signature from left edge of event
 class CMsTimeSignature : public CMsObject
 {
-	inline static const char* TimeSigLut[] = {
-			"NA",		//0
-			"2/2",		//1
-			"3/2",		//2
-			"2/4",		//3
-			"3/4",		//4
-			"4/4",		//5
-			"5/4",		//6
-			"6/8",		//7
-			"NA"
+public:
+	enum class TimeSigID : int {
+		TS_ERROR = 0,
+		TS_2_2,
+		TS_3_2,
+		TS_2_4,
+		TS_3_4,
+		TS_4_4,
+		TS_5_4,
+		TS_6_8
+	};
+private:
+	struct TimeSigInfoItem {
+		TimeSigID m_id;
+		const char* m_pTimeSigString;
 	};
 
-	INT m_TimeSig;
+	inline static const TimeSigInfoItem TimeSigLut[] = {
+			{TimeSigID::TS_ERROR, "NA"},	//0
+			{TimeSigID::TS_2_2, "2/2"},		//1
+			{TimeSigID::TS_3_2, "3/2"},		//2
+			{TimeSigID::TS_2_4, "2/4"},		//3
+			{TimeSigID::TS_3_4, "3/4"},		//4
+			{TimeSigID::TS_4_4, "4/4"},		//5
+			{TimeSigID::TS_5_4, "5/4"},		//6
+			{TimeSigID::TS_6_8, "6/8"},		//7
+			{TimeSigID::TS_ERROR, "NA"}		//8
+	};
+
+	TimeSigID m_TimeSig;
 public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent, INT TS);
+	bool Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TS);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -46,8 +64,8 @@ public:
 	virtual void Save(FILE *pO);
 	virtual void Copy(CMsObject* Source);
 	virtual void Print(FILE *pO, int Indent);
-	INT GetTimeSignature(void){return m_TimeSig;}
-	void SetTimeSignature(INT t){m_TimeSig = t;}
+	TimeSigID GetTimeSignature(void) const {return m_TimeSig;}
+	void SetTimeSignature(TimeSigID t){m_TimeSig = t;}
 
 };
 

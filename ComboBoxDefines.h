@@ -82,14 +82,16 @@ constexpr auto COMBO_REST_THIRTYSEC = 5;
 //	ComboBox Indicies for Time Signiture
 //-------------------------------------
 
-constexpr auto COMBO_TIMESIG_NONE = -1;
-constexpr auto COMBO_TIMESIG_2_2 = 0;
-constexpr auto COMBO_TIMESIG_3_2 = 1;
-constexpr auto COMBO_TIMESIG_2_4 = 2;
-constexpr auto COMBO_TIMESIG_3_4 = 3;
-constexpr auto COMBO_TIMESIG_4_4 = 4;
-constexpr auto COMBO_TIMESIG_5_4 = 5;
-constexpr auto COMBO_TIMESIG_6_8 = 6;
+enum class CBoxTimeSig {
+	TIMESIG_NONE,
+	TIMESIG_2_2,
+	TIMESIG_3_2,
+	TIMESIG_2_4,
+	TIMESIG_3_4,
+	TIMESIG_4_4,
+	TIMESIG_5_4,
+	TIMESIG_6_8
+};
 
 //---------------------------------
 //	Combo Box Indexes for Instgrument
@@ -131,7 +133,9 @@ enum class ComboBoxCheckBox {
 	COMBO_DECORATION_CHECK_EN
 };
 
-constexpr auto COMBO_DECORATION_ACCENT = 0;
-constexpr auto COMBO_DECORATION_NONE = 1;
-constexpr auto COMBO_DECORATION_DOT = 2;
-constexpr auto COMBO_DECORATION_TRIPLET = 3;
+enum class ComboBoxDecorationIndex {
+	ACCENT,
+	NONE,
+	DOT,
+	TRIPLET
+};

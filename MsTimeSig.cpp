@@ -9,10 +9,9 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMsTimeSignature::CMsTimeSignature():CMsObject()
+CMsTimeSignature::CMsTimeSignature() :CMsObject(CMsObject::MsObjType::TIMESIG)
 {
-	m_ObjType = CMsObject::MsObjType::TIMESIG;
-	m_TimeSig = 0;
+	m_TimeSig = TimeSigID::TS_4_4;
 }
 
 CMsTimeSignature::~CMsTimeSignature()
@@ -20,7 +19,7 @@ CMsTimeSignature::~CMsTimeSignature()
 
 }
 
-bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, INT TS)
+bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TS)
 {
 	m_TimeSig = TS;
 	pSong->SetCurrentTimeSignature(this);
@@ -55,10 +54,11 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
-					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					DrawState = DRAWSTATE::PLACE;
 					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -71,6 +71,7 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 					}
+					DrawState = DRAWSTATE::PLACE;
 					break;
 				}
 			}
@@ -87,6 +88,7 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 			if (pEV)
@@ -129,7 +131,7 @@ DRAWSTATE CMsTimeSignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMou
 		pEvent->AddObject(this);
 		//-----------------------------
 		pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), 0, 0);
+		pTS->Create(GetSong(), pEvent, GetTimeSignature());
 		GetStaffChildView()->SetDrawObject(pTS);
 		GetStaffChildView()->CheckAndDoScroll(pointMouse);
 		csText.Format(_T("Place Time Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
@@ -260,8 +262,8 @@ void CMsTimeSignature::Draw(CDC *pDC)
 	CBitmap* oldBitmap;
 	CDC dc;
 	dc.CreateCompatibleDC(pDC);
-	x =  - 16;
-	oldBitmap = dc.SelectObject(GETAPP->bmGetTimeSig(m_TimeSig));
+	x = TS_OFFSET_X;
+	oldBitmap = dc.SelectObject(GETAPP->bmGetTimeSig(int(m_TimeSig)));
 	pDC->BitBlt(x,Y_CENTER_OF_TREBLE,16,33,&dc,0,0,SRCAND);
 	pDC->BitBlt(x,Y_CENTER_OF_BASS,16,33,&dc,0,0,SRCAND);
 	dc.SelectObject(oldBitmap);

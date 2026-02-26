@@ -41,6 +41,7 @@ CMsSong::CMsSong()
 	}
 	m_TickerState = TickerState::STOPPED;
 	m_pEventDirectory = new CMsEventDirectory();
+	m_pEventDirectory->Create(this);
 }
 
 CMsSong::~CMsSong()
@@ -202,7 +203,7 @@ int CMsSong::Parse(char *pSongData)
 			case MSFF_TOKEN_TIME_SIGNATURE:
 				TimeSig = ParserGetC();
 				obj.pTime = new CMsTimeSignature();
-				obj.pTime->Create(this, pEv, TimeSig);
+				obj.pTime->Create(this, pEv, CMsTimeSignature::TimeSigID(TimeSig));
 				break;
 			case MSFF_TOKEN_LOUDNESS:
 				Loudness = ParserGetC();
@@ -219,6 +220,7 @@ int CMsSong::Parse(char *pSongData)
 				break;
 			case MSFF_TOKEN_END:
 				obj.pEnd = new CMsEndBar;
+				obj.pEnd->Create(this, pEv);
 				loop = 0;
 				rV = 0;
 				break;
@@ -776,6 +778,7 @@ void CMsSong::Save(FILE *pO)
 		CMsEvent* pEV;
 
 		CMsEndBar *pME = new CMsEndBar;
+		pME->Create(this, m_pEventListTail);
 		pEV = MakeNewEvent();
 		AddEventAtEnd(pEV);
 		pEV = MakeNewEvent();
