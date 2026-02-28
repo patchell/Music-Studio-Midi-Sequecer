@@ -6,6 +6,6 @@ public:
 	CComboTracks();
 	virtual ~CComboTracks();
 	bool Create(CPoint ptUpperLeft, CWnd* pParentWnd);
-	CMsTrack* GetTrackInfo(int nTrack);
+	CMyBitmap* GetTrackBitMap(int nTrack);
 };
 

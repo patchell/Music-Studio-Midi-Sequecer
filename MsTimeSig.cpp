@@ -11,7 +11,7 @@
 
 CMsTimeSignature::CMsTimeSignature() :CMsObject(CMsObject::MsObjType::TIMESIG)
 {
-	m_TimeSig = TimeSigID::TS_4_4;
+	m_TimeSig = TimeSigID::TS_6_8;
 }
 
 CMsTimeSignature::~CMsTimeSignature()
@@ -115,29 +115,103 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 DRAWSTATE CMsTimeSignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions Region, MouseRegionTransitionState Transition)
 {
 	CMsTimeSignature* pTS = nullptr;
+	CMsEvent* pEV = nullptr;
 	CString csText;
-	int EventIndex = 0;
-	CMsEvent* pEvent = nullptr;
 
 	switch (DrawState)
 	{
-	case DRAWSTATE::WAITFORMOUSE_DOWN:
-		break;
-	case DRAWSTATE::SET_ATTRIBUTES:
-		break;
 	case DRAWSTATE::PLACE:
-		EventIndex = GetStaffChildView()->GetDrawEvent();
-		pEvent = GetSong()->GetEventObject(EventIndex);
-		pEvent->AddObject(this);
-		//-----------------------------
-		pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), pEvent, GetTimeSignature());
-		GetStaffChildView()->SetDrawObject(pTS);
-		GetStaffChildView()->CheckAndDoScroll(pointMouse);
+		switch (Transition)
+		{
+		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			if (Region == MouseRegions::MOUSE_IN_EDITREG)
+			{
+				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
+				{
+				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
+					[[fallthrough]];
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					pTS = new CMsTimeSignature;
+					pTS->Create(GetSong(), GetParentEvent(), GetTimeSignature());
+					pTS->Copy(this);
+					GetStaffChildView()->SetDrawObject(pTS);
+					//-----------------------------
+					GetParentEvent()->AddObject(pTS);
+					GetStaffChildView()->CheckAndDoScroll(pointMouse);
+					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+					GetStaffChildView()->Invalidate();
+					break;
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					[[fallthrough]];
+				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					if (GetParentEvent())
+					{
+						GetParentEvent()->RemoveObject(this);
+						SetParentEvent(nullptr);
+					}
+					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+					if (pEV)
+					{
+						pEV->AddObject(this);
+						SetParentEvent(pEV);
+					}
+					pTS = new CMsTimeSignature;
+					pTS->Create(GetSong(), GetParentEvent(), GetTimeSignature());
+					pTS->Copy(GetStaffChildView()->GetDrawObject());
+					GetStaffChildView()->SetDrawObject(pTS);
+					GetParentEvent()->AddObject(pTS);
+					GetStaffChildView()->CheckAndDoScroll(pointMouse);
+					GetStaffChildView()->Invalidate();
+					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+					break;
+				}
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
+			pEV = GetParentEvent();
+			if (pEV)
+			{
+				pEV->RemoveObject(this);
+				SetParentEvent(nullptr);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
+			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+			if (pEV)
+			{
+				pEV->AddObject(this);
+				SetParentEvent(pEV);
+			}
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+			[[fallthrough]];
+		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
+			break;
+		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
+			break;
+		}
+		//		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
+		GetStaffView()->Invalidate();
 		csText.Format(_T("Place Time Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
 		GetStaffChildView()->GetStatusBar()->SetText(csText);
 		DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 		GetStaffChildView()->Invalidate();
+		break;
+	case DRAWSTATE::WAITFORMOUSE_DOWN:
+		break;
+	case DRAWSTATE::SET_ATTRIBUTES:
 		break;
 	default:
 		break;
@@ -164,7 +238,12 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 	//-------------------------------------------------------
 	CString csStatusString, csTemp;
 	CMsEvent* pEV = 0;
-
+	
+	//printf("TimeSig MouseMove DrawState:%d Region:%d Transition:%d\n",
+	//	(int)DrawState,
+	//	(int)Region,
+	//	(int)Transition
+	//);
 	switch (DrawState)
 	{
 	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
@@ -180,13 +259,17 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
-					break;
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
+					[[fallthrough]];
+				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					if (GetParentEvent())
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (GetParentEvent()->IsThisObjectInThisEvent(this))
+						{
+							GetParentEvent()->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -199,7 +282,9 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
 			pEV = GetParentEvent();
 			if (pEV)
@@ -209,7 +294,9 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 			if (pEV)
@@ -219,15 +306,21 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
 			break;
 		}
-		//		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
+		csStatusString.Format(
+			_T("Place Time Signature: Event %d"), 
+			GetStaffChildView()->GetDrawEvent()
+		);
+		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
 		break;
 	case DRAWSTATE::MOVE_OBJECT_AROUND:
 		break;
@@ -261,8 +354,14 @@ void CMsTimeSignature::Draw(CDC *pDC)
 	int x;
 	CBitmap* oldBitmap;
 	CDC dc;
+
 	dc.CreateCompatibleDC(pDC);
 	x = TS_OFFSET_X;
+	//fprintf(LogFile(), "Drawing Time Signature %s<%d> at x=%d\n", 
+	//	TimeSigLut[(int)m_TimeSig].m_pTimeSigString,
+	//	(int)m_TimeSig,
+	//	x
+	//);
 	oldBitmap = dc.SelectObject(GETAPP->bmGetTimeSig(int(m_TimeSig)));
 	pDC->BitBlt(x,Y_CENTER_OF_TREBLE,16,33,&dc,0,0,SRCAND);
 	pDC->BitBlt(x,Y_CENTER_OF_BASS,16,33,&dc,0,0,SRCAND);
@@ -271,7 +370,15 @@ void CMsTimeSignature::Draw(CDC *pDC)
 
 StaffMouseStates CMsTimeSignature::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
 {
-	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	StaffMouseStates State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	CMsEvent* pCurrentEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+	int CurrentEventIndex = pCurrentEvent ? pCurrentEvent->GetIndex() : -1;
+	int thisEventIndex = pEvent ? pEvent->GetIndex() : -1;
+	bool bEventChanged = (CurrentEventIndex != thisEventIndex);
+
+	if (bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	return State;
 }
 
 void CMsTimeSignature::Copy(CMsObject* pSource)

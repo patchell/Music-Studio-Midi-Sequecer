@@ -192,6 +192,8 @@
     <ClInclude Include="ChildViewBase.h" />
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
+    <ClInclude Include="ComboAccidentals.h" />
+    <ClInclude Include="ComboBlockOps.h" />
     <ClInclude Include="ComboDecorations.h" />
     <ClInclude Include="ComboKeySig.h" />
     <ClInclude Include="ComboNoteType.h" />
@@ -295,6 +297,8 @@
     <ClCompile Include="ChildViewBase.cpp" />
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
+    <ClCompile Include="ComboAccidentals.cpp" />
+    <ClCompile Include="ComboBlockOps.cpp" />
     <ClCompile Include="ComboDecorations.cpp" />
     <ClCompile Include="ComboKeySig.cpp" />
     <ClCompile Include="ComboNoteType.cpp" />

@@ -19,6 +19,7 @@ public:
 	void EditSongInfo(int InstID);
 	//-------------------------------------
 	CMsTrack* GetTrack(int TrackID);
+	CMyBitmap* GetTrackBitmap(int InstID);
 	//-------------------------------------
 	COLORREF GetInstColor(int Inst) { return GetTrack(Inst)->GetColor(); }
 	void SetInstColor(int InstID, COLORREF Color) { GetTrack(InstID)->SetColor(Color); }

@@ -283,6 +283,12 @@
     <ClCompile Include="ComboDecorations.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ComboBlockOps.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboAccidentals.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -586,6 +592,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ComboDecorations.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboBlockOps.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboAccidentals.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

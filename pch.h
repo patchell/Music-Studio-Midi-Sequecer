@@ -88,7 +88,7 @@ enum class DRAWSTATE {
 //---------------------------------------
 // Music Editor
 //---------------------------------------
-constexpr auto APP_NUM_TIMESIG = 8;	// NULL, 2/2, 3/2, 2/4, 3/4, 4/4, 5/4, 6/8
+constexpr auto APP_NUM_TIMESIG = 7;	// NULL, 2/2, 3/2, 2/4, 3/4, 4/4, 5/4, 6/8
 constexpr auto APP_NUM_INSTRUMENTS = 15;
 constexpr auto APP_NUM_NOTETYPES = 6;
 constexpr auto APP_NUM_RESTTYPES = 6;
@@ -172,6 +172,8 @@ constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 #include "ComboKeySig.h"
 #include "ComboTracks.h"
 #include "ComboDecorations.h"
+#include "ComboBlockOps.h"
+#include "ComboAccidentals.h"
 //--------------------------------------
 #include "MsSongInfo.h"
 #include "MsSong.h"

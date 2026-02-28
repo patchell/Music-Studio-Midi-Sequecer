@@ -59,8 +59,11 @@ CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 	m_UniqueID = 0;
 	m_hPlayThread = 0;
 	m_idPlayerThread = 0;
-	m_ppBmAccidentalTypes = 0;
-	m_ppBmCBAccidentalTypes = 0;
+	for(int i = 0; i < APP_NUM_ACCIDENTALTYPES; ++i)
+	{
+		m_apBmAccidentalTypes[i] = 0;
+		m_apBmCBAccidentalTypes[i] = 0;
+	}
 	m_ppBmBlockOps = 0;
 	m_ppBmNoteTypes = 0;
 	m_ppBmRestTypes = 0;
@@ -71,8 +74,11 @@ CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 		m_apBmCbDecorationsSel[i] = 0;
 	}
 	m_ppBmMisc = 0;
-	m_ppBmCbTimeSig = 0;
-	m_ppBmTimeSig = 0;
+	for(int i = 0; i < APP_NUM_TIMESIG; ++i)
+	{
+		m_apBmTimeSig[i] = 0;
+		m_apBmCbTimeSig[i] = 0;
+	}	
 	m_ppBmCbKeySig = 0;
 	SetAppID(_T("MidiSeqMS.AppID.1.0"));
 }
@@ -119,6 +125,26 @@ bool CMidiSeqMSApp::OpenConsol()
 	return bSuccess;
 }
 
+CMyBitmap* CMidiSeqMSApp::bmGetCbTimeSig(INT TimSig)
+{
+	if (TimSig < 0 || TimSig >= APP_NUM_TIMESIG)
+	{
+		fprintf(LogFile(), "******* Error *******: TimeSig %d out of range\n", TimSig);
+	}
+	return m_apBmCbTimeSig[TimSig];
+}
+int CMidiSeqMSApp::GetTimeSigCbBmID(int TimeSig)
+{
+	int Id = -1;
+
+	if (TimeSig < 0 || TimeSig >= APP_NUM_TIMESIG)
+	{
+		fprintf(LogFile(), "******* Error *******: TimeSig %d out of range\n", TimeSig);
+	}
+	else
+		Id = BmIdTimeSigCBbMIDs[TimeSig];
+	return Id;
+}
 	// The one and only CMidiSeqMSApp object
 
 CMidiSeqMSApp theApp;
@@ -324,14 +350,12 @@ void CMidiSeqMSApp::InitBitMaps()
 	}
 	//--------------Accidental Type-----------------
 	n = GetNumAccidentalTypes();
-	m_ppBmAccidentalTypes = new CMyBitmap * [n];
-	m_ppBmCBAccidentalTypes = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmAccidentalTypes[i] = new CMyBitmap;
-		m_ppBmAccidentalTypes[i]->LoadBitmapW(AccidentalBmIdsTypes[i]);
-		m_ppBmCBAccidentalTypes[i] = new CMyBitmap;
-		m_ppBmCBAccidentalTypes[i]->LoadBitmapW(AccidentalBmCBIdsTypes[i]);
+		m_apBmAccidentalTypes[i] = new CMyBitmap;
+		m_apBmAccidentalTypes[i]->LoadBitmapW(AccidentalBmIdsTypes[i]);
+		m_apBmCBAccidentalTypes[i] = new CMyBitmap;
+		m_apBmCBAccidentalTypes[i]->LoadBitmapW(AccidentalBmCBIdsTypes[i]);
 	}
 	//--------------Decorations--------------
 	n = GetNumDecorations();
@@ -363,16 +387,12 @@ void CMidiSeqMSApp::InitBitMaps()
 	}
 	//----------- Time Signature ---------------
 	n = GetNumTimeSig();
-	m_ppBmTimeSig = new CMyBitmap * [n];
-	m_ppBmTimeSig[0] = 0;
-	m_ppBmCbTimeSig = new CMyBitmap * [n];
-	m_ppBmCbTimeSig[0] = 0;
-	for (i = 1; i < n; ++i)
+	for (i = 0; i < n; ++i)
 	{
-		m_ppBmTimeSig[i] = new CMyBitmap;
-		m_ppBmTimeSig[i]->LoadBitmapW(GetTimeSigBmID(i));
-		m_ppBmCbTimeSig[i] = new CMyBitmap;
-		m_ppBmCbTimeSig[i]->LoadBitmapW(GetTimeSigCbBmID(i));
+		m_apBmTimeSig[i] = new CMyBitmap;
+		m_apBmTimeSig[i]->LoadBitmapW(GetTimeSigBmID(i));
+		m_apBmCbTimeSig[i] = new CMyBitmap;
+		m_apBmCbTimeSig[i]->LoadBitmapW(GetTimeSigCbBmID(i));
 	}
 	//------------- Key Signature ----------------
 	n = GetNumKeySigs();

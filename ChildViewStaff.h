@@ -213,11 +213,11 @@ private:
 	//---------- View Colors -------------
 	SColorPalette m_ColorPalette;
 	//---------- Combo Boxes --------------
-	CComboDropDown m_Combo_BlockOps;
+	CComboBlockOps m_Combo_BlockOps;
 	CComboTracks m_Combo_Instrument;
 	CComboTimeSignature m_Combo_TimeSig;
 	CComboRest m_Combo_Rests;
-	CComboDropDown m_Combo_Accidentals;
+	CComboAccidentals m_Combo_Accidentals;
 	CComboDecorations m_Combo_Decorations;
 	CComboDropUp m_Combo_Misc;
 	CComboNoteType m_Combo_NoteType;
@@ -349,7 +349,9 @@ public:
 	int GetDrawEvent() const { 
 		return m_nDrawEvent;
 	}
-	void SetDrawEvent(int drawEvent) {	m_nDrawEvent = drawEvent; }
+	void SetDrawEvent(int drawEvent) {
+		m_nDrawEvent = drawEvent; 
+	}
 	//---------------------------------------------------
 	int GetMaxEvents() const {return m_MaxEvents;}
 	void SetMaxEvents(int mE) { m_MaxEvents = mE; }

@@ -339,8 +339,8 @@ private:
 	//---------------------
 	// Time Signatures
 	//---------------------
-	CMyBitmap** m_ppBmCbTimeSig;
-	CMyBitmap** m_ppBmTimeSig;
+	inline static CMyBitmap* m_apBmCbTimeSig[APP_NUM_TIMESIG];
+	inline static CMyBitmap* m_apBmTimeSig[APP_NUM_TIMESIG];
 	//---------------------------------------
 	// Key Signature
 	//---------------------------------------
@@ -348,8 +348,8 @@ private:
 	//---------------------
 	// Accidentals
 	//---------------------
-	CMyBitmap** m_ppBmAccidentalTypes;
-	CMyBitmap** m_ppBmCBAccidentalTypes;
+	inline static CMyBitmap* m_apBmAccidentalTypes[APP_NUM_ACCIDENTALTYPES];
+	inline static CMyBitmap* m_apBmCBAccidentalTypes[APP_NUM_ACCIDENTALTYPES];
 	//---------------------
 	// Block Op Graphics
 	//---------------------
@@ -406,15 +406,15 @@ public:
 
 	int GetNumTimeSig() { return APP_NUM_TIMESIG; }
 	CMyBitmap* bmGetTimeSig(INT TimeSig) { 
-		return m_ppBmTimeSig[TimeSig]; 
+		return m_apBmTimeSig[TimeSig]; 
 	}
-	CMyBitmap* bmGetCbTimeSig(INT TimSig) { 
-		return m_ppBmCbTimeSig[TimSig]; 
-	}
-	CMyBitmap** bmGetTimeSig() { return m_ppBmTimeSig; }
-	CMyBitmap** bmGetCbTimeSig() { return m_ppBmCbTimeSig; }
-	int GetTimeSigCbBmID(int TimeSig) { return BmIdTimeSigCBbMIDs[TimeSig]; }
-	int GetTimeSigBmID(int TimeSig) { return BmIdTimeSig[TimeSig - 1]; }	
+	CMyBitmap* bmGetCbTimeSig(INT TimSig);
+	CMyBitmap** bmGetTimeSig() { return m_apBmTimeSig; }
+	CMyBitmap** bmGetCbTimeSig() { return m_apBmCbTimeSig; }
+	int GetTimeSigCbBmID(int TimeSig);
+	int GetTimeSigBmID(int TimeSig) { 
+		return BmIdTimeSig[TimeSig]; 
+	}	
 
 	int GetNumNoteTypes() { return APP_NUM_NOTETYPES; }
 	CMyBitmap* bmGetNoteType(int NoteType) { return m_ppBmNoteTypes[NoteType]; }
@@ -452,8 +452,12 @@ public:
 	}
 
 	int GetNumAccidentalTypes() { return APP_NUM_ACCIDENTALTYPES; }
-	CMyBitmap* bmGetAccidentalType(int Accidnet) { return m_ppBmAccidentalTypes[Accidnet]; }
-	CMyBitmap* bmGetCBAccidentalType(int Accident) { return m_ppBmCBAccidentalTypes[Accident]; }
+	static CMyBitmap* bmGetAccidentalType(int Accidnet) { 
+		return m_apBmAccidentalTypes[Accidnet];
+	}
+	static CMyBitmap* bmGetCbAccidentalType(int Accident) {
+		return m_apBmCBAccidentalTypes[Accident]; 
+	}
 	static int GetAccidentalBmCBIdsTypes(int id) { return AccidentalBmCBIdsTypes[id]; }
 	static int GetAccidentalBmIdsTypes(int id) { return AccidentalBmIdsTypes[id]; }	
 
@@ -560,15 +564,6 @@ public:
 	{
 		if(LogFile()) fprintf(LogFile(),"SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
 
-	}
-	static CSize GetBmDimensions(int ID)
-	{
-		CSize size;
-		CMyBitmap Bm;
-
-		Bm.LoadBitmapW(ID);
-		size = Bm.GetBmDim();
-		return size;
 	}
 
 	//----------------------- Static Data----------------------------

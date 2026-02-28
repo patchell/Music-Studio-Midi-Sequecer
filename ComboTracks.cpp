@@ -32,13 +32,13 @@ bool CComboTracks::Create(
 	);
 	for (i = 1; i < (nTotalItems + 1); ++i)
 	{
-		AddBitmap(GetTrackInfo(i)->GetBitmap());
+		AddBitmap(GetTrackBitMap(i));
 
 	}
 	return true;
 }
 
-CMsTrack* CComboTracks::GetTrackInfo(int nTrack)
+CMyBitmap* CComboTracks::GetTrackBitMap(int nTrack)
 {
-	return ((CChildViewStaff*)GetParent())->GetSongInfo()->GetTrack(nTrack);
+	return ((CChildViewStaff*)GetParent())->GetSongInfo()->GetTrackBitmap(nTrack);
 }

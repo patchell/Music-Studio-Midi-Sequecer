@@ -135,12 +135,14 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 					pBarNew->Create(GetSong(), GetParentEvent());
 					pBarNew->Copy(GetStaffChildView()->GetDrawObject());
 					GetStaffChildView()->SetDrawObject(pBarNew);
+					//-----------------------------
 					GetParentEvent()->AddObject(pBarNew);
 					GetStaffChildView()->CheckAndDoScroll(pointMouse);
 					GetStaffChildView()->Invalidate();
 					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -167,7 +169,9 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
 			pEV = GetParentEvent();
 			if (pEV)
@@ -177,7 +181,9 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 			if (pEV)
@@ -187,9 +193,11 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
@@ -237,6 +245,7 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
@@ -259,7 +268,9 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
 			pEV = GetParentEvent();
 			if (pEV)
@@ -269,7 +280,9 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 			if (pEV)
@@ -279,9 +292,11 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL:
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove

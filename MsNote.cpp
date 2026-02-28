@@ -401,6 +401,10 @@ void CMsNote::DrawNoteLines(CDC* pDC, int NoteY, COLORREF Color)
 		case ExtraLinesLocation::AboveTreble:
 			switch (NeedsALine)
 			{
+			case 3:
+				pDC->MoveTo(x - lineEnd, NOTE_POS_E6);
+				pDC->LineTo(x + lineEnd, NOTE_POS_E6);
+				[[fallthrough]];
 			case 2:
 				pDC->MoveTo(x - lineEnd, NOTE_POS_C6);
 				pDC->LineTo(x + lineEnd, NOTE_POS_C6);
@@ -510,7 +514,7 @@ void CMsNote::DrawNoteAccidental(CDC* pDC, int NoteY, COLORREF Color)
 		sharp.Draw(pDC, Color, X, NoteY);
 		break;
 	case MSFF_ACCIDENTAL_FLAT:
-		flat.Draw(pDC, Color, X, NoteY);
+		flat.Draw(pDC, Color, X, NoteY - STAVE_LINE_SPACING/ 2);
 		break;
 	}
 }
@@ -751,12 +755,29 @@ int CMsNote::NeedsLine(ExtraLinesLocation& Location)
 	int LinesNeeded = 0;
 	int Pitch = GetPitch();
 	int TestPitch = 0;
+	int InitialPitch = Pitch;
+	int CorrectedPitch = 0;
 
 	Pitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Pitch, GetAccidental());
+	CorrectedPitch = Pitch;
 	Pitch -= NOTE_C2;	// Normalize to C2 = 0
 	TestPitch = NOTE_C4 - NOTE_C2;	// Middle C normalized to 0
-	LinesNeeded = LinesNeededLUT[Pitch].m_Lines;
-	Location = LinesNeededLUT[Pitch].m_Location;
+	if (GetAccidental() == MSFF_ACCIDENTAL_FLAT)
+	{
+		LinesNeeded = LinesNeededFlatLUT[Pitch].m_Lines;
+		Location = LinesNeededFlatLUT[Pitch].m_Location;
+	}
+	else
+	{
+		LinesNeeded = LinesNeededLUT[Pitch].m_Lines;
+		Location = LinesNeededLUT[Pitch].m_Location;
+	}
+	//fprintf(LogFile(), "CMsNote::NeedsLine: Pitch=%d CorrectedPitch=%d LinesNeeded=%d Location=%d\n", 
+	//	InitialPitch, 
+	//	CorrectedPitch, 
+	//	LinesNeeded, 
+	//	Location
+	//);
 	return LinesNeeded;
 }
 
@@ -924,10 +945,10 @@ void CMsNote::NoteOn(int Velocity)
 	int Loudness;
 	char* pStr = new char[256];
 
-	fprintf(LogFile(), "CMsNote::NoteOn: Enter Velocity=%d Note=%d\n", 
-		Velocity, 
-		m_NotePlayed
-	);
+	//fprintf(LogFile(), "CMsNote::NoteOn: Enter Velocity=%d Note=%d\n", 
+	//	Velocity, 
+	//	m_NotePlayed
+	//);
 	if (m_NotePlayed == INVALID_PITCH)
 	{
 		if (IsAccentted())
@@ -942,13 +963,13 @@ void CMsNote::NoteOn(int Velocity)
 		DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 		GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, m_NotePlayed, Loudness);
 		GetSong()->IncNoteOnCount(m_NotePlayed);	// for diagnostics
-		if (LogFile())
-			fprintf(LogFile(),
-				"\tNoteOn: Ch=%d Note=%s Vel=%d\n",
-				MidiChannel,
-				NoteToString(pStr, 256),
-				Loudness
-			);
+		//if (LogFile())
+		//	fprintf(LogFile(),
+		//		"\tNoteOn: Ch=%d Note=%s Vel=%d\n",
+		//		MidiChannel,
+		//		NoteToString(pStr, 256),
+		//		Loudness
+		//	);
 	}
 	if (pStr) delete[] pStr;
 }
@@ -972,12 +993,12 @@ void CMsNote::NoteOff(int Velocity)
 		GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
 		GetSong()->IncNoteOffCount(m_NotePlayed);	// for diagnostics
 		m_NotePlayed = INVALID_PITCH;
-		if (LogFile())
-			fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
-				MidiChannel,
-				NoteToString(pStr, 256),
-				Velocity
-			);
+		//if (LogFile())
+		//	fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
+		//		MidiChannel,
+		//		NoteToString(pStr, 256),
+		//		Velocity
+		//	);
 	}
 	if (pStr) delete[] pStr;
 }
@@ -1262,14 +1283,14 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 
 	Note = MouseYToNote(pointMouse.y);	// Potential new note
 	pNewEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
-	if(LogFile() && Region == MouseRegions::MOUSE_IN_EDITREG)
-		fprintf(LogFile(),
-			"Note %d:CMsNote::MouseMove: DrawState=%s ** Region=%s ** Transition=%s\n",
-			Note,
-			CChildViewStaff::GetDrawStateName(DrawState),
-			CChildViewStaff::GetMouseRegionName(Region)	,
-			CChildViewStaff::GetMouseRegionTransitionName(Transition)
-		);
+	//if(LogFile() && Region == MouseRegions::MOUSE_IN_EDITREG)
+	//	fprintf(LogFile(),
+	//		"Note %d:CMsNote::MouseMove: DrawState=%s ** Region=%s ** Transition=%s\n",
+	//		Note,
+	//		CChildViewStaff::GetDrawStateName(DrawState),
+	//		CChildViewStaff::GetMouseRegionName(Region)	,
+	//		CChildViewStaff::GetMouseRegionTransitionName(Transition)
+	//	);
 	switch (DrawState)
 	{
 	case DRAWSTATE::SET_ATTRIBUTES:		//MouseMove
@@ -1289,11 +1310,11 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-					fprintf(LogFile(), ">>CMsNote::MouseMove: Note Change %d\n", Note);
+//					fprintf(LogFile(), ">>CMsNote::MouseMove: Note Change %d\n", Note);
 					NoteOff(0);
 					SetPitch(Note);
 					NoteOn(GetVelocity());
-					fprintf(LogFile(), "<<CMsNote::MouseMove: Note Change %d\n", Note);
+//					fprintf(LogFile(), "<<CMsNote::MouseMove: Note Change %d\n", Note);
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
@@ -1349,7 +1370,7 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 			if (pEV)
 			{
-				fprintf(LogFile(), "\nEnter Edit Note:%d\n", Note);
+//				fprintf(LogFile(), "\nEnter Edit Note:%d\n", Note);
 				pEV->AddObject(this);
 				SetParentEvent(pEV);
 				SetPitch(Note);
@@ -1763,7 +1784,7 @@ int CMsNote::SetPitch(int Pitch)
 	char* pStr = new char[256];
 
 	GetData().SetPitch(Pitch);
-	fprintf(LogFile(), "\t\t\t\tCMsNote::SetPitch: %s\n", NoteToString(pStr, 256));
+//	fprintf(LogFile(), "\t\t\t\tCMsNote::SetPitch: %s\n", NoteToString(pStr, 256));
 	if (pStr) delete[] pStr;
 	return Pitch;
 }

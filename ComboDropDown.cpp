@@ -14,6 +14,7 @@ CComboDropDown::CComboDropDown()
 #ifndef _WIN32_WCE
 	EnableActiveAccessibility();
 #endif
+	m_pName = nullptr;
 	m_State = 0;
 	m_LButtonDown = 0;
 	m_nItems = 0;
@@ -52,6 +53,7 @@ CComboDropDown::CComboDropDown(ComboDropDownTypes type)
 #ifndef _WIN32_WCE
 	EnableActiveAccessibility();
 #endif
+	m_pName = nullptr;
 	m_State = 0;
 	m_LButtonDown = 0;
 	m_nItems = 0;
@@ -87,6 +89,11 @@ CComboDropDown::CComboDropDown(ComboDropDownTypes type)
 
 CComboDropDown::~CComboDropDown()
 {
+	if(m_pName)
+	{
+		delete[] m_pName;
+		m_pName = nullptr;
+	}
 	if(m_apBmItems)
 	{
 		delete[] m_apBmItems;
@@ -316,6 +323,11 @@ void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 				Colapse();
 				m_pWndLastFocus->SetFocus();
 				int id = GetDlgCtrlID();
+				fprintf(LogFile(), "\t%sSelected item %d in combo box %d\n",
+					GetName(),
+					m_nCurSel, 
+					id
+				);
 				GetParent()->PostMessageW(
 					WM_MY_CONTROL_MESSAGES, 
 					id, 
@@ -510,7 +522,20 @@ void CComboDropDown::SetCurSel(int nSel, bool Notify)
 	MoveThumb(pos);
 	if ((m_nCurSel != oldsel) && Notify)
 	{
+		const char* pNameStr = nullptr;
+
+		if (GetName())
+			pNameStr = GetName();
+		else
+			pNameStr = "<Un Named>";
+
 		int id = GetDlgCtrlID();
+		fprintf(LogFile(), "\t%s ComboDropDown: %s, New Selection: %d ID:%d\n", 
+			__FUNCTION__, 
+			pNameStr, 
+			m_nCurSel,
+			id
+		);
 		GetParent()->SendMessageW(
 			WM_MY_CONTROL_MESSAGES,
 			id,
@@ -635,6 +660,18 @@ const char* CComboDropDown::GetTypeString(ComboDropDownTypes type)
 		}
 	}
 	return prString;
+}
+
+void CComboDropDown::SetName(const char* name)
+{
+	int len = strlen(name);
+	if (m_pName)
+	{
+		delete[] m_pName;
+		m_pName = nullptr;
+	}
+	m_pName = new char[len + 1];
+	strcpy_s(m_pName, len + 1, name);
 }
 
 

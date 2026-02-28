@@ -32,5 +32,6 @@ bool CComboTimeSignature::Create(
 	);
 	for (i = 0; i < nTotalItems; ++i)
 		AddBitmap(GETAPP->bmGetCbTimeSig(i));
+	SetName("<Time Signature>");
 	return true;
 }

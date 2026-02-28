@@ -222,9 +222,8 @@ class CMsKeySignature : public CMsObject
 
 public:
 	enum class KeySigID : int {
-		KS_ERROR = 0,
 		// Sharps
-		CMAJ = 1,
+		CMAJ = 0,
 		GMAJ,
 		DMAJ,
 		AMAJ,
@@ -239,7 +238,8 @@ public:
 		AbMAJ,
 		DbMAJ,
 		GbMAJ,
-		CbMAJ
+		CbMAJ,
+		KS_ERROR
 	};
 private:
 	struct KeySigCorrectionLUTItem {
@@ -258,7 +258,6 @@ private:
 		}
 	};
 	inline static const KeySigCorrectionLUTItem KeySigCorrectionLUT[APP_NUM_KEYSIGNATURES + 1] = {
-		{KeySigCorrectionLUTItem(KeySigID::KS_ERROR, "ERROR", nullptr)},
 		{KeySigCorrectionLUTItem(KeySigID::CMAJ, "C MAJ", m_KeySigCorrectionCMaj)},
 		{KeySigCorrectionLUTItem(KeySigID::GMAJ, "G MAJ", m_KeySigCorrectionGMaj)},
 		{KeySigCorrectionLUTItem(KeySigID::DMAJ, "D MAJ", m_KeySigCorrectionDMaj)},
@@ -273,7 +272,8 @@ private:
 		{KeySigCorrectionLUTItem(KeySigID::AbMAJ, "Ab MAJ", m_KeySigCorrectionAFlatMaj)},	//four flats
 		{KeySigCorrectionLUTItem(KeySigID::DbMAJ, "Db MAJ", m_KeySigCorrectionDFlatMaj)},	//five flats
 		{KeySigCorrectionLUTItem(KeySigID::GbMAJ, "Gb MAJ", m_KeySigCorrectionGFlatMaj)},	//six flats
-		{KeySigCorrectionLUTItem(KeySigID::CbMAJ, "Cb MAJ", m_KeySigCorrectionCFlatMaj)}	//seven flats
+		{KeySigCorrectionLUTItem(KeySigID::CbMAJ, "Cb MAJ", m_KeySigCorrectionCFlatMaj)},	//seven flats
+		{KeySigCorrectionLUTItem(KeySigID::KS_ERROR, "ERROR", nullptr)}
 	};
 	KeySigID m_KeySignature;
 public:
@@ -310,7 +310,6 @@ public:
 	int NoteToPosition(int Note);
 	//--------------------------------------------------
 	inline static CString KeySigStringTab[APP_NUM_KEYSIGNATURES + 1] = {
-			_T("ERROR"),	//5
 			_T("C MAJ"),	//1X
 			_T("G MAJ"),	//2X
 			_T("D MAJ"),	//3X
@@ -325,7 +324,8 @@ public:
 			_T("Ab MAJ"),	//12X
 			_T("Db MAJ"),	//13X
 			_T("Gb MAJ"),	//14X
-			_T("Cb MAJ")	//15X
+			_T("Cb MAJ"),	//15X
+			_T("ERROR")
 	};
 
 };

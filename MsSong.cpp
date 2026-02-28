@@ -1081,10 +1081,14 @@ bool CMsSong::Create(
 	CSize szTrackIconSize
 )
 {
-	
+	//------------------------------
+	// Create Bass and Treble Cleff
+	// events.
+	//------------------------------
 	CMsBassCleff* pBassCleff = new CMsBassCleff;
 	CMsTrebleCleff* pTrebleCleff = new CMsTrebleCleff;
 
+	//------------------------------
 
 	m_pChildView = pCCV;
 	m_pPlayerObjectQueue = new CMsPlayerQueue;

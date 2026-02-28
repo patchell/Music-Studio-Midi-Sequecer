@@ -10,14 +10,14 @@ class CMsTimeSignature : public CMsObject
 {
 public:
 	enum class TimeSigID : int {
-		TS_ERROR = 0,
 		TS_2_2,
 		TS_3_2,
 		TS_2_4,
 		TS_3_4,
 		TS_4_4,
 		TS_5_4,
-		TS_6_8
+		TS_6_8,
+		TS_ERROR
 	};
 private:
 	struct TimeSigInfoItem {
@@ -26,7 +26,6 @@ private:
 	};
 
 	inline static const TimeSigInfoItem TimeSigLut[] = {
-			{TimeSigID::TS_ERROR, "NA"},	//0
 			{TimeSigID::TS_2_2, "2/2"},		//1
 			{TimeSigID::TS_3_2, "3/2"},		//2
 			{TimeSigID::TS_2_4, "2/4"},		//3

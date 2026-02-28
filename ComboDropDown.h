@@ -38,6 +38,7 @@ private:
 	};
 
 	DECLARE_DYNAMIC(CComboDropDown)
+	char* m_pName;
 	CWnd* m_pWndLastFocus;
 	//---------- Selection Items ------------
 	// These are the items that you can choose
@@ -162,4 +163,6 @@ public:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	void Reset() { m_nBitmapsAdded = 0; }
 	static const char* GetTypeString(ComboDropDownTypes type);
+	const char* GetName() const { return m_pName; }
+	void SetName(const char* name);
 };

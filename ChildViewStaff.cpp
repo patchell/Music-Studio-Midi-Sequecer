@@ -238,6 +238,7 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	if (this->GetFocus() != this)
 		SetFocus();
 
+	m_nDrawEvent = XtoEventIndex(pointMouse.x);
 	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEDOWN;
 	Region = MouseInRegion(pointMouse);
 	switch (Region)
@@ -520,6 +521,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 
 	
 	m_MouseRegionTransitionState = RegionTransition(pointMouse);
+	m_nDrawEvent = XtoEventIndex(pointMouse.x);
 	Region = MouseInRegion(pointMouse);
 	TransitionState = RegionTransition(pointMouse);
 	switch (TransitionState)
@@ -564,6 +566,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	case DrawMode::REPEAT_START:
 	case DrawMode::REPEAT_END:
 	case DrawMode::REST:
+	case DrawMode::TIMESIG:
 		[[fallthrough]]; 
 	case DrawMode::TEMPO:
 		if(GetDrawObject())
@@ -1262,7 +1265,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					{
 						Dlg.SetSelectionString(i, CMsKeySignature::KeySigStringTab[i + 1]);
 					}
-					Dlg.m_nSelection = (int)Obj.pKey->GetKeySignature() - 1;
+					Dlg.m_nSelection = (int)Obj.pKey->GetKeySignature();
 					if (IDOK == Dlg.DoModal())
 						Obj.pKey->SetKeySignature(CMsKeySignature::KeySigID(Dlg.m_nSelection));
 				}
@@ -2638,38 +2641,18 @@ void CChildViewStaff::OnInitialUpdate()
 	//--------------------------------------
 	// Initialize accidental combo box
 	//---------------------------------------
-	n = GETAPP->GetNumAccidentalTypes();
-	itemSize = GetBmDimensions(CMidiSeqMSApp::GetAccidentalBmCBIdsTypes(COMBO_ACCIDENTAL_INKEY));
-	itemSize += CSize(8, 4);
 	m_Combo_Accidentals.Create(
-		n,
-		n,
-		itemSize,
 		CPoint(ControlX, 0),
-		CSize(16, itemSize.cy),
-		this,
-		IDC_COMBO_ACCIDENTALS
+		this
 	);
-	for(i=0;i<n;++i)
-		m_Combo_Accidentals.AddBitmap(GETAPP->bmGetCBAccidentalType(i));
 	ControlX += m_Combo_Accidentals.GetTotalWidth();
 	//-----------------------------------------
 	// Initialize Block Operations combo box
 	//------------------------------------------
-	n = GETAPP->GetNumBlockOps();
-	itemSize = GETAPP->bmGetBlockOpType(0)->GetBmDim();
-	itemSize += CSize(4, 4);
 	m_Combo_BlockOps.Create(
-		5,
-		n,
-		itemSize,
 		CPoint(ControlX, 0),
-		CSize(16,itemSize.cy),
-		this,
-		IDC_COMBO_BLOCKOPS
+		this
 	);
-	for(i=0;i<n;++i)
-		m_Combo_BlockOps.AddBitmap(GETAPP->bmGetBlockOpType(i));
 	//------------------ Misc Stuff ---------------------
 	itemSize = GETAPP->bmGetMiscType(0)->GetBmDim();
 	itemSize += CSize(4, 4);
@@ -2799,11 +2782,11 @@ void CChildViewStaff::OnInitialUpdate()
 
 	pKS = (CMsKeySignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::KEYSIG, (int)EventObjectSignatureTypes::EVENT_LOUDNESS_KEYSIG);
 	if(pKS)
-		m_Combo_KeySig.SetCurSel((int)pKS->GetKeySignature() - 1);
+		m_Combo_KeySig.SetCurSel((int)pKS->GetKeySignature());
 
 	pTS = (CMsTimeSignature*)GetSong()->GetObjectTypeInEvent(CMsObject::MsObjType::TIMESIG,  (int)EventObjectSignatureTypes::EVENT_TEMPO_TIMESIG);
 	if(pTS)
-		m_Combo_TimeSig.SetCurSel((int)pTS->GetTimeSignature() - 1, false);
+		m_Combo_TimeSig.SetCurSel((int)pTS->GetTimeSignature(), false);
 
 	m_Combo_Decorations.SetCurSel((int)ComboBoxDecorationIndex::NONE);
 
@@ -3093,7 +3076,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		break;
 	case IDC_COMBO_TIMESIG:		// MyControlsMessages
 		SetFocus();
-		SetupDrawMode(DrawMode::TIMESIG, m_Combo_TimeSig.GetCurSel() + 1);
+		SetupDrawMode(DrawMode::TIMESIG, m_Combo_TimeSig.GetCurSel());
 		break;
 	case IDC_COMBO_KEYSIG:		// MyControlsMessages
 		SetFocus();

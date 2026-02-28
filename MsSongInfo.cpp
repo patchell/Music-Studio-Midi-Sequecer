@@ -66,6 +66,17 @@ CMsTrack* CMsSongInfo::GetTrack(int TrackID)
 	return pTrack;
 }
 
+CMyBitmap* CMsSongInfo::GetTrackBitmap(int InstID)
+{
+	CMyBitmap* pBitmap = nullptr;
+
+	if(InstID > 0 && InstID < 16)
+		pBitmap = Tracks[InstID].GetBitmap();
+	else
+		::MessageBoxW(NULL, _T("ERROR"), _T("Instrument ID out of Range"), MB_OK);
+	return pBitmap;
+}
+
 void CMsSongInfo::SetSongTitle(const char* pTitle)
 {
 	strncpy_s(m_SongTitle, pTitle, sizeof(m_SongTitle) - 1);
