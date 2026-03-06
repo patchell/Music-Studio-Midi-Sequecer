@@ -8,10 +8,10 @@ CMsBassCleff::~CMsBassCleff()
 {
 }
 
-bool CMsBassCleff::Create(CMsSong* pSong, CMsEvent* pEvent)
+bool CMsBassCleff::Create(CMsSong* pSong, CMsEvent* pParent)
 {
 	SetType(MsObjType::BASS_CLEF);
-	return CMsObject::Create(pSong, pEvent);
+	return CMsObject::Create(pSong, pParent);
 }
 
 //-------------------------------------------------

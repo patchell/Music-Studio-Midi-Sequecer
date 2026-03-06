@@ -124,7 +124,7 @@ void CMsObject::Print(FILE* pO, int Indent)
 
 void CMsObject::GetTypeString(CString& csType)
 {
-	csType.Format(_T("%s"), GetStringFromType(GetType()));
+	csType.Format(_T("%S"), GetStringFromType(GetType()));
 }
 
 
@@ -160,6 +160,32 @@ CChildViewStaff* CMsObject::GetStaffView()
 void CMsObject::Draw(CDC *pDC)
 {
 
+}
+
+DRAWSTATE CMsObject::RemoveThisFromEvent(DRAWSTATE DrawState)
+{
+	CMsEvent* pEV = nullptr;
+
+	pEV = GetParentEvent();
+	if (pEV)
+	{
+		pEV->RemoveObject(this);
+		SetParentEvent(nullptr);
+	}
+	return DrawState;
+}
+
+DRAWSTATE CMsObject::AddThisToEvent(DRAWSTATE DrawState, CPoint pointMouse)
+{
+	CMsEvent* pEV = nullptr;
+
+	pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+	if (pEV)
+	{
+		pEV->AddObject(this);
+		SetParentEvent(pEV);
+	}
+	return DrawState;
 }
 
 void CMsObject::Copy(CMsObject* pSource)

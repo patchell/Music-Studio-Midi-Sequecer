@@ -285,6 +285,11 @@ void CMsChord::Copy(CMsObject* pSource)
 	CMsObject::Copy(pSource);
 }
 
+UINT CMsChord::ObjectToString(CString& csString, UINT mode)
+{
+	return 0;
+}
+
 void CMsChord::Draw(CDC* pDC)
 {
 }

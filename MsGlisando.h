@@ -59,7 +59,7 @@ private:
 public:
 	CMsGlissando();
 	~CMsGlissando();
-	bool Create(CMsSong* pSong, CMsEvent* pEvStart, CMsEvent* pEvEnd);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pParent, CMsEvent* pEvEnd);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

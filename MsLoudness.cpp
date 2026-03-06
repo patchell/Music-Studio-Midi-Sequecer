@@ -19,7 +19,7 @@ CMsLoudness::~CMsLoudness()
 
 }
 
-bool CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness)
+bool CMsLoudness::Create(CMsSong* pSong, CMsEvent* pEvent, int Loudness)
 {
 	SetLoudness(Loudness);
 	pSong->SetCurrentLoudness(this);

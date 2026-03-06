@@ -10,7 +10,7 @@ class CMsLoudness : public CMsObject
 public:
 	CMsLoudness();
 	virtual ~CMsLoudness();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent, UINT Loudness);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent, int Loudness);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

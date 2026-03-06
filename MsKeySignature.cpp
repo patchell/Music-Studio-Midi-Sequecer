@@ -136,31 +136,15 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
 				{
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
-					break;
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
-					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
-					}
-					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
-					if (pEV)
-					{
-						pEV->AddObject(this);
-						SetParentEvent(pEV);
-					}
+					DrawState = PlaceEventChanged(DrawState, pointMouse);
+					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
-					EventIndex = GetStaffChildView()->GetDrawEvent();
-					pEV = GetSong()->GetEventObject(EventIndex);
-					pEV->AddObject(this);
-					pKS = new CMsKeySignature;
-					pKS->Create(GetSong(), pEV, GetKeySignature());
-					GetStaffChildView()->SetDrawObject(pKS);
-					GetStaffChildView()->CheckAndDoScroll(pointMouse);
-					csText.Format(_T("Place Key Signature at Event %d"), GetStaffChildView()->GetDrawEvent());
-					GetStaffChildView()->GetStatusBar()->SetText(csText);
+					Place(DrawState, pointMouse);
 					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 					break;
 				}
@@ -238,8 +222,9 @@ DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mou
 				case StaffMouseStates::MOUSE_STAFF_STATE_NONE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
-					break;
+					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					if (GetParentEvent())
 					{
@@ -259,22 +244,23 @@ DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mou
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW:		//MouseMove
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
-			pEV = GetParentEvent();
-			if (pEV)
-			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
-			}
+			//-----------------------------------------
+			// Leave the Edit Region, so remove "this"
+			// object from the parrent event
+			//-----------------------------------------
+			DrawState = RemoveThisFromEvent(DrawState);
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT:
+			[[fallthrough]];
 		case MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT:
-			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
-			if (pEV)
-			{
-				pEV->AddObject(this);
-				SetParentEvent(pEV);
-			}
+			//-----------------------------------------
+			// Enter into the Edit Region, so add "this"
+			// object to the event that is under the 
+			// mouse
+			//-----------------------------------------
+			DrawState = AddThisToEvent(DrawState, pointMouse);
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_OUTSIDE:
@@ -293,6 +279,49 @@ DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mou
 		break;
 	}
 	GetStaffView()->Invalidate();
+	return DrawState;
+}
+
+DRAWSTATE CMsKeySignature::Place(DRAWSTATE DrawState, CPoint pointMouse)
+{
+	CMsKeySignature* pTS = nullptr;
+
+	pTS = new CMsKeySignature;
+	pTS->Create(GetSong(), GetParentEvent(), GetKeySignature());
+	pTS->Copy(this);
+	GetStaffChildView()->SetDrawObject(pTS);
+	//-----------------------------
+	GetParentEvent()->AddObject(pTS);
+	GetStaffChildView()->CheckAndDoScroll(pointMouse);
+	DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+	GetStaffChildView()->Invalidate();
+	return DrawState;
+}
+
+DRAWSTATE CMsKeySignature::PlaceEventChanged(DRAWSTATE DrawState, CPoint pointMouse)
+{
+	CMsKeySignature* pKS = nullptr;
+	CMsEvent* pEV = nullptr;
+
+	if (GetParentEvent())
+	{
+		GetParentEvent()->RemoveObject(this);
+		SetParentEvent(nullptr);
+	}
+	pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
+	if (pEV)
+	{
+		pEV->AddObject(this);
+		SetParentEvent(pEV);
+	}
+	pKS = new CMsKeySignature;
+	pKS->Create(GetSong(), GetParentEvent(), GetKeySignature());
+	pKS->Copy(GetStaffChildView()->GetDrawObject());
+	GetStaffChildView()->SetDrawObject(pKS);
+	GetParentEvent()->AddObject(pKS);
+	GetStaffChildView()->CheckAndDoScroll(pointMouse);
+	GetStaffChildView()->Invalidate();
+	DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 	return DrawState;
 }
 
@@ -330,7 +359,7 @@ void CMsKeySignature::Draw(CDC *pDC)
 	CMsFlat* pFlat = 0;
 	COLORREF color;
 	int X = X_CENTER_OF_EVENT;
-	int Y = TREBLE_TOP_LINE;
+	int Y = 12;
 
 	if (IsSelected())
 		color = RGB(255, 0, 0);
@@ -342,74 +371,74 @@ void CMsKeySignature::Draw(CDC *pDC)
 			break;
 		case KeySigID::CsMAJ:	//seven sharps B sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC,color,X+24,NoteToPosition(MSFF_NOTE_B2));	//base staff
-			pSharp->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
+			pSharp->Draw(pDC,color,X+10,Y + NoteToPosition(MSFF_NOTE_B2+24));	//base staff
+			pSharp->Draw(pDC, color,X-12,Y + NoteToPosition(MSFF_NOTE_B2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::FsMAJ:	//six sharps E sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_E2+12));	//base staff
-			pSharp->Draw(pDC, color,X+20,NoteToPosition(MSFF_NOTE_E2+24));	//trebble staff
+			pSharp->Draw(pDC, color,X+10,Y + NoteToPosition(MSFF_NOTE_E2+ 36));	//base staff
+			pSharp->Draw(pDC, color,X+10,Y + NoteToPosition(MSFF_NOTE_E2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::BMAJ:	//five sharps A sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//base staff
-			pSharp->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			pSharp->Draw(pDC, color,X - 10,Y + NoteToPosition(MSFF_NOTE_A2+24));	//base staff
+			pSharp->Draw(pDC, color,X + 10,Y + NoteToPosition(MSFF_NOTE_A2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::EMAJ:	//four D sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X +20,NoteToPosition(MSFF_NOTE_D2+12));	//base staff
-			pSharp->Draw(pDC, color,X+12,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			pSharp->Draw(pDC, color,X - 10,Y + NoteToPosition(MSFF_NOTE_D2+ 36));	//base staff
+			pSharp->Draw(pDC, color,X - 10,Y + NoteToPosition(MSFF_NOTE_D2+ 60));	//trebble staff
 			[[fallthrough]];
-		case KeySigID::AMAJ:	//three G sharp
+		case KeySigID::AMAJ:	//three sharps, G sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_G2+12));	//base staff
-			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_G2+36));		//trebble staff
+			pSharp->Draw(pDC, color,X- 10,Y + NoteToPosition(MSFF_NOTE_G2+ 36));	//base staff
+			pSharp->Draw(pDC, color,X- 10,Y + NoteToPosition(MSFF_NOTE_G2+ 48));		//trebble staff
 			[[fallthrough]];
 		case KeySigID::DMAJ:	//two C sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+12));	//base staff
-			pSharp->Draw(pDC, color,X+4,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_C2+ 36));	//base staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_C2+ 60));	//trebble staff
 			[[fallthrough]]; 
 		case KeySigID::GMAJ:	///one F sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_F2+12));	//base staff
-			pSharp->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+36));	//base staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+48));	//trebble staff
 			break;
 			// Key signatures with flats.  Notice that the order of flats is the opposite of sharps, so the first flat is B flat, then E flat, etc.
 		case KeySigID::CbMAJ:	//seven flats F flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+12));	//bass staff
-			pFlat->Draw(pDC, color,X,NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
+			pFlat->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+24));	//bass staff
+			pFlat->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+36));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::GbMAJ:	//six flats C flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
-			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
+			pFlat->Draw(pDC, color,X+24,Y + NoteToPosition(MSFF_NOTE_C2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+24,Y + NoteToPosition(MSFF_NOTE_C2+36));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::DbMAJ:	//five flats G flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2));	//bass staff
-			pFlat->Draw(pDC, color,X+24,NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
+			pFlat->Draw(pDC, color,X+24,Y + NoteToPosition(MSFF_NOTE_G2));	//bass staff
+			pFlat->Draw(pDC, color,X+24,Y + NoteToPosition(MSFF_NOTE_G2+24));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::AbMAJ:	//four flats D flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X +16,NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
-			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
+			pFlat->Draw(pDC, color,X +16,Y + NoteToPosition(MSFF_NOTE_D2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+16,Y + NoteToPosition(MSFF_NOTE_D2+36));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::EbMAJ:	//three flats A flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2));	//bass staff
-			pFlat->Draw(pDC, color,X+16,NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
+			pFlat->Draw(pDC, color,X+16,Y + NoteToPosition(MSFF_NOTE_A2));	//bass staff
+			pFlat->Draw(pDC, color,X+16,Y + NoteToPosition(MSFF_NOTE_A2+24));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::BbMAJ:	//two flats E flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
-			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
+			pFlat->Draw(pDC, color,X+8,Y + NoteToPosition(MSFF_NOTE_E2+12));	//bass staff
+			pFlat->Draw(pDC, color,X+8,Y + NoteToPosition(MSFF_NOTE_E2+36));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::FMAJ:	//one flat B flat
 			if (!pFlat) pFlat = new CMsFlat;
-			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2));	//bass staff
-			pFlat->Draw(pDC, color,X+8,NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
+			pFlat->Draw(pDC, color,X+8,Y + NoteToPosition(MSFF_NOTE_B2));	//bass staff
+			pFlat->Draw(pDC, color,X+8,Y + NoteToPosition(MSFF_NOTE_B2+24));	//trebble staff
 			break;
 	}
 	if (pFlat) delete pFlat;
@@ -418,7 +447,15 @@ void CMsKeySignature::Draw(CDC *pDC)
 
 StaffMouseStates CMsKeySignature::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
 {
-	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	StaffMouseStates State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	CMsEvent* pCurrentEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+	int CurrentEventIndex = pCurrentEvent ? pCurrentEvent->GetIndex() : -1;
+	int thisEventIndex = pEvent ? pEvent->GetIndex() : -1;
+	bool bEventChanged = (CurrentEventIndex != thisEventIndex);
+
+	if (bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	return State;
 }
 
 void CMsKeySignature::ObjectRectangle(CRect& rect, UINT Event)
@@ -431,6 +468,8 @@ int CMsKeySignature::GetKeySigCorrection(int Note)
 	UINT n = Note % 12;
 	int rNoteCorection;
 
+	if(this == nullptr)
+		printf("Well\n");
 	rNoteCorection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
 	return rNoteCorection;
 }

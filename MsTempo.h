@@ -13,7 +13,7 @@ class CMsTempo : public CMsObject
 public:
 	CMsTempo();
 	virtual ~CMsTempo();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo);	//-------------------------------------------------
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo);	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
 	virtual UINT Process();

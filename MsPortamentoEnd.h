@@ -5,7 +5,7 @@ class CMsPortamentoEnd : public CMsObject
 public:
 	CMsPortamentoEnd();
 	virtual ~CMsPortamentoEnd();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -20,8 +20,10 @@ public:
 	virtual bool DoesSomething() {
 		return true;
 	}
+	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
+
 	//------------------------------------------------------
 	virtual void Copy(CMsObject* Source);
 	virtual void Save(FILE* pO);

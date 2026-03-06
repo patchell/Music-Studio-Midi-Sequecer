@@ -16,7 +16,7 @@ class CMsBar : public CMsObject
 public:
 	CMsBar();
 	virtual ~CMsBar();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

@@ -10,7 +10,7 @@ class CMsRepeatEnd : public CMsObject
 public:
 	CMsRepeatEnd();
 	virtual ~CMsRepeatEnd();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

@@ -22,7 +22,7 @@ bool CComboKeySig::Create(
 	szItemSize += CSize(8, 4);
 	szDropArrowSize = CSize(16, szItemSize.cy);
 	CComboDropDown::Create(
-		nTotalItems - 2,			//Number of items to display
+		nTotalItems - 5,			//Number of items to display
 		nTotalItems,				//Total Items
 		szItemSize,					//size of items in combobox
 		ptUpperLeft,				//upper left corner
@@ -31,6 +31,7 @@ bool CComboKeySig::Create(
 		IDC_COMBO_KEYSIG			//control ID
 	);
 	for (i = 0; i < nTotalItems; ++i)
-		AddBitmap(GETAPP->bmGetCBKeySignature(i + 1));
+		AddBitmap(GETAPP->bmGetCBKeySignature(i));
+	SetName("<Key Signature>");
 	return true;
 }

@@ -1,8 +1,7 @@
 #include "pch.h"
 
-CMsPortamentoEnd::CMsPortamentoEnd() : CMsObject()
+CMsPortamentoEnd::CMsPortamentoEnd() : CMsObject(CMsObject::MsObjType::PORTAMENTO_STOP)
 {
-	m_ObjType = CMsObject::MsObjType::PORTAMENTO_STOP;
 }
 
 CMsPortamentoEnd::~CMsPortamentoEnd()
@@ -210,6 +209,11 @@ void CMsPortamentoEnd::Copy(CMsObject* pSource)
 	CMsObject::Copy(pSource);
 }
 
+UINT CMsPortamentoEnd::ObjectToString(CString& csString, UINT mode)
+{
+	return 0;
+}
+
 void CMsPortamentoEnd::Draw(CDC* pDC)
 {
 }
@@ -218,6 +222,7 @@ StaffMouseStates CMsPortamentoEnd::StaffTransition(CPoint pointMouse, int NewNot
 {
 	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
 }
+
 
 void CMsPortamentoEnd::Save(FILE* pO)
 {

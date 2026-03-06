@@ -40,7 +40,7 @@ private:
 public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TS);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TimeSignature);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -58,6 +58,8 @@ public:
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
+	virtual DRAWSTATE Place(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE PlaceEventChanged(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	virtual void Save(FILE *pO);

@@ -1,8 +1,7 @@
 #include "pch.h"
 
-CMsPortamentoStart::CMsPortamentoStart():CMsObject()
+CMsPortamentoStart::CMsPortamentoStart():CMsObject(CMsObject::MsObjType::PORTAMENTO_START)
 {
-	m_ObjType = CMsObject::MsObjType::PORTAMENTO_START;
 }
 
 CMsPortamentoStart::~CMsPortamentoStart()
@@ -202,7 +201,7 @@ DRAWSTATE CMsPortamentoStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, 
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
 			break;
 		}
-		csStatusString.Format(_T("Measure Bar: %d Event: %d"),
+		csStatusString.Format(_T("Event: %d"),
 			GetParentEvent() ? GetParentEvent()->GetIndex() : -1
 		);
 		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
@@ -223,6 +222,11 @@ void CMsPortamentoStart::Save(FILE* pO)
 void CMsPortamentoStart::Copy(CMsObject* pSource)
 {
 	CMsObject::Copy(pSource);
+}
+
+UINT CMsPortamentoStart::ObjectToString(CString& csString, UINT mode)
+{
+	return 0;
 }
 
 void CMsPortamentoStart::Draw(CDC* pDC)

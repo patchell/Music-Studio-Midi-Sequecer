@@ -607,7 +607,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				SetDrawObject(0);
 			}
 			pN = new CMsNote;
-			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+			pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 			SetDrawObject(pN);
 			//-----------------------------
 			// decode message word
@@ -637,7 +637,7 @@ void CChildViewStaff::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'N':	// OnKeyDown
 		m_dmDrawMode = DrawMode::NOTE;
 		pN = new CMsNote;
-		pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+		pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 		if (GetDrawObject())
 		{
 			delete m_pDrawObject;
@@ -1263,7 +1263,7 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 					Dlg.SetNumStrings(GETAPP->GetNumKeySigs() );
 					for (int i = 0; i < (GETAPP->GetNumKeySigs()); i++)
 					{
-						Dlg.SetSelectionString(i, CMsKeySignature::KeySigStringTab[i + 1]);
+						Dlg.SetSelectionString(i, CMsKeySignature::KeySigStringTab[i ]);
 					}
 					Dlg.m_nSelection = (int)Obj.pKey->GetKeySignature();
 					if (IDOK == Dlg.DoModal())
@@ -1436,6 +1436,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	CString csStatus,csTemp;
 	CString csBlank(_T(""));
 	int From, To;
+
 	//------------------------
 	// Decode sub message
 	//------------------------
@@ -1458,7 +1459,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	case DrawMode::NOTE:	// SetupDrawMode
 		{
 			CMsNote* pN = new CMsNote;
-			pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+			pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 			if (GetDrawObject())
 			{
 				pEv = GetDrawObject()->GetParentEvent();
@@ -1482,10 +1483,10 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 				int Shape;
 				Shape = pN->GetShape();
 				int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
-				pN->Create(Id, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), Id);
 			}
 			else
-				pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 
 			pN->ObjectToString(csTemp);
 			if(GetSong()->GetEventObject(m_nDrawEvent))
@@ -1646,25 +1647,23 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	break;
 	case DrawMode::KEYSIG:		// SetupDrawMode
 	{
-		CMsKeySignature::KeySigID KS;
-
-		KS = (CMsKeySignature::KeySigID)(v & 0x1f);
 		if (GetDrawObject())
 		{
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
 		}
 		CMsKeySignature* pKS = new CMsKeySignature;
-		pKS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), KS);
-		m_dmDrawMode = DrawMode::KEYSIG;
+		pKS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), CMsKeySignature::KeySigID(v));
+		m_dmDrawMode = DrawMode::TIMESIG;
 		SetDrawObject(pKS);
 	}
-	csTemp = CString("Add Key Signature");
+	csTemp.Format(_T("Add Key Signature: %S"), CMsKeySignature::KeySigIDToString(CMsKeySignature::KeySigID(v)));
 	m_Status.SetText(csTemp);
 	break;
 	case DrawMode::LOUDNESS:		// SetupDrawMode
@@ -1854,7 +1853,7 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		pRE = m_pSong->InsertEvent(m_LastSelectedEventIndex);
 		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
 		pRepStrt = new CMsRepeatStart();
-		pRepStrt->Create(GetSong(), nRepeatCount, pRS);
+		pRepStrt->Create(GetSong(), pRS, nRepeatCount);
 		pRS->AddObject(pRepStrt);
 		pRepEnd = new CMsRepeatEnd;
 		pRepEnd->Create(GetSong(), pRE);
@@ -2231,7 +2230,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
 				m_nMidiNotesOn++;
 				CMsNote* pN = new CMsNote();
-				pN->Create(0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 				pN->SetDuration((m_nMidiInputNoteSetup & DRAW_NOTE_DURATION));
 				pN->SetAccent((m_nMidiInputNoteSetup >> DRAW_NOTE_ACCENT_SHIFT) & 0x01);
 				pN->SetAccidental(adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
@@ -3056,7 +3055,11 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 			SetDrawObject(0);
 		}
 		pNote = new CMsNote;
-		pNote->Create((COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::GetRestBmIdsTypes()[nSelection] : 0, GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+		pNote->Create(
+			GetSong(), 
+			GetSong()->GetEventObject(m_nDrawEvent),
+			(COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::GetRestBmIdsTypes()[nSelection] : 0
+		);
 		SetDrawObject(pNote);
 		m_dmDrawMode = DrawMode::NOTE;
 		UpdateNoteDrawObject();
@@ -3080,7 +3083,7 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		break;
 	case IDC_COMBO_KEYSIG:		// MyControlsMessages
 		SetFocus();
-		SetupDrawMode(DrawMode::KEYSIG, m_Combo_KeySig.GetCurSel() + 1);
+		SetupDrawMode(DrawMode::KEYSIG, m_Combo_KeySig.GetCurSel());
 		break;
 	case IDC_BUTTON_PLAY:		// MyControlsMessages
 		OnButtonPlay();

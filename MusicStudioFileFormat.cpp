@@ -1,44 +1,44 @@
 #include "pch.h"
 
 CHORD ChordsLUT[NUMBER_OF_CHORDS] = {
-	{INTERVAL_M3,INTERVAL_P5,INTERVAL_NONE,INTERVAL_NONE,_T("Triad"),_T("k")},		//Triad
-	{INTERVAL_M3,INTERVAL_P5,INTERVAL_M6,INTERVAL_NONE,_T("Major 6th"),_T("kM6")},		//Major 6th
-	{INTERVAL_M3,INTERVAL_P5,INTERVAL_m7,INTERVAL_NONE,_T("Dominant 7th"),_T("k7")},		//Dominant 7th
-	{INTERVAL_M3,INTERVAL_P5,INTERVAL_M7,INTERVAL_NONE,_T("Major 7th"),_T("kMaj7")},		//Major 7th
-	{INTERVAL_M3,INTERVAL_A5,INTERVAL_NONE,INTERVAL_NONE,_T("Augmented Triad"),_T("kaug")},		//Augmented Triad
-	{INTERVAL_M3,INTERVAL_A5,INTERVAL_m7,INTERVAL_NONE,_T("Augmented 7th"),_T("kaug7")},		//Augmented 7th
-	{INTERVAL_m3,INTERVAL_P5,INTERVAL_NONE,INTERVAL_NONE,_T("Minor Triad"),_T("km")},		//Minor Triad
-	{INTERVAL_m3,INTERVAL_P5,INTERVAL_M6,INTERVAL_NONE,_T("Minor 6th"),_T("km6")},		//Minor 6th
-	{INTERVAL_m3,INTERVAL_P5,INTERVAL_m7,INTERVAL_NONE,_T("Minor 7th"),_T("km7")},		//Minor 7th
-	{INTERVAL_m3,INTERVAL_P5,INTERVAL_M7,INTERVAL_NONE,_T("Minor Major 7th"),_T("kmM7")},		//Minor Major 7th
-	{INTERVAL_m3,INTERVAL_d5,INTERVAL_NONE,INTERVAL_NONE,_T("Diminished Triad"),_T("kdim")},		//Diminished Triad
-	{INTERVAL_m3,INTERVAL_d5,INTERVAL_d7,INTERVAL_NONE,_T("Diminished 7th"),_T("kdim7")},		//Diminished 7th
-	{INTERVAL_m3,INTERVAL_d5,INTERVAL_m7,INTERVAL_NONE,_T("Half Diminished 7th"),_T("km7")}		//Half Diminished 7th
+	{INTERVAL_M3,INTERVAL_P5,INTERVAL_NONE,INTERVAL_NONE,CString("Triad"),CString("k")},		//Triad
+	{INTERVAL_M3,INTERVAL_P5,INTERVAL_M6,INTERVAL_NONE,CString("Major 6th"),CString("kM6")},		//Major 6th
+	{INTERVAL_M3,INTERVAL_P5,INTERVAL_m7,INTERVAL_NONE,CString("Dominant 7th"),CString("k7")},		//Dominant 7th
+	{INTERVAL_M3,INTERVAL_P5,INTERVAL_M7,INTERVAL_NONE,CString("Major 7th"),CString("kMaj7")},		//Major 7th
+	{INTERVAL_M3,INTERVAL_A5,INTERVAL_NONE,INTERVAL_NONE,CString("Augmented Triad"),CString("kaug")},		//Augmented Triad
+	{INTERVAL_M3,INTERVAL_A5,INTERVAL_m7,INTERVAL_NONE,CString("Augmented 7th"),CString("kaug7")},		//Augmented 7th
+	{INTERVAL_m3,INTERVAL_P5,INTERVAL_NONE,INTERVAL_NONE,CString("Minor Triad"),CString("km")},		//Minor Triad
+	{INTERVAL_m3,INTERVAL_P5,INTERVAL_M6,INTERVAL_NONE,CString("Minor 6th"),CString("km6")},		//Minor 6th
+	{INTERVAL_m3,INTERVAL_P5,INTERVAL_m7,INTERVAL_NONE,CString("Minor 7th"),CString("km7")},		//Minor 7th
+	{INTERVAL_m3,INTERVAL_P5,INTERVAL_M7,INTERVAL_NONE,CString("Minor Major 7th"),CString("kmM7")},		//Minor Major 7th
+	{INTERVAL_m3,INTERVAL_d5,INTERVAL_NONE,INTERVAL_NONE,CString("Diminished Triad"),CString("kdim")},		//Diminished Triad
+	{INTERVAL_m3,INTERVAL_d5,INTERVAL_d7,INTERVAL_NONE,CString("Diminished 7th"),CString("kdim7")},		//Diminished 7th
+	{INTERVAL_m3,INTERVAL_d5,INTERVAL_m7,INTERVAL_NONE,CString("Half Diminished 7th"),CString("km7")}		//Half Diminished 7th
 };
 
 
 IntervalLUTentry IntervalLUT[NUMBER_OF_INTERVALS]{
-	{_T("Root"),_T("R"), 0},
-	{_T("Minor 2nd"),_T("m2"), 1},
-	{_T("Major 2nd"),_T("M2"), 2},
-	{_T("Augmented 2nd"),_T("A2"), 3},
-	{_T("Diminished 2nd"),_T("d2"), 1},
-	{_T("Minor 3rd"),_T("m3"), 3},
-	{_T("Major 3rd"),_T("M3"), 4},
-	{_T("Augmented 3rd"),_T("A3"), 5},
-	{_T("Diminshed 3rd"),_T("d3"), 1},
-	{_T("Perfect 4th"),_T("P4"), 5},
-	{_T("Augmented 4th"),_T("A4"), 6},
-	{_T("Diminished 4th"),_T("d4"), 4},
-	{_T("Perfect 5th"),_T("P5"), 7},
-	{_T("Augmented 5th"),_T("A5"), 8},
-	{_T("Diminished 5th"),_T("d5"), 6},
-	{_T("Minor 6th"),_T("m6"),8 },
-	{_T("Major 6th"),_T("M6"), 9},
-	{_T("Augmented 6th"),_T("A6"), 10},
-	{_T("Diminished 6th"),_T("R"), 7},
-	{_T("Minor 7th"),_T("m7"), 10},
-	{_T("Major 7th"),_T("M7"), 11},
-	{_T("Augmented 7th"),_T("A7"), 12},
-	{_T("Diminished 7th"),_T("d7"), 9},
+	{CString("Root"),CString("R"), 0},
+	{CString("Minor 2nd"),CString("m2"), 1},
+	{CString("Major 2nd"),CString("M2"), 2},
+	{CString("Augmented 2nd"),CString("A2"), 3},
+	{CString("Diminished 2nd"),CString("d2"), 1},
+	{CString("Minor 3rd"),CString("m3"), 3},
+	{CString("Major 3rd"),CString("M3"), 4},
+	{CString("Augmented 3rd"),CString("A3"), 5},
+	{CString("Diminshed 3rd"),CString("d3"), 1},
+	{CString("Perfect 4th"),CString("P4"), 5},
+	{CString("Augmented 4th"),CString("A4"), 6},
+	{CString("Diminished 4th"),CString("d4"), 4},
+	{CString("Perfect 5th"),CString("P5"), 7},
+	{CString("Augmented 5th"),CString("A5"), 8},
+	{CString("Diminished 5th"),CString("d5"), 6},
+	{CString("Minor 6th"),CString("m6"),8 },
+	{CString("Major 6th"),CString("M6"), 9},
+	{CString("Augmented 6th"),CString("A6"), 10},
+	{CString("Diminished 6th"),CString("R"), 7},
+	{CString("Minor 7th"),CString("m7"), 10},
+	{CString("Major 7th"),CString("M7"), 11},
+	{CString("Augmented 7th"),CString("A7"), 12},
+	{CString("Diminished 7th"),CString("d7"), 9},
 };

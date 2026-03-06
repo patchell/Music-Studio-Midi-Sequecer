@@ -20,7 +20,7 @@ CMsRepeatStart::~CMsRepeatStart()
 
 }
 
-bool CMsRepeatStart::Create(CMsSong* pSong, UINT Count, CMsEvent* pEvent)
+bool CMsRepeatStart::Create(CMsSong* pSong, CMsEvent* pEvent, int Count)
 {
 	bool rV = true;
 	rV = CMsObject::Create(pSong, pEvent);

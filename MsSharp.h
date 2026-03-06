@@ -10,7 +10,7 @@ class CMsSharp : public CMsObject
 public:
 	CMsSharp();
 	virtual ~CMsSharp();
-	bool Create(CMsSong* pSong);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent = nullptr);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

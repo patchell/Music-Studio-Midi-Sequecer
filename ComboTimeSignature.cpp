@@ -9,7 +9,7 @@ CComboTimeSignature::~CComboTimeSignature()
 }
 
 bool CComboTimeSignature::Create(
-	CPoint ptUpperLeft,
+	CPoint pointUpperLeft,
 	CWnd* pParentWnd
 )
 {
@@ -25,7 +25,7 @@ bool CComboTimeSignature::Create(
 		nTotalItems - 2,			//Number of items to display
 		nTotalItems,				//Total Items
 		szItemSize,					//size of items in combobox
-		ptUpperLeft,				//upper left corner
+		pointUpperLeft,				//upper left corner
 		szDropArrowSize,			//size of drop arrow
 		pParentWnd,					//parent window
 		IDC_COMBO_TIMESIG			//control ID

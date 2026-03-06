@@ -13,7 +13,7 @@ class CMsEndBar : public CMsObject
 public:
 	CMsEndBar();
 	virtual ~CMsEndBar();
-	bool Create(CMsSong* pSong, CMsEvent* pParentEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pParentEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -26,6 +26,7 @@ public:
 	virtual bool DoesSomething() {
 		return false;
 	}
+	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
@@ -34,6 +35,5 @@ public:
 	virtual void Copy(CMsObject* Source);
 	virtual bool AddToQueue() { return false; }
 	virtual bool RemoveFromQueue(CMsSong* pSong) { return false; }
-	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 };

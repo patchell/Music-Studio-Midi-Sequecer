@@ -8,7 +8,7 @@ class CMsFlat : public CMsObject
 public:
 	CMsFlat();
 	virtual ~CMsFlat();
-	bool Create(CMsSong* pSong);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent = 0);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

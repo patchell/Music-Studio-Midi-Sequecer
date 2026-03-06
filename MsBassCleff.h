@@ -11,7 +11,7 @@ class CMsBassCleff : public CMsObject
 public:
 	CMsBassCleff();
 	virtual ~CMsBassCleff();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

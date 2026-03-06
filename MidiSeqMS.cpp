@@ -400,8 +400,8 @@ void CMidiSeqMSApp::InitBitMaps()
 	m_ppBmCbKeySig[0] = 0;
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmCbKeySig[i+1] = new CMyBitmap;
-		m_ppBmCbKeySig[i+1]->LoadBitmapW(GetKeySigBmId(i+1));
+		m_ppBmCbKeySig[i] = new CMyBitmap;
+		m_ppBmCbKeySig[i]->LoadBitmapW(GetKeySigBmId(i));
 	}
 	//----------------------------------------
 	// Bitmaps for TX816

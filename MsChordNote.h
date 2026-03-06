@@ -6,7 +6,7 @@ class CMsChordNote : public CMsNote
 public:
     CMsChordNote();
     virtual ~CMsChordNote();
-	bool Create(CMsSong* pSong);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

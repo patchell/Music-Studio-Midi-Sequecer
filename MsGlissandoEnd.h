@@ -9,7 +9,7 @@ class CMsGlissandoEnd : public CMsObject
 public:
 	CMsGlissandoEnd();
 	virtual ~CMsGlissandoEnd();
-	bool Create(CMsSong* pSong, CMsGlissando*  pParent, CMsEvent* pEvEnd);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pParent, CMsGlissando* pStart);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

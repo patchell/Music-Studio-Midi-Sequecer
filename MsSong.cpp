@@ -216,7 +216,7 @@ int CMsSong::Parse(char *pSongData)
 			case MSFF_TOKEN_REPEAT_START:
 				Repeat = ParserGetC();
 				obj.pRepS = new CMsRepeatStart();
-				obj.pRepS->Create(this, 1,pEv);
+				obj.pRepS->Create(this,pEv, 1);
 				break;
 			case MSFF_TOKEN_END:
 				obj.pEnd = new CMsEndBar;
@@ -241,7 +241,7 @@ int CMsSong::Parse(char *pSongData)
 				// Create a new Note Object
 				//----------------------------------
 				obj.pNote = new CMsNote;
-				obj.pNote->Create(NULL,this, pEv);
+				obj.pNote->Create(this, pEv, 0);
 				//----------------------------------
 				// Fill in the data
 				//----------------------------------
@@ -285,6 +285,56 @@ UINT CMsSong::LittleEndian(UINT bE)
     CV.m_C[0] = CV.m_C[1];
     CV.m_C[1] = t;
     return CV.m_S;
+}
+
+CMsTimeSignature* CMsSong::GetCurrentTimeSignature()
+{
+	CMsTimeSignature* pTS = 0;
+	bool bFound = false;
+	CMsEvent* pEV = 0;
+	;
+	if(IsPlaying())
+		pTS = m_SongGlobals.m_pLastTimeSignature;
+	else
+	{
+		pEV = GetEventObject(GetStaffChildView()->GetDrawEvent());
+		while (pEV && !bFound)
+		{
+			if(pEV->ContainsObjectType(CMsObject::MsObjType::TIMESIG))
+			{
+				pTS = (CMsTimeSignature*)pEV->FindFirstObjectOfType(CMsObject::MsObjType::TIMESIG);
+				bFound = true;
+			}
+			else
+				pEV = pEV->GetPrev();
+		}
+	}
+	return pTS;
+}
+
+CMsKeySignature* CMsSong::GetCurrentKeySignature()
+{
+	CMsKeySignature* pKS = 0;
+	bool bFound = false;
+	CMsEvent* pEV = 0;
+
+	if(IsPlaying())
+		pKS = m_SongGlobals.m_pLastKeySignature;
+	else
+	{
+		pEV = GetEventObject(GetStaffChildView()->GetDrawEvent());
+		while (pEV && !bFound)
+		{
+			if(pEV->ContainsObjectType(CMsObject::MsObjType::KEYSIG))
+			{
+				pKS = (CMsKeySignature*)pEV->FindFirstObjectOfType(CMsObject::MsObjType::KEYSIG);
+				bFound = true;
+			}
+			else
+				pEV = pEV->GetPrev();
+		}
+	}
+	return pKS;
 }
 
 void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)

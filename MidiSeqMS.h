@@ -33,7 +33,6 @@ private:
 		IDB_GLISSANDO
 	};
 	inline static int  BmIdKeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1] = {
-		-1,					// Undefined
 		IDB_CB_KEY_CMAJ,	//1X
 		IDB_CB_KEY_GMAJ,	//2X
 		IDB_CB_KEY_DMAJ,	//3X
@@ -48,7 +47,8 @@ private:
 		IDB_CB_KEY_AFMAJ,	//12X
 		IDB_CB_KEY_DFMAJ,	//13X
 		IDB_CB_KEY_GFMAJ,	//14X
-		IDB_CB_KEY_CFMAJ	//15X
+		IDB_CB_KEY_CFMAJ,	//15X
+		-1,					// Undefined
 	};
 	inline static int BmIdTimeSigCBbMIDs[APP_NUM_TIMESIG] = {
 		IDB_CB_TIMESIG_2_2,
@@ -479,6 +479,9 @@ public:
 	}
 	static int GetKeySigBmId(int KS) { return BmIdKeySigStringBitmapIDsTab[KS]; }
 
+	//----------------------
+	// TX816 Editor Bitmaps
+	//----------------------
 	int GetNumTX816LfoWaves() { return APP_TX816_NUM_LFO_WAVES; }
 	CMyBitmap* bmGetTX816LFOWave(int LFOW) { return &m_aBmLfoWaves[LFOW]; }
 	static int GetTx816BmIdLfoWave(int LFOW) { return BmIdTX816_LFO_Wave[LFOW]; }

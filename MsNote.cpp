@@ -51,6 +51,7 @@ char* CMsNote::NoteToString(char* pStr, int l)
 	int NotePitch = Note;
 	int MidiChannel = GetChannel();
 	int ls = 0;
+	CMsKeySignature* pKS = GetSong()->GetCurrentKeySignature();
 
 	Octave = Note / HALF_STEPS_PER_OCTAVE - 1;
 //	Note = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Note, GetAccidental());
@@ -64,7 +65,8 @@ char* CMsNote::NoteToString(char* pStr, int l)
 	);
 	if(MidiChannel == 10)	// is percusion channel?
 	{
-		NotePitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(NotePitch, GetAccidental());
+		if(pKS)
+			NotePitch = pKS->CorrectNoteByKeySig(NotePitch, GetAccidental());
 		NotePitch += CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 		//Drum note
 		sprintf_s(
@@ -109,9 +111,9 @@ void CMsNote::LoadRestBitmap(int Selection)
 }
 
 bool CMsNote::Create(
-	int nBitmapID, 
 	CMsSong* pSong, 
-	CMsEvent* pParentEvent
+	CMsEvent* pParentEvent,
+	int nBitmapID
 )
 {
 	if (nBitmapID)
@@ -757,8 +759,11 @@ int CMsNote::NeedsLine(ExtraLinesLocation& Location)
 	int TestPitch = 0;
 	int InitialPitch = Pitch;
 	int CorrectedPitch = 0;
+	CMsKeySignature* pKS = 0;
 
-	Pitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(Pitch, GetAccidental());
+	pKS = GetSong()->GetCurrentKeySignature();
+	if(pKS)
+		Pitch = pKS->CorrectNoteByKeySig(Pitch, GetAccidental());
 	CorrectedPitch = Pitch;
 	Pitch -= NOTE_C2;	// Normalize to C2 = 0
 	TestPitch = NOTE_C4 - NOTE_C2;	// Middle C normalized to 0
@@ -1006,12 +1011,27 @@ void CMsNote::NoteOff(int Velocity)
 int CMsNote::GetCorrectedPitchWithKeySignature()
 {
 	int NotePitch = GetPitch();
+	CMsKeySignature* pKS = 0;
 	//-------------------------------
 	// Apply Key Signature Correction
 	// or Accidental to correct pitch
 	//-------------------------------
-	NotePitch = GetSong()->GetCurrentKeySignature()->CorrectNoteByKeySig(NotePitch, GetAccidental());
-	NotePitch += CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
+	pKS = GetSong()->GetCurrentKeySignature();
+	if (pKS)
+	{
+		NotePitch = pKS->CorrectNoteByKeySig(NotePitch, GetAccidental());
+		NotePitch += CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
+	}
+	else
+	{
+		//-------------------------------
+		// if pKS is NULL, then the 
+		// current event must be at
+		// Event index 0
+		//-------------------------------
+		if (LogFile()) 
+			fprintf(LogFile(), "pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature\n");
+	}
 	return NotePitch;
 }
 
@@ -1241,9 +1261,9 @@ DRAWSTATE CMsNote:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mouse
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 //			SetPitch(pNote->GetPitch());
 			if (IsRest())
-				pN->Create(CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()], GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Rest
+				pN->Create(GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()), CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()]);	// Create Rest
 			else
-				pN->Create(0, GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()));	// Create Note
+				pN->Create(GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()), 0);	// Create Note
 			//-----------------------------
 			// Copy attributes
 			//-----------------------------
@@ -1636,11 +1656,18 @@ const char* CMsNote::GetNoteName(int Note)
 {
 	static const char* NotDef = "UDF";
 	const char* NoteName = 0;
+	CMsKeySignature* pKS = 0;
 
 	if(Note < 0 || Note > 127)
 		return NotDef;
-	if(GetSong()->GetCurrentKeySignature()->IsFlatKeySig())
-		NoteName = NoteAnsiLUTFlat[Note % 12];
+	pKS = GetSong()->GetCurrentKeySignature();
+	if (pKS)
+	{
+		if (pKS->IsFlatKeySig())
+			NoteName = NoteAnsiLUTFlat[Note % 12];
+		else
+			NoteName = NoteAnsiLUTSharp[Note % 12];
+	}
 	else
 		NoteName = NoteAnsiLUTSharp[Note % 12];
 	return NoteName;
@@ -1650,11 +1677,17 @@ const char* CMsNote::GetNoteName(int Note, CMsSong* pSong)
 {
 	static const char* NotDef = "UDF";
 	const char* NoteName = 0;
+	CMsKeySignature* pKS = 0;
 
 	if (Note < 0 || Note > 127)
 		return NotDef;
-	if (pSong->GetCurrentKeySignature()->IsFlatKeySig())
-		NoteName = NoteAnsiLUTFlat[Note % 12];
+	if (pKS)
+	{
+		if (pKS->IsFlatKeySig())
+			NoteName = NoteAnsiLUTFlat[Note % 12];
+		else
+			NoteName = NoteAnsiLUTSharp[Note % 12];
+	}
 	else
 		NoteName = NoteAnsiLUTSharp[Note % 12];
 	return NoteName;

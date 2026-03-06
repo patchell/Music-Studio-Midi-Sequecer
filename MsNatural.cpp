@@ -18,6 +18,11 @@ CMsNatural::~CMsNatural()
 
 }
 
+bool CMsNatural::Create(CMsSong* pSong, CMsEvent* pEvent)
+{
+	return CMsObject::Create(pSong, pEvent);
+}
+
 UINT CMsNatural::Process()
 {
 	return 0;

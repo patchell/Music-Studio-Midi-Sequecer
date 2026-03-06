@@ -10,10 +10,9 @@ CMsChordNote::~CMsChordNote()
 {
 }
 
-bool CMsChordNote::Create(CMsSong* pSonge)
+bool CMsChordNote::Create(CMsSong* pSong, CMsEvent* pParentEvent)
 {
-	bool rV = true;
-    return rV;
+    return CMsObject::Create(pSong, pParentEvent);
 }
 
 UINT CMsChordNote::Process()

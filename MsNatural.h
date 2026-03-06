@@ -9,6 +9,7 @@ class CMsNatural : public CMsObject
 public:
 	CMsNatural();
 	virtual ~CMsNatural();
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

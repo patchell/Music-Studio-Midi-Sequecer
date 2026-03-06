@@ -19,9 +19,9 @@ CMsSharp::~CMsSharp()
 
 }
 
-bool CMsSharp::Create(CMsSong* pSong)
+bool CMsSharp::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
-	CMsObject::Create(pSong, 0);
+	CMsObject::Create(pSong, pEvent);
 	return true;
 }
 

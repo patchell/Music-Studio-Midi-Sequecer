@@ -3,6 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
+constexpr auto KEY_SIG_Y = 20;	//Y position of key signature in staff view
+
 class CMsNote;
 
 class CMsKeySignature : public CMsObject  
@@ -279,7 +281,7 @@ private:
 public:
 	CMsKeySignature();
 	virtual ~CMsKeySignature();
-	bool Create(CMsSong* pSong, CMsEvent* pParentEvent, KeySigID key);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pParentEvent, KeySigID key);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -294,6 +296,9 @@ public:
 	}
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
+	//------------------------------------------------------
+	DRAWSTATE Place(DRAWSTATE DrawState, CPoint pointMouse);
+	virtual DRAWSTATE PlaceEventChanged(DRAWSTATE DrawState, CPoint pointMouse);
 	//------------------------------------------------------
 	bool IsFlatKeySig();
 	virtual void Print(FILE *pO, int Indent);
@@ -327,5 +332,12 @@ public:
 			_T("Cb MAJ"),	//15X
 			_T("ERROR")
 	};
-
+	static const char* KeySigIDToString(KeySigID id) {
+		for (int i = 0; i < APP_NUM_KEYSIGNATURES + 1; i++) {
+			if (KeySigCorrectionLUT[i].m_KeySigID == id) {
+				return KeySigCorrectionLUT[i].m_pKeySigString;
+			}
+		}
+		return "ERROR";
+	}
 };

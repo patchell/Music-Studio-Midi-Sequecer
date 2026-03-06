@@ -18,9 +18,9 @@ CMsFlat::~CMsFlat()
 
 }
 
-bool CMsFlat::Create(CMsSong* pSong)
+bool CMsFlat::Create(CMsSong* pSong, CMsEvent* pParentEvent)
 {
-    return false;
+    return CMsObject::Create(pSong, pParentEvent);
 }
 
 UINT CMsFlat::Process()
@@ -122,7 +122,7 @@ void CMsFlat::Draw(CDC *pDC, COLORREF c, int x, int y)
 {
 	CPen pen,*oldpen;
 
-	y += 4;
+	y += 4;		// Move Y down by a semitone so that the flat is centered on the note head.  This is a bit of a hack, but it works for now.  If we want to be more precise, we can add an attribute to the flat object that specifies how many semitones to move it down, and then use that attribute here instead of hardcoding it to 4.
 	pen.CreatePen(PS_SOLID,1,c);
 	oldpen = pDC->SelectObject(&pen);
 	pDC->MoveTo(x-2,y-4);

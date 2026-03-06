@@ -13,10 +13,10 @@ CMsGlissandoEnd::~CMsGlissandoEnd()
 {
 }
 
-bool CMsGlissandoEnd::Create(CMsSong* pSong, CMsGlissando* pParent, CMsEvent* pEvEnd)
+bool CMsGlissandoEnd::Create(CMsSong* pSong, CMsEvent* pParent, CMsGlissando* pParentGlissando)
 {
-	m_pParentGlissando = pParent;
-	CMsObject::Create(pSong, pEvEnd);
+	m_pParentGlissando = pParentGlissando;
+	CMsObject::Create(pSong, pParent);
 	return true;
 }
 

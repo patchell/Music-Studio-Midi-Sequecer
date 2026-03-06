@@ -9,7 +9,7 @@ class CMsTrebleCleff : public CMsObject
 public:
 	CMsTrebleCleff();
 	virtual ~CMsTrebleCleff();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------

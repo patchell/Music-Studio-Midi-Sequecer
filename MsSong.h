@@ -134,16 +134,12 @@ public:
 		m_SongGlobals.m_pLastTempo = pNewTempo;
 	}
 	//----------Time Signature ---------------------
-	CMsTimeSignature* GetCurrentTimeSignature() const {
-		return m_SongGlobals.m_pLastTimeSignature;
-	}
+	CMsTimeSignature* GetCurrentTimeSignature(); 
 	void SetCurrentTimeSignature(CMsTimeSignature* pNewTS) {
 		m_SongGlobals.m_pLastTimeSignature = pNewTS;
 	}
 	//------------------ Key Signature ----------------
-	CMsKeySignature* GetCurrentKeySignature() {
-		return m_SongGlobals.m_pLastKeySignature;
-	}
+	CMsKeySignature* GetCurrentKeySignature();
 	void SetCurrentKeySignature(CMsKeySignature* pNewKS) {
 		m_SongGlobals.m_pLastKeySignature = pNewKS;
 	}

@@ -25,9 +25,9 @@ CMsGlissando::~CMsGlissando()
 {
 }
 
-bool CMsGlissando::Create(CMsSong* pSong, CMsEvent* pEvStart, CMsEvent* pEvEnd)
+bool CMsGlissando::Create(CMsSong* pSong, CMsEvent* pParent, CMsEvent* pEvEnd)
 {
-	CMsObject::Create(pSong, pEvStart);
+	CMsObject::Create(pSong, pParent);
 	m_pEvEnd = pEvEnd;
 	return true;
 }

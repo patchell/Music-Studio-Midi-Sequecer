@@ -142,7 +142,7 @@ public:
 	CMsObject();
 	CMsObject(MsObjType type);
 	virtual ~CMsObject();
-	bool Create(CMsSong* pSong, CMsEvent* pEvent);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -170,6 +170,8 @@ public:
 	virtual UINT GetPlayState() { return m_PlayState; }
 	virtual void SetPlayState(UINT state) { m_PlayState = state; }
 	//-------------------------------------------------
+	virtual DRAWSTATE RemoveThisFromEvent(DRAWSTATE DrawState);
+	virtual DRAWSTATE AddThisToEvent(DRAWSTATE DrawState, CPoint pointMouse);
 	virtual void Copy(CMsObject *Source);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE *pO, int Indent);

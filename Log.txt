@@ -9,145 +9,732 @@ Player Thread Ready
 	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 6 ID:603
 Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
 	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 2 ID:604
-	<Time Signature>Selected item 0 in combo box 608
-		Event 0: Is This Object Note of 2 Events  Object::Event=0 ID=20
-		Event 3: Add Object Type Time Signature Object Event 3 ID=21
-		Event 3: Is This Object Time Signature of 1 Events  Object::Event=3 ID=21
-		Event 3: Is This Object Time Signature of 1 Events  Object::Event=3 ID=21
-		Event:3:Remove Object Time Signature From Head ID=21
-		Event 4: Add Object Type Time Signature Object Event 4 ID=21
-		Event 4: Is This Object Time Signature of 1 Events  Object::Event=4 ID=21
-		Event 4: Is This Object Time Signature of 1 Events  Object::Event=4 ID=21
-		Event:4:Remove Object Time Signature From Head ID=21
-		Event 5: Add Object Type Time Signature Object Event 5 ID=21
-		Event 5: Add Object Type Time Signature Object Event 5 ID=23
-		Event 5: Is This Object Time Signature of 2 Events  Object::Event=5 ID=23
-		Event 5: Is This Object Time Signature of 2 Events  Object::Event=5 ID=23
-		Event:5:Remove Object Time Signature From Tail ID=23
-		Event 4: Add Object Type Time Signature Object Event 4 ID=23
-		Event 4: Is This Object Time Signature of 1 Events  Object::Event=4 ID=23
-		Event 4: Is This Object Time Signature of 1 Events  Object::Event=4 ID=23
-		Event:4:Remove Object Time Signature From Head ID=23
-		Event 3: Add Object Type Time Signature Object Event 3 ID=23
-		Event 3: Add Object Type Time Signature Object Event 3 ID=25
-		Event 3: Is This Object Time Signature of 2 Events  Object::Event=3 ID=25
-		Event 3: Is This Object Time Signature of 2 Events  Object::Event=3 ID=25
-		Event:3:Remove Object Time Signature From Tail ID=25
-		Event 4: Add Object Type Time Signature Object Event 4 ID=25
-		Event 4: Is This Object Time Signature of 1 Events  Object::Event=4 ID=25
-		Event:4:Remove Object Time Signature From Head ID=25
-	(null)Selected item 2 in combo box 604
-		Event 3: Add Object Type Note Object Event 3 ID=26
-		Event 3:**NO Notes
-		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=26
-     ***********************************
-         Pitch = 71
-     ***********************************
-		Event:3:Remove Object Note From Tail ID=26
-		Event 4: Add Object Type Note Object Event 4 ID=26
+		Event 4: Add Object Type Note Object Event 4 ID=20
 		Event 4:**NO Notes
-		Event 4: Add Object Type Note Object Event 4 ID=27
+		Event 4: Add Object Type Note Object Event 4 ID=21
 		Event 4: There **ARE** 1 Notes in this Event
-		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=27
-     ***********************************
-         Pitch = 67
-     ***********************************
-		Event:4:Remove Object Note From Tail ID=27
-		Event 5: Add Object Type Note Object Event 5 ID=27
-		Event 5:**NO Notes
-		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=27
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=21
      ***********************************
          Pitch = 59
      ***********************************
-		Event:5:Remove Object Note From Tail ID=27
-		Event 6: Add Object Type Note Object Event 6 ID=27
-		Event 6:**NO Notes
-		Event 6: Add Object Type Note Object Event 6 ID=28
-		Event 6: There **ARE** 1 Notes in this Event
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=28
-     ***********************************
-         Pitch = 47
-     ***********************************
-		Event:6:Remove Object Note From Tail ID=28
-		Event 7: Add Object Type Note Object Event 7 ID=28
-		Event 7:**NO Notes
-		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=28
-     ***********************************
-         Pitch = 43
-     ***********************************
-		Event:7:Remove Object Note From Head ID=28
-		Event 8: Add Object Type Note Object Event 8 ID=28
-		Event 8:**NO Notes
-		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=28
-     ***********************************
-         Pitch = 40
-     ***********************************
-		Event:8:Remove Object Note From Head ID=28
-		Event 7: Add Object Type Note Object Event 7 ID=28
-		Event 7:**NO Notes
-		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=28
-		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=28
-     ***********************************
-         Pitch = 36
-     ***********************************
-		Event:7:Remove Object Note From Head ID=28
-		Event 9: Add Object Type Note Object Event 9 ID=28
-		Event 9:**NO Notes
-		Event 9: Is This Object Note of 1 Events  Object::Event=9 ID=28
-     ***********************************
-         Pitch = 59
-     ***********************************
-		Event:9:Remove Object Note From Head ID=28
-		Event 10: Add Object Type Note Object Event 10 ID=28
-		Event 10:**NO Notes
-		Event 10: Is This Object Note of 1 Events  Object::Event=10 ID=28
+		Event:4:Remove Object Note From Tail ID=21
+		Event 3: Add Object Type Note Object Event 3 ID=21
+		Event 3:**NO Notes
+		Event 3: Add Object Type Note Object Event 3 ID=22
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=22
      ***********************************
          Pitch = 53
      ***********************************
-		Event:10:Remove Object Note From Head ID=28
-		Event 10: Is This Object Bar of 0 Events  Object::Event=10 ID=54
-		Event 9: Add Object Type Bar Object Event 9 ID=54
-		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=54
-		Event 9: Is This Object Bar of 1 Events  Object::Event=9 ID=54
-		Event:9:Remove Object Bar From Head ID=54
-		Event 8: Add Object Type Bar Object Event 8 ID=54
-		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=54
-		Event 8: Is This Object Bar of 1 Events  Object::Event=8 ID=54
-		Event:8:Remove Object Bar From Head ID=54
-		Event 7: Add Object Type Bar Object Event 7 ID=54
-		Event 7: Is This Object Bar of 1 Events  Object::Event=7 ID=54
-		Event 7: Is This Object Bar of 1 Events  Object::Event=7 ID=54
-		Event:7:Remove Object Bar From Head ID=54
-		Event 6: Add Object Type Bar Object Event 6 ID=54
-		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=54
-		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=54
-		Event:6:Remove Object Bar From Tail ID=54
-		Event 5: Add Object Type Bar Object Event 5 ID=54
-		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=54
-		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=54
-		Event:5:Remove Object Bar From Tail ID=54
-		Event 4: Add Object Type Bar Object Event 4 ID=54
-		Event 4: Is This Object Bar of 2 Events  Object::Event=4 ID=54
-		Event 4: Is This Object Bar of 2 Events  Object::Event=4 ID=54
-		Event:4:Remove Object Bar From Tail ID=54
-		Event 3: Add Object Type Bar Object Event 3 ID=54
-		Event 3: Add Object Type Bar Object Event 3 ID=74
-		Event 3: Is This Object Bar of 3 Events  Object::Event=3 ID=74
-		Event 3: Is This Object Bar of 3 Events  Object::Event=3 ID=74
-		Event:3:Remove Object Bar From Tail ID=74
-		Event 4: Add Object Type Bar Object Event 4 ID=74
-		Event 4: Add Object Type Bar Object Event 4 ID=76
-		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=76
-		Event 4: Is This Object Bar of 3 Events  Object::Event=4 ID=76
-		Event:4:Remove Object Bar From Tail ID=76
-		Event 5: Add Object Type Bar Object Event 5 ID=76
-		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=76
-		Event:5:Remove Object Bar From Tail ID=76
-		Event 6: Add Object Type Bar Object Event 6 ID=76
-		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=76
-		Event 6: Is This Object Bar of 2 Events  Object::Event=6 ID=76
-		Event:6:Remove Object Bar From Tail ID=76
-		Event 5: Add Object Type Bar Object Event 5 ID=76
-		Event 5: Is This Object Bar of 2 Events  Object::Event=5 ID=76
-		Event:5:Remove Object Bar From Tail ID=76
+		Event:3:Remove Object Note From Tail ID=22
+		Event 2: Add Object Type Note Object Event 2 ID=22
+		Event 2:**NO Notes
+		Event 2: Add Object Type Note Object Event 2 ID=23
+		Event 2: There **ARE** 1 Notes in this Event
+		Event 2: Add Object Type Note Object Event 2 ID=24
+		Event 2: There **ARE** 2 Notes in this Event
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=24
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=24
+     ***********************************
+         Pitch = 36
+     ***********************************
+		Event:2:Remove Object Note From Tail ID=24
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 9: Add Object Type Note Object Event 9 ID=24
+		Event 9:**NO Notes
+		Event 9: Is This Object Note of 1 Events  Object::Event=9 ID=24
+     ***********************************
+         Pitch = 76
+     ***********************************
+		Event:9:Remove Object Note From Head ID=24
+		Event 10: Add Object Type Note Object Event 10 ID=24
+		Event 10:**NO Notes
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 10: Is This Object Note of 1 Events  Object::Event=10 ID=24
+		Event 10: Is This Object Note of 1 Events  Object::Event=10 ID=24
+     ***********************************
+         Pitch = 84
+     ***********************************
+		Event:10:Remove Object Note From Head ID=24
+		Event 8: Add Object Type Note Object Event 8 ID=24
+		Event 8:**NO Notes
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=24
+     ***********************************
+         Pitch = 76
+     ***********************************
+		Event:8:Remove Object Note From Head ID=24
+		Event 7: Add Object Type Note Object Event 7 ID=24
+		Event 7:**NO Notes
+		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=24
+     ***********************************
+         Pitch = 62
+     ***********************************
+		Event:7:Remove Object Note From Head ID=24
+		Event 6: Add Object Type Note Object Event 6 ID=24
+		Event 6:**NO Notes
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=24
+     ***********************************
+         Pitch = 64
+     ***********************************
+		Event:6:Remove Object Note From Head ID=24
+		Event 5: Add Object Type Note Object Event 5 ID=24
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=24
+     ***********************************
+         Pitch = 77
+     ***********************************
+		Event:5:Remove Object Note From Head ID=24
+		Event 4: Add Object Type Note Object Event 4 ID=24
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=24
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=24
+     ***********************************
+         Pitch = 86
+     ***********************************
+		Event:4:Remove Object Note From Head ID=24
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Add Object Type Note Object Event 0 ID=24
+		Event 0:**NO Notes
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=24
+     ***********************************
+         Pitch = 59
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=24
+		Event 1: Add Object Type Note Object Event 1 ID=24
+		Event 1:**NO Notes
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+     ***********************************
+         Pitch = 55
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=24
+		Event 2: Add Object Type Note Object Event 2 ID=24
+		Event 2: There **ARE** 2 Notes in this Event
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=24
+     ***********************************
+         Pitch = 53
+     ***********************************
+		Event:2:Remove Object Note From Head ID=24
+		Event 1: Add Object Type Note Object Event 1 ID=24
+		Event 1:**NO Notes
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+     ***********************************
+         Pitch = 52
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=24
+		Event 0: Add Object Type Note Object Event 0 ID=24
+		Event 0:**NO Notes
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=24
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=24
+     ***********************************
+         Pitch = 53
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=24
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Add Object Type Note Object Event 0 ID=24
+		Event 0:**NO Notes
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=24
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=24
+		Event 1: Add Object Type Note Object Event 1 ID=24
+		Event 1:**NO Notes
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+     ***********************************
+         Pitch = 59
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=24
+		Event 2: Add Object Type Note Object Event 2 ID=24
+		Event 2: There **ARE** 2 Notes in this Event
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=24
+     ***********************************
+         Pitch = 59
+     ***********************************
+		Event:2:Remove Object Note From Head ID=24
+		Event 3: Add Object Type Note Object Event 3 ID=24
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=24
+     ***********************************
+         Pitch = 59
+     ***********************************
+		Event:3:Remove Object Note From Head ID=24
+		Event 2: Add Object Type Note Object Event 2 ID=24
+		Event 2: There **ARE** 2 Notes in this Event
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=24
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:2:Remove Object Note From Head ID=24
+		Event 1: Add Object Type Note Object Event 1 ID=24
+		Event 1:**NO Notes
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+     ***********************************
+         Pitch = 62
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=24
+		Event 0: Add Object Type Note Object Event 0 ID=24
+		Event 0:**NO Notes
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 0: Is This Object Note of 3 Events  Object::Event=0 ID=24
+     ***********************************
+         Pitch = 47
+     ***********************************
+		Event:0:Remove Object Note From Tail ID=24
+		Event 1: Add Object Type Note Object Event 1 ID=24
+		Event 1:**NO Notes
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+		Event 1: Is This Object Note of 3 Events  Object::Event=1 ID=24
+     ***********************************
+         Pitch = 86
+     ***********************************
+		Event:1:Remove Object Note From Tail ID=24
+	<Key Signature>Selected item 1 in combo box 607
+		Event 1: Add Object Type Key Signature Object Event 1 ID=271
+		Event 1: Is This Object Key Signature of 3 Events  Object::Event=1 ID=271
+		Event:1:Remove Object Key Signature From Tail ID=271
+		Event 2: Add Object Type Key Signature Object Event 2 ID=271
+		Event 2: Is This Object Key Signature of 3 Events  Object::Event=2 ID=271
+		Event:2:Remove Object Key Signature From Tail ID=271
+		Event 3: Add Object Type Key Signature Object Event 3 ID=271
+		Event 3: Is This Object Key Signature of 2 Events  Object::Event=3 ID=271
+		Event:3:Remove Object Key Signature From Tail ID=271
+		Event 4: Add Object Type Key Signature Object Event 4 ID=271
+		Event 4: Is This Object Key Signature of 2 Events  Object::Event=4 ID=271
+		Event:4:Remove Object Key Signature From Tail ID=271
+		Event 5: Add Object Type Key Signature Object Event 5 ID=271
+		Event 5: Add Object Type Key Signature Object Event 5 ID=397
+		Event 5: Is This Object Key Signature of 2 Events  Object::Event=5 ID=397
+		Event:5:Remove Object Key Signature From Tail ID=397
+		Event 6: Add Object Type Key Signature Object Event 6 ID=397
+		Event 6: Is This Object Key Signature of 1 Events  Object::Event=6 ID=397
+		Event:6:Remove Object Key Signature From Head ID=397
+		Event 5: Add Object Type Key Signature Object Event 5 ID=397
+		Event 5: Is This Object Key Signature of 2 Events  Object::Event=5 ID=397
+		Event:5:Remove Object Key Signature From Tail ID=397
+	(null)Selected item 2 in combo box 604
+		Event 4: Add Object Type Note Object Event 4 ID=624
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=624
+     ***********************************
+         Pitch = 77
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=624
+		Event 5: Add Object Type Note Object Event 5 ID=624
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=624
+     ***********************************
+         Pitch = 74
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=624
+		Event 6: Add Object Type Note Object Event 6 ID=624
+		Event 6:**NO Notes
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=624
+     ***********************************
+         Pitch = 65
+     ***********************************
+		Event:6:Remove Object Note From Head ID=624
+		Event 5: Add Object Type Note Object Event 5 ID=624
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=624
+     ***********************************
+         Pitch = 64
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=624
+		Event 6: Add Object Type Note Object Event 6 ID=624
+		Event 6:**NO Notes
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=624
+     ***********************************
+         Pitch = 65
+     ***********************************
+		Event:6:Remove Object Note From Head ID=624
+		Event 5: Add Object Type Note Object Event 5 ID=624
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 2 Events  Object::Event=5 ID=624
+     ***********************************
+         Pitch = 74
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=624
+		Event 4: Add Object Type Note Object Event 4 ID=624
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=624
+     ***********************************
+         Pitch = 77
+     ***********************************
+		Event:4:Remove Object Note From Head ID=624
+		Event 3: Add Object Type Note Object Event 3 ID=624
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=624
+     ***********************************
+         Pitch = 69
+     ***********************************
+		Event:3:Remove Object Note From Head ID=624
+		Event 2: Add Object Type Note Object Event 2 ID=624
+		Event 2: There **ARE** 2 Notes in this Event
+		Event 2: Is This Object Note of 3 Events  Object::Event=2 ID=624
+     ***********************************
+         Pitch = 77
+     ***********************************
+		Event:2:Remove Object Note From Head ID=624
+		Event 3: Add Object Type Note Object Event 3 ID=624
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=624
+     ***********************************
+         Pitch = 71
+     ***********************************
+		Event:3:Remove Object Note From Head ID=624
+		Event 4: Add Object Type Note Object Event 4 ID=624
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=624
+     ***********************************
+         Pitch = 50
+     ***********************************
+		Event:4:Remove Object Note From Head ID=624
+		Event 5: Add Object Type Note Object Event 5 ID=624
+		Event 5:**NO Notes
+		Event 5: Add Object Type Note Object Event 5 ID=971
+		Event 5: There **ARE** 1 Notes in this Event
+		Event 5: Is This Object Note of 3 Events  Object::Event=5 ID=971
+     ***********************************
+         Pitch = 48
+     ***********************************
+		Event:5:Remove Object Note From Tail ID=971
+		Event 4: Add Object Type Note Object Event 4 ID=971
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=971
+     ***********************************
+         Pitch = 52
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=971
+		Event 3: Add Object Type Note Object Event 3 ID=971
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=971
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=971
+     ***********************************
+         Pitch = 36
+     ***********************************
+		Event:3:Remove Object Note From Tail ID=971
+		Event 3: Add Object Type Note Object Event 3 ID=971
+		Event 3: There **ARE** 1 Notes in this Event
+		Event 3: Is This Object Note of 2 Events  Object::Event=3 ID=971
+     ***********************************
+         Pitch = 41
+     ***********************************
+		Event:3:Remove Object Note From Tail ID=971
+		Event 4: Add Object Type Note Object Event 4 ID=971
+		Event 4: There **ARE** 1 Notes in this Event
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=971
+		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=971
+     ***********************************
+         Pitch = 36
+     ***********************************
+		Event:4:Remove Object Note From Tail ID=971
+		Event 4: Add Object Type Note Object Event 4 ID=971
+		Event 4: There **ARE** 1 Notes in this Event
+Transitioning from Edit to Lower Sel Not Possible
+Transitioning from Edit to Lower Sel Not Possible
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
+		Event 8: Add Object Type Note Object Event 8 ID=971
+		Event 8:**NO Notes
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=971
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:8:Remove Object Note From Head ID=971
+		Event 7: Add Object Type Note Object Event 7 ID=971
+		Event 7:**NO Notes
+		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=971
+     ***********************************
+         Pitch = 52
+     ***********************************
+		Event:7:Remove Object Note From Head ID=971
+		Event 8: Add Object Type Note Object Event 8 ID=971
+		Event 8:**NO Notes
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=971
+     ***********************************
+         Pitch = 53
+     ***********************************
+		Event:8:Remove Object Note From Head ID=971
+		Event 9: Add Object Type Note Object Event 9 ID=971
+		Event 9:**NO Notes
+		Event 9: Is This Object Note of 1 Events  Object::Event=9 ID=971
+     ***********************************
+         Pitch = 60
+     ***********************************
+		Event:9:Remove Object Note From Head ID=971
+		Event 8: Add Object Type Note Object Event 8 ID=971
+		Event 8:**NO Notes
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=971
+     ***********************************
+         Pitch = 81
+     ***********************************
+		Event:8:Remove Object Note From Head ID=971
+		Event 7: Add Object Type Note Object Event 7 ID=971
+		Event 7:**NO Notes
+		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=971
+		Event 7: Is This Object Note of 1 Events  Object::Event=7 ID=971
+     ***********************************
+         Pitch = 84
+     ***********************************
+		Event:7:Remove Object Note From Head ID=971
 ------ Exit MidiSeqMS-------

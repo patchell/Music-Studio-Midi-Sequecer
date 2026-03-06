@@ -406,7 +406,7 @@ private:
 public:
 	CMsNote();
 	virtual ~CMsNote();
-	bool Create(int nBitmapID, CMsSong* pSong, CMsEvent* pParentEvent);
+	bool Create(CMsSong* pSong, CMsEvent* pParentEvent, int nBitmapID);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
