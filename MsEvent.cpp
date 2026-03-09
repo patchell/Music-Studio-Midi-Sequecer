@@ -755,9 +755,10 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 			pObj ? pObj->GetStringFromType() : "NULL"
 		);
 		AfxMessageBox(csError);
-		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::RemoveObject : At Event % d Object ID=%d not in this event\n", 
+		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::RemoveObject : At Event % d Object ID=%d not in this event TotalObjects:%d\n", 
 			GetIndex(),
-			pObj->GetObjectID()
+			pObj->GetObjectID(),
+			m_NumberOfObjects
 		);
 		GETAPP->CloseAllLogFiles();
 		GETAPP->CloseAllDocuments(true);

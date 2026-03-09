@@ -1459,7 +1459,6 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	case DrawMode::NOTE:	// SetupDrawMode
 		{
 			CMsNote* pN = new CMsNote;
-			pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
 			if (GetDrawObject())
 			{
 				pEv = GetDrawObject()->GetParentEvent();
@@ -3018,51 +3017,49 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 		}	// End of MISC switch (Selection)
 		SetupDrawMode(DrawingMode, v);
 		break;
-	case IDC_COMBO_NOTETYPES:		// MyControlsMessages
+	case IDC_COMBO_NOTETYPES:		// MyControlsMessages Note
+	case IDC_COMBO_RESTTYPES:		// MyControlsMessages Rest
 		v = CMsNote::NoteDurLut[nSelection];
-		if (GetTriplet()) 
-			v -= 2;
-		else if (GetDotted()) 
-			v += 2;
+		if (IDC_COMBO_NOTETYPES == ComboID)
+		{
+			//-----------------------------
+			// Setup Note
+			//-----------------------------
+			if (GetTriplet())
+				v -= 2;
+			else if (GetDotted())
+				v += 2;
+			SetRest(false);
+			//-----------------------------
+			// Show decorations and
+			// accidentals combo boxes
+			// Do these actually work
+			//-----------------------------
+			m_Combo_Decorations.ShowWindow(SW_SHOW);
+			m_Combo_Accidentals.ShowWindow(SW_SHOW);
+			m_Combo_Decorations.EnableWindow(1);
+			m_Combo_Accidentals.EnableWindow(1);
+		}
+		else
+		{
+			//-----------------------------
+			// Setup Rest
+			//-----------------------------
+			SetRest(true);
+			m_Combo_Decorations.ClearAllItems((int)ComboBoxDecorationIndex::NONE);
+			m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
+			m_Combo_Accidentals.EnableWindow(0);
+			m_Combo_Decorations.EnableWindow(0);
+			m_Combo_Accidentals.ShowWindow(SW_HIDE);
+			m_Combo_Decorations.ShowWindow(SW_HIDE);
+		}
 		SetNoteDuration(v);
-		//-----------------------------
-		// Show decorations and
-		// accidentals combo boxes
-		// Do these actually work
-		//-----------------------------
-		m_Combo_Decorations.ShowWindow(SW_SHOW);
-		m_Combo_Accidentals.ShowWindow(SW_SHOW);
-		m_Combo_Decorations.EnableWindow(1);
-		m_Combo_Accidentals.EnableWindow(1);
 		//-----------------------------
 		// This is a note, not a rest
 		//-----------------------------
-		SetupDrawMode(DrawMode::NOTE);
-		break;
-	case IDC_COMBO_RESTTYPES:		// MyControlsMessages
-		m_Combo_Decorations.ClearAllItems((int)ComboBoxDecorationIndex::NONE);
-		m_Combo_Accidentals.SetCurSel(COMBO_ACCIDENTAL_INKEY);
-		m_Combo_Accidentals.EnableWindow(0);
-		m_Combo_Decorations.EnableWindow(0);
-		m_Combo_Accidentals.ShowWindow(SW_HIDE);
-		m_Combo_Decorations.ShowWindow(SW_HIDE);
-		SetNoteDuration(CMsNote::NoteDurLut[nSelection]);
-		SetFocus();
-		SetRest(1);
-		if (GetDrawObject())
-		{
-			delete m_pDrawObject;
-			SetDrawObject(0);
-		}
-		pNote = new CMsNote;
-		pNote->Create(
-			GetSong(), 
-			GetSong()->GetEventObject(m_nDrawEvent),
-			(COMBO_REST_HALF < nSelection) ? CMidiSeqMSApp::GetRestBmIdsTypes()[nSelection] : 0
-		);
-		SetDrawObject(pNote);
-		m_dmDrawMode = DrawMode::NOTE;
 		UpdateNoteDrawObject();
+		SetFocus();
+		SetupDrawMode(DrawMode::NOTE);
 		break;
 	case IDC_COMBO_INSTRUMENT:		// MyControlsMessages
 		Track = m_Combo_Instrument.GetCurSel() + 1;

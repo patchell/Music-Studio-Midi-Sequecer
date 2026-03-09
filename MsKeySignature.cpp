@@ -371,18 +371,18 @@ void CMsKeySignature::Draw(CDC *pDC)
 			break;
 		case KeySigID::CsMAJ:	//seven sharps B sharp
 			if (!pSharp) pSharp = new CMsSharp;
-			pSharp->Draw(pDC,color,X+10,Y + NoteToPosition(MSFF_NOTE_B2+24));	//base staff
+			pSharp->Draw(pDC,color,X,Y + NoteToPosition(MSFF_NOTE_B2+24));	//base staff
 			pSharp->Draw(pDC, color,X-12,Y + NoteToPosition(MSFF_NOTE_B2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::FsMAJ:	//six sharps E sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X+10,Y + NoteToPosition(MSFF_NOTE_E2+ 36));	//base staff
-			pSharp->Draw(pDC, color,X+10,Y + NoteToPosition(MSFF_NOTE_E2+48));	//trebble staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_E2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::BMAJ:	//five sharps A sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X - 10,Y + NoteToPosition(MSFF_NOTE_A2+24));	//base staff
-			pSharp->Draw(pDC, color,X + 10,Y + NoteToPosition(MSFF_NOTE_A2+48));	//trebble staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_A2+48));	//trebble staff
 			[[fallthrough]];
 		case KeySigID::EMAJ:	//four D sharp
 			if (!pSharp) pSharp = new CMsSharp;
@@ -402,7 +402,7 @@ void CMsKeySignature::Draw(CDC *pDC)
 		case KeySigID::GMAJ:	///one F sharp
 			if (!pSharp) pSharp = new CMsSharp;
 			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+36));	//base staff
-			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+48));	//trebble staff
+			pSharp->Draw(pDC, color,X,Y + NoteToPosition(MSFF_NOTE_F2+60));	//trebble staff
 			break;
 			// Key signatures with flats.  Notice that the order of flats is the opposite of sharps, so the first flat is B flat, then E flat, etc.
 		case KeySigID::CbMAJ:	//seven flats F flat
@@ -466,12 +466,12 @@ void CMsKeySignature::ObjectRectangle(CRect& rect, UINT Event)
 int CMsKeySignature::GetKeySigCorrection(int Note)
 {
 	UINT n = Note % 12;
-	int rNoteCorection;
+	int rNoteCorrection = 0;
 
 	if(this == nullptr)
 		printf("Well\n");
-	rNoteCorection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
-	return rNoteCorection;
+	rNoteCorrection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
+	return rNoteCorrection;
 }
 
 int CMsKeySignature::CorrectNoteByKeySig(int Note, int accidental)

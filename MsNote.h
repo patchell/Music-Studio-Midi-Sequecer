@@ -34,7 +34,6 @@ constexpr auto NOTE_ACCENT_X_STEMDOWN_OFFSET = NOTE_STEM_OFFSET;
 constexpr auto NOTE_ACCENT_HEIGHT = 6;
 constexpr auto NOTE_ACCENT_WIDTH = NOTE_HEAD_WIDTH;
 constexpr auto NOTE_ACCENT_Y_OFFSET = NOTE_HEAD_HEIGHT;
-
 constexpr auto NOTE_TRIPLET_WIDTH = 3;
 constexpr auto NOTE_TRIPLET_HEIGHT = 4;
 constexpr auto NOTE_TRIPLET_X_OFFSET = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH - NOTE_TRIPLET_WIDTH;
@@ -42,7 +41,11 @@ constexpr auto NOTE_TRIPLET_Y_OFFSET = NOTE_HEAD_HEIGHT + NOTE_TRIPLET_HEIGHT;
 
 constexpr auto NOTE_DOTTED_X_OFFSET = NOTE_STEM_OFFSET + 2;
 constexpr auto NOTE_DOTTED_Y_OFFSET = 4;
-
+//-------------------------------
+// Constants for Drawing Rests
+//-------------------------------
+constexpr auto REST_BITMAP_OFFSET_X = 20;
+constexpr auto REST_HALF_WHOLE_OFFSET = NOTE_STEM_OFFSET - NOTE_HEAD_WIDTH;
 constexpr auto HALF_REST_WIDTH = 8;
 constexpr auto HALF_REST_HEIGHT = 6;
 
@@ -96,7 +99,7 @@ constexpr auto MSFF_ACCIDENTAL_FLAT = 3;
 
 class NoteData {
 
-	UINT m_Rest;	//Note 0 - Rest 1
+	bool m_Rest;	//Note 0 - Rest 1
 	UINT m_TieBeg;	// begining of a tied note
 	UINT m_TieEnd;	// end of a tied note
 	bool m_Accent;	// accent note
@@ -118,7 +121,7 @@ class NoteData {
 public:
 	NoteData() {
 		m_MidiOutID = 0;
-		m_Rest = 0;
+		m_Rest = false;
 		m_TieBeg = 0;
 		m_TieEnd = 0;
 		m_Accent = 0;
@@ -179,8 +182,8 @@ public:
 	void SetMidiOutID(int  MId) { m_MidiOutID = 0; }
 	int GetMidiOutID() { return m_MidiOutID; }
 
-	void SetRest(int v) {m_Rest = v;}
-	int GetRest() { return m_Rest; }
+	void SetRest(bool v) {m_Rest = v;}
+	bool GetRest() const { return m_Rest; }
 	bool IsRest() { return m_Rest; }
 	bool IsNote() { return !m_Rest; }
 
@@ -260,15 +263,26 @@ class CMsNote : public CMsObject
 		MiddleC,
 	};
 	struct NeedsLinesItem {
-		int m_Lines;
-		ExtraLinesLocation m_Location;
+		int m_NoteLines;
+		ExtraLinesLocation m_NoteLocation;
+		int m_RestLines;
+		ExtraLinesLocation m_RestLocation;
 		NeedsLinesItem() {
-			m_Lines = 0;
-			m_Location = ExtraLinesLocation::NotNeeded;
+			m_NoteLines = 0;
+			m_NoteLocation = ExtraLinesLocation::NotNeeded;
+			m_RestLines = 0;
+			m_RestLocation = ExtraLinesLocation::NotNeeded;
 		}
-		NeedsLinesItem(int Lines, ExtraLinesLocation Location) {
-			m_Lines = Lines;
-			m_Location = Location;
+		NeedsLinesItem(
+			int NoteLines, 
+			ExtraLinesLocation NoteLocation,
+			int RestLines,
+			ExtraLinesLocation RestLocation
+		) {
+			m_NoteLines = NoteLines;
+			m_NoteLocation = NoteLocation;
+			m_RestLines = RestLines;
+			m_RestLocation = RestLocation;
 		}
 	};
 public:
@@ -598,15 +612,15 @@ public:
 	}
 	int NeedsFlags(void);
 	bool NeedsStem(void) { return DurTab[(int)GetDuration()].Stem == NoteStem::Stem ? true : false; }
-	int NeedsLine(ExtraLinesLocation& Location);
+	int NeedsLine(ExtraLinesLocation& Location, bool bRest = false);
 	//----------------
 	// Send to Midi
 	//---------------
 	void NoteOff(int Velocity);
 	int GetCorrectedPitchWithKeySignature();
 	void NoteOn(int Velocity);
-	//---------- Graphic methodes ------------
-	void ChangeRestColor(CDC* pDC, COLORREF c, int w, int h);
+	//---------- Graphic methods ------------
+	void ChangeRestColor(CDC* pDC, COLORREF c, CPoint ptULC, CSize szSize);
 	int HalfRestOffset();
 	int WholeRestOffset(int pitch);
 	int NoteToPosition(int Note);
@@ -765,89 +779,89 @@ public:
 		'b'
 	};
 
-	inline static int NearestLineOdd[12] = {
-		0,	//C  0
-		-1,	//C# 1
-		2,	//D	 2
-		1,	//D# 3
-		0,	//E  4
-		-1,	//F  5
-		1,	//F# 6
-		0,	//G  7
-		-1,	//G# 8
-		-2,	//A  9
-		1,	//A# 10
-		0	//B  11
+	inline static int NearestLineEven[12] = {
+		4,	//C  0
+		4,	//C# 1
+		0,	//D	 2
+		0,	//D# 3
+		4,	//E  4
+		0,	//F  5
+		0,	//F# 6
+		4,	//G  7
+		4,	//G# 8
+		0,	//A  9
+		0,	//A# 10
+		4	//B  11
 	};
 
-	inline static int NearestLineEven[12] = {
-		-1,	//C		0
-		1,	//C#	1
-		0,	//D		2
-		-1,	//D#	3
-		1,	//E		4
-		0,	//F		5
-		-1,	//F#	6
-		2,	//G		7
-		1,	//G#	8
-		0,	//A		9
-		-1,	//A#	10
-		1	//B		11
+	inline static int NearestLineOdd[12] = {
+		0,	//C		0
+		0,	//C#	1
+		4,	//D		2
+		4,	//D#	3
+		0,	//E		4
+		4,	//F		5
+		4,	//F#	6
+		0,	//G		7
+		0,	//G#	8
+		4,	//A		9
+		4,	//A#	10
+		0	//B		11
 	};
 
 	inline static NeedsLinesItem LinesNeededLUT[52] = {
-		{2, ExtraLinesLocation::BelowBass}, //C2
-		{2, ExtraLinesLocation::BelowBass},	//C#2
-		{1, ExtraLinesLocation::BelowBass},	//D2
-		{1, ExtraLinesLocation::BelowBass},	//D#2
-		{1, ExtraLinesLocation::BelowBass},	//E2
-		{0, ExtraLinesLocation::NotNeeded},	//F2
-		{0, ExtraLinesLocation::NotNeeded},	//F#2
-		{0, ExtraLinesLocation::NotNeeded},	//G2
-		{0, ExtraLinesLocation::NotNeeded},	//G#2
-		{0, ExtraLinesLocation::NotNeeded},	//A2
-		{0, ExtraLinesLocation::NotNeeded},	//A#2
-		{0, ExtraLinesLocation::NotNeeded},	//B2
-		{0, ExtraLinesLocation::NotNeeded},	//C3
-		{0, ExtraLinesLocation::NotNeeded},	//C#3
-		{0, ExtraLinesLocation::NotNeeded},	//D3
-		{0, ExtraLinesLocation::NotNeeded},	//D#3
-		{0, ExtraLinesLocation::NotNeeded},	//E3
-		{0, ExtraLinesLocation::NotNeeded},	//F3
-		{0, ExtraLinesLocation::NotNeeded},	//F#3
-		{0, ExtraLinesLocation::NotNeeded},	//G3
-		{0, ExtraLinesLocation::NotNeeded},	//G#3
-		{0, ExtraLinesLocation::NotNeeded},	//A3
-		{0, ExtraLinesLocation::NotNeeded},	//A#3
-		{0, ExtraLinesLocation::NotNeeded},	//B3
-		{1, ExtraLinesLocation::MiddleC},	//C4
-		{1, ExtraLinesLocation::MiddleC},	//C#4
-		{0, ExtraLinesLocation::NotNeeded},	//D4
-		{0, ExtraLinesLocation::NotNeeded},	//D#4
-		{0, ExtraLinesLocation::NotNeeded},	//E4
-		{0, ExtraLinesLocation::NotNeeded},	//F4
-		{0, ExtraLinesLocation::NotNeeded},	//F#4
-		{0, ExtraLinesLocation::NotNeeded},	//G4
-		{0, ExtraLinesLocation::NotNeeded},	//G#4
-		{0, ExtraLinesLocation::NotNeeded},	//A4
-		{0, ExtraLinesLocation::NotNeeded},  //A#4
-		{0, ExtraLinesLocation::NotNeeded},  //B4
-		{0, ExtraLinesLocation::NotNeeded},  //C5
-		{0, ExtraLinesLocation::NotNeeded},  //C#5
-		{0, ExtraLinesLocation::NotNeeded},  //D5
-		{0, ExtraLinesLocation::NotNeeded},  //D#5
-		{0, ExtraLinesLocation::NotNeeded},  //E5
-		{0, ExtraLinesLocation::NotNeeded},  //F5
-		{0, ExtraLinesLocation::NotNeeded},  //F#5
-		{0, ExtraLinesLocation::NotNeeded},  //G5
-		{0, ExtraLinesLocation::NotNeeded},  //G#5
-		{1, ExtraLinesLocation::AboveTreble},  //A5
-		{1, ExtraLinesLocation::AboveTreble},  //A#5
-		{1, ExtraLinesLocation::AboveTreble},  //B5
-		{2, ExtraLinesLocation::AboveTreble},	//C6
-		{2, ExtraLinesLocation::AboveTreble},	//C#6
-		{2, ExtraLinesLocation::AboveTreble},	//D6
-		{2, ExtraLinesLocation::AboveTreble}	//D#6
+		{2, ExtraLinesLocation::BelowBass, 2, ExtraLinesLocation::BelowBass}, //C2
+		{2, ExtraLinesLocation::BelowBass, 2, ExtraLinesLocation::BelowBass},	//C#2
+		{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//D2
+		{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//D#2
+		{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//E2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A#2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//B2
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//C3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//C#3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//D3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//D#3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//E3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A#3
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//B3
+		{1, ExtraLinesLocation::MiddleC, 1, ExtraLinesLocation::MiddleC},	//C4
+		{1, ExtraLinesLocation::MiddleC, 1, ExtraLinesLocation::MiddleC},	//C#4
+		{0, ExtraLinesLocation::NotNeeded, 1, ExtraLinesLocation::MiddleC},	//D4
+		{0, ExtraLinesLocation::NotNeeded, 1, ExtraLinesLocation::MiddleC},	//D#4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//E4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //A#4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //B4
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //C5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //C#5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //D5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //D#5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //E5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //F5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //F#5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //G5
+		{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //G#5
+		{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //A5
+		{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //A#5
+		{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //B5
+		{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//C6
+		{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//C#6
+		{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//D6
+		{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble}	//D#6
 	};
 	//-------------------------------
 	// Extra Lines for FLAT 
@@ -855,58 +869,58 @@ public:
 	//-------------------------------
 
 	inline static NeedsLinesItem LinesNeededFlatLUT[52] = {
-	{2, ExtraLinesLocation::BelowBass}, //C2
-	{2, ExtraLinesLocation::BelowBass},	//C#2
-	{1, ExtraLinesLocation::BelowBass},	//D2
-	{1, ExtraLinesLocation::BelowBass},	//D#2
-	{1, ExtraLinesLocation::BelowBass},	//E2
-	{0, ExtraLinesLocation::NotNeeded},	//F2
-	{0, ExtraLinesLocation::NotNeeded},	//F#2
-	{0, ExtraLinesLocation::NotNeeded},	//G2
-	{0, ExtraLinesLocation::NotNeeded},	//G#2
-	{0, ExtraLinesLocation::NotNeeded},	//A2
-	{0, ExtraLinesLocation::NotNeeded},	//A#2
-	{0, ExtraLinesLocation::NotNeeded},	//B2
-	{0, ExtraLinesLocation::NotNeeded},	//C3
-	{0, ExtraLinesLocation::NotNeeded},	//C#3
-	{0, ExtraLinesLocation::NotNeeded},	//D3
-	{0, ExtraLinesLocation::NotNeeded},	//D#3
-	{0, ExtraLinesLocation::NotNeeded},	//E3
-	{0, ExtraLinesLocation::NotNeeded},	//F3
-	{0, ExtraLinesLocation::NotNeeded},	//F#3
-	{0, ExtraLinesLocation::NotNeeded},	//G3
-	{0, ExtraLinesLocation::NotNeeded},	//G#3
-	{0, ExtraLinesLocation::NotNeeded},	//A3
-	{0, ExtraLinesLocation::NotNeeded},	//A#3
-	{1, ExtraLinesLocation::MiddleC},	//B3
-	{1, ExtraLinesLocation::MiddleC},	//C4
-	{1, ExtraLinesLocation::MiddleC},	//C#4
-	{0, ExtraLinesLocation::NotNeeded},	//D4
-	{0, ExtraLinesLocation::NotNeeded},	//D#4
-	{0, ExtraLinesLocation::NotNeeded},	//E4
-	{0, ExtraLinesLocation::NotNeeded},	//F4
-	{0, ExtraLinesLocation::NotNeeded},	//F#4
-	{0, ExtraLinesLocation::NotNeeded},	//G4
-	{0, ExtraLinesLocation::NotNeeded},	//G#4
-	{0, ExtraLinesLocation::NotNeeded},	//A4
-	{0, ExtraLinesLocation::NotNeeded},  //A#4
-	{0, ExtraLinesLocation::NotNeeded},  //B4
-	{0, ExtraLinesLocation::NotNeeded},  //C5
-	{0, ExtraLinesLocation::NotNeeded},  //C#5
-	{0, ExtraLinesLocation::NotNeeded},  //D5
-	{0, ExtraLinesLocation::NotNeeded},  //D#5
-	{0, ExtraLinesLocation::NotNeeded},  //E5
-	{0, ExtraLinesLocation::NotNeeded},  //F5
-	{0, ExtraLinesLocation::NotNeeded},  //F#5
-	{0, ExtraLinesLocation::NotNeeded},  //G5
-	{0, ExtraLinesLocation::NotNeeded},  //G#5
-	{1, ExtraLinesLocation::AboveTreble},  //A5
-	{1, ExtraLinesLocation::AboveTreble},  //A#5
-	{1, ExtraLinesLocation::AboveTreble},  //B5
-	{2, ExtraLinesLocation::AboveTreble},	//C6
-	{2, ExtraLinesLocation::AboveTreble},	//C#6
-	{2, ExtraLinesLocation::AboveTreble},	//D6
-	{2, ExtraLinesLocation::AboveTreble}	//D#6
+	{2, ExtraLinesLocation::BelowBass, 2, ExtraLinesLocation::BelowBass}, //C2
+	{2, ExtraLinesLocation::BelowBass, 2, ExtraLinesLocation::BelowBass},	//C#2
+	{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//D2
+	{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//D#2
+	{1, ExtraLinesLocation::BelowBass, 1, ExtraLinesLocation::BelowBass},	//E2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A#2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//B2
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//C3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//C#3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//D3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//D#3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//E3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A3
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A#3
+	{1, ExtraLinesLocation::MiddleC, 1, ExtraLinesLocation::MiddleC},	//B3
+	{1, ExtraLinesLocation::MiddleC, 1, ExtraLinesLocation::MiddleC},	//C4
+	{1, ExtraLinesLocation::MiddleC, 1, ExtraLinesLocation::MiddleC},	//C#4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::MiddleC},	//D4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::MiddleC},	//D#4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//E4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//F#4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//G#4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},	//A4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //A#4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //B4
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //C5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //C#5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //D5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //D#5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //E5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //F5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //F#5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //G5
+	{0, ExtraLinesLocation::NotNeeded, 0, ExtraLinesLocation::NotNeeded},  //G#5
+	{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //A5
+	{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //A#5
+	{1, ExtraLinesLocation::AboveTreble, 1, ExtraLinesLocation::AboveTreble},  //B5
+	{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//C6
+	{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//C#6
+	{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble},	//D6
+	{2, ExtraLinesLocation::AboveTreble, 2, ExtraLinesLocation::AboveTreble}	//D#6
 	};
 
 

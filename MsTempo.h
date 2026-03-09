@@ -42,7 +42,7 @@ public:
 			m_Tempo = t;
 		}
 		else
-			::MessageBox(NULL, _T("ERROR"), _T("EventQueue NULL"), MB_OK);
+			AfxMessageBox(_T("ERROR: EventQueue NULL"), MB_OK);
 	}
 };
 

@@ -334,8 +334,8 @@ public:
 	UINT GetTriplet() { return GetNoteData().GetTriplet(); }
 	void SetTriplet(UINT nT) { GetNoteData().SetTriplet(nT); }
 
-	UINT GetRest() { return GetNoteData().GetRest(); }
-	void SetRest(UINT NR) { GetNoteData().SetRest(NR); }
+	bool GetRest() { return GetNoteData().GetRest(); }
+	void SetRest(bool NR) { GetNoteData().SetRest(NR); }
 
 	INT GetAccidental() { return GetNoteData().GetAccidental(); }
 	void SetAccidental(INT NA) { GetNoteData().SetAccidental(NA); }

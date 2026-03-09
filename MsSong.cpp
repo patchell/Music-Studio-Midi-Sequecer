@@ -1066,7 +1066,7 @@ CMsEvent* CMsSong::MakeNewEvent(int EventIndex)
 	}
 	else
 	{
-		GetStaffChildView()->MessageBox(_T("Cannot make event at this index"), _T("Internal Error"), MB_OK);
+		AfxMessageBox(_T("Cannot make event at this index"), MB_OK);
 		pEV->SetEventIndex(-1);
 	}
 	return pEV;
@@ -1175,7 +1175,7 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 			m_nTotalEvents += pEvC->GetTotalEvents();
 		}
 		else
-			GetStaffChildView()->MessageBox(_T("InTernal Error"), _T("Bad Thing"), MB_OK);
+			AfxMessageBox(_T("InTernal Error"), MB_OK);
 	}
 	else if (pEV->GetPrev() == 0)
 	{
@@ -1189,7 +1189,7 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 			m_nTotalEvents += pEvC->GetTotalEvents();
 		}
 		else
-			GetStaffChildView()->MessageBox(_T("InTernal Error"), _T("Bad Thing"), MB_OK);
+			AfxMessageBox(_T("InTernal Error"), MB_OK);
 	}
 	else
 	{
@@ -1206,7 +1206,7 @@ void CMsSong::AddEventChain(int EventDest, CMsEventChain* pEvC)
 			m_nTotalEvents += pEvC->GetTotalEvents();
 		}
 		else
-			GetStaffChildView()->MessageBox(_T("InTernal Error"), _T("Bad Thing"), MB_OK);
+			AfxMessageBox(_T("InTernal Error"), MB_OK);
 	}
 //	GetEventListHead()->PrintEvents(theApp.LogFile(),"AddEventChain #1", 2);
 }
@@ -1639,7 +1639,7 @@ CMsTrack* CMsSong::GetTrackInfo(int TrackNumber)
 	{
 		CString cs;
 		cs.Format(_T("Invalid Track Number %d"), TrackNumber);
-		GetStaffChildView()->MessageBox(cs, _T("Internal Error"), MB_OK);
+		AfxMessageBox(cs, MB_OK);
 	}
 	return pTrack;
 }

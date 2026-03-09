@@ -279,14 +279,9 @@ StaffMouseStates CMsNote::StaffTransition(CPoint pointMouse, int NewNote, CMsEve
 
 void CMsNote::Draw(CDC *pDC)
 {
-	CPoint End,Start;
-//	CPen pen,*oldpen;
-	CBrush brush;
 	int NoteY;
 	int Pitch;
 	COLORREF Color;
-	CRect rectRest;
-	CMsEvent* pEvent = GetParentEvent();
 	char* pStr = new char[256];
 
 	Color = GetSong()->GetTrackInfo(GetTrack())->GetColor();
@@ -294,12 +289,8 @@ void CMsNote::Draw(CDC *pDC)
 		Color ^= 0x00ffffff;
 	Pitch = GetPitch();
 	NoteY = NoteToPosition(Pitch);
-	//if (LogFile()) 
-	//	fprintf(LogFile(), "CMsNote::Draw: NoteY=%d Pitch=%s\n", 
-	//		NoteY, 
-	//		NoteToString(pStr, 256)
-	//	);
-	if(IsRest())	///draw rest on staff
+
+	if(IsRest())	//draw rest on staff
 	{
 		DrawRest(pDC, NoteY, Color);
 	}
@@ -687,11 +678,10 @@ void CMsNote::DrawRestBitmap(CDC* pDC, int notev, COLORREF color)
 		dc.CreateCompatibleDC(pDC);
 		bmSize = m_pRestBitmap->GetBmDim();
 		pOldBm = (CMyBitmap*)dc.SelectObject(m_pRestBitmap);
-		x = 0;
+		x = REST_BITMAP_OFFSET_X;
 		y = notev;
 		pDC->BitBlt(x, y, bmSize.cx, bmSize.cy, &dc, 0, 0, SRCAND);
-		ChangeRestColor(&dc, color, bmSize.cx, bmSize.cy);
-		pDC->BitBlt(x, y, bmSize.cx, bmSize.cy, &dc, 0, 0, SRCAND);
+		ChangeRestColor(pDC, color, CPoint(x,y), bmSize);
 		dc.SelectObject(pOldBm);
 	}
 
@@ -701,20 +691,17 @@ void CMsNote::DrawHalfRest(CDC* pDC, int NoteY, COLORREF Color)
 {
 	NoteY += 4;
 	CRect rectRest;
-	ExtraLinesLocation Location;
+	ExtraLinesLocation Location = ExtraLinesLocation::NotNeeded;
+	int Y = 0;
 
+	Y = NearestLine() + NoteY;
 	rectRest.SetRect(
-		0,
-		NoteY,
-		HALF_REST_WIDTH,
-		NoteY - HALF_REST_HEIGHT
+		CPoint(REST_HALF_WHOLE_OFFSET, Y),
+		CPoint(REST_HALF_WHOLE_OFFSET + HALF_REST_WIDTH, Y - HALF_REST_HEIGHT)
 	);
-	if (NeedsLine(Location))
-	{
-		pDC->MoveTo(EVENT_WIDTH  - 2, NoteY);
-		pDC->LineTo(EVENT_WIDTH + 10, NoteY);
-	}
+	rectRest.NormalizeRect();
 	pDC->Rectangle(&rectRest);
+	DrawNoteLines(pDC, NoteY, RGB(0, 0, 0));
 }
 
 void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
@@ -730,29 +717,24 @@ void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
 	//----------------------------------
 	CRect rectRest;
 	ExtraLinesLocation Location;
-	NoteY += 5;
-	;
+	int Y = 0;
+
+	Y = NearestLine() + NoteY + 4;
 	rectRest.SetRect(
-		0,
-		NoteY,
-		8,
-		NoteY + 6
+		CPoint(REST_HALF_WHOLE_OFFSET, Y),
+		CPoint(REST_HALF_WHOLE_OFFSET + HALF_REST_WIDTH, Y + HALF_REST_HEIGHT)
 	);
 	rectRest.NormalizeRect();
-	if (NeedsLine(Location))
-	{
-		pDC->MoveTo(EVENT_WIDTH - 2, NoteY);
-		pDC->LineTo(EVENT_WIDTH  + 10, NoteY);
-	}
 	pDC->Rectangle(&rectRest);
+	DrawNoteLines(pDC, NoteY, RGB(0, 0, 0));
 }
 
 //-----------------------------------------------------
 
-int CMsNote::NeedsLine(ExtraLinesLocation& Location)
+int CMsNote::NeedsLine(ExtraLinesLocation& Location, bool bRest)
 {
 	//-------------------------
-	// Middle C is 0x3C
+	// Middle C is 0x3C (60)
 	//-------------------------
 	int LinesNeeded = 0;
 	int Pitch = GetPitch();
@@ -767,15 +749,20 @@ int CMsNote::NeedsLine(ExtraLinesLocation& Location)
 	CorrectedPitch = Pitch;
 	Pitch -= NOTE_C2;	// Normalize to C2 = 0
 	TestPitch = NOTE_C4 - NOTE_C2;	// Middle C normalized to 0
-	if (GetAccidental() == MSFF_ACCIDENTAL_FLAT)
+	if(IsRest())
 	{
-		LinesNeeded = LinesNeededFlatLUT[Pitch].m_Lines;
-		Location = LinesNeededFlatLUT[Pitch].m_Location;
+		LinesNeeded = LinesNeededLUT[Pitch].m_RestLines;
+		Location = LinesNeededLUT[Pitch].m_RestLocation;
+	}
+	else if (GetAccidental() == MSFF_ACCIDENTAL_FLAT)
+	{
+		LinesNeeded = LinesNeededFlatLUT[Pitch].m_NoteLines;
+		Location = LinesNeededFlatLUT[Pitch].m_NoteLocation;
 	}
 	else
 	{
-		LinesNeeded = LinesNeededLUT[Pitch].m_Lines;
-		Location = LinesNeededLUT[Pitch].m_Location;
+		LinesNeeded = LinesNeededLUT[Pitch].m_NoteLines;
+		Location = LinesNeededLUT[Pitch].m_NoteLocation;
 	}
 	//fprintf(LogFile(), "CMsNote::NeedsLine: Pitch=%d CorrectedPitch=%d LinesNeeded=%d Location=%d\n", 
 	//	InitialPitch, 
@@ -926,18 +913,18 @@ int CMsNote::HalfRestOffset()
 	return rV;
 }
 
-void CMsNote::ChangeRestColor(CDC *pDC,COLORREF newcolor,int w,int h)
+void CMsNote::ChangeRestColor(CDC *pDC,COLORREF newColor,  CPoint ptULC, CSize szSize)
 {
 	int i,j;
 	COLORREF c;
 
-	for(i=0;i<w;++i)
+	for(i=0;i<szSize.cx;++i)
 	{
-		for(j=0;j<h;++j)
+		for(j=0;j< szSize.cy;++j)
 		{
-			((c = pDC->GetPixel(i, j)) == RGB(0,0,0))
-				? pDC->SetPixel(i, j, newcolor)
-				: pDC->SetPixel(i, j, c);
+			c = pDC->GetPixel(ptULC.x + i, ptULC.y + j);
+			if(c == RGB(0,0,0))
+				pDC->SetPixel(ptULC.x + i, ptULC.y + j, newColor);
 		}
 	}
 }
@@ -1255,13 +1242,17 @@ DRAWSTATE CMsNote:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mouse
 		//------------------------------
 		if (!IsDuplicate())
 		{
-			NoteOff(0);
+			if(IsNote()) 
+				NoteOff(0);
 			pN = new CMsNote;
-//			pNote = (CMsNote*)GetStaffView()->GetDrawObject();
 			pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
-//			SetPitch(pNote->GetPitch());
 			if (IsRest())
-				pN->Create(GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()), CMidiSeqMSApp::GetRestBmIdsTypes()[pNote->GetShape()]);	// Create Rest
+			{
+				int Shape = 0;
+				Shape = GetShape();
+				int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
+				pN->Create(GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()),Id);	// Create Rest
+			}
 			else
 				pN->Create(GetSong(), GetSong()->GetEventObject(GetStaffView()->GetDrawEvent()), 0);	// Create Note
 			//-----------------------------
@@ -1331,9 +1322,11 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
 //					fprintf(LogFile(), ">>CMsNote::MouseMove: Note Change %d\n", Note);
-					NoteOff(0);
+					if(IsNote()) 
+						NoteOff(0);
 					SetPitch(Note);
-					NoteOn(GetVelocity());
+					if(IsNote())
+						NoteOn(GetVelocity());
 //					fprintf(LogFile(), "<<CMsNote::MouseMove: Note Change %d\n", Note);
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
@@ -1341,7 +1334,8 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 					{
 						GetParentEvent()->RemoveObject(this);
 						SetParentEvent(nullptr);
-						NoteOff(0);
+						if(IsNote())
+							NoteOff(0);
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -1349,15 +1343,20 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 						SetPitch(Note);
-						NoteOn(GetVelocity());
+						if(IsNote())
+							NoteOn(GetVelocity());
 					}
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					if (GetParentEvent())
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
-						NoteOff(0);
+						if (GetParentEvent()->IsThisObjectInThisEvent(this))
+						{
+							GetParentEvent()->RemoveObject(this);
+							SetParentEvent(nullptr);
+							if (IsNote())
+								NoteOff(0);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -1365,7 +1364,8 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 						pEV->AddObject(this);
 						SetParentEvent(pEV);
 						SetPitch(Note);
-						NoteOn(GetVelocity());
+						if(IsNote())
+							NoteOn(GetVelocity());
 					}
 					break;
 				}
@@ -1380,7 +1380,8 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 				{
 					GetParentEvent()->RemoveObject(this);
 					SetParentEvent(nullptr);
-					NoteOff(0);
+					if(IsNote()) 
+						NoteOff(0);
 				}
 			}
 			break;
@@ -1394,7 +1395,8 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 				pEV->AddObject(this);
 				SetParentEvent(pEV);
 				SetPitch(Note);
-				NoteOn(GetVelocity());
+				if(IsNote())
+					NoteOn(GetVelocity());
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_OUTSIDE:			//MouseMove
@@ -1407,19 +1409,23 @@ DRAWSTATE CMsNote::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegion
 		case MouseRegionTransitionState::MOUSE_TRANSITION_ERROR:		//MouseMove
 			break;
 		}
-		//Note = GetStaffView()->YtoNote(pointMouse.y);
-		//if (Note != m_NotePlayed)
-		//{
-		//	NoteOff(0);
-		//	SetPitch(Note);
-		//	NoteOn(GetSong()->GetCurrentLoudness()->GetLoudness());
-		//}
 		NoteToString(pStr, 256);
-		csStatusString.Format(_T("Note: %S  Track: %d  Event: %d"),
-			pStr,
-			GetTrack(),
-			GetParentEvent() ? GetParentEvent()->GetIndex() : -1
-		);
+		if (IsRest())
+		{
+			csStatusString.Format(_T("Rest: %S  Track: %d  Event: %d"),
+				pStr,
+				GetTrack(),
+				GetParentEvent() ? GetParentEvent()->GetIndex() : -1
+			);
+		}
+		else
+		{
+			csStatusString.Format(_T("Note: %S  Track: %d  Event: %d"),
+				pStr,
+				GetTrack(),
+				GetParentEvent() ? GetParentEvent()->GetIndex() : -1
+			);
+		}
 		GetSong()->GetStaffChildView()->GetStatusBar()->SetText(csStatusString);
 		break;
 	case DRAWSTATE::MOVE_OBJECT_AROUND:
