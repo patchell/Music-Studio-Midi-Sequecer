@@ -48,9 +48,10 @@ DRAWSTATE CMsBassCleff::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV && pEV->IsThisObjectInThisEvent(this))
 					{
-						GetParentEvent()->RemoveObject(this);
+						pEV->RemoveObject(this);
 						SetParentEvent(nullptr);
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
@@ -67,7 +68,7 @@ DRAWSTATE CMsBassCleff::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
 			pEV = GetParentEvent();
-			if (pEV)
+			if (pEV && pEV->IsThisObjectInThisEvent(this))
 			{
 				pEV->RemoveObject(this);
 				SetParentEvent(nullptr);

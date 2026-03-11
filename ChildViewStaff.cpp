@@ -1448,7 +1448,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
@@ -1504,7 +1505,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 				pEv = GetDrawObject()->GetParentEvent();
 				if (pEv)
 				{
-					pEv->RemoveObject(GetDrawObject());
+					if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+						pEv->RemoveObject(GetDrawObject());
 				}
 				delete m_pDrawObject;
 				SetDrawObject(0);
@@ -1534,7 +1536,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 					pEv = GetDrawObject()->GetParentEvent();
 					if (pEv)
 					{
-						pEv->RemoveObject(GetDrawObject());
+						if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+							pEv->RemoveObject(GetDrawObject());
 					}
 					delete m_pDrawObject;
 					SetDrawObject(0);
@@ -1554,7 +1557,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
@@ -1573,7 +1577,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
@@ -1608,7 +1613,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
@@ -1672,7 +1678,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			pEv = GetDrawObject()->GetParentEvent();
 			if (pEv)
 			{
-				pEv->RemoveObject(GetDrawObject());
+				if (pEv->IsThisObjectInThisEvent(GetDrawObject()))
+					pEv->RemoveObject(GetDrawObject());
 			}
 			delete m_pDrawObject;
 			SetDrawObject(0);
@@ -2243,7 +2250,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 					pEv->AddObject(pN);
 
 				}
-				else
+				else if (pEv->IsThisObjectInThisEvent(pO))
 					pEv->RemoveObject(pO);
 				CMsObject* pObj;
 				pObj = pEv->GetEventMsObjectHead();

@@ -57,10 +57,14 @@ DRAWSTATE CMsChord::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mou
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -78,8 +82,11 @@ DRAWSTATE CMsChord::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mou
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -131,10 +138,14 @@ DRAWSTATE CMsChord:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mous
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -152,8 +163,11 @@ DRAWSTATE CMsChord:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mous
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -219,10 +233,14 @@ DRAWSTATE CMsChord::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegio
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -240,8 +258,11 @@ DRAWSTATE CMsChord::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegio
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -296,7 +317,15 @@ void CMsChord::Draw(CDC* pDC)
 
 StaffMouseStates CMsChord::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
 {
-	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	StaffMouseStates State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	CMsEvent* pCurrentEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+	int CurrentEventIndex = pCurrentEvent ? pCurrentEvent->GetIndex() : -1;
+	int thisEventIndex = pEvent ? pEvent->GetIndex() : -1;
+	bool bEventChanged = (CurrentEventIndex != thisEventIndex);
+
+	if (bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	return State;
 }
 
 void CMsChord::Save(FILE* pO)

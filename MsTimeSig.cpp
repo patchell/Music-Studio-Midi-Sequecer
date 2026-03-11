@@ -60,9 +60,10 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV && pEV->IsThisObjectInThisEvent(this))
 					{
-						GetParentEvent()->RemoveObject(this);
+						pEV->RemoveObject(this);
 						SetParentEvent(nullptr);
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
@@ -80,7 +81,7 @@ DRAWSTATE CMsTimeSignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMo
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW:
 		case MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE:
 			pEV = GetParentEvent();
-			if (pEV)
+			if (pEV && pEV->IsThisObjectInThisEvent(this))
 			{
 				pEV->RemoveObject(this);
 				SetParentEvent(nullptr);
@@ -227,11 +228,12 @@ DRAWSTATE CMsTimeSignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						if (GetParentEvent()->IsThisObjectInThisEvent(this))
+						if (pEV->IsThisObjectInThisEvent(this))
 						{
-							GetParentEvent()->RemoveObject(this);
+							pEV->RemoveObject(this);
 							SetParentEvent(nullptr);
 						}
 					}
@@ -306,9 +308,10 @@ DRAWSTATE CMsTimeSignature::PlaceEventChanged(DRAWSTATE DrawState, CPoint pointM
 	CMsTimeSignature* pTS = nullptr;
 	CMsEvent* pEV = nullptr;
 
-	if (GetParentEvent())
+	pEV = GetParentEvent();
+	if (pEV && pEV->IsThisObjectInThisEvent(this))
 	{
-		GetParentEvent()->RemoveObject(this);
+		pEV->RemoveObject(this);
 		SetParentEvent(nullptr);
 	}
 	pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));

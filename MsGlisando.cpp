@@ -125,10 +125,14 @@ DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -146,8 +150,11 @@ DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -186,10 +193,14 @@ DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -207,8 +218,11 @@ DRAWSTATE CMsGlissando::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse,
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -332,10 +346,14 @@ DRAWSTATE CMsGlissando::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -353,8 +371,11 @@ DRAWSTATE CMsGlissando::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -400,24 +421,32 @@ UINT CMsGlissando::ObjectToString(CString& csString, UINT mode)
 
 StaffMouseStates CMsGlissando::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
 {
-	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	StaffMouseStates State = StaffMouseStates::MOUSE_STAFF_STATE_NONE;
+	CMsEvent* pCurrentEvent = GetSong()->GetEventObject(GetStaffChildView()->XtoEventIndex(pointMouse.x));
+	int CurrentEventIndex = pCurrentEvent ? pCurrentEvent->GetIndex() : -1;
+	int thisEventIndex = pEvent ? pEvent->GetIndex() : -1;
+	bool bEventChanged = (CurrentEventIndex != thisEventIndex);
+
+	if (bEventChanged)
+		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
+	return State;
 }
 
-void CMsGlissando::NoteOn(UINT Velociry)
+void CMsGlissando::NoteOn(UINT Velocity)
 {
-	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	int Channel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
-	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(chan, note, Velociry);
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(Channel, note, Velocity);
 	GetSong()->IncNoteOnCount(note);
 }
 
-void CMsGlissando::NoteOff(UINT Velociry)
+void CMsGlissando::NoteOff(UINT Velocity)
 {
-	int chan = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
+	int Channel = GetSong()->GetTrackInfo(GetTrack())->GetChannel();
 	int note = m_CurrentPitch + CMsNote::RangeLUT[GetSong()->GetTrackInfo(GetTrack())->GetPitchRange()];
 	int DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
-	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(chan, note, Velociry);
+	GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(Channel, note, Velocity);
 	GetSong()->IncNoteOffCount(note);
 }
 

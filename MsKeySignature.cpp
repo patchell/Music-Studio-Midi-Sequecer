@@ -61,9 +61,10 @@ DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMou
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV && pEV->IsThisObjectInThisEvent(this))
 					{
-						GetParentEvent()->RemoveObject(this);
+						pEV->RemoveObject(this);
 						SetParentEvent(nullptr);
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
@@ -83,8 +84,11 @@ DRAWSTATE CMsKeySignature::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMou
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -156,8 +160,11 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -226,9 +233,10 @@ DRAWSTATE CMsKeySignature::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mou
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV && pEV->IsThisObjectInThisEvent(this))
 					{
-						GetParentEvent()->RemoveObject(this);
+						pEV->RemoveObject(this);
 						SetParentEvent(nullptr);
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
@@ -303,9 +311,10 @@ DRAWSTATE CMsKeySignature::PlaceEventChanged(DRAWSTATE DrawState, CPoint pointMo
 	CMsKeySignature* pKS = nullptr;
 	CMsEvent* pEV = nullptr;
 
-	if (GetParentEvent())
+	pEV = GetParentEvent();
+	if (pEV && pEV->IsThisObjectInThisEvent(this))
 	{
-		GetParentEvent()->RemoveObject(this);
+		pEV->RemoveObject(this);
 		SetParentEvent(nullptr);
 	}
 	pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));

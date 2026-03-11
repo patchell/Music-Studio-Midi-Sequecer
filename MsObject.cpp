@@ -169,8 +169,11 @@ DRAWSTATE CMsObject::RemoveThisFromEvent(DRAWSTATE DrawState)
 	pEV = GetParentEvent();
 	if (pEV)
 	{
-		pEV->RemoveObject(this);
-		SetParentEvent(nullptr);
+		if (pEV->IsThisObjectInThisEvent(this))
+		{
+			pEV->RemoveObject(this);
+			SetParentEvent(nullptr);
+		}
 	}
 	return DrawState;
 }

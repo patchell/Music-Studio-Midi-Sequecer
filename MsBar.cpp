@@ -56,10 +56,14 @@ DRAWSTATE CMsBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mouse
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -78,8 +82,14 @@ DRAWSTATE CMsBar::MouseLButtonDown(DRAWSTATE DrawState, CPoint pointMouse, Mouse
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					//-----------------------------
+					// Remove this object from the event
+					//-----------------------------
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -144,10 +154,14 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE:
-					if (GetParentEvent())
+					pEV = GetParentEvent();
+					if (pEV)
 					{
-						GetParentEvent()->RemoveObject(this);
-						SetParentEvent(nullptr);
+						if (pEV->IsThisObjectInThisEvent(this))
+						{
+							pEV->RemoveObject(this);
+							SetParentEvent(nullptr);
+						}
 					}
 					pEV = GetSong()->GetEventObject(GetStaffView()->XtoEventIndex(pointMouse.x));
 					if (pEV)
@@ -176,8 +190,14 @@ DRAWSTATE CMsBar:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, MouseR
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					//-----------------------------
+					// Remove this object from the event
+					//-----------------------------
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
@@ -238,6 +258,7 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 		switch (Transition)
 		{
 		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
+			printf("\tMouse Move with no transition. Region: %d\n", (int)Region);
 			if (Region == MouseRegions::MOUSE_IN_EDITREG)
 			{
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
@@ -275,8 +296,11 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 			pEV = GetParentEvent();
 			if (pEV)
 			{
-				pEV->RemoveObject(this);
-				SetParentEvent(nullptr);
+				if (pEV->IsThisObjectInThisEvent(this))
+				{
+					pEV->RemoveObject(this);
+					SetParentEvent(nullptr);
+				}
 			}
 			break;
 		case MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT:		//MouseMove
