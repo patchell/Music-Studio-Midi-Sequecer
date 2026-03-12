@@ -149,13 +149,24 @@ DRAWSTATE CMsLoudness:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, M
 					pNewLoudness = new CMsLoudness;
 					pNewLoudness->Create(GetSong(), GetParentEvent(), GetLoudness());
 					pNewLoudness->Copy(GetStaffChildView()->GetDrawObject());
-					GetStaffChildView()->SetDrawObject(pNewLoudness);
-					//-----------------------
-					GetParentEvent()->AddObject(pNewLoudness);
-					GetStaffChildView()->CheckAndDoScroll(pointMouse);
-					GetStaffChildView()->Invalidate();
-					DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
-					csText.Format(_T("Place Loudness at Event %d"), GetStaffChildView()->GetDrawEvent());
+					if (pNewLoudness->EditLoudness() == IDOK)
+					{
+						GetStaffChildView()->SetDrawObject(pNewLoudness);
+						//-----------------------
+						GetParentEvent()->AddObject(pNewLoudness);
+						GetStaffChildView()->CheckAndDoScroll(pointMouse);
+						GetStaffChildView()->Invalidate();
+						DrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+						csText.Format(_T("Place Loudness at Event %d"), GetStaffChildView()->GetDrawEvent());
+					}
+					else
+					{
+						delete pNewLoudness;
+						GetStaffChildView()->SetDrawObject(nullptr);
+						GetStaffChildView()->SetDrawMode(CChildViewStaff::DrawMode::NOP);
+						DrawState = DRAWSTATE::NA;
+						csText.Format(_T(""));
+					}
 					GetStaffChildView()->GetStatusBar()->SetText(csText);
 					break;
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE__EVENT_CHANGE:
@@ -346,6 +357,22 @@ UINT CMsLoudness::ObjectToString(CString& csString, UINT mode)
 
 void CMsLoudness::ObjectRectangle(CRect& rect, UINT Event)
 {
+}
+
+int CMsLoudness::EditLoudness()
+{
+	int Id = 0;
+	CParamDlg Dlg;
+
+	Dlg.SetCaption(CString("Set Loudness (Velocity)"));
+	Dlg.SetMin(0);
+	Dlg.SetMax(127);
+	Dlg.SetValue(100);
+	if (IDOK == Dlg.DoModal())
+	{
+		m_Loudness = Dlg.GetValue();
+	}
+	return Id;
 }
 
 void CMsLoudness::Draw(CDC *pDC)

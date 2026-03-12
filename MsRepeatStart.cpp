@@ -12,7 +12,6 @@ CMsRepeatStart::CMsRepeatStart() :CMsObject()
 {
 	m_ObjType = CMsObject::MsObjType::REPEATSTART;
 	m_Count = 1;
-	m_CountDown = 0;
 }
 
 CMsRepeatStart::~CMsRepeatStart()
@@ -30,7 +29,6 @@ bool CMsRepeatStart::Create(CMsSong* pSong, CMsEvent* pEvent, int Count)
 
 UINT CMsRepeatStart::Process()
 {
-	m_CountDown = m_Count;
 	CMsEvent* pEV = GetParentEvent();
 	GetSong()->GetRepeatStack().Push(pEV);
 //	if(LogFile()) fprintf(LogFile(),"Repeat Start CD=%d\n", m_CountDown);
@@ -317,46 +315,67 @@ void CMsRepeatStart::Print(FILE *pO, int Indent)
 
 void CMsRepeatStart::Draw(CDC *pDC)
 {
-	CPen Light,Heavy,*pOld;
-	COLORREF oldcolor;
-	LOGBRUSH Lb;
+	CPen Light,Heavy,*pPenOld = 0;
+	COLORREF OldColor = 0;
 	CString csCount;
+	LOGBRUSH Lb;
+	CBrush brushHeavyFill;
+	CFont* pOldFont = 0, fontRepeatCount;
+
+	fontRepeatCount.CreateFontW(
+		10,
+		6,
+		0,
+		0,
+		FW_DONTCARE,
+		false,
+		false,
+		false,
+		ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		DRAFT_QUALITY,
+		DEFAULT_PITCH,
+		_T("ARIAL")
+	);
 	if (IsSelected())
 	{
-		oldcolor = pDC->SetTextColor(RGB(255, 0, 0));
+		OldColor = pDC->SetTextColor(RGB(255, 0, 0));
 		Light.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-		Lb.lbColor = RGB(255, 0, 0);
 	}
 	else
 	{
-		oldcolor = pDC->SetTextColor(RGB(0, 0, 0));
+		OldColor = pDC->SetTextColor(RGB(0, 0, 0));
 		Light.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-		Lb.lbColor = RGB(0, 0, 0);
 	}
-	Lb.lbStyle = BS_SOLID;
-	Lb.lbHatch = 0;
-
+	brushHeavyFill.CreateSolidBrush(RGB(0, 0, 0));
+	brushHeavyFill.GetLogBrush(&Lb);
 	Heavy.CreatePen(PS_GEOMETRIC | PS_ENDCAP_FLAT,6,&Lb);
-	int x = MEASUREBAR_OFFSET;
-	pOld = pDC->SelectObject(&Light);
+	int x = 5;
+
+	pPenOld = pDC->SelectObject(&Light);
 	pDC->MoveTo(x,TREBLE_TOP_LINE);
 	pDC->LineTo(x,BASS_TOP_LINE + SINGLE_STAVE_HEIGHT);
+	// Draw the two dots
 	pDC->SetPixel(x+4,TREBLE_TOP_LINE+12,RGB(0,0,0));
 	pDC->SetPixel(x+4,TREBLE_TOP_LINE+20,RGB(0,0,0));
 	pDC->SetPixel(x+4,TREBLE_TOP_LINE+60,RGB(0,0,0));
 	pDC->SetPixel(x+4,TREBLE_TOP_LINE+68,RGB(0,0,0));
+	// Draw the heavy line
 	pDC->SelectObject(&Heavy);
 	pDC->MoveTo(x-6,TREBLE_TOP_LINE);
 	pDC->LineTo(x-6,BASS_TOP_LINE + SINGLE_STAVE_HEIGHT);
-	char *s = new char[16];
+	// Draw the repeat count
+	int RepeatCount = GetMatchingRepeatEnd()->GetCountDown();
 	if (GetSong()->IsPlaying())
-		csCount.Format(_T("%d"), m_CountDown);
+		csCount.Format(_T("%d"), RepeatCount?RepeatCount:m_Count);
 	else
 		csCount.Format(_T("%d"), m_Count);
+	pOldFont = pDC->SelectObject(&fontRepeatCount);
 	pDC->TextOutW(x - 20, TREBLE_TOP_LINE - 16, csCount);
-	delete[] s;
-	pDC->SelectObject(pOld);
-	pDC->SetTextColor(oldcolor);
+	pDC->SelectObject(pOldFont);
+	pDC->SelectObject(pPenOld);
+	pDC->SetTextColor(OldColor);
 }
 
 StaffMouseStates CMsRepeatStart::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
@@ -381,10 +400,26 @@ void CMsRepeatStart::ObjectRectangle(CRect& rect, UINT Event)
 {
 }
 
+int CMsRepeatStart::SetupRepeat()
+{
+	CParamDlg dlgSetup;
+	int Id = 0;
+
+	dlgSetup.SetCaption(_T("Repeat Count"));
+	dlgSetup.SetMin(1);
+	dlgSetup.SetMax(255);
+	dlgSetup.SetValue(m_Count);
+	Id = dlgSetup.DoModal();
+	if (Id == IDOK)
+	{
+		m_Count = dlgSetup.GetValue();
+	}
+	return Id;
+}
+
 void CMsRepeatStart::Copy(CMsObject* pSource)
 {
 	m_Count = ((CMsRepeatStart*)pSource)->m_Count;
-	m_CountDown = ((CMsRepeatStart*)pSource)->m_CountDown;
 	CMsObject::Copy(pSource);
 }
 

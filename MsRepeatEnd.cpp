@@ -35,7 +35,7 @@ UINT CMsRepeatEnd::ObjectToString(CString& csString, UINT mode)
 void CMsRepeatEnd::ObjectRectangle(CRect& rect, UINT Event)
 {
 }
-
+	
 void CMsRepeatEnd::Draw(CDC *pDC)
 {
 	CPen Light, Heavy, *pOld;
@@ -91,8 +91,10 @@ void CMsRepeatEnd::Save(FILE *pO)
 	fputc(MSFF_TOKEN_REPEAT_STOP,pO);	//token
 }
 
-bool CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent)
+bool CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent, int Count)
 {
+	m_Count = Count;
+	m_CountDown = 0;
 	return CMsObject::Create(pSong, pEvent);
 }
 
@@ -109,10 +111,11 @@ UINT CMsRepeatEnd::Process()
 	pRepeatStartEvent = (CMsEvent*)GetSong()->GetRepeatStack().PeakTop();
 	pRPS = (CMsRepeatStart*)pRepeatStartEvent->ContainsObjectType(CMsObject::MsObjType::REPEATSTART);
 //	if(LogFile()) fprintf(LogFile(),"Repeat end Countdown %d\n", pRPS->GetCountDown());
-	if (pRPS->DecrementRepeatCount())
+	if (DecrementRepeatCount())
 	{
 		//------------------------------
 		// Done With Repeat Loop
+		// i.e. the Repeat Count is now 0
 		//-------------------------------
 		GetSong()->GetRepeatStack().PopLIFO();
 	}

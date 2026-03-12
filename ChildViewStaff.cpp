@@ -46,8 +46,6 @@ CChildViewStaff::CChildViewStaff()
 	m_nRawEvent = 0;
 	m_pHighLightedObject = 0;
 	m_DragFlag = 0;
-	//------------------------------
-	m_SelectRectTop = 0;
 	//--------------------------
 	// Initialize Dispatch List
 	//--------------------------
@@ -234,11 +232,13 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	MouseRegions Region;
 	MouseRegionTransitionState TransitionState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
 	UINT Loop = 1;
+	CMsEvent* pEvent = 0;
 
 	if (this->GetFocus() != this)
 		SetFocus();
 
 	m_nDrawEvent = XtoEventIndex(pointMouse.x);
+	pEvent = m_pSong->GetEventObject(m_nDrawEvent);
 	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEDOWN;
 	Region = MouseInRegion(pointMouse);
 	switch (Region)
@@ -247,6 +247,45 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 		break;
 	case MouseRegions::MOUSE_IN_UPPERSEL:
 	case MouseRegions::MOUSE_IN_LOWERSEL:
+		//-------------------------------
+		// We are in the selection region
+		//where events are selected or
+		// deselected OnLButtonDown
+		//--------------------------------
+		if (m_ShiftKeyDown)
+		{
+			if (pEvent)
+			{
+				if(pEvent->IsSelected())
+					pEvent->SetSelected(false);
+				else
+				{
+					GetSong()->SelectEventsFrom(pEvent);
+				}
+				Invalidate();
+			}
+		}
+		else if (m_CtrlKeyDown)
+		{
+			if(pEvent)
+				pEvent->SetSelected(!pEvent->IsSelected());
+			Invalidate();
+		}
+		else
+		{
+			if (pEvent)
+			{
+				if(pEvent->IsSelected())
+				{
+					pEvent->SetSelected(false);
+				}
+				else
+				{
+					pEvent->SetSelected(true);
+				}
+				Invalidate();
+			}
+		}
 		break;
 	case MouseRegions::MOUSE_IN_EDITREG:
 		switch (m_dmDrawMode)	//OnLButtonDown
@@ -292,99 +331,6 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		break;
 	case MouseRegions::MOUSE_IN_UPPERSEL:		//OnLButtonUp
 	case MouseRegions::MOUSE_IN_LOWERSEL:
-		if ((pEv = m_pSong->GetEventObject(m_nDrawEvent)) != NULL)
-		{
-			if (pEv->IsSelected())	//deselect block
-			{
-				if (m_FirstSelectedEvent < 0)
-				{
-					pEv->SetSelected(0);
-					m_LastSelectedEventIndex = -1;
-				}
-				else
-				{
-					int i;
-					int loop;
-					pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-					for (i = m_FirstSelectedEvent, loop = 1; (i < m_LastSelectedEventIndex + 1) && loop; ++i)
-					{
-						if (pEv)
-						{
-							pEv->SetSelected(0);
-							pEv = pEv->GetNext();
-						}
-						else
-							loop = 0;
-					}
-					m_FirstSelectedEvent = -1;
-					m_LastSelectedEventIndex = -1;
-				}
-				CString csBlank(_T(""));
-				m_Status.SetText(csBlank);
-			}
-			else    //select events		OnLButtonUp
-			{
-				if (m_LastSelectedEventIndex >= 0)
-				{
-					//we are going to select a block
-					if (m_FirstSelectedEvent < 0)
-					{
-						m_FirstSelectedEvent = m_LastSelectedEventIndex;
-						m_LastSelectedEventIndex = m_nDrawEvent;
-						if (m_LastSelectedEventIndex < m_FirstSelectedEvent)
-						{
-							int temp = m_LastSelectedEventIndex;
-							m_LastSelectedEventIndex = m_FirstSelectedEvent;
-							m_FirstSelectedEvent = temp;
-						}
-						int i;
-						pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-						for (i = m_FirstSelectedEvent; i < m_LastSelectedEventIndex + 1; ++i)
-						{
-							pEv->SetSelected(1);
-							pEv = pEv->GetNext();
-						}
-						CString s;
-						s.Format(_T("Block Selected %d:%d"), m_FirstSelectedEvent, m_LastSelectedEventIndex);
-						m_Status.SetText(s);
-					}
-					else	//add more events to the block		//OnLButtonUp
-					{
-						if (m_nDrawEvent < m_FirstSelectedEvent)
-						{
-							pEv = m_pSong->GetEventObject(m_nDrawEvent);
-							for (int i = m_nDrawEvent; i < m_FirstSelectedEvent + 1; ++i)
-							{
-								pEv->SetSelected(1);
-								pEv = pEv->GetNext();
-							}
-							m_FirstSelectedEvent = m_nDrawEvent;
-						}
-						else if (m_nDrawEvent > m_LastSelectedEventIndex)		//OnLButtonUp
-						{
-							pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-							for (int i = m_LastSelectedEventIndex; i < m_nDrawEvent + 1; ++i)
-							{
-								pEv->SetSelected(1);
-								pEv = pEv->GetNext();
-							}
-							m_LastSelectedEventIndex = m_nDrawEvent;
-						}
-						CString s;
-						s.Format(_T("Block Selected %d:%d"), m_FirstSelectedEvent, m_LastSelectedEventIndex);
-					}
-				}
-				else		//OnLButtonUp
-				{
-					pEv->SetSelected(1);
-					m_LastSelectedEventIndex = m_nDrawEvent;
-					CString s;
-					s.Format(_T("Event Selected:%d"), m_nDrawEvent);
-					m_Status.SetText(s);
-				}
-			}
-			Invalidate();
-		}
 		break;
 	case MouseRegions::MOUSE_IN_EDITREG:		//OnLButtonUp
 		switch (m_dmDrawMode)
@@ -1722,13 +1668,13 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		m_Status.SetText(csTemp);
 		break;
 	case DrawMode::INCRPITCH:
-			IncrPitch();
+		IncrementPitch();
 		csTemp = CString("Increase Pitch In Selection");
 		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
 	case DrawMode::DECRPITCH:		// SetupDrawMode
-		DecrPitch();
+		DecrementPitch();
 		csTemp = CString("Decrease Pitch in Selection");
 		m_Status.SetText(csTemp);
 		Invalidate();
@@ -1782,7 +1728,7 @@ void CChildViewStaff::IncreaseDuration()
 {
 }
 
-void CChildViewStaff::IncrPitch()
+void CChildViewStaff::IncrementPitch()
 {
 	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
@@ -1806,7 +1752,7 @@ void CChildViewStaff::IncrPitch()
 	}
 }
 
-void CChildViewStaff::DecrPitch()
+void CChildViewStaff::DecrementPitch()
 {
 	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
@@ -1862,8 +1808,10 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		pRepStrt->Create(GetSong(), pRS, nRepeatCount);
 		pRS->AddObject(pRepStrt);
 		pRepEnd = new CMsRepeatEnd;
-		pRepEnd->Create(GetSong(), pRE);
+		pRepEnd->Create(GetSong(), pRE, nRepeatCount);
 		pRE->AddObject(pRepEnd);
+		pRepStrt->SetMatchingRepeatEnd(pRepEnd);
+		pRepEnd->SetMatchingRepeatStart(pRepStrt);
 	}
 }
 
@@ -2700,7 +2648,7 @@ void CChildViewStaff::OnInitialUpdate()
 	y = CLIENT_TO_TOP_UPPER_SELECT_RECT;
 	//-------------- Upper Selection Bar -----
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(szRect.cx, SELECTION_BAR_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * m_MaxEvents, SELECTION_BAR_HEIGHT);
 	m_UpperSelRect = CRect(ptRectUL, szRect);
 	PrintRec("ChildView UpperRgn", m_UpperSelRect);
 	m_UpperSelRect.NormalizeRect();
@@ -2708,7 +2656,7 @@ void CChildViewStaff::OnInitialUpdate()
 	//-----------Upper Draw Region -------------
 	y += UPPER_SELECTION_BAR_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(clientRect.Width() - EVENT_WIDTH, UPPER_DRAW_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * m_MaxEvents, UPPER_DRAW_RECT_HEIGHT);
 	m_rectUpperDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView UpperDrawRgn", m_rectUpperDraw);
 	m_rectUpperDraw.NormalizeRect();
@@ -2716,15 +2664,15 @@ void CChildViewStaff::OnInitialUpdate()
 	//-------------- Edit Region -----
 	y += UPPER_DRAW_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(clientRect.Width() - EVENT_WIDTH, EDIT_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * m_MaxEvents, EDIT_RECT_HEIGHT);
 	m_rectEdit = CRect(ptRectUL, szRect);
 	PrintRec("ChildView EditRgn", m_rectEdit);
 	m_rectEdit.NormalizeRect();
 	m_rgnEdit.CreateRectRgn(m_rectEdit);
 	//------------- Lower Draw Region -------------
-	y += EVENT_HEIGHT;
+	y += EDIT_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(clientRect.Width() - EVENT_WIDTH, LOWER_DRAW_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * m_MaxEvents, LOWER_DRAW_RECT_HEIGHT);
 	m_rectLowerDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView LowerDrawRgn", m_rectLowerDraw);
 	m_rectLowerDraw.NormalizeRect();
@@ -2732,13 +2680,10 @@ void CChildViewStaff::OnInitialUpdate()
 	//-------------- Lower Selection Bar -----
 	y += LOWER_DRAW_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(szRect.cx, LOWER_SELECTION_BAR_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * m_MaxEvents, SELECTION_BAR_HEIGHT);
 	m_LowerSelRect = CRect(ptRectUL, szRect);
 	m_LowerSelRect.NormalizeRect();
 	m_rgnLowerSelect.CreateRectRgn(m_LowerSelRect);
-	//----------------------------------
-	m_SelectRectTop = m_UpperSelRect.bottom;
-	m_szSelectRect = CSize(EVENT_WIDTH, m_LowerSelRect.top - m_UpperSelRect.bottom);
 
 	//-------------- Button Controls ---------
 	itemSize = m_Button_Play.GetButtonSize(IDB_BUTTON_PLAY_UP);
@@ -2829,7 +2774,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 	if (m_ReadyToDraw)
 	{
 		GetClientRect(&rectClient);
-		//create a compattable memory device context
+		//create a Compatible memory device context
 		DCm.CreateCompatibleDC(pDC);
 		DCmEdit.CreateCompatibleDC(pDC);
 		// Create a bitmap for the memory DC

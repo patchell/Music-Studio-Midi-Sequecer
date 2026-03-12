@@ -8,7 +8,7 @@ class CMsSong;
 
 class CMsEvent
 {
-	UINT m_Selected;	// Number of selected objects in this event
+	bool m_bSelected;	// Number of selected objects in this event
 	//------------------------------
 	// Linked List of Events
 	//------------------------------
@@ -97,8 +97,8 @@ public:
 	//--------------------------------------
 	// Selection management
 	//--------------------------------------
-	UINT IsSelected(void){return m_Selected;}
-	void SetSelected(UINT s){m_Selected = s;}
+	bool IsSelected(void) const {return m_bSelected;}
+	void SetSelected(bool s){m_bSelected = s;}
 	int AreObjectsSelected();
 	CMsObject * GetFirstSelectedObject();
 	CMsObject * GetNextSelectedObject(CMsObject * pLastSelectedObject);

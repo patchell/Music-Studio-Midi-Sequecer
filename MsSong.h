@@ -194,6 +194,7 @@ public:
 	void SetTotalEvents(int t) { m_nTotalEvents = t; }
 	void RenumberEvents(int* First = nullptr, int* Last = nullptr);
 	void RenumberMeasureBars();
+	bool SelectEventsFrom(CMsEvent* pEventID);
 	//----------------- Song ID Management ----------------
 	int GetSongId() { return m_SongID; }
 	//**************************************

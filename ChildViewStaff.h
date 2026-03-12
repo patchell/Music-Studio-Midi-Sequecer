@@ -277,9 +277,6 @@ private:
 	CMyRgn m_rgnLowerSelect;
 	CRect m_LowerSelRect;
 
-	int m_SelectRectTop;
-	CSize m_szSelectRect;
-
 	//----------------Note Object Data  --------------
 	NoteData m_CurrentNoteData;
 	//--------- Object Highlight -----------------=
@@ -369,21 +366,23 @@ public:
 	void ChangeInst(INT From, INT To);
 	void AddRepeat(UINT n);
 	void InsertBlock(void);
-	void DecrPitch();
-	void IncrPitch(void);
+	void DecrementPitch();
+	void IncrementPitch(void);
 	void IncreaseDuration(void);
 	//----------------------------------
 	CMsObject* GetDrawObject() { return m_pDrawObject; }
 	void SetDrawObject(CMsObject* pDObj) { m_pDrawObject = pDObj; }
 	int CalcMaxEvents(void);
 	UINT GetRawEventNumber(int x);
-	CSize GetSelectionRegionSize() const { return m_szSelectRect; }
-	int GetSelectionRegionTop() const { return m_SelectRectTop; }
 	int IsEventDisplayed(CMsEvent* pEV);
 	MouseRegions MouseInRegion(CPoint p);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
+
 	void SetupDrawMode(DrawMode Mode, long v = 0);
+	void SetDrawMode(DrawMode Mode) { m_dmDrawMode = Mode; }
+	DrawMode GetDrawMode() const { return m_dmDrawMode; }
+
 	void UpdateScrollbarInfo(int TotalEvents, const char* Title = 0);
 	int XtoEventIndex(int x);
 	int YtoNote(int y);

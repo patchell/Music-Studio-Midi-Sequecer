@@ -2,11 +2,12 @@
 //
 //////////////////////////////////////////////////////////////////////
 #pragma once
+class CMsRepeatEnd;
 
 class CMsRepeatStart : public CMsObject  
 {
-	UINT m_Count;
-	UINT m_CountDown;
+	UINT m_Count;		// Number of times to repeat.  This is initialized when the repeat end is created, and is not changed during playback.
+	CMsRepeatEnd* m_pMatchingRepeatEnd;
 public:
 	CMsRepeatStart();
 	virtual ~CMsRepeatStart();
@@ -35,12 +36,8 @@ public:
 	virtual void Copy(CMsObject* Source);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
-	bool DecrementRepeatCount() {
-		bool rV = false;
-		if (0 == --m_CountDown)
-			rV = true;
-		return rV;
-	}
-	UINT GetCountDown() { return m_CountDown; }
+	int SetupRepeat();
+	CMsRepeatEnd* GetMatchingRepeatEnd() { return m_pMatchingRepeatEnd; }
+	void SetMatchingRepeatEnd(CMsRepeatEnd* pEnd) { m_pMatchingRepeatEnd = pEnd; }
 };
 

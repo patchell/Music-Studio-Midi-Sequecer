@@ -35,4 +35,5 @@ public:
 		return m_Loudness;
 	}
 	void SetLoudness(UINT l){m_Loudness = l;}
+	int EditLoudness();
 };

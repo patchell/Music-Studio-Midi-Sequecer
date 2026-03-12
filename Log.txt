@@ -9,183 +9,62 @@ Player Thread Ready
 	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 6 ID:603
 Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
 	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 2 ID:604
-		Event 0: Is This Object Note of 2 Events  Object::Event=0 ID=20
-		Event 1: Add Object Type Loudness Object Event 1 ID=21
-		Event 1: Is This Object Loudness of 3 Events  Object::Event=1 ID=21
-		Event 1: Is This Object Loudness of 3 Events  Object::Event=1 ID=21
-		Event:1:Remove Object Loudness From Tail ID=21
-		Event 2: Add Object Type Loudness Object Event 2 ID=21
-		Event 2: Is This Object Loudness of 1 Events  Object::Event=2 ID=21
-		Event 2: Is This Object Loudness of 1 Events  Object::Event=2 ID=21
-		Event:2:Remove Object Loudness From Head ID=21
-		Event 3: Add Object Type Loudness Object Event 3 ID=21
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=21
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=21
-		Event:3:Remove Object Loudness From Head ID=21
-		Event 4: Add Object Type Loudness Object Event 4 ID=21
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=21
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=21
-		Event:4:Remove Object Loudness From Head ID=21
-		Event 5: Add Object Type Loudness Object Event 5 ID=21
-		Event 5: Is This Object Loudness of 1 Events  Object::Event=5 ID=21
-		Event 5: Is This Object Loudness of 1 Events  Object::Event=5 ID=21
-		Event:5:Remove Object Loudness From Head ID=21
-		Event 6: Add Object Type Loudness Object Event 6 ID=21
-		Event 6: Add Object Type Loudness Object Event 6 ID=23
-		Event 6: Is This Object Loudness of 2 Events  Object::Event=6 ID=23
-		Event 6: Is This Object Loudness of 2 Events  Object::Event=6 ID=23
-		Event:6:Remove Object Loudness From Tail ID=23
-		Event 5: Add Object Type Loudness Object Event 5 ID=23
-		Event 5: Is This Object Loudness of 1 Events  Object::Event=5 ID=23
-		Event 5: Is This Object Loudness of 1 Events  Object::Event=5 ID=23
-		Event:5:Remove Object Loudness From Head ID=23
-		Event 4: Add Object Type Loudness Object Event 4 ID=23
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=23
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=23
-		Event:4:Remove Object Loudness From Head ID=23
-		Event 3: Add Object Type Loudness Object Event 3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event:3:Remove Object Loudness From Head ID=23
-		Event 4: Add Object Type Loudness Object Event 4 ID=23
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=23
-		Event 4: Is This Object Loudness of 1 Events  Object::Event=4 ID=23
-		Event:4:Remove Object Loudness From Head ID=23
-		Event 3: Add Object Type Loudness Object Event 3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event:3:Remove Object Loudness From Head ID=23
-		Event 3: Add Object Type Loudness Object Event 3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event 3: Is This Object Loudness of 1 Events  Object::Event=3 ID=23
-		Event:3:Remove Object Loudness From Head ID=23
-	(null)Selected item 2 in combo box 604
-		Event 4: Add Object Type Note Object Event 4 ID=24
+		Event 5: Add Object Type Note Object Event 5 ID=20
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
+     ***********************************
+         Pitch = 76
+     ***********************************
+		Event:5:Remove Object Note From Head ID=20
+		Event 6: Add Object Type Note Object Event 6 ID=20
+		Event 6:**NO Notes
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
+     ***********************************
+         Pitch = 64
+     ***********************************
+		Event:6:Remove Object Note From Head ID=20
+		Event 5: Add Object Type Note Object Event 5 ID=20
+		Event 5:**NO Notes
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
+     ***********************************
+         Pitch = 45
+     ***********************************
+		Event:5:Remove Object Note From Head ID=20
+		Event 4: Add Object Type Note Object Event 4 ID=20
 		Event 4:**NO Notes
-		Event 4: Add Object Type Note Object Event 4 ID=25
-		Event 4: There **ARE** 1 Notes in this Event
-		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=25
-		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=25
+		Event 4: Is This Object Note of 1 Events  Object::Event=4 ID=20
+		Event 4: Is This Object Note of 1 Events  Object::Event=4 ID=20
      ***********************************
-         Pitch = 72
+         Pitch = 79
      ***********************************
-		Event:4:Remove Object Note From Tail ID=25
-		Event 5: Add Object Type Note Object Event 5 ID=25
+		Event:4:Remove Object Note From Head ID=20
+		Event 5: Add Object Type Note Object Event 5 ID=20
 		Event 5:**NO Notes
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=25
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=25
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
+		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
      ***********************************
-         Pitch = 72
+         Pitch = 79
      ***********************************
-		Event:5:Remove Object Note From Head ID=25
-		Event 6: Add Object Type Note Object Event 6 ID=25
+		Event:5:Remove Object Note From Head ID=20
+		Event 6: Add Object Type Note Object Event 6 ID=20
 		Event 6:**NO Notes
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=25
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=25
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
+		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
      ***********************************
-         Pitch = 72
+         Pitch = 79
      ***********************************
-		Event:6:Remove Object Note From Tail ID=25
-		Event 7: Add Object Type Note Object Event 7 ID=25
-		Event 7:**NO Notes
-		Event 7: Add Object Type Note Object Event 7 ID=26
-		Event 7: There **ARE** 1 Notes in this Event
-		Event 7: Is This Object Note of 2 Events  Object::Event=7 ID=26
-		Event 7: Is This Object Note of 2 Events  Object::Event=7 ID=26
-     ***********************************
-         Pitch = 71
-     ***********************************
-		Event:7:Remove Object Note From Tail ID=26
-		Event 6: Add Object Type Note Object Event 6 ID=26
-		Event 6:**NO Notes
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=26
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=26
-     ***********************************
-         Pitch = 60
-     ***********************************
-		Event:6:Remove Object Note From Tail ID=26
-		Event 5: Add Object Type Note Object Event 5 ID=26
-		Event 5:**NO Notes
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=26
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=26
-     ***********************************
-         Pitch = 50
-     ***********************************
-		Event:5:Remove Object Note From Head ID=26
-		Event 4: Add Object Type Note Object Event 4 ID=26
-		Event 4: There **ARE** 1 Notes in this Event
-		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=26
-		Event 4: Is This Object Note of 2 Events  Object::Event=4 ID=26
-     ***********************************
-         Pitch = 38
-     ***********************************
-		Event:4:Remove Object Note From Tail ID=26
-		Event 3: Add Object Type Note Object Event 3 ID=26
-		Event 3:**NO Notes
-		Event 3: Is This Object Note of 1 Events  Object::Event=3 ID=26
-		Event 3: Is This Object Note of 1 Events  Object::Event=3 ID=26
-     ***********************************
-         Pitch = 36
-     ***********************************
-		Event:3:Remove Object Note From Head ID=26
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature
-		Event 6: Add Object Type Note Object Event 6 ID=26
-		Event 6:**NO Notes
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=26
-		Event 6: Is This Object Note of 2 Events  Object::Event=6 ID=26
-     ***********************************
-         Pitch = 50
-     ***********************************
-		Event:6:Remove Object Note From Tail ID=26
-		Event 7: Add Object Type Note Object Event 7 ID=26
-		Event 7: There **ARE** 1 Notes in this Event
-		Event 7: Is This Object Note of 2 Events  Object::Event=7 ID=26
-		Event 7: Is This Object Note of 2 Events  Object::Event=7 ID=26
-     ***********************************
-         Pitch = 59
-     ***********************************
-		Event:7:Remove Object Note From Tail ID=26
-		Event 8: Add Object Type Note Object Event 8 ID=26
+		Event:6:Remove Object Note From Head ID=20
+		Event 8: Add Object Type Note Object Event 8 ID=20
 		Event 8:**NO Notes
-		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=26
-		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=26
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=20
+		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=20
      ***********************************
-         Pitch = 84
+         Pitch = 77
      ***********************************
-		Event:8:Remove Object Note From Head ID=26
+		Event:8:Remove Object Note From Head ID=20
+		Event 9: Add Object Type Note Object Event 9 ID=20
+		Event 9:**NO Notes
 ------ Exit MidiSeqMS-------

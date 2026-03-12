@@ -14,7 +14,7 @@ CMsEvent::CMsEvent()
 	m_pPrev = 0;
 	m_pEventMsObjectListHead = 0;
 	m_pEventMsObjectListTail = 0;
-	m_Selected = 0;	// Selected If True
+	m_bSelected = false;	// Selected If True
 	m_Index = -1;	//WHERE in event chain this is located
 	m_pView = 0;
 	m_pParentSong = 0;

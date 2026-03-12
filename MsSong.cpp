@@ -176,7 +176,7 @@ int CMsSong::Parse(char *pSongData)
 				break;
 			case MSFF_TOKEN_REPEAT_STOP:	//basically the same thing as an End Event
 				obj.pRepE = new CMsRepeatEnd;
-				obj.pRepE->Create(this, pEv);
+				obj.pRepE->Create(this, pEv,0);
 				break;
 			case MSFF_TOKEN_EVENT_END:
 				AddEventAtEnd(pEv);
@@ -347,12 +347,12 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 	//------------------------------------
 	int i = 0;
 	int MaxX = pRect->right;
-	CPen penStaffLins,*oldpen;
+	CPen penStaffLines,*oldpen;
 	CMyBitmap bmEvent, *oldBM;
 	CDC memDCEvent;
 
-	penStaffLins.CreatePen(PS_SOLID,1, GetColorPalette()->color_StaffLines);
-	oldpen = pDC->SelectObject(&penStaffLins);
+	penStaffLines.CreatePen(PS_SOLID,1, GetColorPalette()->color_StaffLines);
+	oldpen = pDC->SelectObject(&penStaffLines);
 	//-----------------------------
 	// create a memory DC for event
 	// drawing.
@@ -596,6 +596,66 @@ void CMsSong::RenumberMeasureBars()
 	}
 }
 
+bool CMsSong::SelectEventsFrom(CMsEvent* pEvent)
+{
+	//-------------------------------
+	// Given an Event ID, find
+	// another event that is also
+	// selected, and select all
+	// events in between.
+	// If the EventID is already
+	// selected, deselect all
+	// contiguous events.
+	//-------------------------------
+	CMsEvent* pEV = 0;
+	if (pEvent->IsSelected())
+	{
+		pEV = pEvent->GetNext();
+		while (pEV && pEV->IsSelected())
+		{
+			pEV->SetSelected(false);
+			pEV = pEV->GetNext();
+		}
+		pEV = pEvent->GetPrev();
+		while (pEV && pEV->IsSelected())
+		{
+			pEV->SetSelected(false);
+			pEV = pEV->GetPrev();
+		}
+	}
+	else
+	{
+		//-------------------------------
+		// Find, if any, the first
+		// selected event after this one
+		//-------------------------------
+		pEV = pEvent->GetPrev();
+		while (pEV && !pEV->IsSelected())
+			pEV = pEV->GetPrev();
+		if (pEV)
+		{
+			while (pEV != pEvent)
+			{
+				pEV->SetSelected(true);
+				pEV = pEV->GetNext();
+			}
+		}
+		pEV = pEvent->GetNext();
+		while (pEV && !pEV->IsSelected())
+			pEV = pEV->GetNext();
+		if (pEV)
+		{
+			while (pEV != pEvent)
+			{
+				pEV->SetSelected(true);
+				pEV = pEV->GetPrev();
+			}
+		}
+		pEvent->SetSelected(true);
+	}
+	return true;
+}
+
 CMsEvent *CMsSong::InsertEvent(int e)
 {
 	//--------------------------------
@@ -755,6 +815,7 @@ CMsEvent *CMsSong::GetEventObject(int EventIndex)
 		pEv = MakeNewEvent(EventIndex);
 		loop = false;
 	}
+	m_pSongPosition = pEv;
 	return pEv;
 }
 
