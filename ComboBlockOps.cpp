@@ -38,5 +38,6 @@ bool CComboBlockOps::Create(CPoint ptULCorner, CWnd* pParentWnd)
 	);
 	for (i = 0; i < nItems; ++i)
 		AddBitmap(GETAPP->bmGetBlockOpType(i));
+	SetName("Block Ops");
 	return true;
 }

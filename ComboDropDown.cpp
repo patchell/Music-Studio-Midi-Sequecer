@@ -19,14 +19,11 @@ CComboDropDown::CComboDropDown()
 	m_LButtonDown = 0;
 	m_nItems = 0;
 	m_nTotalItems = 0;
-	for (int i = 0; i < m_nItems; ++i)
-	{
-		m_apRectItemControls[i] = 0;
-		m_apRgnItemControls[i] = 0;
-	}
+	m_ppRectItemControls = 0;
+	m_ppRgnItemControls = 0;
 	// Slider Stuff
 	m_Pos = 0;
-	m_apBmItems = 0;
+	m_ppBmItems = 0;
 	m_nBitmapsAdded = 0;
 	m_nCurSel = 0;
 	m_nDragThumb = 0;
@@ -58,14 +55,11 @@ CComboDropDown::CComboDropDown(ComboDropDownTypes type)
 	m_LButtonDown = 0;
 	m_nItems = 0;
 	m_nTotalItems = 0;
-	for (int i = 0; i < m_nItems; ++i)
-	{
-		m_apRectItemControls[i] = 0;
-		m_apRgnItemControls[i] = 0;
-	}
+	m_ppRectItemControls = 0;
+	m_ppRgnItemControls = 0;
 	// Slider Stuff
 	m_Pos = 0;
-	m_apBmItems = 0;
+	m_ppBmItems = 0;
 	m_nBitmapsAdded = 0;
 	m_nCurSel = 0;
 	m_nDragThumb = 0;
@@ -89,23 +83,35 @@ CComboDropDown::CComboDropDown(ComboDropDownTypes type)
 
 CComboDropDown::~CComboDropDown()
 {
-	if(m_pName)
+	if(m_ppBmItems)
+	{
+		delete[] m_ppBmItems;
+		m_ppBmItems = 0;
+	}
+	for (int i = 0; i < m_nItems; ++i)
+	{
+		if (m_ppRectItemControls[i]) {
+			delete m_ppRectItemControls[i];
+			m_ppRectItemControls[i] = nullptr;
+		}
+		if (m_ppRgnItemControls[i]) {
+			delete m_ppRgnItemControls[i];
+			m_ppRgnItemControls[i] = nullptr;
+		}
+	}
+	if (m_ppRgnItemControls) {
+		delete[] m_ppRgnItemControls;
+		m_ppRgnItemControls = nullptr;
+	}
+	if(m_ppRectItemControls) {
+		delete[] m_ppRectItemControls;
+		m_ppRectItemControls = nullptr;
+	}
+	if (m_pName)
 	{
 		delete[] m_pName;
 		m_pName = nullptr;
 	}
-	if(m_apBmItems)
-	{
-		delete[] m_apBmItems;
-		m_apBmItems = 0;
-	}
-	for (int i = 0; i < m_nItems; ++i)
-	{
-		if (m_apRectItemControls[i]) delete m_apRectItemControls[i];
-		if (m_apRgnItemControls[i]) delete m_apRgnItemControls[i];
-	}
-	delete[] m_apRgnItemControls;
-	delete[] m_apRectItemControls;
 }
 
 
@@ -196,23 +202,23 @@ bool CComboDropDown::Create(
 	// These are the items that you can choose
 	// from whent the combo box is expanded
 	//------------------------------------------
-	m_apRgnItemControls = new CMyRgn * [nItems];
-	m_apRectItemControls = new CRect * [nItems];
-	m_apBmItems = new CMyBitmap * [m_nTotalItems];
+	m_ppRgnItemControls = new CMyRgn * [nItems];
+	m_ppRectItemControls = new CRect * [nItems];
+	m_ppBmItems = new CMyBitmap * [m_nTotalItems];
 	// Initialize Arrays
 	CPoint UpperLeft = m_ptUpLeftCorn;
 	CSize Inc = CSize(0, szItemSize.cy);
 	UpperLeft += Inc;
 	for (i = 0; i < nItems; ++i, UpperLeft += Inc)
 	{
-		m_apRectItemControls[i] = new  CRect;
-		*(m_apRectItemControls[i]) = CRect(UpperLeft, szItemSize);
-		m_apRgnItemControls[i] = new CMyRgn;
-		m_apRgnItemControls[i]->CreateRectRgn(*(m_apRectItemControls[i]));
+		m_ppRectItemControls[i] = new  CRect;
+		*(m_ppRectItemControls[i]) = CRect(UpperLeft, szItemSize);
+		m_ppRgnItemControls[i] = new CMyRgn;
+		m_ppRgnItemControls[i]->CreateRectRgn(*(m_ppRectItemControls[i]));
 	}
 	for (i = 0; i < m_nTotalItems; ++i)
 	{
-		m_apBmItems[i] = 0;
+		m_ppBmItems[i] = 0;
 	}
 	rV = CWnd::Create(
 		lpszClassName,
@@ -310,7 +316,7 @@ void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 
 			for (i = 0, loop = 1; (i < m_nItems) && loop; ++i)
 			{
-				if (m_apRgnItemControls[i]->PtInRegion(point))
+				if (m_ppRgnItemControls[i]->PtInRegion(point))
 				{
 					item = i + m_Pos;
 					loop = 0;
@@ -323,11 +329,11 @@ void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 				Colapse();
 				m_pWndLastFocus->SetFocus();
 				int id = GetDlgCtrlID();
-				fprintf(LogFile(), "\t%sSelected item %d in combo box %d\n",
+/*				fprintf(LogFile(), "\t%sSelected item %d in combo box %d\n",
 					GetName(),
 					m_nCurSel, 
 					id
-				);
+				);*/
 				GetParent()->PostMessageW(
 					WM_MY_CONTROL_MESSAGES, 
 					id, 
@@ -442,9 +448,9 @@ void CComboDropDown::OnDraw(CDC* pDC)
 		for (i = 0; i < m_nItems; ++i)
 		{
 			CBitmap* pBM;
-			pBM = m_apBmItems[m_Pos + i];
+			pBM = m_ppBmItems[m_Pos + i];
 			oldBM = bmdc.SelectObject(pBM);
-			bmr = *m_apRectItemControls[i];
+			bmr = *m_ppRectItemControls[i];
 //			PrintRec("Item rect", bmr);
 			CBrush* pB;
 			pB = (m_nCurSel == i) ? &Brush_ListSelBG : &Brush_ListBG;
@@ -474,7 +480,7 @@ void CComboDropDown::OnDraw(CDC* pDC)
 		pDC->LineTo(m_ptDropCorner.x + m_szDropArrow.cx - 2, m_ptDropCorner.y + m_szDropArrow.cy - 2);
 		//---------Current Selection -----
 		bmr = m_rectSelectionBox;
-		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
+		bmdc.SelectObject(m_ppBmItems[m_nCurSel]);
 		pDC->BitBlt(
 			bmr.left + 1,
 			bmr.top + 1,
@@ -489,7 +495,7 @@ void CComboDropDown::OnDraw(CDC* pDC)
 		pDC->FillRect(&m_rectDropArrow, &Brush_DropArrowBG);
 		pDC->FillRect(&m_rectSelectionBox, &Brush_SelectionBG);
 
-		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
+		bmdc.SelectObject(m_ppBmItems[m_nCurSel]);
 		bFlag = pDC->BitBlt(
 			m_rectSelectionBox.left + 1,
 			m_rectSelectionBox.top + 1,
@@ -530,12 +536,12 @@ void CComboDropDown::SetCurSel(int nSel, bool Notify)
 			pNameStr = "<Un Named>";
 
 		int id = GetDlgCtrlID();
-		fprintf(LogFile(), "\t%s ComboDropDown: %s, New Selection: %d ID:%d\n", 
+/*		fprintf(LogFile(), "\t%s ComboDropDown: %s, New Selection: %d ID:%d\n", 
 			__FUNCTION__, 
 			pNameStr, 
 			m_nCurSel,
 			id
-		);
+		);*/
 		GetParent()->SendMessageW(
 			WM_MY_CONTROL_MESSAGES,
 			id,
@@ -566,7 +572,7 @@ int CComboDropDown::AddBitmap(CMyBitmap* pBM)
 	if (m_nBitmapsAdded == m_nTotalItems)
 		rv = 0;
 	else
-		m_apBmItems[m_nBitmapsAdded++] = pBM;
+		m_ppBmItems[m_nBitmapsAdded++] = pBM;
 	return rv;
 }
 
@@ -664,6 +670,7 @@ const char* CComboDropDown::GetTypeString(ComboDropDownTypes type)
 
 void CComboDropDown::SetName(const char* name)
 {
+//	int len = 256;
 	int len = strlen(name);
 	if (m_pName)
 	{

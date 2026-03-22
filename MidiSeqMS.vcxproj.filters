@@ -289,6 +289,18 @@
     <ClCompile Include="ComboAccidentals.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MsList.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CMsListItem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ListSong.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ListSongItem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -598,6 +610,18 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ComboAccidentals.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MsList.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CMsListItem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ListSong.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ListSongItem.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -140,3 +140,8 @@ StaffMouseStates CMsBassCleff::StaffTransition(CPoint pointMouse, int NewNote, C
 	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
 }
 
+CMsObject* CMsBassCleff::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+

@@ -9,7 +9,7 @@
 
 CMsBar::CMsBar():CMsObject(MsObjType::BAR)
 {
-	m_BarNumber = GenBarNumber();
+	m_BarNumber = 0;
 }
 
 CMsBar::~CMsBar()
@@ -20,6 +20,7 @@ CMsBar::~CMsBar()
 
 bool CMsBar::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
+	m_BarNumber = GenBarNumber();
 	return CMsObject::Create(pSong, pEvent);
 }
 
@@ -258,7 +259,6 @@ DRAWSTATE CMsBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegions
 		switch (Transition)
 		{
 		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
-			printf("\tMouse Move with no transition. Region: %d\n", (int)Region);
 			if (Region == MouseRegions::MOUSE_IN_EDITREG)
 			{
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
@@ -347,7 +347,7 @@ void CMsBar::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sMeasure Bar:%d\n", pIndentString,m_BarNumber);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 
@@ -452,11 +452,12 @@ UINT CMsBar::ObjectToString(CString& csString, UINT mode)
 	return csString.GetLength();
 }
 
-CMsObject* CMsBar::MakeANewObject()
+CMsObject* CMsBar::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
 {
 //	if(LogFile()) fprintf(LogFile(),"Make a new Bar\n");
 	CMsBar* pBar;
 	pBar = new CMsBar;
+	pBar->Create(pSong, pPqarentEvent);
 	return pBar;
 }
 

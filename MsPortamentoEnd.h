@@ -25,6 +25,7 @@ public:
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 
 	//------------------------------------------------------
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 	virtual void Copy(CMsObject* Source);
 	virtual void Save(FILE* pO);
 	virtual void Print(FILE* pO, int Indent);

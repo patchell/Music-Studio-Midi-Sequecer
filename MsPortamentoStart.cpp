@@ -230,6 +230,11 @@ DRAWSTATE CMsPortamentoStart::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, 
 	return DrawState;
 }
 
+CMsObject* CMsPortamentoStart::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+
 void CMsPortamentoStart::Save(FILE* pO)
 {
 }

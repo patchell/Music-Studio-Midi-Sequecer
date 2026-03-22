@@ -82,7 +82,10 @@ enum class DRAWSTATE {
 	GLISSANDO_END,
 	REPEAT_START_PLACE,
 	REPEAT_END_WAIT_MD,
-	REPEAT_END_PLACE
+	REPEAT_END_PLACE,
+	CUT,
+	COPY,
+	PASTE
 };
 
 //---------------------------------------
@@ -107,6 +110,8 @@ constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 #include "ComboBoxDefines.h"
 #include "MusicStudioFileFormat.h"
 #include "WindowMessages.h"
+#include "CMsListItem.h"	// List Item base class
+#include "MsList.h"			// List class base
 #include "Polygon.h"
 #include "MyEvent.h"
 #include "MMtimer.h"
@@ -177,6 +182,8 @@ constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 //--------------------------------------
 #include "MsSongInfo.h"
 #include "MsSong.h"
+#include "ListSongItem.h"
+#include "ListSong.h"
 #include "MidiSeqMS.h"
 #include "MsPlayerQueueItem.h"
 #include "MsPlayerQueue.h"

@@ -20,7 +20,9 @@ private:
 	};
 	inline static const DropDownToggleItems DropDownToggleItemsLUT[] = {
 		{ ComboDropDownToggleTypes::ACCIDENTALS, "Accidentals" },
-		{ ComboDropDownToggleTypes::UNDEFINED, NULL }
+		{ ComboDropDownToggleTypes::UNDEFINED, "Undefined"},
+		{ ComboDropDownToggleTypes(-1), nullptr}
+
 	};
 private:
 	DECLARE_DYNAMIC(CComboDropDownToggle)
@@ -29,11 +31,11 @@ private:
 	// These are the items that you can choose
 	// from whent the combo box is expanded
 	//------------------------------------------
-	CMyRgn** m_apRgnItemControls;	//regions where Items to select are
-	CRect** m_apRectItemControls;	//rectangles of the same
+	CMyRgn** m_ppRgnItemControls;	//regions where Items to select are
+	CRect** m_ppRectItemControls;	//rectangles of the same
 	//-------- BitMaps ------------
-	CMyBitmap** m_apBmSelItems;
-	CMyBitmap** m_apBmNotSelItems;
+	CMyBitmap** m_ppBmSelItems;
+	CMyBitmap** m_ppBmNotSelItems;
 	int m_nSelBitmapsAdded;
 	int m_nNotSelBitmapsAdded;
 	//-------- Drop Arrow ---------------
@@ -119,6 +121,7 @@ private:
 	int* m_pToggleFlags;
 	int* m_pToggleValue;
 	ComboDropDownToggleTypes m_Type;
+	char* m_pName;
 public:
 	CComboDropDownToggle();
 	CComboDropDownToggle(ComboDropDownToggleTypes Type);
@@ -159,6 +162,7 @@ public:
 	void Colapse();
 	void Expand();
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
+	void SetName(const char* pName);
 	// Clears all items and set current selection
 	void ClearAllItems(int nItem);
 	void Reset() { m_nSelBitmapsAdded = 0; }

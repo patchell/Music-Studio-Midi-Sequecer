@@ -197,8 +197,6 @@ void CMsObject::Copy(CMsObject* pSource)
 	m_Selected = 0;		//or this
 	m_ObjType = pSource->GetType();
 	m_ObjectID = GETAPP->GetUniqueID();
-	m_pParentEvent = pSource->GetParentEvent();
-	m_pSong = pSource->GetSong();
 }
 
 CChildViewStaff* CMsObject::GetStaffChildView()

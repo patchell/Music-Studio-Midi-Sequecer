@@ -78,7 +78,7 @@ bool CMsEventDirectory::ResizeEventDirectory()
 			for (int i = 0; i < m_nDirectorySize; ++i)
 				pNewDirectory[i] = m_pEventDirectory[i];
 
-			delete[] m_pEventDirectory;
+			if(m_pEventDirectory) delete[] m_pEventDirectory;
 			m_pEventDirectory = pNewDirectory;
 			m_nDirectorySize += EVENT_DIR_CHUNK_SIZE;
 		}

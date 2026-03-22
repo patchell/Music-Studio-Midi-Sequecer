@@ -55,7 +55,11 @@ CMyScrollBar::CMyScrollBar():CScrollBar()
 
 CMyScrollBar::~CMyScrollBar()
 {
-	if(!m_bUserBufferFlag) delete[] m_pBuffer;
+	if (!m_bUserBufferFlag && m_pBuffer)
+	{
+		delete[] m_pBuffer;
+		m_pBuffer = 0;
+	}
 }
 
 BOOL CMyScrollBar::Create(DWORD dwStyle, const RECT& rect, CWnd* pParent, UINT nId)

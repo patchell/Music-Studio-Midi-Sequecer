@@ -36,5 +36,6 @@ public:
 	}
 	//------------------------------------------------------
 	void Draw(CDC* pDC, COLORREF c, int x, int y);
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 
 };

@@ -323,10 +323,10 @@ private:
 	};
 
 	inline static CString TX816_OP_KEYBORD_Level_Scaling_Curve[4] = {
-		_T("-LIN"),
-		_T("-EXP"),
-		_T("+EXP"),
-		_T("+LIN")
+		CString("-LIN"),
+		CString("-EXP"),
+		CString("+EXP"),
+		CString("+LIN")
 	};
 private:
 
@@ -335,7 +335,7 @@ private:
 	CFont m_fFont;
 	CMyBitmap m_BmQuarterNoteEqQNPM;
 	//--------- Misc -----------------------------
-	CMyBitmap** m_ppBmMisc;
+	inline static CMyBitmap* m_apBmMisc[APP_NUM_MISC];
 	//---------------------
 	// Time Signatures
 	//---------------------
@@ -344,7 +344,7 @@ private:
 	//---------------------------------------
 	// Key Signature
 	//---------------------------------------
-	CMyBitmap** m_ppBmCbKeySig;
+	inline static CMyBitmap* m_apBmCbKeySig[APP_NUM_KEYSIGNATURES];
 	//---------------------
 	// Accidentals
 	//---------------------
@@ -353,16 +353,16 @@ private:
 	//---------------------
 	// Block Op Graphics
 	//---------------------
-	CMyBitmap** m_ppBmBlockOps;
+	inline static CMyBitmap* m_apBmBlockOps[APP_NUM_BLOCKOPTYPES];
 	//--------------
 	// NOTE graphics
 	//--------------
-	CMyBitmap** m_ppBmNoteTypes;
+	inline static CMyBitmap* m_apBmNoteTypes[APP_NUM_NOTETYPES];
 	//----------------
 	// Rest Graphics
 	//----------------
-	CMyBitmap** m_ppBmRestTypes;
-	CMyBitmap** m_ppBmCBRestTypes;
+	inline static CMyBitmap* m_apBmRestTypes[APP_NUM_RESTTYPES];
+	inline static CMyBitmap* m_apBmCBRestTypes[APP_NUM_RESTTYPES];
 	//---------------------
 	// Decoration
 	//---------------------
@@ -391,6 +391,10 @@ private:
 	CMyEvent m_ThredRunningEvent;
 	//-------------------------------------------
 	unsigned m_UniqueID;
+	//----------------------
+	// Music Studio Clipboard
+	//----------------------
+	CMsEventChain m_MusicStudioClipboard;
 public:
 	CMidiSeqMSApp() noexcept;
 	void CloseAllLogFiles();
@@ -417,12 +421,12 @@ public:
 	}	
 
 	int GetNumNoteTypes() { return APP_NUM_NOTETYPES; }
-	CMyBitmap* bmGetNoteType(int NoteType) { return m_ppBmNoteTypes[NoteType]; }
+	CMyBitmap* bmGetNoteType(int NoteType) { return m_apBmNoteTypes[NoteType]; }
 	int GetBmIdNoteType(int NoteType) { return BmIdNotesTypes[NoteType]; }	
 
 	int GetNumRestTypes() { return APP_NUM_RESTTYPES; }
-	CMyBitmap* bmGetCBRestTypes(int RestType) { return m_ppBmCBRestTypes[RestType]; }
-	CMyBitmap* bmGetRestType(int RestType) { return m_ppBmCBRestTypes[RestType]; }
+	CMyBitmap* bmGetCBRestTypes(int RestType) { return m_apBmCBRestTypes[RestType]; }
+	CMyBitmap* bmGetRestType(int RestType) { return m_apBmCBRestTypes[RestType]; }
 	static int GetRestBmIdsTypes(int restBmID) { return BmIdRestsTypes[restBmID]; }
 	static int* GetRestBmIdsTypes() { return BmIdRestsTypes; }
 	static int GetBmIdRestComboBoxTypes(int ID) {
@@ -461,21 +465,21 @@ public:
 	static int GetAccidentalBmCBIdsTypes(int id) { return AccidentalBmCBIdsTypes[id]; }
 	static int GetAccidentalBmIdsTypes(int id) { return AccidentalBmIdsTypes[id]; }	
 
-	int GetNumBlockOps() { return APP_NUM_BLOCKOPTYPES; }
-	CMyBitmap* bmGetBlockOpType(int BO) { return  m_ppBmBlockOps[BO]; }
+	static int GetNumBlockOps() { return APP_NUM_BLOCKOPTYPES; }
+	CMyBitmap* bmGetBlockOpType(int BO) { return  m_apBmBlockOps[BO]; }
 	static int GetBlockOpTypeBmID(int BO) { return BmIdBlockOpTypes[BO]; }
 
-	int GetNumMisc() { return APP_NUM_MISC; }
+	static int GetNumMisc() { return APP_NUM_MISC; }
 	CMyBitmap* bmGetMiscType(int Misc) { 
-		return m_ppBmMisc[Misc]; 
+		return m_apBmMisc[Misc]; 
 	}
 	static int GetMiscTypeBmID(int Misc) { 
 		return BmIdMisStuffTypes[Misc]; 
 	}
 
-	int GetNumKeySigs() { return APP_NUM_KEYSIGNATURES; }
+	static int GetNumKeySigs() { return APP_NUM_KEYSIGNATURES; }
 	CMyBitmap* bmGetCBKeySignature(int KS) { 
-		return m_ppBmCbKeySig[KS]; 
+		return m_apBmCbKeySig[KS]; 
 	}
 	static int GetKeySigBmId(int KS) { return BmIdKeySigStringBitmapIDsTab[KS]; }
 
@@ -515,16 +519,6 @@ public:
 	void PlayerThreadEnableTimer(int Id, int enable);
 	void PlayerThreadSetTempo(int QnPMinute);
 	CMsSong* FindSongFromID(CMsSong* pEqTable, int ID);
-	void AddToSongPlayingList(
-		CMsSong** ppHead,
-		CMsSong** ppTail,
-		CMsSong* pEQtoAdd
-	);
-	void RemoveFromSongList(
-		CMsSong** ppHead,
-		CMsSong** ppTail,
-		CMsSong* pESongToRemove
-	);
 protected:
 	HMENU  m_hMDIMenu;
 	HACCEL m_hMDIAccel;
@@ -568,7 +562,8 @@ public:
 		if(LogFile()) fprintf(LogFile(),"SIZE :%s: X = %d Y = %d\n", string, sz.cx, sz.cy);
 
 	}
-
+	//--------------- Clipboard ----------------------
+	CMsEventChain* GetMusicStudioClipboard() { return &m_MusicStudioClipboard; }
 	//----------------------- Static Data----------------------------
 };
 

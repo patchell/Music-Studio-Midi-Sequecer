@@ -64,22 +64,37 @@ CMidiSeqMSApp::CMidiSeqMSApp() noexcept
 		m_apBmAccidentalTypes[i] = 0;
 		m_apBmCBAccidentalTypes[i] = 0;
 	}
-	m_ppBmBlockOps = 0;
-	m_ppBmNoteTypes = 0;
-	m_ppBmRestTypes = 0;
-	m_ppBmCBRestTypes = 0;
+	for (int i = 0; i < APP_NUM_KEYSIGNATURES + 1; ++i)
+	{
+		m_apBmCbKeySig[i] = 0;
+	}
+	for (int i = 0; i < APP_NUM_BLOCKOPTYPES; ++i)
+	{
+		m_apBmBlockOps[i] = 0;
+	}
+	for (int i = 0; i < APP_NUM_NOTETYPES; ++i)
+	{
+		m_apBmNoteTypes[i] = 0;
+	}
+	for (int i = 0; i < APP_NUM_RESTTYPES; ++i)
+	{
+		m_apBmRestTypes[i] = 0;
+		m_apBmCBRestTypes[i] = 0;
+	}
 	for(int i = 0; i < APP_NUM_DECORATIONS; ++i)
 	{
 		m_apBmCbDecorationsNotSel[i] = 0;
 		m_apBmCbDecorationsSel[i] = 0;
 	}
-	m_ppBmMisc = 0;
+	for (int i = 0; i < APP_NUM_MISC; ++i)
+	{
+		m_apBmMisc[i] = 0;
+	}
 	for(int i = 0; i < APP_NUM_TIMESIG; ++i)
 	{
 		m_apBmTimeSig[i] = 0;
 		m_apBmCbTimeSig[i] = 0;
 	}	
-	m_ppBmCbKeySig = 0;
 	SetAppID(_T("MidiSeqMS.AppID.1.0"));
 }
 
@@ -334,19 +349,17 @@ void CMidiSeqMSApp::InitBitMaps()
 	// Initialize Misc Stuff Combo box
 	//-----------------------------------------
 	n = GetNumMisc();
-	m_ppBmMisc = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmMisc[i] = new CMyBitmap;
-		m_ppBmMisc[i]->LoadBitmapW(GetMiscTypeBmID(i));
+		m_apBmMisc[i] = new CMyBitmap;
+		m_apBmMisc[i]->LoadBitmapW(GetMiscTypeBmID(i));
 	}
 	//-------------- Block Operations -------
 	n = GetNumBlockOps();
-	m_ppBmBlockOps = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmBlockOps[i] = new CMyBitmap;
-		m_ppBmBlockOps[i]->LoadBitmapW(GetBlockOpTypeBmID(i));
+		m_apBmBlockOps[i] = new CMyBitmap;
+		m_apBmBlockOps[i]->LoadBitmapW(GetBlockOpTypeBmID(i));
 	}
 	//--------------Accidental Type-----------------
 	n = GetNumAccidentalTypes();
@@ -368,22 +381,19 @@ void CMidiSeqMSApp::InitBitMaps()
 	}
 	//------------Rest Types--------------------
 	n = GetNumRestTypes();
-	m_ppBmRestTypes = new CMyBitmap * [n];
-	m_ppBmCBRestTypes = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmRestTypes[i] = new CMyBitmap;
-		m_ppBmRestTypes[i]->LoadBitmapW(GetRestBmIdsTypes(i));
-		m_ppBmCBRestTypes[i] = new CMyBitmap;
-		m_ppBmCBRestTypes[i]->LoadBitmapW(GetBmIdRestComboBoxTypes(i));
+		m_apBmRestTypes[i] = new CMyBitmap;
+		m_apBmRestTypes[i]->LoadBitmapW(GetRestBmIdsTypes(i));
+		m_apBmCBRestTypes[i] = new CMyBitmap;
+		m_apBmCBRestTypes[i]->LoadBitmapW(GetBmIdRestComboBoxTypes(i));
 	}
 	//-------------Note Types---------------
 	n = GetNumNoteTypes();
-	m_ppBmNoteTypes = new CMyBitmap * [n];
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmNoteTypes[i] = new CMyBitmap;
-		m_ppBmNoteTypes[i]->LoadBitmapW(GetBmIdNoteType(i));
+		m_apBmNoteTypes[i] = new CMyBitmap;
+		m_apBmNoteTypes[i]->LoadBitmapW(GetBmIdNoteType(i));
 	}
 	//----------- Time Signature ---------------
 	n = GetNumTimeSig();
@@ -396,12 +406,10 @@ void CMidiSeqMSApp::InitBitMaps()
 	}
 	//------------- Key Signature ----------------
 	n = GetNumKeySigs();
-	m_ppBmCbKeySig = new CMyBitmap * [n+1];
-	m_ppBmCbKeySig[0] = 0;
 	for (i = 0; i < n; ++i)
 	{
-		m_ppBmCbKeySig[i] = new CMyBitmap;
-		m_ppBmCbKeySig[i]->LoadBitmapW(GetKeySigBmId(i));
+		m_apBmCbKeySig[i] = new CMyBitmap;
+		m_apBmCbKeySig[i]->LoadBitmapW(GetKeySigBmId(i));
 	}
 	//----------------------------------------
 	// Bitmaps for TX816
@@ -577,80 +585,24 @@ int CMidiSeqMSApp::KillPlayerThead()
 	return 0;
 }
 
-void CMidiSeqMSApp::RemoveFromSongList(
-	CMsSong** ppHead,
-	CMsSong** ppTail,
-	CMsSong* pSongToRemove
-)
-{
-	if (pSongToRemove->GetSongListPrev() == 0)
-	{
-		if (pSongToRemove->GetSongListNext())
-		{
-			*ppHead = pSongToRemove->GetSongListNext();
-			(*ppHead)->SetSongListPrev(0);
-		}
-		else
-		{
-			//-----------------------
-			// All Gone
-			//-----------------------
-			*ppHead = 0;
-			*ppTail = 0;
-		}
-	}
-	else if (pSongToRemove->GetSongListNext() == 0)
-	{
-		*ppTail = pSongToRemove->GetSongListPrev();
-		(*ppTail)->SetSongListNext(0);
-	}
-	else
-	{
-		pSongToRemove->GetSongListPrev()->SetSongListNext(pSongToRemove->GetSongListNext());
-		pSongToRemove->GetSongListNext()->SetSongListPrev(pSongToRemove->GetSongListPrev());
-	}
-	pSongToRemove->SetSongListNext(0);
-	pSongToRemove->SetSongListPrev(0);
-}
-
-void CMidiSeqMSApp::AddToSongPlayingList(
-	CMsSong**ppHead,
-	CMsSong** ppTail,
-	CMsSong* pSongToAdd
-)
-{
-	if (*ppHead == 0)
-	{
-		*ppHead = pSongToAdd;
-		*ppTail = pSongToAdd;
-	}
-	else
-	{
-		/// add new Song to the tail
-		pSongToAdd->SetSongListPrev(*ppTail);
-		(*ppTail)->SetSongListNext(pSongToAdd);
-		*ppTail = pSongToAdd;
-	}
-
-}
-
 UINT CMidiSeqMSApp::DoPlayThread()
 {
 	DWORD TempoQNperS;
-	char* s = new char[256];
+//	char* pStr = new char[256];
 	int count = 0;
 	bool bF;	//message loop flag
 	MSG msg;
 	int TimerEnable = 0;
 	int Total = 0;
-	CMsSong* pSongPlayingListHead = 0;
-	CMsSong* pSongPlayingListTail = 0;
+	CListSong PlayingSongList;
+	CListSongItem* pPlayingSongListItem = 0;
 	CMsSong* pMS = 0;
 	int TotalSongsPlaying = 0;
 	int SongID = 0;
 	int doLoop = 0;
 
 	if (LogFile()) fprintf(LogFile(), "Player Thread Ready\n");
+	PlayingSongList.Create();
 	//-------------------------------------
 	//indicate that the thread is running
 	//to the main thread
@@ -669,10 +621,11 @@ UINT CMidiSeqMSApp::DoPlayThread()
 			// and keep looping until we get to the
 			// end of the list
 			//----------------------------------------
-			pMS = pSongPlayingListHead;
-			while (pMS)
+			pPlayingSongListItem = (CListSongItem*)PlayingSongList.GetHead();
+			while (pPlayingSongListItem)
 			{
-				if (pMS->GetPlaySongTimerEnable())
+				pMS = pPlayingSongListItem->GetSong();
+				if (pMS && pMS->GetPlaySongTimerEnable())
 				{
 					if (0 == pMS->Ticker())
 					{
@@ -684,8 +637,9 @@ UINT CMidiSeqMSApp::DoPlayThread()
 						pMS->SetPlaySongTimerEnable(0);
 					}
 				}
-				pMS = pMS->GetSongListNext();
+				pPlayingSongListItem = (CListSongItem*)pPlayingSongListItem->GetNext();
 			}
+			fprintf(LogFile(), "****\n");
 			break;
 		case WM_THREAD_PLAYER_TEMPO:	//change tempo
 			//------------------------------------
@@ -696,11 +650,12 @@ UINT CMidiSeqMSApp::DoPlayThread()
 			GETTIMER->SetTempo(CalculateTempo(TempoQNperS));
 			break;
 		case WM_THREAD_PLAYER_ADD_SONG:
-			++TotalSongsPlaying;
 			pMS = (CMsSong*)msg.lParam;
 			if (pMS)
 			{
-				AddToSongPlayingList(&pSongPlayingListHead, &pSongPlayingListTail, pMS);
+				pPlayingSongListItem = new CListSongItem;
+				pPlayingSongListItem->Create(pMS);
+				PlayingSongList.AddItemToTail(pPlayingSongListItem);
 				pMS->GetAddSongCompleteEV().Post();
 			}
 			break;
@@ -710,12 +665,13 @@ UINT CMidiSeqMSApp::DoPlayThread()
 			// From the Event queue ID, locate the
 			// the EventQueue object, if any
 			//------------------------------------------
-			pMS = FindSongFromID(pSongPlayingListHead,SongID);
-			if (pMS)
+			pPlayingSongListItem = PlayingSongList.FindSongItemByID(SongID);
+			if (pPlayingSongListItem)
 			{
-				--TotalSongsPlaying;	///decement event count
-				RemoveFromSongList(&pSongPlayingListHead, &pSongPlayingListTail, pMS);
-				pMS->GetDelSongCompleteEV().Post();
+				--TotalSongsPlaying;	//decement event count
+				pMS = pPlayingSongListItem->GetSong();
+				PlayingSongList.RemoveItem((CMsListItem*)(pPlayingSongListItem));
+				if(pMS) pMS->GetDelSongCompleteEV().Post();
 			}
 			break;
 		case WM_THREAD_PLAYER_ENABLE_TIMER:
@@ -724,7 +680,7 @@ UINT CMidiSeqMSApp::DoPlayThread()
 			// if msg.wpram is false, disable timer
 			// msg.lparam hold the EventQueue ID
 			//------------------------------------
-			pMS = FindSongFromID(pSongPlayingListHead, msg.lParam );
+			pMS = PlayingSongList.FindSongByID(msg.lParam );
 			if (msg.wParam)
 			{
 				pMS->SetPlaySongTimerEnable(1);

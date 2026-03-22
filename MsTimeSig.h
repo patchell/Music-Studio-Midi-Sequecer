@@ -40,7 +40,7 @@ private:
 public:
 	CMsTimeSignature();
 	virtual ~CMsTimeSignature();
-	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TimeSignature);
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);
 	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
@@ -67,6 +67,7 @@ public:
 	virtual void Print(FILE *pO, int Indent);
 	TimeSigID GetTimeSignature(void) const {return m_TimeSig;}
 	void SetTimeSignature(TimeSigID t){m_TimeSig = t;}
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 
 };
 

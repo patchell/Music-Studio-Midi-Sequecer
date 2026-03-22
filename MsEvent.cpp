@@ -47,6 +47,35 @@ bool CMsEvent::Create(CMsSong*pParentSong, CChildViewStaff* pCV)
 	return Ret;
 }
 
+bool CMsEvent::CopyObjectsFromEvent(CMsEvent* pEventToCopyFrom)
+{
+	bool bSuccess = true;
+	CMsObject* pObj = 0;
+	CMsObject* pNewObject = 0;
+
+	if (pEventToCopyFrom)
+	{
+		pObj = pEventToCopyFrom->GetEventMsObjectHead();
+		while (pObj)
+		{
+			pNewObject = pObj->MakeANewObject(GetSong(), this);
+			if (pNewObject)
+			{
+				pNewObject->Copy(pObj);
+				AddObject(pNewObject);
+			}
+			else
+			{
+				bSuccess = false;
+				break;
+			}
+			pObj = pObj->GetNext();
+		}
+	}
+
+    return bSuccess;
+}
+
 void CMsEvent::Print(FILE *pO, const char* s, int Indent)
 {
 	char* pIndentString = new char[256];
@@ -99,7 +128,7 @@ void CMsEvent::AddObject(CMsObject* pO)
 
 	if (pO)
 	{
-		if (LogFile())
+/*		if (LogFile())
 		{
 			fprintf(GETAPP->LogFile(), "\t\tEvent %d: Add Object Type %s Object Event %d ID=%d\n",
 				GetIndex(),
@@ -107,7 +136,7 @@ void CMsEvent::AddObject(CMsObject* pO)
 				GetIndex(),
 				pO ? pO->GetObjectID() : -1
 			);
-		}
+		}*/
 		pO->SetParentEvent(this);
 		switch (pO->GetType())
 		{
@@ -265,7 +294,7 @@ bool CMsEvent::IsThisObjectInThisEvent(CMsObject* pO)
 	bool bFound = false;
 	CMsObject* pObj = GetEventMsObjectHead();
 
-	if(LogFile())
+/*	if(LogFile())
 	{
 		fprintf(GETAPP->LogFile(), "\t\tEvent %d: Is This Object %s of %d Events  Object::Event=%d ID=%d\n", 
 			GetIndex(),
@@ -274,7 +303,7 @@ bool CMsEvent::IsThisObjectInThisEvent(CMsObject* pO)
 			pO?pO->GetParentEvent()->GetIndex(): -1,
 			pO ? pO->GetObjectID() : -1
 		);
-	}
+	}*/
 	while (pObj && !bFound)
 	{
 		if (pObj == pO && 
@@ -383,7 +412,7 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 	NumberOfNotes = AreThereAnyNotesInThisEvent();
 	if (NumberOfNotes)
 	{
-		fprintf(GETAPP->LogFile(), "\t\tEvent %d: There **ARE** %d Notes in this Event\n", GetIndex(), NumberOfNotes);
+//		fprintf(GETAPP->LogFile(), "\t\tEvent %d: There **ARE** %d Notes in this Event\n", GetIndex(), NumberOfNotes);
 		if (IsThereOnlyOneNoteInThisEvent())
 		{
 			pNote = FindFirstNote();
@@ -395,7 +424,6 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 			{
 				InsertObjectAfter(pO, pNote);
 			}
-//			FlipNoteHeads();
 		}
 		else
 		{
@@ -426,7 +454,6 @@ void CMsEvent::AddNoteInOrder(CMsObject* pO)
 					}
 				}
 			}
-		//			FlipNoteHeads();
 		}
 	}
 	else
@@ -735,6 +762,7 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 
 	//------------------------------
 	// Is Object NULL?
+	//------------------------------
 	if (pObj == 0)
 	{
 		CString csError;
@@ -768,11 +796,11 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 	pObj->Print(LogFile(), 5);
 	if(pObj == GetEventMsObjectHead() )
 	{
-		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Head ID=%d\n", 
+/*		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Head ID=%d\n", 
 			GetIndex(),
 			CMsObject::GetStringFromType(pObj->GetType()),
 			pObj->GetObjectID()
-		);
+		);*/
 		SetEventMsObjectHead(pObj->GetNext());
 		if(GetEventMsObjectHead())
 			GetEventMsObjectHead()->SetPrev(0);
@@ -781,11 +809,11 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 	}
 	else if(pObj == GetEventMsObjectTail())
 	{
-		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Tail ID=%d\n",
+/*		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Tail ID=%d\n",
 			GetIndex(),
 			CMsObject::GetStringFromType(pObj->GetType()),
 			pObj->GetObjectID()
-		);
+		);*/
 		SetEventMsObjectTail(pObj->GetPrev());
 		if(GetEventMsObjectTail())
 			GetEventMsObjectTail()->SetNext(0);
@@ -794,11 +822,11 @@ int CMsEvent::RemoveObject(CMsObject *pObj)
 	}
 	else
 	{
-		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Middle ID=%d\n",
+/*		fprintf(GETAPP->LogFile(), "\t\tEvent:%d:Remove Object %s From Middle ID=%d\n",
 			GetIndex(),
 			CMsObject::GetStringFromType(pObj->GetType()),
 			pObj->GetObjectID()
-		);
+		);*/
 		pObj->GetNext()->SetPrev(pObj->GetPrev());
 		pObj->GetPrev()->SetNext(pObj->GetNext());
 	}
@@ -896,108 +924,6 @@ CMsObject * CMsEvent::GetNextSelectedObject(CMsObject * pLastSelectedObject)
 	return pObj;
 }
 
-bool CMsEvent::FlipNoteHeads()
-{
-	//------------------------------
-	// Flip note heads so that they
-	// do not overlap each other
-	// Also, we need to take care
-	// of the flags used on eighth
-	// notes, sixteenth notes, and
-	// thirty-second notes
-	// The highest pitched note will
-	// have its head in the "normal"
-	// position, i.e. if the stem
-	// is down, the head will be
-	// flipped, and if the stem is
-	// up, the head will not be
-	// flipped.  The second note
-	// will be then flipped in
-	// the opposite direction of the
-	// previous note if the previos
-	// note has the stem poinging
-	// in the same direction.  From
-	// there, things get messy.
-	//------------------------------
-	bool rV = false;
-	CMsObject* pObj = GetEventMsObjectHead();
-	CMsObject* pPrevObj = 0;
-	CMsNote* pNote = 0, *pLastNote = 0;
-	int Interval = 0;
-	int NoteOneFlipped = 0;
-	int NoteTwoFlipped = 0;
-	int NoteFlagCount = 0;
-	int NoteTwoNeedsFlags = 50;
-
-	pNote = FindFirstNote();
-	while (pNote && NoteTwoNeedsFlags)
-	{
-		if (pLastNote)
-		{
-			//------------------------------
-			// If the prevous note has flags
-			// on it's stem, and the stem
-			// points in the same direction
-			// as the current note, the
-			// current note will need to
-			// be set so that it's flags
-			// are not displayed.
-			// And if the previous note
-			// has flags and the current
-			// note has no flags, then
-			// the stem should point
-			// in the opposite direction
-			//------------------------------
-			NoteFlagCount = pLastNote->NeedsFlags();
-			if (NoteFlagCount)
-			{
-//				if(LogFile()) fprintf(LogFile(),"Previous Note Needs Flags %d\n", NoteFlagCount);
-				if (pNote->NeedsFlags())
-				{
-					if (pLastNote->IsStemDown() && pNote->IsStemDown())
-					{
-						pLastNote->SetFlagsOff(1);
-					}
-					if(!pLastNote->IsStemDown() && ! pNote->IsStemDown())
-					{
-						pNote->SetFlagsOff(1);
-					}
-					else
-					{
-					}
-				}
-			}
-			//------------------------------
-			// If the previous note is only
-			// one step away from the
-			// current note, flip the head
-			// of the current note
-			//-----------------------------
-			Interval = pLastNote->GetPitch() - pNote->GetPitch();
-			if (Interval <= 2)
-			{
-				NoteOneFlipped = pLastNote->GetHeadFlipped();
-				if (NoteOneFlipped)
-					pNote->SetHeadFlipped(0);
-				else
-					pNote->SetHeadFlipped(1);
-			}
-		}
-		pLastNote = pNote;
-		pNote = FindNextNote(pNote);
-		--NoteTwoNeedsFlags;
-	}
-	if (!NoteTwoNeedsFlags)
-	{
-		AfxMessageBox(_T("Error: Linked Less Error"));
-		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::FlipNoteHeads: Linked List Error\n");
-		GETAPP->CloseAllLogFiles();
-		GETAPP->ExitInstance();
-	}
-    return rV;
-}
-
-
 CMsObject * CMsEvent::ContainsRepeatObject()
 {
 	CMsObject *pObj = GetEventMsObjectHead();
@@ -1017,92 +943,3 @@ CMsObject * CMsEvent::ContainsRepeatObject()
 	return pObj;
 }
 
-/*
-bool CMsEvent::FlipNoteHeads()
-{
-	//------------------------------
-	// Flip note heads so that they
-	// do not overlap each other
-	// Also, we need to take care
-	// of the flags used on eighth
-	// notes, sixteenth notes, and
-	// thirty-second notes
-	//------------------------------
-	bool rV = false;
-	CMsObject* pObj = GetEventMsObjectHead();
-	CMsObject* pPrevObj = 0;
-	CMsNote* pNote = 0, *pLastNote = 0;
-	int Interval = 0;
-	int NoteOneFlipped = 0;
-	int NoteTwoFlipped = 0;
-	int NoteFlagCount = 0;
-	int NoteTwoNeedsFlags = 50;
-
-	pNote = FindFirstNote();
-	while (pNote && NoteTwoNeedsFlags)
-	{
-		if (pLastNote)
-		{
-			//------------------------------
-			// If the prevous note has flags
-			// on it's stem, and the stem
-			// points in the same direction
-			// as the current note, the
-			// current note will need to
-			// be set so that it's flags
-			// are not displayed.
-			// And if the previous note
-			// has flags and the current
-			// note has no flags, then
-			// the stem should point
-			// in the opposite direction
-			//------------------------------
-			NoteFlagCount = pLastNote->NeedsFlags();
-			if (NoteFlagCount)
-			{
-//				if(LogFile()) fprintf(LogFile(),"Previous Note Needs Flags %d\n", NoteFlagCount);
-				if (pNote->NeedsFlags())
-				{
-					if (pLastNote->IsStemDown() && pNote->IsStemDown())
-					{
-						pLastNote->SetFlagsOff(1);
-					}
-					if(!pLastNote->IsStemDown() && ! pNote->IsStemDown())
-					{
-						pNote->SetFlagsOff(1);
-					}
-					else
-					{
-					}
-				}
-			}
-			//------------------------------
-			// If the previous note is only
-			// one step away from the
-			// current note, flip the head
-			// of the current note
-			//-----------------------------
-			Interval = pLastNote->GetPitch() - pNote->GetPitch();
-			if (Interval <= 2)
-			{
-				NoteOneFlipped = pLastNote->GetHeadFlipped();
-				if (NoteOneFlipped)
-					pNote->SetHeadFlipped(0);
-				else
-					pNote->SetHeadFlipped(1);
-			}
-		}
-		pLastNote = pNote;
-		pNote = FindNextNote(pNote);
-		--NoteTwoNeedsFlags;
-	}
-	if (!NoteTwoNeedsFlags)
-	{
-		AfxMessageBox(_T("Error: Linked Less Error"));
-		if (LogFile()) fprintf(LogFile(), "Error: CMsEvent::FlipNoteHeads: Linked List Error\n");
-		GETAPP->CloseAllLogFiles();
-		GETAPP->ExitInstance();
-	}
-	return rV;
-}
-*/

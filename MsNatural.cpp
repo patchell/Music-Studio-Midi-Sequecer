@@ -206,6 +206,11 @@ void CMsNatural::Draw(CDC *pDC, COLORREF c, int x, int y)
 	pDC->SelectObject(oldpen);
 }
 
+CMsObject* CMsNatural::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+
 UINT CMsNatural::ObjectToString(CString& csString, UINT mode)
 {
 	return 0;

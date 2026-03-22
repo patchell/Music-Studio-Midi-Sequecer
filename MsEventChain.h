@@ -4,12 +4,15 @@ class CMsEventChain
 {
 	CMsEvent* m_pHead;
 	CMsEvent* m_pTail;
-	UINT m_TotalEvents;
+	int m_TotalEvents;
+	bool bOriginalChain;
 public:
 	CMsEventChain() {
 		m_pHead = 0;
 		m_pTail = 0;
 		m_TotalEvents = 0;
+		bOriginalChain = false;
+	
 	}
 	~CMsEventChain() {}
 	void CreateChain(UINT nEvents, CMsSong* pSong, CChildViewStaff* pStaffView, UINT StartIndex);
@@ -21,5 +24,8 @@ public:
 	void UnHookChain();
 	void SetSelected(int SelFlag);
 	UINT GetTotalEvents(){return m_TotalEvents;}
+	bool Cut(CMsEvent* pFirst, CMsEvent* pLast);
+	bool Copy(CMsEvent* pFirst, CMsEvent* pLast);
+	bool Paste(CMsEvent* pInsertionPoint);
 };
 

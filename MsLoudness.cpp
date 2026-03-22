@@ -161,7 +161,7 @@ DRAWSTATE CMsLoudness:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, M
 					}
 					else
 					{
-						delete pNewLoudness;
+						if(pNewLoudness) delete pNewLoudness;
 						GetStaffChildView()->SetDrawObject(nullptr);
 						GetStaffChildView()->SetDrawMode(CChildViewStaff::DrawMode::NOP);
 						DrawState = DRAWSTATE::NA;
@@ -373,6 +373,11 @@ int CMsLoudness::EditLoudness()
 		m_Loudness = Dlg.GetValue();
 	}
 	return Id;
+}
+
+CMsObject* CMsLoudness::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }
 
 void CMsLoudness::Draw(CDC *pDC)

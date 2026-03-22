@@ -11,8 +11,12 @@ CMidiOutTable::~CMidiOutTable()
 	if (m_ppTable)
 	{
 		for (int i = 0; i < m_nDevices; ++i)
-			delete m_ppTable[i];
-		delete[] m_ppTable;
+		{
+			if (m_ppTable[i]) delete m_ppTable[i];
+			m_ppTable[i] = 0;
+		}
+		if(m_ppTable) delete[] m_ppTable;
+		m_ppTable = 0;
 	}
 }
 
@@ -51,7 +55,7 @@ int CMidiOutTable::AddItem(CMidiOutDevice* pItem)
 		int i;
 		for ( i = 0; i < m_nDevices; ++i)
 			ppTemp[i] = m_ppTable[i];
-		delete[]m_ppTable;
+		if(m_ppTable) delete[] m_ppTable;
 		m_ppTable = ppTemp;
 		m_ppTable[i] = pItem;
 	}

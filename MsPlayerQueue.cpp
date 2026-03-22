@@ -30,21 +30,22 @@ UINT CMsPlayerQueue::ProcessQueue(CMsEvent* pEvent)
 	//--------------------------------
 	UINT ProcessStatus = 0;
 	CMsPlayerQueueItem* pQueueObj;
-	CMsObject* pMusObj = nullptr;
+	CMsObject* pMsObj = nullptr;
 	UINT AddedCount = 0;
 
-	pMusObj = pEvent->GetEventMsObjectHead();
-	while (pMusObj)
+	fprintf(LogFile(), "---- PROCESSING EVENT: %d\n", pEvent->GetIndex());
+	pMsObj = pEvent->GetEventMsObjectHead();
+	while (pMsObj)
 	{
-		ProcessStatus = pMusObj->Process();
+		ProcessStatus = pMsObj->Process();
 		if(ProcessStatus)
 		{
 			// Object needs to be added to the player queue
 			pQueueObj = new CMsPlayerQueueItem();
 			pQueueObj->Create();
-			pMusObj->PlayStateStart();
-			pQueueObj->SetMsObject(pMusObj);
-			if(pMusObj->IsTimedObject())
+			pMsObj->PlayStateStart();
+			pQueueObj->SetMsObject(pMsObj);
+			if(pMsObj->IsTimedObject())
 				AddObjectToTail(pQueueObj);
 			else
 			{
@@ -52,24 +53,16 @@ UINT CMsPlayerQueue::ProcessQueue(CMsEvent* pEvent)
 			}
 			AddedCount++;
 		}
-		pMusObj = pMusObj->GetNext();
+		pMsObj = pMsObj->GetNext();
 	}
 //	fprintf(GETAPP->LogFile(), "==== PROCESS->Added %d Objects\n", AddedCount);
-	if (GetSong()->GetSongPosition())
-	{
-		GetSong()->GetStaffChildView()->PostMessageW(
-			WM_STAFF_DISP_EVENT,
-			GetSong()->GetSongPosition()->GetIndex(),
-			STAFF_DISP_EVENT_NEXT
-		);
-	}
 	return AddedCount;
 }
 
 UINT CMsPlayerQueue::Play(CMsSong* pSong)
 {
 	// Play the player queue
-	CMsPlayerQueueItem* pObj = m_pHead;
+	CMsPlayerQueueItem* pQuObj = m_pHead;
 	CMsPlayerQueueItem* pTempObj = 0;
 	UINT DeleteObjectFlag = 0;
 	UINT AnObjectHasEnded = 0;
@@ -78,29 +71,35 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 	UINT ObjectsPlayed = 0;
 	CMsNote* pNote = 0;
 
-//	fprintf(GETAPP->LogFile(), "---- PLAY QUEUE: Total Objects:%d\n", GetTotalObjects());
-	while(pObj)
+//	fprintf(GETAPP->LogFile(), "\t---- PLAY QUEUE: Total Objects:%d\n", GetTotalObjects());
+	while(pQuObj)
 	{
-		DeleteObjectFlag = pObj->GetMsObject()->Play();
+		DeleteObjectFlag = pQuObj->GetMsObject()->Play();
 		ObjectsPlayed++;
 		switch (DeleteObjectFlag)
 		{
 		case PLAY_NO_ACTION:
-			pObj = pObj->GetNext();
+//			fprintf(GETAPP->LogFile(), "\t---- PLAY QUEUE: NO_ACTOION Total Objects:%d\n", GetTotalObjects());
+			pQuObj = pQuObj->GetNext();
 			break;
 		case PLAY_OBJECT_DONE:
-			pTempObj = pObj->GetNext();
-			RemoveObject(pObj);
-			delete pObj;
-			pObj = pTempObj;
+			fprintf(LogFile(), "\t---- PLAY QUEUE: OBJECT_DONE %s Event:%d Total Objects:%d\n", 
+				pQuObj->GetMsObject()->GetStringFromType(),
+				pQuObj->GetMsObject()->GetParentEvent()->GetIndex(),
+				GetTotalObjects()
+			);
+			pTempObj = pQuObj->GetNext();
+			RemoveObject(pQuObj);
+			if(pQuObj) delete pQuObj;
+			pQuObj = pTempObj;
 			AnObjectIsDone++;
 			break;
 		case PLAY_OBJECT_TIMED_OUT:
 			// Object has finished playing, remove it from the queue
-			pTempObj = pObj->GetNext();
-			if(pObj->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
+			fprintf(GETAPP->LogFile(), "\t---- PLAY QUEUE: TIMED_OUT Total Objects:%d\n", GetTotalObjects());
+			if(pQuObj->GetMsObject()->Is(CMsObject::MsObjType::NOTE))
 			{
-				pNote = (CMsNote*)pObj->GetMsObject();
+				pNote = (CMsNote*)pQuObj->GetMsObject();
 				//if (pNote)
 				//{
 				//	fprintf(GETAPP->LogFile(), "   ---- Note Timed Out: Pitch:%d Ticks:%d\n",
@@ -109,16 +108,18 @@ UINT CMsPlayerQueue::Play(CMsSong* pSong)
 				//	);
 				//}
 			}
-			RemoveObject(pObj);
-			delete pObj;
-			pObj = pTempObj;
+			pTempObj = pQuObj->GetNext();
+			RemoveObject(pQuObj);
+			if(pQuObj) delete pQuObj;
+			pQuObj = pTempObj;
 			AnObjectHasEnded++;
 			break;
 		default:
-			pObj = pObj->GetNext();
+			pQuObj = pQuObj->GetNext();
 			break;
 		}
-	}
+	}	// End of while loop going through the player queue
+
 	//if (AnObjectIsDone || AnObjectHasEnded)
 	//{
 	//	fprintf(GETAPP->LogFile (), "Player Queue: Ticks:%d Delta:%d ->Played:%d Played Objects Done:%d  Timed Out:%d  Total Left:%d\n",
@@ -156,7 +157,7 @@ UINT CMsPlayerQueue::WindDown()
 			// Object has finished playing, remove it from the queue
 			pTempObj = pObj->GetNext();
 			RemoveObject(pObj);
-			delete pObj;
+			if(pObj) delete pObj;
 			pObj = pTempObj;
 			break;
 		default:
@@ -170,44 +171,58 @@ UINT CMsPlayerQueue::WindDown()
 bool CMsPlayerQueue::AddObjectToTail(CMsPlayerQueueItem* pObj)
 {
 	// Add an object to the player queue
-	if(!m_pHead && !m_pTail)
+	CMsObject* pMsObj = 0;
+
+	if (pObj)
 	{
-		// First object in the queue
-		m_pHead = pObj;
-		m_pTail = pObj;
-		pObj->SetNext(nullptr);
-		pObj->SetPrev(nullptr);
+		pMsObj = pObj->GetMsObject();
+//		fprintf(LogFile(), "\t\t---- Adding %s to Tail of Queue\n", pMsObj->GetStringFromType());
+		if (!m_pHead && !m_pTail)
+		{
+			// First object in the queue
+			m_pHead = pObj;
+			m_pTail = pObj;
+			pObj->SetNext(nullptr);
+			pObj->SetPrev(nullptr);
+		}
+		else
+		{
+			// Add to the end of the queue
+			m_pTail->SetNext(pObj);
+			pObj->SetPrev(m_pTail);
+			pObj->SetNext(nullptr);
+			m_pTail = pObj;
+		}
+		++m_nTotalObjects;
 	}
-	else
-	{
-		// Add to the end of the queue
-		m_pTail->SetNext(pObj);
-		pObj->SetPrev(m_pTail);
-		pObj->SetNext(nullptr);
-		m_pTail = pObj;
-	}
-	++m_nTotalObjects;
 	return true;
 }
 
 bool CMsPlayerQueue::AddObjectToHead(CMsPlayerQueueItem* pObj)
 {
-	if (!m_pHead && !m_pTail)
+	CMsObject* pMsObj = 0;
+	
+	if(pObj)
 	{
-		// First object in the queue
-		m_pHead = pObj;
-		m_pTail = pObj;
-		pObj->SetNext(nullptr);
-		pObj->SetPrev(nullptr);
+		pMsObj = pObj->GetMsObject();
+//		fprintf(LogFile(), "\t\t---- Adding %s to Head of Queue\n", pMsObj->GetStringFromType());
+		if (!m_pHead && !m_pTail)
+		{
+			// First object in the queue
+			m_pHead = pObj;
+			m_pTail = pObj;
+			pObj->SetNext(nullptr);
+			pObj->SetPrev(nullptr);
+		}
+		else
+		{
+			// Add to the front of the queue
+			pObj->SetNext(m_pHead);
+			m_pHead->SetPrev(pObj);
+			m_pHead = pObj;
+		}
+		++m_nTotalObjects;
 	}
-	else
-	{
-		// Add to the front of the queue
-		pObj->SetNext(m_pHead);
-		m_pHead->SetPrev(pObj);
-		m_pHead = pObj;
-	}
-	++m_nTotalObjects;
 	return true;
 }
 
@@ -215,40 +230,69 @@ bool CMsPlayerQueue::RemoveObject(CMsPlayerQueueItem* pObj)
 {
 	// Remove an object from the player queue
 	bool rV = true;
+	CMsNote* pNote = nullptr;
+	CMsObject* pMsObj = nullptr;
 
-	if(pObj == m_pHead)
+	if (pObj)
 	{
-		// Remove from head
-		m_pHead = pObj->GetNext();
-		if(m_pHead)
-			m_pHead->SetPrev(nullptr);
-		else
-			m_pTail = nullptr;
-	}
-	else if(pObj == m_pTail)
-	{
-		// Remove from tail
-		m_pTail = pObj->GetPrev();
-		if(m_pTail)
-			m_pTail->SetNext(nullptr);
-		else
-			m_pHead = nullptr;
-	}
-	else
-	{
-		// Remove from middle
-		if (pObj->GetPrev() && pObj->GetNext())
-		{ 
-			pObj->GetPrev()->SetNext(pObj->GetNext());
-			pObj->GetNext()->SetPrev(pObj->GetPrev());
+		pMsObj = pObj->GetMsObject();
+		if (pMsObj->Is(CMsObject::MsObjType::NOTE))
+		{
+			char* pS = new char[256];
+			pNote = (CMsNote*)pMsObj;
+/*			fprintf(LogFile(), "\t\t---- Removing Note from Queue: Pitch:%s Event:%d Ticks:%d\n",
+				pNote->NoteToString(pS, 256),
+				pNote->GetParentEvent()->GetIndex(),
+				pNote->GetTick()
+			);*/
+			delete[] pS;
 		}
 		else
 		{
-			// Invalid object
-			rV = false;
+			pMsObj = pObj->GetMsObject();
+			pNote = (CMsNote*)pMsObj;
+/*			fprintf(LogFile(), "\t\t---- Removing Object from Queue: %s Event:%d Ticks:%d\n",
+				pMsObj->GetStringFromType(),
+				pMsObj->GetParentEvent()->GetIndex(),
+				pNote->GetTick()
+			);*/
+
 		}
+		if (pObj == m_pHead)
+		{
+			// Remove from head
+			m_pHead = pObj->GetNext();
+			if (m_pHead)
+				m_pHead->SetPrev(nullptr);
+			else
+				m_pTail = nullptr;
+		}
+		else if (pObj == m_pTail)
+		{
+			// Remove from tail
+			m_pTail = pObj->GetPrev();
+			if (m_pTail)
+				m_pTail->SetNext(nullptr);
+			else
+				m_pHead = nullptr;
+		}
+		else
+		{
+			// Remove from middle
+			if (pObj->GetPrev() && pObj->GetNext())
+			{
+				pObj->GetPrev()->SetNext(pObj->GetNext());
+				pObj->GetNext()->SetPrev(pObj->GetPrev());
+			}
+			else
+			{
+				// Invalid object
+				rV = false;
+				fprintf(LogFile(), "Error: Attempting to remove an object with bad links.\n");
+			}
+		}
+		--m_nTotalObjects;
 	}
-	--m_nTotalObjects;
 	return rV;
 }
 
@@ -262,7 +306,7 @@ void CMsPlayerQueue::RemoveAllObjects()
 	{
 		pNextObj = pObj->GetNext();
 		RemoveObject(pObj);
-		delete pObj;
+		if(pObj) delete pObj;
 		pObj = pNextObj;
 	}
 	m_pHead = nullptr;

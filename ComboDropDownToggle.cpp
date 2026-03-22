@@ -20,15 +20,12 @@ CComboDropDownToggle::CComboDropDownToggle()
 	m_LButtonDown = 0;
 	m_nItems = 0;
 	m_nTotalItems = 0;
-	for (int i = 0; i < m_nItems; ++i)
-	{
-		m_apRectItemControls[i] = 0;
-		m_apRgnItemControls[i] = 0;
-	}
+	m_ppRectItemControls = 0;
+	m_ppRgnItemControls = 0;
 	// Slider Stuff
 	m_Pos = 0;
-	m_apBmSelItems = 0;
-	m_apBmNotSelItems = 0;
+	m_ppBmSelItems = 0;
+	m_ppBmNotSelItems = 0;
 	m_nSelBitmapsAdded = 0;
 	m_nNotSelBitmapsAdded = 0;
 	m_nCurSel = 0;
@@ -49,6 +46,7 @@ CComboDropDownToggle::CComboDropDownToggle()
 	//-------------------------------------
 	m_pWndLastFocus = 0;
 	m_Type = ComboDropDownToggleTypes::UNDEFINED;
+	m_pName = 0;
 }
 
 CComboDropDownToggle::CComboDropDownToggle(ComboDropDownToggleTypes Type)
@@ -56,21 +54,18 @@ CComboDropDownToggle::CComboDropDownToggle(ComboDropDownToggleTypes Type)
 #ifndef _WIN32_WCE
 	EnableActiveAccessibility();
 #endif
+	m_nTotalItems = 0;
 	m_pToggleValue = 0;
 	m_pToggleFlags = 0;
 	m_State = 0;
 	m_LButtonDown = 0;
 	m_nItems = 0;
-	m_nTotalItems = 0;
-	for (int i = 0; i < m_nItems; ++i)
-	{
-		m_apRectItemControls[i] = 0;
-		m_apRgnItemControls[i] = 0;
-	}
+	m_ppRectItemControls = 0;
+	m_ppRgnItemControls = 0;
 	// Slider Stuff
 	m_Pos = 0;
-	m_apBmSelItems = 0;
-	m_apBmNotSelItems = 0;
+	m_ppBmSelItems = 0;
+	m_ppBmNotSelItems = 0;
 	m_nSelBitmapsAdded = 0;
 	m_nNotSelBitmapsAdded = 0;
 	m_nCurSel = 0;
@@ -95,22 +90,41 @@ CComboDropDownToggle::CComboDropDownToggle(ComboDropDownToggleTypes Type)
 
 CComboDropDownToggle::~CComboDropDownToggle()
 {
-	if (m_pToggleValue) delete[]m_pToggleValue;
-	if (m_pToggleFlags) delete[] m_pToggleFlags;
-	for (int i = 0; i < m_nTotalItems; ++i)
-	{
-		if (m_apBmSelItems[i]) delete m_apBmSelItems[i];
-		if (m_apBmNotSelItems[i]) delete m_apBmNotSelItems[i];
+	if (m_pToggleValue) {
+		delete[] m_pToggleValue;
+		m_pToggleValue = 0;
 	}
-	if (m_apBmSelItems)delete[] m_apBmSelItems;
-	if (m_apBmNotSelItems)delete[] m_apBmNotSelItems;
+	if (m_pToggleFlags) {
+		delete[] m_pToggleFlags;
+		m_pToggleFlags = 0;
+	}
+	if (m_ppBmSelItems) {
+		delete[] m_ppBmSelItems; 
+		m_ppBmSelItems = 0;
+	}
+	if (m_ppBmNotSelItems) {
+		delete[] m_ppBmNotSelItems;
+		m_ppBmNotSelItems = 0;
+	}
 	for (int i = 0; i < m_nItems; ++i)
 	{
-		if (m_apRectItemControls[i]) delete m_apRectItemControls[i];
-		if (m_apRgnItemControls[i]) delete m_apRgnItemControls[i];
+		if (m_ppRectItemControls[i]) {
+			delete m_ppRectItemControls[i];
+			m_ppRectItemControls[i] = 0;
+		}
+		if (m_ppRgnItemControls[i]) {
+			delete m_ppRgnItemControls[i];
+			m_ppRgnItemControls[i] = 0;
+		}
 	}
-	delete[] m_apRgnItemControls;
-	delete[] m_apRectItemControls;
+	if(m_ppRgnItemControls) {
+		delete[] m_ppRgnItemControls;
+		m_ppRgnItemControls = 0;
+	}
+	if(m_ppRectItemControls) {
+		delete[] m_ppRectItemControls;
+		m_ppRectItemControls = 0;
+	}
 }
 
 bool CComboDropDownToggle::Create(
@@ -200,27 +214,27 @@ bool CComboDropDownToggle::Create(
 	// These are the items that you can choose
 	// from whent the combo box is expanded
 	//------------------------------------------
-	m_apRgnItemControls = new CMyRgn * [nItems];
-	m_apRectItemControls = new CRect * [nItems];
-	m_apBmSelItems = new CMyBitmap * [m_nTotalItems];
-	m_apBmNotSelItems = new CMyBitmap * [m_nTotalItems];
+	m_ppRgnItemControls = new CMyRgn * [nItems];
+	m_ppRectItemControls = new CRect * [nItems];
+	m_ppBmSelItems = new CMyBitmap * [m_nTotalItems];
+	m_ppBmNotSelItems = new CMyBitmap * [m_nTotalItems];
 	// Initialize Arrays
 	CPoint UpperLeft = m_ptUpLeftCorn;
 	CSize Inc = CSize(0, szItemSize.cy);
 	UpperLeft += Inc;
 	for (i = 0; i < nItems; ++i, UpperLeft += Inc)
 	{
-		m_apRectItemControls[i] = new CRect;
-		*(m_apRectItemControls[i]) = CRect(UpperLeft, szItemSize);
-		m_apRgnItemControls[i] = new CMyRgn;
-		m_apRgnItemControls[i]->CreateRectRgn(*(m_apRectItemControls[i]));
+		m_ppRectItemControls[i] = new CRect;
+		*(m_ppRectItemControls[i]) = CRect(UpperLeft, szItemSize);
+		m_ppRgnItemControls[i] = new CMyRgn;
+		m_ppRgnItemControls[i]->CreateRectRgn(*(m_ppRectItemControls[i]));
 	}
 	m_pToggleFlags = new int[nTotalItems];
 	m_pToggleValue = new int[nTotalItems];
 	for (i = 0; i < m_nTotalItems; ++i)
 	{
-		m_apBmSelItems[i] = 0;
-		m_apBmNotSelItems[i] = 0;
+		m_ppBmSelItems[i] = 0;
+		m_ppBmNotSelItems[i] = 0;
 		m_pToggleFlags[i] = 0;
 		m_pToggleValue[i] = 0;
 	}
@@ -321,7 +335,7 @@ void CComboDropDownToggle::OnLButtonUp(UINT nFlags, CPoint point)
 
 			for (i = 0, loop = 1; (i < m_nItems) && loop; ++i)
 			{
-				if (m_apRgnItemControls[i]->PtInRegion(point))
+				if (m_ppRgnItemControls[i]->PtInRegion(point))
 				{
 					item = i + m_Pos;
 					loop = 0;
@@ -505,9 +519,9 @@ void CComboDropDownToggle::OnDraw(CDC* pDC)
 		for (i = 0; i < m_nItems; ++i)
 		{
 			CBitmap* pBM;
-			pBM = m_pToggleValue[i]?m_apBmSelItems[m_Pos + i]: m_apBmNotSelItems[m_Pos + i];
+			pBM = m_pToggleValue[i]?m_ppBmSelItems[m_Pos + i]: m_ppBmNotSelItems[m_Pos + i];
 			oldBM = bmdc.SelectObject(pBM);
-			bmr = *m_apRectItemControls[i];
+			bmr = *m_ppRectItemControls[i];
 			//			PrintRec("Item rect", bmr);
 			CBrush* pB;
 			pB = (m_nCurSel == i) ? &Brush_ListSelBG : &Brush_ListBG;
@@ -537,7 +551,7 @@ void CComboDropDownToggle::OnDraw(CDC* pDC)
 		pDC->LineTo(m_ptDropCorner.x + m_szDropArrow.cx - 2, m_ptDropCorner.y + m_szDropArrow.cy - 2);
 		//---------Current Selection -----
 		bmr = m_rectSelectionBox;
-		bmdc.SelectObject(m_pToggleValue[m_nCurSel]?m_apBmSelItems[m_nCurSel]: m_apBmNotSelItems[m_nCurSel]);
+		bmdc.SelectObject(m_pToggleValue[m_nCurSel]?m_ppBmSelItems[m_nCurSel]: m_ppBmNotSelItems[m_nCurSel]);
 		pDC->BitBlt(
 			bmr.left + 1,
 			bmr.top + 1,
@@ -552,7 +566,7 @@ void CComboDropDownToggle::OnDraw(CDC* pDC)
 		pDC->FillRect(&m_rectDropArrow, &Brush_DropArrowBG);
 		pDC->FillRect(&m_rectSelectionBox, &Brush_SelectionBG);
 
-		bmdc.SelectObject(m_pToggleValue[m_nCurSel] ? m_apBmSelItems[m_nCurSel] : m_apBmNotSelItems[m_nCurSel]);
+		bmdc.SelectObject(m_pToggleValue[m_nCurSel] ? m_ppBmSelItems[m_nCurSel] : m_ppBmNotSelItems[m_nCurSel]);
 		b = pDC->BitBlt(
 			m_rectSelectionBox.left + 1,
 			m_rectSelectionBox.top + 1,
@@ -636,8 +650,8 @@ int CComboDropDownToggle::AddNotSelBitmapID(int ID)
 		rv = 0;
 	else
 	{
-		m_apBmNotSelItems[m_nNotSelBitmapsAdded] = new CMyBitmap;
-		m_apBmNotSelItems[m_nNotSelBitmapsAdded]->LoadBitmapW(ID);
+		m_ppBmNotSelItems[m_nNotSelBitmapsAdded] = new CMyBitmap;
+		m_ppBmNotSelItems[m_nNotSelBitmapsAdded]->LoadBitmapW(ID);
 		m_nNotSelBitmapsAdded++;
 	}
 	return rv;
@@ -658,8 +672,8 @@ int CComboDropDownToggle::AddSelBitmapID(int ID)
 		rv = 0;
 	else
 	{
-		m_apBmSelItems[m_nSelBitmapsAdded] = new CMyBitmap;
-		m_apBmSelItems[m_nSelBitmapsAdded]->LoadBitmapW(ID);
+		m_ppBmSelItems[m_nSelBitmapsAdded] = new CMyBitmap;
+		m_ppBmSelItems[m_nSelBitmapsAdded]->LoadBitmapW(ID);
 		m_nSelBitmapsAdded++;
 	}
 	return rv;
@@ -740,6 +754,18 @@ void CComboDropDownToggle::OnKillFocus(CWnd* pNewWnd)
 	}
 }
 
+void CComboDropDownToggle::SetName(const char* pName)
+{
+	if(m_pName) {
+		delete[] m_pName;
+		m_pName = 0;
+	}
+	if(pName) {
+		m_pName = new char[strlen(pName) + 1];
+		strcpy_s(m_pName, strlen(pName) + 1, pName);
+	}
+}
+
 int CComboDropDownToggle :: GetTotalWidth()
 {
 	int width;
@@ -780,7 +806,7 @@ const char* CComboDropDownToggle::GetItemName(ComboDropDownToggleTypes type)
 	int i;
 	bool bFound = false;
 
-	for(i = 0; !bFound && DropDownToggleItemsLUT[i].m_pName; ++i)
+	for(i = 0; ( DropDownToggleItemsLUT[i].m_pName != 0) && !bFound; ++i)
 	{
 		if (DropDownToggleItemsLUT[i].m_Type == type)
 		{

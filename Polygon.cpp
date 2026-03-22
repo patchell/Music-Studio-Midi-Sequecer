@@ -24,7 +24,14 @@ CMyPolygon::CMyPolygon()
 
 CMyPolygon::~CMyPolygon()
 {
-	if(m_pVertex)delete[] m_pVertex;
+	if (m_pVertex) {
+		delete[] m_pVertex;
+		m_pVertex = 0;
+	}
+	if (m_pVertexRef) {
+		delete[] m_pVertexRef;
+		m_pVertexRef = 0;
+	}
 }
 
 void CMyPolygon::Create(int Count, CPoint* ptArray)

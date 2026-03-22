@@ -30,6 +30,7 @@ public:
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
 	//------------------------------------------------------
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 	virtual void Print(FILE *pO, int Indent);
 	virtual void Save(FILE *pO);
 	virtual void Copy(CMsObject* Source);

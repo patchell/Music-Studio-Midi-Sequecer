@@ -340,4 +340,5 @@ public:
 		}
 		return "ERROR";
 	}
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };

@@ -27,11 +27,11 @@ CComboDropUp::CComboDropUp()
 	m_LButtonDown = 0;
 	m_nItems = 0;
 	m_nTotalItems = 0;
-	m_apRectItemControls = 0;
-	m_apRgnItemControls = 0;
+	m_ppRectItemControls = 0;
+	m_ppRgnItemControls = 0;
 	// Slider Stuff
 	m_Pos = 0;
-	m_apBmItems = 0;
+	m_ppBmItems = 0;
 	m_nBitmapsAdded = 0;
 	m_nCurSel = 0;
 	m_nDragThumb = 0;
@@ -53,7 +53,29 @@ CComboDropUp::CComboDropUp()
 
 CComboDropUp::~CComboDropUp()
 {
-	if (m_apBmItems) delete [] m_apBmItems;
+	if (m_ppRgnItemControls)
+	{
+		for (int i = 0; i < m_nItems; ++i)
+		{
+			if (m_ppRgnItemControls[i]) {
+				delete m_ppRgnItemControls[i];
+				m_ppRgnItemControls[i] = nullptr;
+			}
+		}
+		delete[] m_ppRgnItemControls;
+	}
+	if (m_ppRectItemControls)
+	{
+		for (int i = 0; i < m_nItems; ++i)
+		{
+			if (m_ppRectItemControls[i]) {
+				delete m_ppRectItemControls[i];
+				m_ppRectItemControls[i] = nullptr;
+			}
+		}
+		delete[] m_ppRectItemControls;
+	}
+	if (m_ppBmItems) delete [] m_ppBmItems;
 }
 
 
@@ -127,9 +149,9 @@ void CComboDropUp::OnDraw(CDC* pDC)
 		for (i = 0; i < m_nItems; ++i)
 		{
 			CBitmap* pBM;
-			pBM = m_apBmItems[m_Pos + i];
+			pBM = m_ppBmItems[m_Pos + i];
 			oldBM = bmdc.SelectObject(pBM);
-			bmr = *m_apRectItemControls[i];
+			bmr = *m_ppRectItemControls[i];
 			CBrush* pB;
 			pB = (m_nCurSel == i)?&Brush_ListSelBG:&Brush_ListBG;
 			pDC->FillRect(&bmr, pB);
@@ -158,7 +180,7 @@ void CComboDropUp::OnDraw(CDC* pDC)
 		pDC->LineTo(m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].x + m_szDropArrow.cx - 2, m_aptDropCorner[int(DropUpItemState::DROP_UP_SELECTED)].y + 2);
 		//---------Current Selection -----
 		bmr = m_arectSelectBox[int(DropUpItemState::DROP_UP_SELECTED)];
-		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
+		bmdc.SelectObject(m_ppBmItems[m_nCurSel]);
 		pDC->BitBlt(
 			bmr.left + 1,
 			bmr.top + 1,
@@ -177,7 +199,7 @@ void CComboDropUp::OnDraw(CDC* pDC)
 		bmr = &m_arectSelectBox[int(DropUpItemState::DROP_UP_NOTSELECTED)];
 		pDC->FillRect(&bmr, &Brush_DropArrowBG);
 
-		bmdc.SelectObject(m_apBmItems[m_nCurSel]);
+		bmdc.SelectObject(m_ppBmItems[m_nCurSel]);
 		b = pDC->BitBlt(
 			bmr.left + 1,
 			bmr.top + 1,
@@ -287,22 +309,22 @@ bool CComboDropUp::Create(
 	// These are the items that you can choose
 	// from whent the combo box is expanded
 	//------------------------------------------
-	m_apRgnItemControls = new CMyRgn * [nItems];
-	m_apRectItemControls = new CRect * [nItems];
-	m_apBmItems = new CMyBitmap * [m_nTotalItems];
+	m_ppRgnItemControls = new CMyRgn * [nItems];
+	m_ppRectItemControls = new CRect * [nItems];
+	m_ppBmItems = new CMyBitmap * [m_nTotalItems];
 	// Initialize Arrays
 	CPoint UpperLeft = CPoint(0, 0);
 	CPoint Inc = CPoint(0, szItemSize.cy);
 	for (i = 0; i < nItems; ++i,UpperLeft += Inc)
 	{
-		m_apRectItemControls[i] = new CRect;
-		*(m_apRectItemControls[i]) = CRect(UpperLeft,szItemSize);
-		m_apRgnItemControls[i] = new CMyRgn;
-		m_apRgnItemControls[i]->CreateRectRgn(*(m_apRectItemControls[i]));
+		m_ppRectItemControls[i] = new CRect;
+		*(m_ppRectItemControls[i]) = CRect(UpperLeft,szItemSize);
+		m_ppRgnItemControls[i] = new CMyRgn;
+		m_ppRgnItemControls[i]->CreateRectRgn(*(m_ppRectItemControls[i]));
 	}
 	for (i = 0; i < m_nTotalItems; ++i)
 	{
-		m_apBmItems[i] = 0;
+		m_ppBmItems[i] = 0;
 	}
 //	PrintRec("Create Control NotSel:", m_rectNotSel);
 //	PrintRec("Item Rec", m_arectSelectBox[0]);
@@ -385,7 +407,7 @@ void CComboDropUp::OnLButtonUp(UINT nFlags, CPoint point)
 
 			for (i = 0, loop = 1; (i < m_nItems) && loop; ++i)
 			{
-				if (m_apRgnItemControls[i]->PtInRegion(point))
+				if (m_ppRgnItemControls[i]->PtInRegion(point))
 				{
 					item = i + m_Pos;
 					loop = 0;
@@ -463,7 +485,7 @@ int CComboDropUp::AddBitmap(CMyBitmap* bmItem)
 	if (m_nBitmapsAdded == m_nTotalItems)
 		rv = 0;
 	else
-		m_apBmItems[m_nBitmapsAdded++] = bmItem;
+		m_ppBmItems[m_nBitmapsAdded++] = bmItem;
 	return rv;
 }
 

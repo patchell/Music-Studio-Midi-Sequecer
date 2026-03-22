@@ -651,3 +651,8 @@ int CMsGlissando::NeedsLine(int Pitch)
 	}
 	return rV;
 }
+
+CMsObject* CMsGlissando::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}

@@ -46,4 +46,5 @@ public:
 	UINT GetCountDown() { return m_CountDown; }
 	CMsRepeatStart* GetMatchingRepeatStart() { return m_pMatchingRepeatStart; }
 	void SetMatchingRepeatStart(CMsRepeatStart* pStart) { m_pMatchingRepeatStart = pStart; }
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };

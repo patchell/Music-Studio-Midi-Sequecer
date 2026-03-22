@@ -24,7 +24,7 @@ void CMsRepeatEnd::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sRepeat End :|\n", pIndentString);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 UINT CMsRepeatEnd::ObjectToString(CString& csString, UINT mode)
@@ -34,6 +34,11 @@ UINT CMsRepeatEnd::ObjectToString(CString& csString, UINT mode)
 
 void CMsRepeatEnd::ObjectRectangle(CRect& rect, UINT Event)
 {
+}
+
+CMsObject* CMsRepeatEnd::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }
 	
 void CMsRepeatEnd::Draw(CDC *pDC)
@@ -83,6 +88,7 @@ StaffMouseStates CMsRepeatEnd::StaffTransition(CPoint pointMouse, int NewNote, C
 
 void CMsRepeatEnd::Copy(CMsObject* pSource)
 {
+	m_Count = ((CMsRepeatEnd*)pSource)->m_Count;
 	CMsObject::Copy(pSource);
 }
 

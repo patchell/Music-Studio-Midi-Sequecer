@@ -20,6 +20,22 @@ constexpr auto	BM_NOTE_INDEX_THIRTYSECOND = 5;
 class CChildViewStaff : public CChildViewBase
 {
 public:
+	enum TimerIDs {
+		TIMERID_SCROLL = 0x1000,
+		TIMERID_DRAG,
+		TIMERID_NONE
+	};
+private:
+	struct TimerIDItem {
+		TimerIDs m_TimerID;
+		const char* m_pName;
+	};
+	inline static const TimerIDItem TimerIDLUT[] = {
+		{ TimerIDs::TIMERID_SCROLL, "Scroll Timer" },
+		{ TimerIDs::TIMERID_DRAG, "Drag Timer" },
+		{ TimerIDs::TIMERID_NONE, "No Timer" }
+	};
+public:
 	struct DrawStateItem {
 		DRAWSTATE m_State;
 		const char* m_pName;
@@ -49,6 +65,7 @@ public:
 		{ DRAWSTATE::REPEAT_START_PLACE, "Place Repeat Start" },
 		{ DRAWSTATE::REPEAT_END_WAIT_MD, "Place Repeat End" },
 		{ DRAWSTATE::REPEAT_END_PLACE, "Place Repeat End" },
+		{ DRAWSTATE::CUT, "Cut" },
 		{ DRAWSTATE(-1), NULL } // End Marker
 	};
 	enum class DrawMode : int {
@@ -73,8 +90,10 @@ public:
 		DECREASEDUR,	//16
 		INCRPITCH,		//17
 		DECRPITCH,		//18
-		INSERTBLOCK,	//19
-		DRAW_NOTES_VIA_MIDI	//20
+		INSERT_EMPTY_BLOCK,	//19
+		DRAW_NOTES_VIA_MIDI,	//20
+		DRAG_COPY,
+		DRAG_MOVE
 	};
 private:
 	struct DrawModeItem {
@@ -103,7 +122,7 @@ private:
 		{ DrawMode::DECREASEDUR, "Decrease Duration of Note/Rest/Event" },
 		{ DrawMode::INCRPITCH, "Increase Pitch of Note/Event" },
 		{ DrawMode::DECRPITCH, "Decrease Pitch of Note/Event" },
-		{ DrawMode::INSERTBLOCK, "Insert Block at Event (Shift+Click)" },
+		{ DrawMode::INSERT_EMPTY_BLOCK, "Insert Empty Block at Event (Shift+Click)" },
 		{ DrawMode::DRAW_NOTES_VIA_MIDI, "Draw Notes via MIDI Input (Ctrl+Click)" }
 	};
 public:
@@ -233,16 +252,13 @@ private:
 							//display starts at
 	int m_nDrawEvent;		// logical event under mouse
 	int m_nRawEvent;		// physical event under mouse
-	int m_FirstSelectedEvent;
-	int m_LastSelectedEventIndex;
 	//------- Tie data -------------------
 	CPoint m_TieEndPoint;
 	CPoint m_TieStartPoint;
 	CMsNote* m_pSecondTieNote;
 	CMsNote* m_pFirstTieNote;
 	//-------------------------------------
-	DRAWSTATE m_nDrawState;
-	CMsNote* pLastNote;
+	DRAWSTATE m_dsDrawState;
 	CMsObject* m_pDrawObject;
 	DrawMode m_dmDrawMode;
 	MouseRegions m_MouseRegion;
@@ -258,7 +274,6 @@ private:
 	//-----------------------------------
 	CMsRepeatStart* m_pRepeatStartSelected;
 	CMsRepeatEnd* m_pRepeatEndSelected;
-//	CMsKeySignature* m_pKeySig;
 //-------------- Mouse ---------------------
 	StaffViewMouseState m_nMouseState;
 //--------- View Regions -------------------
@@ -286,6 +301,8 @@ private:
 	CMsObject* m_pSelectedObjectTail;
 	//------------ Draw Ready Flag --------------
 	int m_ReadyToDraw;
+	//-------- Insert Empty Events Block Data -----------
+	int m_nInsertBlockNumberOfEvents;
 	// Implementation
 public:
 	CChildViewStaff();
@@ -304,8 +321,6 @@ public:
 	void DrawControls(CDC* pDC);
 	//---- Get/Set Data Member Access Methods -----
 	NoteData& GetNoteData() { return m_CurrentNoteData; }
-	CMsNote* GetLastNote() { return pLastNote; }
-	void SetLastNote(CMsNote* pLN) { pLastNote = pLN; }
 
 	int GetSongScrollPosition() { return m_SongScrollPos; }
 	void SetSongScrollPosition(int SSP) { m_SongScrollPos = SSP; }
@@ -360,12 +375,12 @@ public:
 	// Operations
 	void CheckAndDoScroll(CPoint point);
 	void DoBlockOps(int Op);
-	void MoveBlock(int dest);
-	void CopyBlock(int dest);
-	void ChangeDuration(INT From, INT To);
-	void ChangeInst(INT From, INT To);
+	DRAWSTATE MoveBlock(DRAWSTATE DrawState, CMsEvent* pEvDestinationEvent);
+	DRAWSTATE CopyBlock(DRAWSTATE DrawState, CMsEvent* pEvDestinationEvent);
+	void ChangeDuration(int FromDuration, int ToDuration);
+	void ChangeInst(int FromInstrument, int ToInstrument);
 	void AddRepeat(UINT n);
-	void InsertBlock(void);
+	DRAWSTATE InsertEmptyBlock(DRAWSTATE DrawState, CMsEvent* pEvDestination, int NumberOfEvents);
 	void DecrementPitch();
 	void IncrementPitch(void);
 	void IncreaseDuration(void);
@@ -431,7 +446,7 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg	LRESULT OnLongMidiMsg(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnShortmidimsg(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnShortMidiMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStaffDispEvent(WPARAM wParam, LPARAM lParam);
 	//-------- Combo Boxes -------------
 	afx_msg LRESULT MyControlsMessages(WPARAM wp, LPARAM lp);
@@ -464,6 +479,7 @@ public:
 	static const char* GetStaffMouseStateName(StaffMouseStates state);
 	static const char* GetDrawStateName(DRAWSTATE state);
 	static const char* GetDrawModeName(DrawMode mode);
+	static const char* GetTimerIDName(TimerIDs id);
     afx_msg void OnSettingsTracksettinigs();
     afx_msg void OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI);
 };

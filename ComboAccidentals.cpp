@@ -38,5 +38,6 @@ bool CComboAccidentals::Create(CPoint ptULCorner, CWnd* pParentWnd)
 	);
 	for (i = 0; i < nItems; ++i)
 		AddBitmap(GETAPP->bmGetCbAccidentalType(i));
+	SetName("Accidentals");
 	return true;
 }

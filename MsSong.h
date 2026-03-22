@@ -13,7 +13,48 @@ class CMsPlayerQueue;
 
 class CMsSong
 {
-public: 
+public:
+	enum Insert {
+		AFTER,
+		BEFORE
+	};
+	inline static const int AtariInst[270] = {
+		0x42,0x6c,0x6f,0x63,0x6b,0x73,
+		0x00,0x00,0x00,0x00,0x48,0x61,0x72,0x6d,
+		0x6f,0x6e,0x69,0x63,0x61,0x00,0x47,0x75,
+		0x69,0x74,0x61,0x72,0x00,0x00,0x00,0x00,
+		0x46,0x6c,0x75,0x74,0x65,0x00,0x00,0x00,
+		0x00,0x00,0x43,0x6c,0x61,0x72,0x69,0x6e,
+		0x65,0x74,0x00,0x00,0x42,0x61,0x72,0x69,
+		0x74,0x6f,0x6e,0x65,0x00,0x00,0x48,0x69,
+		0x68,0x61,0x74,0x00,0x6f,0x00,0x6e,0x00,
+		0x53,0x6e,0x61,0x72,0x65,0x00,0x6f,0x00,
+		0x00,0x00,0x42,0x2e,0x46,0x69,0x64,0x64,
+		0x6c,0x65,0x00,0x00,0x53,0x61,0x78,0x00,
+		0x74,0x6f,0x6e,0x65,0x00,0x00,0x43,0x6c,
+		0x61,0x72,0x69,0x6e,0x65,0x74,0x00,0x00,
+		0x50,0x69,0x61,0x6e,0x6f,0x00,0x00,0x00,
+		0x00,0x00,0x42,0x61,0x73,0x73,0x00,0x73,
+		0x00,0x00,0x00,0x00,0x56,0x69,0x62,0x65,
+		0x73,0x00,0x65,0x74,0x00,0x00,0x42,0x65,
+		0x6c,0x6c,0x73,0x00,0x00,0x00,0x00,0x00,
+		0x8f,0x23,0x0c,0x06,0x07,0x08,0x06,0x09,
+		0x86,0x22,0x0c,0x05,0x0b,0x00,0x05,0x00,
+		0x80,0x12,0x0d,0x03,0x07,0x04,0x05,0x02,
+		0x82,0x14,0x0a,0x08,0x0c,0x08,0x08,0x07,
+		0x8f,0x29,0x0d,0x06,0x0c,0x08,0x0a,0x0c,
+		0x85,0x38,0x0a,0x0e,0x09,0x0a,0x07,0x04,
+		0x1e,0x03,0x0d,0x05,0x05,0x03,0x05,0x05,
+		0x1e,0x46,0x0d,0x0f,0x07,0x0f,0x04,0x0f,
+		0x85,0x43,0x0e,0x07,0x08,0x0e,0x07,0x01,
+		0x8d,0x34,0x0e,0x0f,0x08,0x04,0x05,0x07,
+		0x82,0x46,0x08,0x07,0x06,0x0a,0x0b,0x0a,
+		0x80,0x22,0x0e,0x07,0x08,0x05,0x06,0x00,
+		0x8f,0x32,0x0e,0x05,0x0b,0x08,0x0a,0x0f,
+		0x84,0x03,0x0f,0x05,0x09,0x03,0x00,0x01,
+		0x8f,0x01,0x0c,0x01,0x08,0x02,0x07,0x00
+	};
+
 	struct SongPlayerGlobals {
 		CMsKeySignature* m_pLastKeySignature = 0;
 		CMsTimeSignature* m_pLastTimeSignature = 0;
@@ -42,33 +83,30 @@ private:
 	// Events
 	//--------------------------------------
 	CMsEventDirectory* m_pEventDirectory;
-	//--------------------------------------
-	// Song position pointer
-	//--------------------------------------
-	CMsEvent* m_pSongPosition;			//current song position
-	//--- Data for Song Editor View ----
+	//-------------------------------
+	// Event Linked List
+	//-------------------------------
 	CMsEvent* m_pEventListHead;
 	CMsEvent* m_pEventListTail;
+	//--- Data for Song Editor View ----
 	CMsEvent* m_pCleffEvent;
+	CMsEvent* m_pEditEvent;
 	int m_nMeasureBarCount;
 	int m_nTotalEvents;
-	//--------------------------------------
-	TickerState m_TickerState;
+	//---------------File Loading Data-----------------------
 	CString m_csFileName;
 	char* m_pFileBuffer;
 	int m_nFileBufferSize;
 	int m_InFileSize;
 	int m_BufIndex;
 	//--------------------------------
-	//	int m_nIsPlaying;
+	//	Song List Management
+	//--------------------------------
 	CMsSong* m_pNextSong;
 	CMsSong* m_pPrevSong;
 	//*************************************
 	// Attributes used to play the song
 	//*************************************
-	int m_SongID;
-	int m_PlaySongTimerEnable;
-	char m_Patches[16];
 	//----------------------------------
 	// Synchronizing objects between
 	// playing the song and the thread
@@ -86,21 +124,19 @@ private:
 	CMyEvent m_EvDisableTimerComplete;
 	CMyEvent m_EvAddEventQueueComplete;
 	CMyEvent m_EvDelEventQueueComplete;
-	//---------------------------------------
-	// List of Midi operations, like note
-	// timers that are currently actively
-	// playing.
-	//---------------------------------------
-	CMsPlayerQueue* m_pPlayerObjectQueue;
 	//----------------------------------------
 	// variables for playing back song
 	//----------------------------------------
-	UINT m_MidiClockToggleFlag;
-	UINT m_TotalTicks;
-
+	CMsEvent* m_pCurrentSongPosition;			//current song position
+	TickerState m_TickerState;
+	int m_MidiClockToggleFlag;
+	int m_TotalTicks;
 	CMsStack m_stackRepeat;
-
 	SongPlayerGlobals m_SongGlobals;
+	CMsPlayerQueue* m_pPlayerObjectQueue;
+	int m_SongID;
+	int m_PlaySongTimerEnable;
+	char m_Patches[16];
 	//--------------------------------------
 	// Parent Objects
 	//---------------------------------------
@@ -176,7 +212,9 @@ public:
 	CMsEvent* GetEventListTail() { return m_pEventListTail; }
 	void SetEventListTail(CMsEvent* pEV) { m_pEventListTail = pEV; }
 	CMsEvent* GetEventObject(int Event);
-	CMsEvent* InsertEvent(int e);
+	CMsEvent* InsertEmptyEvent(int EventIndex, int BeforeNotAfter = 0);
+	CMsEvent* InsertEmptyEvent(CMsEvent* pEv, int BeforeNotAfter = 0);
+	CMsEvent* InsertEvent(CMsEvent* pEvInsertHere, CMsEvent* pInsertThis, int BeforeNotAfter = 0);
 	void AddEventAtStart(CMsEvent* pE);
 	void AddEventAtEnd(CMsEvent* pE);
 	void AddEventChain(int EventDest, CMsEventChain* pEvC);
@@ -192,11 +230,12 @@ public:
 	CMsEvent* MakeNewEvent(int EventIndex);
 	int GetTotalEvents() const { return m_nTotalEvents; }
 	void SetTotalEvents(int t) { m_nTotalEvents = t; }
-	void RenumberEvents(int* First = nullptr, int* Last = nullptr);
+	void RenumberEvents();
+	bool GetSeledtedEventBlock(CMsEvent** ppEvFirst, CMsEvent** ppEvLast);
 	void RenumberMeasureBars();
 	bool SelectEventsFrom(CMsEvent* pEventID);
 	//----------------- Song ID Management ----------------
-	int GetSongId() { return m_SongID; }
+	int GetSongId() const { return m_SongID; }
 	//**************************************
 	// Methods for playing the song
 	//**************************************
@@ -219,7 +258,7 @@ public:
 	void SetPlaySongTimerEnable(int enable) {
 		m_PlaySongTimerEnable = enable;
 	}
-	int GetPlaySongTimerEnable() {
+	int GetPlaySongTimerEnable() const {
 		return m_PlaySongTimerEnable;
 	}
 	//--------------------------------
@@ -228,10 +267,8 @@ public:
 	CMsStack& GetRepeatStack() { return m_stackRepeat; }
 	UINT Ticker(void);
 	CMsEvent* GetNextEventToProcess();
-	void SetSongPosition(CMsEvent* pEv) {
-		m_pSongPosition = pEv;
-	}
-	CMsEvent* GetSongPosition() { return m_pSongPosition; }
+	void SetSongPosition(CMsEvent* pEv);
+	CMsEvent* GetSongPosition();
 	void Start(void);
 	int Stop(void);
 	//------------------------------------
@@ -244,7 +281,7 @@ public:
 	void SetSongListPrev(CMsSong* pSong) { m_pPrevSong = pSong; }
 	bool ValidateFile();
 	int DumpSong(FILE* pOutFile);
-	UINT GetTotalTicks() { return m_TotalTicks; }
+	UINT GetTotalTicks() const { return m_TotalTicks; }
 	//--------- Midi Diagnostics ----------------------
 	void IncNoteOnCount(int Note) { m_NoteCountOn[Note]++; };
 	void IncNoteOffCount(int Note) { m_NoteCountOff[Note]++; }
@@ -256,5 +293,9 @@ public:
 	CMsSongInfo* GetSongInfo() { return &m_SongInfo; }
 	SColorPalette* GetColorPalette();
 	int GetNumberOfTracks() const { return m_SongInfo.GetNumberOfTracks(); }
+	//----------------- Edit Event Management ----------------
+	void SetEditEvent(CMsEvent* pEv) { m_pEditEvent = pEv; }
+	void SetEditEvent(int Event) { m_pEditEvent = GetEventObject(Event); }
+	CMsEvent* GetEditEvent() { return m_pEditEvent; }
 };
 

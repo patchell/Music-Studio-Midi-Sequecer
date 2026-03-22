@@ -309,7 +309,7 @@ void CMsRepeatStart::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sRepeat Start |:(%d)\n", pIndentString, m_Count);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 
@@ -415,6 +415,11 @@ int CMsRepeatStart::SetupRepeat()
 		m_Count = dlgSetup.GetValue();
 	}
 	return Id;
+}
+
+CMsObject* CMsRepeatStart::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }
 
 void CMsRepeatStart::Copy(CMsObject* pSource)

@@ -153,8 +153,14 @@ int CMidiInDevice::KillThread()
 	//-------------------------------------------
 	midiInStop(m_hMidiIn);
 	if (m_hMidiIn) midiInClose(m_hMidiIn);
-	if(m_mhMidiIn1.lpData) delete[] m_mhMidiIn1.lpData;
-	if(m_mhMidiIn2.lpData) delete[] m_mhMidiIn2.lpData;
+	if(m_mhMidiIn1.lpData) {
+		delete[] m_mhMidiIn1.lpData;
+		m_mhMidiIn1.lpData = nullptr;
+	}
+	if(m_mhMidiIn2.lpData) {
+		delete[] m_mhMidiIn2.lpData;
+		m_mhMidiIn2.lpData = nullptr;
+	}
 	//------------------------------------------
 	// Kill the thread
 	//------------------------------------------

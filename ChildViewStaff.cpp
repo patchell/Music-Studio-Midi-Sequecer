@@ -29,18 +29,16 @@ CChildViewStaff::CChildViewStaff()
 	, m_LowerSelRect(0, 0, 0, 0)
 {
 	EnableActiveAccessibility();
+	m_nInsertBlockNumberOfEvents = 0;	// number of events in block to insert
 	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEUP;			// Mouse state machine
 	m_pFirstTieNote = 0;		// pointer to first tie note
 	m_pSecondTieNote = 0;		// Pointer to second tie note
-	m_nDrawState = DRAWSTATE::NA;			// draw state machine
+	m_dsDrawState = DRAWSTATE::NA;			// draw state machine
 	m_dmDrawMode = DrawMode::NOP;			// Drawing mode ie notes, etc
 	m_nDrawEvent = 0;			// Current event mouse is over
 	m_pSong = 0;				// pointer to song
 	m_MaxEvents = 0;			// maximum events displayed
 	m_pDrawObject = 0;			// current objedt being drawn
-	pLastNote = 0;				// pointer to the last note placed
-	m_LastSelectedEventIndex = -1;
-	m_FirstSelectedEvent = -1;
 	m_SongScrollPos = 0;
 	m_nMidiNotesOn = 0;
 	m_nRawEvent = 0;
@@ -88,7 +86,7 @@ BEGIN_MESSAGE_MAP(CChildViewStaff, CChildViewBase)
 	ON_WM_CONTEXTMENU()
 	ON_WM_HSCROLL()
 	// Custom Messages
-	ON_MESSAGE(WM_SHORTMIDIMSG, &CChildViewStaff::OnShortmidimsg)
+	ON_MESSAGE(WM_SHORTMIDIMSG, &CChildViewStaff::OnShortMidiMessage)
 	ON_MESSAGE(WM_LONGMIDIMSG,&CChildViewStaff::OnLongMidiMsg)
 	ON_MESSAGE(WM_STAFF_DISP_EVENT, &CChildViewStaff::OnStaffDispEvent)
 	ON_MESSAGE(WM_MY_CONTROL_MESSAGES, &CChildViewStaff::MyControlsMessages)
@@ -245,7 +243,7 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 	{
 	case MouseRegions::MOUSE_OUTSIDE:
 		break;
-	case MouseRegions::MOUSE_IN_UPPERSEL:
+	case MouseRegions::MOUSE_IN_UPPERSEL:	// OnLButtonDown
 	case MouseRegions::MOUSE_IN_LOWERSEL:
 		//-------------------------------
 		// We are in the selection region
@@ -287,7 +285,29 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 			}
 		}
 		break;
-	case MouseRegions::MOUSE_IN_EDITREG:
+	case MouseRegions::MOUSE_IN_EDITREG:		// OnLButtonDown
+		//-------------------------------
+		// Check for the SHIFT, CONTROL
+		// and ALT keys being held down.
+		//-------------------------------
+		// Drag operations for selected
+		// Events
+		//-------------------------------
+		if (m_nMouseState == StaffViewMouseState::STAFFVIEW_MOUSEDOWN)
+		{
+			if (m_ShiftKeyDown)
+			{
+				m_dmDrawMode = DrawMode::DRAG_MOVE;
+			}
+			else if (m_CtrlKeyDown)
+			{
+				m_dmDrawMode = DrawMode::DRAG_COPY;
+			}
+			else if (m_AltKeyDown)
+			{
+			}
+		}
+
 		switch (m_dmDrawMode)	//OnLButtonDown
 		{
 		case DrawMode::NOP:
@@ -296,14 +316,14 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 				pObject = MatchMouseToObjectInEvent(Event, pointMouse);
 			break;
 		case DrawMode::GLISSANDO:	//OnLButtonDown
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
+			m_dsDrawState = GetDrawObject()->MouseLButtonDown(m_dsDrawState, pointMouse, Region, TransitionState);
 			Invalidate();
 			break;
 		case DrawMode::NOTE:	//OnLButtonDown
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
+			m_dsDrawState = GetDrawObject()->MouseLButtonDown(m_dsDrawState, pointMouse, Region, TransitionState);
 			break;
 		default:
-			m_nDrawState = GetDrawObject()->MouseLButtonDown(m_nDrawState, pointMouse, Region, TransitionState);
+			m_dsDrawState = GetDrawObject()->MouseLButtonDown(m_dsDrawState, pointMouse, Region, TransitionState);
 			break;
 		}//end of switch(m_dmDrawMode)
 	}
@@ -313,7 +333,8 @@ void CChildViewStaff::OnLButtonDown(UINT nFlags, CPoint pointMouse)
 void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 {
 	MouseRegions Region;
-	CMsEvent* pEv;
+	CMsEvent* pEv = 0;
+	CMsEvent* pEvDraw = 0;
 	CString csTemp;
 	CMsGlissando* pGliss = 0;
 	CMsNote* pN = 0;
@@ -322,6 +343,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 
 	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
+	pEvDraw = m_pSong->GetEventObject(m_nDrawEvent);
 	m_MouseRegionTransitionState = RegionTransition(pointMouseLButtUp);
 	Region = MouseInRegion(pointMouseLButtUp);
 	TransitionState = RegionTransition(pointMouseLButtUp);
@@ -338,8 +360,8 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		case DrawMode::NOP:		//OnLButtonUp
 			break;
 		case DrawMode::NOTE:		//OnLButtonUp
-			m_nDrawState = GetDrawObject()->MouseLButtonUp(
-				m_nDrawState, 
+			m_dsDrawState = GetDrawObject()->MouseLButtonUp(
+				m_dsDrawState, 
 				pointMouseLButtUp,
 				Region,
 				TransitionState
@@ -354,8 +376,8 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 		case DrawMode::ENDBAR:
 			[[fallthrough]];
 		case DrawMode::BAR:		//OnLButtonUp
-			m_nDrawState = GetDrawObject()->MouseLButtonUp(
-				m_nDrawState, 
+			m_dsDrawState = GetDrawObject()->MouseLButtonUp(
+				m_dsDrawState, 
 				pointMouseLButtUp,
 				Region,
 				TransitionState
@@ -370,7 +392,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			//  If there is, record the note and the
 			// points.
 			//------------------------------------------
-			switch (m_nDrawState)
+			switch (m_dsDrawState)
 			{
 			case DRAWSTATE::TIE_FIRSTNOTE:		//OnLButtonUp
 				note = YtoNote(pointMouseLButtUp.y);
@@ -378,7 +400,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				if (pN)
 				{
 					m_pFirstTieNote = pN;
-					m_nDrawState = DRAWSTATE::TIE_SECONDNOTE;
+					m_dsDrawState = DRAWSTATE::TIE_SECONDNOTE;
 					m_TieStartPoint = pointMouseLButtUp + CSize(0, 4);
 					CString s, csTemp;
 					s = CString("First Note ");
@@ -406,7 +428,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 					s.Append(csTemp);
 					m_Status.SetText(s);
 					//-------------------------------------------
-					m_nDrawState = DRAWSTATE::TIE_FIRSTNOTE;
+					m_dsDrawState = DRAWSTATE::TIE_FIRSTNOTE;
 					m_TieEndPoint = pointMouseLButtUp + CSize(0, 4);
 					//----------------------------------------------
 					// setting the tie end and begin is a little
@@ -436,17 +458,23 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 			}	//end of switch(m_nDrawState) in case DrawMode::TIE
 			break;
 		case DrawMode::COPY:		//OnLButtonUp
-			CopyBlock(m_nDrawEvent);
+			m_dsDrawState = CopyBlock(m_dsDrawState, pEvDraw);
 			SetDrawObject(0);
 			m_dmDrawMode = DrawMode::NOP;
 			Invalidate();
 			break;
 		case DrawMode::MOVE:		//OnLButtonUp
-			MoveBlock(m_nDrawEvent);
+			MoveBlock(m_dsDrawState, pEvDraw);	// Move to new event
 			SetDrawObject(0);
 			m_dmDrawMode = DrawMode::NOP;
 			Invalidate();
 			break;
+		case DrawMode::INSERT_EMPTY_BLOCK:		//OnLButtonUp
+				m_dsDrawState = InsertEmptyBlock(m_dsDrawState, pEvDraw, m_nInsertBlockNumberOfEvents);
+				SetDrawObject(0);
+				m_dmDrawMode = DrawMode::NOP;
+				Invalidate();
+				break;
 		}//end of switch(m_dmDrawMode)
 		break;
 	}	//end of switch(Region)
@@ -480,6 +508,23 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		case MouseRegions::MOUSE_IN_LOWERSEL:
 			break;
 		case MouseRegions::MOUSE_IN_EDITREG:
+			//-------------------------------
+			// Drag operations for selected
+			// Events
+			//-------------------------------
+			if (m_nMouseState == StaffViewMouseState::STAFFVIEW_MOUSEDOWN)
+			{
+				if (m_ShiftKeyDown)
+				{
+
+				}
+				else if (m_CtrlKeyDown)
+				{
+				}
+				else if (m_AltKeyDown)
+				{
+				}
+			}
 			break;
 		}
 		break;
@@ -516,7 +561,7 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		[[fallthrough]]; 
 	case DrawMode::TEMPO:
 		if(GetDrawObject())
-			m_nDrawState = GetDrawObject()->MouseMove(m_nDrawState, pointMouse, Region, TransitionState);
+			m_dsDrawState = GetDrawObject()->MouseMove(m_dsDrawState, pointMouse, Region, TransitionState);
 		break;
 	}
 	m_MouseRegionTransitionState = TransitionState;
@@ -1145,13 +1190,14 @@ void CChildViewStaff::OnContextMenu(CWnd* pWnd, CPoint pointMouseCntxMen)
 	switch (id)
 	{
 	case ID_CM_INSERTEVEHNT:	//OnContextMenu
-		m_pSong->InsertEvent(Event);
-		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
+		m_pSong->InsertEmptyEvent(Event);
+		m_pSong->RenumberEvents();
 		UpdateScrollbarInfo(m_pSong->GetTotalEvents());
 		Invalidate();
 		break;
 	case ID_CM_DELETEEVENT:	//OnContextMenu
 		m_pSong->RemoveEvent(Event);
+		m_pSong->RenumberEvents();
 		UpdateScrollbarInfo(m_pSong->GetTotalEvents());
 		Invalidate();
 		break;
@@ -1381,6 +1427,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	CMsEvent* pEv = 0;
 	CString csStatus,csTemp;
 	CString csBlank(_T(""));
+	CParamDlg Dlg;
+	int Id = 0;
 	int From, To;
 
 	//------------------------
@@ -1419,7 +1467,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			}
 			SetDrawObject(pN);
 			m_dmDrawMode = DrawMode::NOTE;
-			m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+			m_dsDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 			//-----------------------------
 			// decode message word
 			//------------------------------
@@ -1459,7 +1507,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			}
 			SetDrawObject(pMG);
 			m_dmDrawMode = DrawMode::GLISSANDO;
-			m_nDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
+			m_dsDrawState = DRAWSTATE::WAITFORMOUSE_DOWN;
 			//-----------------------------
 			// decode message word
 			//------------------------------
@@ -1530,7 +1578,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			SetDrawObject(0);
 		}
 		m_dmDrawMode = DrawMode::TIE;
-		m_nDrawState = DRAWSTATE::TIE_FIRSTNOTE;
+		m_dsDrawState = DRAWSTATE::TIE_FIRSTNOTE;
 		m_pFirstTieNote = 0;
 		m_pSecondTieNote = 0;
 		csTemp = CString("Draw Tie");
@@ -1543,6 +1591,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		break;
 	case DrawMode::MOVE:		// SetupDrawMode
 		m_dmDrawMode = DrawMode::MOVE;
+		m_dsDrawState = DRAWSTATE::CUT;
 		csStatus.Format(_T("Move Block To Event %d"), m_nDrawEvent);
 		m_Status.SetText(csStatus);
 		break;
@@ -1566,7 +1615,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			SetDrawObject(0);
 		}
 		CMsTempo* pMT = new CMsTempo();
-		pMT->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), v);
+		pMT->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+		pMT->SetQNPM(v);
 		m_dmDrawMode = DrawMode::TEMPO;
 		SetDrawObject(pMT);
 	}
@@ -1589,7 +1639,8 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 			SetDrawObject(0);
 		}
 		CMsTimeSignature* pTS = new CMsTimeSignature;
-		pTS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), CMsTimeSignature::TimeSigID(v));
+		pTS->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent));
+		pTS->SetTimeSignature(CMsTimeSignature::TimeSigID(v));
 		m_dmDrawMode = DrawMode::TIMESIG;
 		SetDrawObject(pTS);
 	}
@@ -1679,13 +1730,21 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
-	case DrawMode::INSERTBLOCK:		// SetupDrawMode
-		InsertBlock();
-		// ToDo Might need more code here
-		SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
-		csTemp = CString("Insert Event");
-		m_Status.SetText(csTemp);
-		Invalidate();
+	case DrawMode::INSERT_EMPTY_BLOCK:		// SetupDrawMode
+		Dlg.SetCaption(CString("Insert Block(s)"));
+		Dlg.SetMax(100);
+		Dlg.SetMin(1);
+		Dlg.SetValue(1);
+		Id = Dlg.DoModal();
+		if (Id == IDOK)
+		{
+			m_nInsertBlockNumberOfEvents = Dlg.GetValue();
+			csTemp = CString("Insert Event");
+			m_Status.SetText(csTemp);
+			m_dmDrawMode = DrawMode::INSERT_EMPTY_BLOCK;
+			m_dsDrawState = DRAWSTATE::PLACE;
+			Invalidate();
+		}
 		break;
 	case DrawMode::DRAW_NOTES_VIA_MIDI:		// SetupDrawMode
 		m_dmDrawMode = DrawMode::DRAW_NOTES_VIA_MIDI;
@@ -1730,12 +1789,17 @@ void CChildViewStaff::IncreaseDuration()
 
 void CChildViewStaff::IncrementPitch()
 {
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
+	CMsEvent* pEvFirst = 0, *pEvLast = 0;
+	CMsEvent* pEv = 0;
+	bool bValidBlock = false;
+
+	bValidBlock = GetSong()->GetSeledtedEventBlock(&pEvFirst, &pEvLast);
+	if (!bValidBlock)
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
 	else
 	{
-		CMsEvent* pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-		for (int i = m_FirstSelectedEvent; i < m_LastSelectedEventIndex + 1; ++i)
+		pEv = pEvFirst;
+		while (pEv != pEvLast->GetNext())
 		{
 			CMsObject* pOb = pEv->GetEventMsObjectHead();
 			while (pOb)
@@ -1754,12 +1818,17 @@ void CChildViewStaff::IncrementPitch()
 
 void CChildViewStaff::DecrementPitch()
 {
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
+	CMsEvent* pEvFirst = 0, * pEvLast = 0;
+	CMsEvent* pEv = 0;
+	bool bValidBlock = false;
+
+	bValidBlock = GetSong()->GetSeledtedEventBlock(&pEvFirst, &pEvLast);
+	if (!bValidBlock)
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
 	else
 	{
-		CMsEvent* pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-		for (int i = m_FirstSelectedEvent; i < m_LastSelectedEventIndex + 1; ++i)
+		pEv = pEvFirst;
+		while (pEv != pEvLast->GetNext())
 		{
 			CMsObject* pOb = pEv->GetEventMsObjectHead();
 			while (pOb)
@@ -1776,53 +1845,77 @@ void CChildViewStaff::DecrementPitch()
 	}
 }
 
-void CChildViewStaff::InsertBlock()
+DRAWSTATE CChildViewStaff::InsertEmptyBlock(DRAWSTATE DrawState, CMsEvent* pEvDestination, int NumberOfEvents)
 {
-	int i, n;
-	n = m_LastSelectedEventIndex - m_FirstSelectedEvent + 1;
-	for (i = 0; i < n; ++i)
-		m_pSong->InsertEvent(m_FirstSelectedEvent);
-	m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
+	int i;
+	CMsEvent* pEv = 0;
+	CString csTemp;
+
+	switch (DrawState)
+	{
+	case DRAWSTATE::PLACE:
+		if (pEvDestination)
+		{
+			for (i = 0; i < NumberOfEvents; ++i)
+			{
+				pEv = GetSong()->InsertEmptyEvent(pEvDestination, CMsSong::Insert::BEFORE);
+			}
+			m_pSong->RenumberEvents();
+			DrawState = DRAWSTATE::NA;
+			m_dmDrawMode = DrawMode::NOP;
+			//--------------------------------
+			SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
+		}
+		else
+		{
+			MessageBox(_T("No Destination Event Selected"), _T("Oppsie"));
+			csTemp.Format(_T("Insert Block:Invalid Event"));
+			DrawState = DRAWSTATE::NA;
+			m_dmDrawMode = DrawMode::NOP;
+		}
+		break;
+	}
+	Invalidate();
+	return DrawState;
 }
 
 void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 {
-	if (m_FirstSelectedEvent < 0 || m_LastSelectedEventIndex < 0)
+	CMsEvent* pFirst = 0, * pLast = 0;
+	bool bValidBlock = false;
+	CMsEvent* pEv = 0;
+	CMsRepeatStart* pRepeatStrat =0;
+	CMsRepeatEnd* pRepeatEnd = 0;
+
+	bValidBlock = GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
+	if (bValidBlock)
+	{
+		pEv = GetSong()->InsertEmptyEvent(pFirst, CMsSong::Insert::BEFORE);
+		pRepeatStrat = new CMsRepeatStart;
+		pRepeatStrat->Create(GetSong(), pEv, nRepeatCount);
+		pEv->AddObject(pRepeatStrat);
+		pEv = GetSong()->InsertEmptyEvent(pLast, CMsSong::Insert::AFTER);
+		pRepeatEnd = new CMsRepeatEnd;
+		pRepeatEnd->Create(GetSong(), pEv, nRepeatCount);
+		pEv->AddObject(pRepeatEnd);
+	}
+	else
 		MessageBox(_T("Block Not Selected"), _T("Oopsie"));
-	else
-	{
-		//--------------------------------
-		// We add the repeat by adding
-		// a new event before and after
-		// the selected block.
-		//---------------------------------
-		CMsEvent* pRS, * pRE;
-		CMsRepeatStart* pRepStrt;
-		CMsRepeatEnd* pRepEnd;
-
-		pRS = m_pSong->InsertEvent(m_FirstSelectedEvent - 1);
-		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
-		pRE = m_pSong->InsertEvent(m_LastSelectedEventIndex);
-		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
-		pRepStrt = new CMsRepeatStart();
-		pRepStrt->Create(GetSong(), pRS, nRepeatCount);
-		pRS->AddObject(pRepStrt);
-		pRepEnd = new CMsRepeatEnd;
-		pRepEnd->Create(GetSong(), pRE, nRepeatCount);
-		pRE->AddObject(pRepEnd);
-		pRepStrt->SetMatchingRepeatEnd(pRepEnd);
-		pRepEnd->SetMatchingRepeatStart(pRepStrt);
-	}
 }
 
-void CChildViewStaff::ChangeInst(INT From, INT To)
+void CChildViewStaff::ChangeInst(int FromInstrument, int ToInstrument)
 {
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
+	CMsEvent* pFirst = 0, * pLast = 0;
+	bool bValidBlock = false;
+	CMsEvent* pEv = 0;
+
+	bValidBlock = GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
+	if (!bValidBlock)
 		MessageBox(_T("No Block Selected"), _T("Oppsie"));
 	else
 	{
-		CMsEvent* pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-		for (int i = m_FirstSelectedEvent; i < m_LastSelectedEventIndex + 1; ++i)
+		pEv = pFirst;
+		while(pEv != pLast->GetNext())
 		{
 			CMsObject* pOb = pEv->GetEventMsObjectHead();
 			while (pOb)
@@ -1830,8 +1923,8 @@ void CChildViewStaff::ChangeInst(INT From, INT To)
 				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
-					if (pN->GetTrack() == From)
-						pN->SetTrack(To);
+					if (pN->GetTrack() == FromInstrument)
+						pN->SetTrack(ToInstrument);
 				}
 				pOb = pOb->GetNext();
 			}
@@ -1840,14 +1933,17 @@ void CChildViewStaff::ChangeInst(INT From, INT To)
 	}
 }
 
-void CChildViewStaff::ChangeDuration(INT From, INT To)
+void CChildViewStaff::ChangeDuration(int FromDuration, int ToDuration)
 {
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
-		MessageBox(_T("No Block Selected"), _T("Oppsie"));
-	else
+	CMsEvent* pFirst = 0, * pLast = 0;
+	bool bValidBlock = false;
+	CMsEvent* pEv = 0;
+
+	bValidBlock = GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
+	if (bValidBlock)
 	{
-		CMsEvent* pEv = m_pSong->GetEventObject(m_FirstSelectedEvent);
-		for (int i = m_FirstSelectedEvent; i < m_LastSelectedEventIndex + 1; ++i)
+		pEv = pFirst;
+		while (pEv != pLast->GetNext())
 		{
 			CMsObject* pOb = pEv->GetEventMsObjectHead();
 			while (pOb)
@@ -1855,8 +1951,8 @@ void CChildViewStaff::ChangeDuration(INT From, INT To)
 				if (CMsObject::MsObjType::NOTE == pOb->GetType())
 				{
 					CMsNote* pN = (CMsNote*)pOb;
-					if (pN->GetDuration() == From)
-						pN->SetDuration(To);
+					if (pN->GetDuration() == FromDuration)
+						pN->SetDuration(ToDuration);
 				}
 				pOb = pOb->GetNext();
 			}
@@ -1865,84 +1961,103 @@ void CChildViewStaff::ChangeDuration(INT From, INT To)
 	}
 }
 
-void CChildViewStaff::CopyBlock(int dest)
+DRAWSTATE CChildViewStaff::CopyBlock(DRAWSTATE DrawState, CMsEvent* pEvDestinationEvent)
 {
-	//-------------------------------
-	// first thing, copy the block
-	//-------------------------------
 	CMsEvent* pHead = 0, * pTail = 0;
-	CMsEvent* pEv, * pEvNew;
-	CMsEventChain pEventChain;
+	CMsEvent* pFirst = 0, * pLast = 0;
+	CString csTemp;
+	bool bValidBlock = false;
 
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
-		MessageBox(_T("No Block Selected"), _T("Oppsie"));
-	else
+	switch (DrawState)
 	{
-		pEv = GetSong()->GetEventObject(m_FirstSelectedEvent);
-		while (pEv && (pEv->GetIndex() != m_LastSelectedEventIndex + 1) )
+	case DRAWSTATE::COPY:
+		//-------------------------------
+		// first thing, copy the block
+		// and put it into an event
+		// chain object.
+		//-------------------------------
+		bValidBlock = GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
+		if (bValidBlock)
 		{
-			CMsObject* pOb;
-			pEvNew = m_pSong->MakeNewEvent();;
-			pOb = pEv->GetEventMsObjectHead();
-
-			while (pOb)
-			{
-				CMsObject* pNewObj;
-				pNewObj = pOb->MakeANewObject();
-				pNewObj->Copy(pOb);
-				pEvNew->AddObject(pNewObj);
-				pOb = pOb->GetNext();
-			}
-			pEventChain.AddEventAtEnd(pEvNew);
-			pEv = pEv->GetNext();
+			GETAPP->GetMusicStudioClipboard()->Copy(pFirst, pLast);
+			DrawState = DRAWSTATE::PASTE;
+			csTemp.Format(_T("Select Destination"));
+			GetStatusBar()->SetText(csTemp);
 		}
-		//--------------------------------
-		// Chain is created.  Now, insert
-		// into the song at the desired
-		// spot
-		//--------------------------------
-		GetSong()->AddEventChain(dest, &pEventChain);
+		else
+		{
+			{
+				MessageBox(_T("No Block Selected"), _T("Oppsie"));
+				DrawState = DRAWSTATE::NA;
+				m_dmDrawMode = DrawMode::NOP;
+				csTemp.Format(_T("No Events Selected"));
+				GetStatusBar()->SetText(csTemp);
+			}
+		}
+		break;
+	case DRAWSTATE::PASTE:
+		if (pEvDestinationEvent)
+		{
+			GETAPP->GetMusicStudioClipboard()->Paste(pEvDestinationEvent);
+			csTemp.Format(_T("Block Moved To: %d"), pEvDestinationEvent->GetIndex());
+			GetStatusBar()->SetText(csTemp);
+		}
+		else
+		{ 
+		}
+		break;
 	}
-	m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
+	return DrawState;
 }
 
-void CChildViewStaff::MoveBlock(int dest)
+DRAWSTATE CChildViewStaff::MoveBlock(DRAWSTATE DrawState, CMsEvent* pEvDestinationEvent)
 {
-	CMsEvent* pDest = 0;
-	CMsEventChain EventChain;
+	CMsEvent* pFirst = 0, * pLast = 0;
+	CMsEvent* pEv = 0, * pEvNew = 0;
 	CString csTemp;
-	int n;
+	bool bValidBlock = false;
 
-	n = dest - GetSong()->GetEventListTail()->GetIndex() - 1;
-	///--------------------------
-	/// snip out block
-	///----------------------------
-	if ((m_LastSelectedEventIndex < 0) || (m_FirstSelectedEvent < 0))
-		MessageBox(_T("No Block Selected"), _T("Oppsie"));
-	else if ((dest >= m_FirstSelectedEvent) && (dest <= m_LastSelectedEventIndex))
+	switch (DrawState)
 	{
-		csTemp = CString("Error:Move:Dest cannot Include Selected Events");
-		m_Status.SetText(csTemp);
+	case DRAWSTATE::CUT:
+		bValidBlock = GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
+		if (bValidBlock)
+		{
+			DrawState = DRAWSTATE::PASTE;
+			GETAPP->GetMusicStudioClipboard()->Cut(pFirst, pLast);
+			csTemp.Format(_T("Select Destination"));
+			GetStatusBar()->SetText(csTemp);
+		}
+		else
+		{
+			MessageBox(_T("No Block Selected"), _T("Oppsie"));
+			DrawState =  DRAWSTATE::NA;
+			m_dmDrawMode = DrawMode::NOP;
+			csTemp.Format(_T("No Events Selected"));
+			GetStatusBar()->SetText(csTemp);
+		}
+		break;
+	case DRAWSTATE::PASTE:
+		if (pEvDestinationEvent)
+		{
+			GETAPP->GetMusicStudioClipboard()->Paste(pEvDestinationEvent);
+			csTemp.Format(_T("Block Moved To: %d"), pEvDestinationEvent->GetIndex());
+			GetStatusBar()->SetText(csTemp);
+			m_dmDrawMode = DrawMode::NOP;
+			DrawState = DRAWSTATE::NA;
+		}
+		else
+		{
+			MessageBox(_T("Invalid Paste Destination"), _T("Oppsie"));
+			DrawState = DRAWSTATE::NA;
+			m_dmDrawMode = DrawMode::NOP;
+			csTemp.Format(_T("Invalid Paste Destination"));
+			GetStatusBar()->SetText(csTemp);
+		}
+		break;
 	}
-	else
-	{
-		pDest = m_pSong->GetEventObject(dest);
-		//----- Get chain to move ----
-		EventChain.SetHead(m_pSong->GetEventObject(m_FirstSelectedEvent));
-		EventChain.SetTail(m_pSong->GetEventObject(m_LastSelectedEventIndex));
-		//---- Unhook Chain ----
-		EventChain.UnHookChain();
-		///--------------------------------
-		/// Chain is created.  Now, insert
-		/// into the song at the desired
-		/// spot
-		///--------------------------------
-		GetSong()->AddEventChain(pDest,&EventChain,dest,n);
-		m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
-		EventChain.SetSelected(0);
-		m_FirstSelectedEvent = -1;
-		m_LastSelectedEventIndex = -1;
-	}
+	Invalidate();
+	return DrawState;
 }
 
 void CChildViewStaff::UpdateScrollbarInfo(int TotalEvents, const char *Title)
@@ -2030,7 +2145,7 @@ afx_msg LRESULT CChildViewStaff::OnLongMidiMsg(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
+afx_msg LRESULT CChildViewStaff::OnShortMidiMessage(WPARAM wMsg, LPARAM timestamp)
 {
 	int Cmd;
 	int Vel;
@@ -2042,11 +2157,14 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 	int RestFlag = 0;
 	int v;
 	CString csStatus, csTemp;
+	CMsEvent* pFirst = 0, * pLast = 0;
 
 	Cmd = CMD(wMsg);
 	Chan = CHAN(wMsg);
 	Note = NOTE(wMsg);
 	Vel = VEL(wMsg);
+
+	GetSong()->GetSeledtedEventBlock(&pFirst, &pLast);
 	switch (Cmd)
 	{
 	case (int) CMidi::MidiChannelCmds::NOTEOFF:		//OnShortmidimsg
@@ -2068,17 +2186,16 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				adj = CMsNote::NoteAdjustLUT[note];
 				note -= adj;
 				note += 12 * (Note / 12);
-				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
+				CMsEvent* pEv = pLast;
 				CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
 				if (pN) 
 					MidiPlayNote(pN, 0);// Note Off
 				if (m_nMidiNotesOn == 0)
 				{
-					pEv->SetSelected(0);
+					pEv->SetSelected(false);
 					pEv = pEv->GetNext();
 					if (pEv)
 					{
-						m_LastSelectedEventIndex++;
 						pEv->SetSelected(1);
 					}
 					else
@@ -2086,7 +2203,6 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 						pEv = m_pSong->MakeNewEvent();
 						m_pSong->AddEventAtEnd(pEv);
 						pEv->SetSelected(1);
-						m_LastSelectedEventIndex++;
 					}
 					if ((v = IsEventDisplayed(pEv)) != 0)
 					{
@@ -2155,33 +2271,30 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 //					adj = NoteAdjustLUT[note];
 //					note -= adj;
 //					note += 12 * (Note / 12);
-					CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
+					CMsEvent* pEv = pLast;
 					CMsNote* pN = pEv->FindNote(note, adj ? MSFF_ACCIDENTAL_SHARP : MSFF_ACCIDENTAL_INKEY);
 					if (pN) 
 						MidiPlayNote(pN, 0);// Note Off
 					if (m_nMidiNotesOn == 0)
 					{
-						pEv->SetSelected(0);
+						pEv->SetSelected(false);
 						pEv = pEv->GetNext();
 						if (pEv)
 						{
-							m_LastSelectedEventIndex++;
-							pEv->SetSelected(1);
+							pEv->SetSelected(true);
 						}
-						else
-							m_LastSelectedEventIndex = -1;
 					}
 					Invalidate();
 				}
 			}
-			else if ((m_dmDrawMode == DrawMode::DRAW_NOTES_VIA_MIDI) && (m_LastSelectedEventIndex >= 0))
-			{		//this is a NOTE on, so Add a note
-//				int note, adj;
+			else if ((m_dmDrawMode == DrawMode::DRAW_NOTES_VIA_MIDI) && (pLast))
+			{		
+				//this is a NOTE on, so Add a note
 				note = Note % 12;
 				adj = CMsNote::NoteAdjustLUT[note];
 				note -= adj;
 				note += 12 * (Note / 12);
-				CMsEvent* pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
+				CMsEvent* pEv = pLast;
 				m_nMidiNotesOn++;
 				CMsNote* pN = new CMsNote();
 				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
@@ -2285,7 +2398,7 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 					CMsEvent* pEv;
 					CMsObject* pOb;
 
-					pEv = m_pSong->GetEventObject(m_LastSelectedEventIndex);
+					pEv = pLast;
 					if (pEv)
 					{
 						CMsObject* pObT;
@@ -2304,8 +2417,8 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 			case MIDI_CTRLCHGN_ROUNDLOWER:	//insert event
 				if (Vel)
 				{
-					m_pSong->InsertEvent(m_LastSelectedEventIndex);
-					m_pSong->RenumberEvents(NULL, NULL);
+					m_pSong->InsertEmptyEvent(0);
+					m_pSong->RenumberEvents();
 					Invalidate();
 				}
 				break;
@@ -2336,15 +2449,14 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				UpdateNoteInfoFlag = 1;
 				break;
 			case MIDI_CTRLCHNG_REWIND:	//move selection back
-				if ((m_LastSelectedEventIndex >= 0) && (Vel > 0))
+				if ((pLast) && (Vel > 0))
 				{
-					CMsEvent* pEV = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-					pEV->SetSelected(0);
+					CMsEvent* pEV = pLast;
+					pEV->SetSelected(false);
 					pEV = pEV->GetPrev();
-					m_LastSelectedEventIndex--;
 					if (pEV)
 					{
-						pEV->SetSelected(1);
+						pEV->SetSelected(true);
 						m_SongScrollPos += IsEventDisplayed(pEV);
 					}
 					UpdateScrollbarInfo(m_pSong->GetTotalEvents());
@@ -2352,23 +2464,21 @@ afx_msg LRESULT CChildViewStaff::OnShortmidimsg(WPARAM wMsg, LPARAM timestamp)
 				}
 				break;
 			case MIDI_CTRLCHNG_FASTFORWARD:	//move selection forward
-				if ((m_LastSelectedEventIndex >= 0) && (Vel > 0))
+				if ((pLast) && (Vel > 0))
 				{
-					CMsEvent* pEV = m_pSong->GetEventObject(m_LastSelectedEventIndex);
-					pEV->SetSelected(0);
+					CMsEvent* pEV = pLast;
+					pEV->SetSelected(false);
 					pEV = pEV->GetNext();
 					if (pEV)
 					{
-						pEV->SetSelected(1);
-						m_LastSelectedEventIndex++;
+						pEV->SetSelected(true);
 					}
 					else
 					{
 						pEV = m_pSong->MakeNewEvent();
-						pEV->SetSelected(1);
+						pEV->SetSelected(true);
 						m_pSong->AddEventAtEnd(pEV);
-						m_LastSelectedEventIndex++;
-						m_pSong->RenumberEvents(&m_FirstSelectedEvent, &m_LastSelectedEventIndex);
+						m_pSong->RenumberEvents();
 					}
 					if ((v = IsEventDisplayed(pEV)) != 0)
 					{
@@ -2423,10 +2533,6 @@ afx_msg LRESULT CChildViewStaff::OnStaffDispEvent(WPARAM Event, LPARAM cmd)
 	{
 	case STAFF_DISP_EVENT_NEXT:	//OnStaffDispEvent
 	{
-		CMsEvent* pEv = m_pSong->GetEventObject(m_nLastSongPosition);
-		if (pEv)pEv->SetSelected(0);
-		pEv = m_pSong->GetEventObject(Event);
-		if (pEv)pEv->SetSelected(1);
 		//----------------------------------
 		// we need to figure out where we are
 		// and where we want to go.
@@ -2526,10 +2632,12 @@ void CChildViewStaff::OnInitialUpdate()
 	//------------ Event 0 ------------------------------
 	CMsTempo* pTM = new CMsTempo();
 	pEV = m_pSong->GetEventObject(0);
-	pTM->Create(GetSong(), pEV,100);
+	pTM->Create(GetSong(), pEV);
+	pTM->SetQNPM(100);
 	pEV->AddObject(pTM);
 	CMsTimeSignature* pTS = new CMsTimeSignature();
-	pTS->Create(GetSong(), pEV, CMsTimeSignature::TimeSigID::TS_4_4);
+	pTS->Create(GetSong(), pEV);
+	pTS->SetTimeSignature(CMsTimeSignature::TimeSigID::TS_4_4);
 	pEV->AddObject(pTS);
 	//-------------- Event 1 -----------------------
 	CMsKeySignature* pKS = new CMsKeySignature;
@@ -2814,7 +2922,7 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 		}
 		// Draw Special Objects
 		// Draw Tie if needed
-		if (m_dmDrawMode == DrawMode::TIE && m_nDrawState == DRAWSTATE::TIE_SECONDNOTE)
+		if (m_dmDrawMode == DrawMode::TIE && m_dsDrawState == DRAWSTATE::TIE_SECONDNOTE)
 		{
 			CRect r;
 			r.SetRect(m_TieEndPoint + CSize(0, -16), m_TieStartPoint + CSize(0, 16));
@@ -2908,7 +3016,6 @@ LRESULT CChildViewStaff::MyControlsMessages(WPARAM ComboID, LPARAM nSelection)
 	CBToggle ToggleMSG;
 	int op;
 	int Selection = 0;
-	CMsNote* pNote;
 	int Track = 0, Patch = 0, Chan = 0;
 	CMsEvent* pEv = 0;
 	CMsObject* pDrawObj = 0;
@@ -3107,7 +3214,7 @@ void CChildViewStaff::CheckAndDoScroll(CPoint point)
 		m_SongScrollPos += 4;
 		for (int i = 0; i < 4; ++i)
 			GetSong()->AddEventAtEnd(GetSong()->MakeNewEvent());
-		GetSong()->RenumberEvents(NULL, NULL);
+		GetSong()->RenumberEvents();
 		SetScrollRange(GetSong()->GetTotalEvents() - GetMaxEvents());
 		SetScrollPos(GetSong()->GetTotalEvents() - GetMaxEvents());
 	}
@@ -3223,7 +3330,7 @@ void CChildViewStaff::DoBlockOps(int Op)
 	}
 	break;
 	case COMBO_BLOCK_INSERT:	//insert blok
-		mode = DrawMode::INSERTBLOCK;
+		mode = DrawMode::INSERT_EMPTY_BLOCK;
 		break;
 	case COMBO_BLOCK_MIDIINPUT:	//Insert notes via midi
 //		mode = DRAW_DRAWNOTESVIAMIDI;
@@ -3363,6 +3470,13 @@ afx_msg LRESULT CChildViewStaff::OnChildviewPlayerthread(WPARAM SubCommand, LPAR
 
 void CChildViewStaff::OnTimer(UINT_PTR nIDEvent)
 {
+	switch(nIDEvent)
+	{
+	case TIMERID_DRAG:
+		break;
+	case TIMERID_SCROLL:
+		break;
+	}
 	CChildViewBase::OnTimer(nIDEvent);
 }
 
@@ -3702,299 +3816,25 @@ const char* CChildViewStaff::GetDrawModeName(DrawMode mode)
 	return pName;
 }
 
+const char* CChildViewStaff::GetTimerIDName(TimerIDs id)
+{
+	const char* pName = nullptr;
+
+	for (int i = 0; TimerIDLUT[i].m_TimerID != TimerIDs::TIMERID_NONE; ++i)
+	{
+		if (TimerIDLUT[i].m_TimerID == id)
+		{
+			pName = TimerIDLUT[i].m_pName;
+			break;
+		}
+	}
+	return pName;
+}
+
 void CChildViewStaff::OnMenuMsFileSave()
 {
 }
 
-/*
-
-void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
-{
-	CMsEvent* pEV = 0;
-	CMsNote* pN;
-	CMsObject* pObj;
-	MouseRegions Region;
-	MouseRegionTransitionState TransitionState;
-	int NoteLocation = 0;	// location of note on the stave
-	CString StatusString,csTemp;
-	bool Loop = false;
-	int NoteActuallyPlayed = 0;
-	int NoteIndex = 0;
-
-	m_nDrawEvent = XtoEventIndex(pointMouse.x);
-	m_MouseRegionTransitionState = RegionTransition(pointMouse);
-	Region = MouseInRegion(pointMouse);
-	TransitionState = RegionTransition(pointMouse);
-	m_MouseRegionTransitionState = TransitionState;
-	m_MouseRegion = Region;
-	if (LogFile()) fprintf(LogFile(), "Mouse Move: Region %s Transition: %s\n",
-		GetMouseRegionName(Region),
-		GetMouseRegionTransitionName(TransitionState)
-	);
-	switch (Region)
-	{
-	case MouseRegions::MOUSE_IN_UPPERSEL:	//OnMouseMove
-	case MouseRegions::MOUSE_IN_LOWERSEL:
-		//----------------------------------
-		// Update the state as to where the
-		// mouse happens to be.  If the mouse
-		// has gone from the edit area to
-		// the sel area, then make a note
-		// of that as well.
-		//-----------------------------------
-
-		//------------------------------------
-		switch (m_dmDrawMode)
-		{
-		case DrawMode::NOTE:		//OnMouseMove
-			pN = (CMsNote*)GetDrawObject();
-			//if (pN)
-			//{
-			//	pN->NoteOff(0);	//NoteOff
-			//	pEV = pN->GetParentEvent();
-			//	pEV->RemoveObject(pN);
-			//	delete GetDrawObject();
-			//	SetLastNote(nullptr);
-			//	GetDrawObject() = 0;
-			//}
-			if (GetLastNote() && TransitionState == MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_OUTSIDE)
-			{
-				GetLastNote()->NoteOff(0);	//NoteOff
-				SetLastNote(nullptr);
-			}
-			break;
-		case DrawMode::BAR:
-		case DrawMode::ENDBAR:
-		case DrawMode::GLISSANDO:
-		case DrawMode::KEYSIG:
-		case DrawMode::LOUDNESS:
-		case DrawMode::REPEAT:
-		case DrawMode::REST:
-			break;
-		}	//end of switch(m_dmDrawMode) in case MOUSE_IN_UPPERSEL
-		Invalidate();
-		break;
-	case MouseRegions::MOUSE_OUTSIDE:	///On Mouse Move
-		switch (m_dmDrawMode)	//OnMouseMove
-		{
-		case DrawMode::NOTE:
-			//if (GetLastNote() && m_ExitEditRegion)
-			//{
-			//	GetLastNote()->NoteOff(0);	//NoteOff
-			//	SetLastNote(nullptr);
-			//	Invalidate();
-			//}
-			break;
-		case DrawMode::BAR:
-		case DrawMode::ENDBAR:
-		case DrawMode::GLISSANDO:
-		case DrawMode::KEYSIG:
-		case DrawMode::LOUDNESS:
-		case DrawMode::REPEAT:
-		case DrawMode::REST:
-			break;
-		}	//end of switch(m_dmDrawMode) in case MOUSE_OUTSIDE
-		break;
-	case MouseRegions::MOUSE_IN_EDITREG:	//On Mouse Move In Edit Region
-		//-----------------------------
-		// change the mouse Y coordinate
-		// into a note location on the
-		// stave, ie C, D, E, F, etc
-		// The note location is NOT the
-		// actual pitch.  The actual
-		// pitch is determined by the
-		// Key Signature or an accidental
-		// if one is present.
-		//-----------------------------
-		NoteLocation = YtoNote(pointMouse.y);
-		switch(m_dmDrawMode)
-		{
-		case DrawMode::NOP:		// OnMouseMove  Move In Edit Region
-			pEV = m_pSong->GetEventObject(m_nDrawEvent);
-			if (pEV)
-			{
-				pObj = pEV->GetEventMsObjectHead();
-				if (m_nMouseState == StaffViewMouseState::STAFFVIEW_MOUSEDOWN)
-				{
-					CMsObject* pSelectedObjects = NULL;
-					Loop = true;
-
-					if (m_DragFlag)
-					{
-
-					}
-					else
-					{
-						//-------------------------------------
-						// Determin if the mouse happens to be
-						// over one of the selected objects
-						//--------------------------------------
-						pSelectedObjects = GetSelectedObjectHead();
-						while (pSelectedObjects && Loop)
-						{
-							if (pSelectedObjects->MouseOverObject(pointMouse))
-							{
-								Loop = 0;
-								m_DragFlag = 1;
-							}
-							else
-							{
-								pSelectedObjects = pSelectedObjects->GetNextSelectedObject();
-							}
-						}
-
-					}
-					//------------------------
-					// Do Drags and such
-					//------------------------
-					pSelectedObjects = GetSelectedObjectHead();
-				}
-				else // Mouse button is up	//OnMouseMove  Move In Edit Region
-				{
-					//--------------------------
-					// highlight objects and
-					// other nonsense
-					//---------------------------
-					Loop = true;
-					while (pObj && Loop)
-					{
-						if (pObj->HighLight(true, pointMouse))
-						{
-							Loop = false;
-						}
-						else
-						{
-							pObj = pObj->GetNext();
-						}
-					}
-					if (pObj == NULL)
-					{
-//						fprintf(stderr, "No Object Found, Clear Highlight\n");
-						if (m_pHighLightedObject)
-							m_pHighLightedObject->SetHighLight(false);
-						m_pHighLightedObject = NULL;
-					}
-					else
-					{
-						m_pHighLightedObject = pObj;
-					}
-				}
-				Invalidate();
-			}
-			break;
-		case DrawMode::NOTE:		//OnMouseMove Move In Edit Region
-			//-------------------------------
-			// Move a note around the screen
-			//--------------------------------
-			pN = (CMsNote*)GetDrawObject();
-			if (pN)
-			{
-
-				if (!m_nLastSongPosition)
-				{
-					pEV = m_pSong->GetEventObject(m_nDrawEvent);
-					if(pEV)
-					{
-						pEV	->AddObject(pN);
-						m_nLastSongPosition = m_nDrawEvent;
-						fprintf(GETAPP->LogFile(),"Added note in order at event %d\n", m_nDrawEvent);
-					}
-				}
-				else if (m_nLastSongPosition != m_nDrawEvent)
-				{
-					pEV = m_pSong->GetEventObject(m_nLastSongPosition);
-					if (pEV)
-					{
-;						pEV->RemoveObject(pN);
-						pEV = m_pSong->GetEventObject(m_nDrawEvent);
-						pEV->AddObject(pN);
-						m_nLastSongPosition = m_nDrawEvent;
-					}
-					else
-					{
-						if (LogFile()) fprintf(GETAPP->LogFile(),"t\t\t ? ? ? ? No Event at Last Song Position % d\n", m_nLastSongPosition);
-					}
-				}
-				else
-				{
-//					m_nLastSongPosition = m_nDrawEvent;
-					if (LogFile()) fprintf(LogFile(), "Same Event Last:%d Current:%d\n", m_nLastSongPosition, m_nDrawEvent);
-				}
-				pN->MouseMove(m_nDrawState, pointMouse);
-			}
-			break;
-		case DrawMode::GLISSANDO:		//On Mouse Move Move In Edit Region
-			switch (m_nDrawState)
-			{
-			case DRAWSTATE::WAITFORMOUSE_DOWN:
-				GetDrawObject()->MouseMove(m_nDrawState, pointMouse);
-				break;
-			case DRAWSTATE::GLISSANDO_FIRST_NOTE:
-				GetDrawObject()->MouseMove(m_nDrawState, pointMouse);
-				break;
-			case DRAWSTATE::GLISSANDO_SECOND_NOTE:
-//				m_GlissEndPoint = CPoint(pointMouse.x, m_GlissStartPoint.y);
-				GetDrawObject()->MouseMove(m_nDrawState, pointMouse);
-				Invalidate();
-				break;
-			default:
-				if (LogFile()) fprintf(LogFile(), "Unknown Glissando State\n");
-				break;
-			}	//end of switch(m_nDrawState)
-			break;
-		case DrawMode::ENDBAR:		//On Mouse Move Move In Edit Region
-			if (CMsObject::MsObjType::ENDBAR == GetDrawObject()->GetType())
-			{
-				StatusString.Format(_T("Draw Song End Bar At Event %d"), m_nDrawEvent);
-				Invalidate();
-			}
-			break;
-		case DrawMode::BAR:		//On Mouse Move Move In Edit Region
-			if (CMsObject::MsObjType::BAR == GetDrawObject()->GetType())
-			{
-				StatusString.Format(_T("Draw Measure Bar At Event %d"), m_nDrawEvent);
-				Invalidate();
-			}
-			break;
-		case DrawMode::KEYSIG:		//On Mouse Move Move In Edit Region
-			GetDrawObject()->MouseMove(m_nDrawState, pointMouse);
-			break;
-		case DrawMode::TIMESIG:		//On Mouse Move Move In Edit Region
-			StatusString.Format(_T("Draw Time Signature at event %d"), m_nDrawEvent);
-			Invalidate();
-			break;
-		case DrawMode::TEMPO:		//On Mouse Move Move In Edit Region
-			StatusString.Format(_T("Draw Tempo Change at event %d"), m_nDrawEvent);
-			Invalidate();
-			break;
-		case DrawMode::TIE:		//On Mouse Move Move In Edit Region
-			switch (m_nDrawState)
-			{
-			case DRAWSTATE::TIE_FIRSTNOTE:
-				StatusString.Format(_T("Select First Note at Event %d"), m_nDrawEvent);
-				break;
-			case DRAWSTATE::TIE_SECONDNOTE:
-				m_TieEndPoint = CPoint(pointMouse.x, m_TieStartPoint.y);
-				StatusString.Format(_T("Select Second Note at Event %d"), m_nDrawEvent);
-				Invalidate();
-				break;
-			}	//end of switch(m_nDrawState)
-			break;
-		case DrawMode::LOUDNESS:		//On Mouse Move Move In Edit Region
-			StatusString.Format(_T("Change Loudness at event %d"), m_nDrawEvent);
-			Invalidate();
-			break;
-		case DrawMode::MOVE:		//On Mouse Move Move In Edit Region
-			StatusString.Format(_T("Move Block To Event %d"), m_nDrawEvent);
-			m_Status.SetText(StatusString);
-			break;
-		}
-		break;
-	}
-//	if (StatusString.GetLength())m_Status.SetText(StatusString);
-	CWnd::OnMouseMove(nFlags, pointMouse);
-}
-*/
 void CChildViewStaff::OnSettingsTracksettinigs()
 {
 	CDlgMidiInfo Dlg;

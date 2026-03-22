@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
-#include "MsTimeSig.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -19,9 +18,9 @@ CMsTimeSignature::~CMsTimeSignature()
 
 }
 
-bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent, TimeSigID TS)
+bool CMsTimeSignature::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
-	m_TimeSig = TS;
+	m_TimeSig = TimeSigID::TS_4_4;	// default time signature
 	pSong->SetCurrentTimeSignature(this);
 	return CMsObject::Create(pSong, pEvent);
 }
@@ -292,7 +291,7 @@ DRAWSTATE CMsTimeSignature::Place(DRAWSTATE DrawState, CPoint pointMouse)
 	CMsTimeSignature* pTS = nullptr;
 
 	pTS = new CMsTimeSignature;
-	pTS->Create(GetSong(), GetParentEvent(), GetTimeSignature());
+	pTS->Create(GetSong(), GetParentEvent());
 	pTS->Copy(this);
 	GetStaffChildView()->SetDrawObject(pTS);
 	//-----------------------------
@@ -321,8 +320,8 @@ DRAWSTATE CMsTimeSignature::PlaceEventChanged(DRAWSTATE DrawState, CPoint pointM
 		SetParentEvent(pEV);
 	}
 	pTS = new CMsTimeSignature;
-	pTS->Create(GetSong(), GetParentEvent(), GetTimeSignature());
-	pTS->Copy(GetStaffChildView()->GetDrawObject());
+	pTS->Create(GetSong(), GetParentEvent());
+	pTS->Copy(this);
 	GetStaffChildView()->SetDrawObject(pTS);
 	GetParentEvent()->AddObject(pTS);
 	GetStaffChildView()->CheckAndDoScroll(pointMouse);
@@ -346,7 +345,12 @@ void CMsTimeSignature::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sTime Signature:%s\n", pIndentString, TimeSigLut[m_TimeSig]);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
+}
+
+CMsObject* CMsTimeSignature::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+	return nullptr;
 }
 
 void CMsTimeSignature::Draw(CDC *pDC)

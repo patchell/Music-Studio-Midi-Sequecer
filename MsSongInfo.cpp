@@ -52,7 +52,7 @@ void CMsSongInfo::EditSongInfo(int InstID)
 		//---------------------------
 		this->Copy(pSongInfo);
 	}
-	delete pSongInfo;
+	if(pSongInfo) delete pSongInfo;
 }
 
 CMsTrack* CMsSongInfo::GetTrack(int TrackID)

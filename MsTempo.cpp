@@ -20,10 +20,10 @@ CMsTempo::~CMsTempo()
 
 }
 
-bool CMsTempo::Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo)
+bool CMsTempo::Create(CMsSong* pSong, CMsEvent* pEvent)
 {
 	CMsObject::Create(pSong, pEvent);
-	m_Tempo = Tempo;
+	m_Tempo = 100;	//default tempo
 	pSong->SetCurrentTempo(this);
 	return true;
 }
@@ -145,7 +145,7 @@ DRAWSTATE CMsTempo:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mous
 					[[fallthrough]];
 				case StaffMouseStates::MOUSE_STAFF_STATE_NOTE_CHANGE:
 					pNewTempo = new CMsTempo;
-					pNewTempo->Create(GetSong(), GetParentEvent(), GetQNPM());
+					pNewTempo->Create(GetSong(), GetParentEvent());
 					pNewTempo->Copy(GetStaffChildView()->GetDrawObject());
 					GetStaffChildView()->SetDrawObject(pNewTempo);
 					//-----------------------------
@@ -173,7 +173,7 @@ DRAWSTATE CMsTempo:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMouse, Mous
 						SetParentEvent(pEV);
 					}
 					pNewTempo = new CMsTempo;
-					pNewTempo->Create(GetSong(), GetParentEvent(), GetQNPM());
+					pNewTempo->Create(GetSong(), GetParentEvent());
 					pNewTempo->Copy(GetStaffChildView()->GetDrawObject());
 					GetStaffChildView()->SetDrawObject(pNewTempo);
 					GetParentEvent()->AddObject(pNewTempo);
@@ -290,7 +290,6 @@ DRAWSTATE CMsTempo::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegio
 		switch (Transition)
 		{
 		case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
-			printf("\tMouse Move with no transition. Region: %d\n", (int)Region);
 			if (Region == MouseRegions::MOUSE_IN_EDITREG)
 			{
 				switch (StaffTransition(pointMouse, 0, GetParentEvent()))
@@ -378,7 +377,7 @@ void CMsTempo::Print(FILE *pO, int Indent)
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	fprintf(pO,"%sTempo:%d\n", pIndentString, m_Tempo);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 UINT CMsTempo::ObjectToString(CString& csString, UINT mode)
@@ -388,6 +387,11 @@ UINT CMsTempo::ObjectToString(CString& csString, UINT mode)
 
 void CMsTempo::ObjectRectangle(CRect& rect, UINT Event)
 {
+}
+
+CMsObject* CMsTempo::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+	return nullptr;
 }
 
 void CMsTempo::Draw(CDC *pDC)
@@ -437,7 +441,7 @@ void CMsTempo::Draw(CDC *pDC)
 	pDC->SetTextColor(OldTextColor);
 	dc.SelectObject(oldBM);
 	pDC->SelectObject(oldFont);
-	delete[] s;
+	if(s) delete[] s;
 }
 
 StaffMouseStates CMsTempo::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)

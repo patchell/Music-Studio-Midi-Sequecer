@@ -21,6 +21,7 @@ CSelectStringDlg::~CSelectStringDlg()
 	if (m_pcsStrings)
 	{
 		delete[] m_pcsStrings;
+		m_pcsStrings = 0;
 	}
 }
 

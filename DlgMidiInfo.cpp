@@ -100,7 +100,7 @@ void CDlgMidiInfo::UpdateControls(int InstID)
 	m_SB_RangeSelection.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetPitchRange());
 	m_SB__MidiChannel.SetScrollPos(m_pSongInfo->GetTrack(InstID)->GetChannel());
 	m_Combo_MidiDevice.SetCurSel(m_pSongInfo->GetTrack(InstID)->GetMidiOutDeviceID());
-	delete[] s;
+	if(s) delete[] s;
 }
 
 

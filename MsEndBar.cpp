@@ -328,13 +328,18 @@ DRAWSTATE CMsEndBar::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, MouseRegi
 	return DrawState;
 }
 
+CMsObject* CMsEndBar::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+
 void CMsEndBar::Print(FILE *pO, int Indent)
 {
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
 //	if(pO) fprintf(pO,"%s-------Song End------\n", pIndentString);
-	delete[] pIndentString;
+	if(pIndentString) delete[] pIndentString;
 }
 
 void CMsEndBar::Draw(CDC *pDC)

@@ -122,7 +122,6 @@ DRAWSTATE CMsKeySignature:: MouseLButtonUp(DRAWSTATE DrawState, CPoint pointMous
 {
 	CMsKeySignature* pKS = nullptr;
 	CString csText;
-	int EventIndex;
 	CMsEvent* pEV = nullptr;
 
 	switch (DrawState)
@@ -477,8 +476,6 @@ int CMsKeySignature::GetKeySigCorrection(int Note)
 	UINT n = Note % 12;
 	int rNoteCorrection = 0;
 
-	if(this == nullptr)
-		printf("Well\n");
 	rNoteCorrection = KeySigCorrectionLUT[int(m_KeySignature)].m_pKeySigCorrection[n];
 	return rNoteCorrection;
 }
@@ -518,4 +515,9 @@ void CMsKeySignature::Save(FILE *pO)
 int CMsKeySignature::NoteToPosition(int Note)
 {
 	return CMsNote::NotePos[Note % 12] + 28 * (7 - (Note / 12)) + (TREBLE_TOP_LINE);
+}
+
+CMsObject* CMsKeySignature::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }

@@ -190,7 +190,7 @@ public:
 			m_pParentEvent = pEvent;
 //		}
 	}
-	virtual CMsObject* MakeANewObject() { return nullptr; }
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent) { return nullptr; }
 	virtual void DebugDump();
 	//-------------------------------------------------
 	// Attribute Methods

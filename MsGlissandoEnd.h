@@ -51,5 +51,6 @@ public:
 	void SetSelected(bool selected) {
 		m_bSelected = selected;
 	}
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };
 

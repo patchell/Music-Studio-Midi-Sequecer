@@ -22,7 +22,10 @@ CDlgSelectMidiOut::CDlgSelectMidiOut(CWnd* pParent /*=nullptr*/)
 
 CDlgSelectMidiOut::~CDlgSelectMidiOut()
 {
-	delete[] m_pcsNames;
+	if (m_pcsNames) {
+		delete[] m_pcsNames;
+		m_pcsNames = 0;
+	}
 }
 
 void CDlgSelectMidiOut::DoDataExchange(CDataExchange* pDX)

@@ -36,4 +36,5 @@ public:
 	}
 	void SetLoudness(UINT l){m_Loudness = l;}
 	int EditLoudness();
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };

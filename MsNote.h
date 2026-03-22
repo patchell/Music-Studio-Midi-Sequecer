@@ -649,6 +649,7 @@ public:
 	//---------- Process and Play ------------
 	virtual bool RemoveFromQueue();
 	//-------------------------------------------
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 	virtual void ObjectRectangle(CRect& rect);
 	static DUR* GetDurationTable() { return DurTab; }
 	//---------------------------------

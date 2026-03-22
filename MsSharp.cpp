@@ -68,3 +68,8 @@ void CMsSharp::Draw(CDC *pDC, COLORREF c, int x, int y)
 	pDC->SelectObject(oldpen);
 }
 
+CMsObject* CMsSharp::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+

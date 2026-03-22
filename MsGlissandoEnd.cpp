@@ -199,3 +199,8 @@ void CMsGlissandoEnd::ObjectRectangle(CRect& rect, UINT Event)
 {
 }
 
+CMsObject* CMsGlissandoEnd::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+

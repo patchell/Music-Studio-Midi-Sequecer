@@ -10,7 +10,10 @@ CContextMenuList::CContextMenuList()
 
 CContextMenuList::~CContextMenuList()
 {
-	if (m_ppList) delete[] m_ppList;
+	if (m_ppList) {
+		delete[] m_ppList;
+		m_ppList = 0;
+	}
 }
 
 

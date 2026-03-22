@@ -236,9 +236,10 @@ constexpr auto DRAW_NOTE_REST_SHIFT = (12);
 constexpr auto DRAW_NOTE_ENDTIE = (0x2000);	//not used
 constexpr auto DRAW_NOTE_BEGTIE = (0x4000);	//not used
 
-
-constexpr auto STAFF_DISP_EVENT_NEXT = 0;
-constexpr auto STAFF_DISP_EVENT_END = 1;
+enum {
+	STAFF_DISP_EVENT_NEXT,
+	STAFF_DISP_EVENT_END
+};
 
 //--------------------------------------
 // IDs for Combo Boxes in Staff view

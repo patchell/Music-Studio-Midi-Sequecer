@@ -13,6 +13,7 @@ CMidiInTable::~CMidiInTable()
 		for (int i = 0; i < m_nDevices; ++i)
 			delete m_ppTable[i];
 		delete[] m_ppTable;
+		m_ppTable = 0;
 	}
 
 }

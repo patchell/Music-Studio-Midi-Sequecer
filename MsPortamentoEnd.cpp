@@ -219,6 +219,11 @@ DRAWSTATE CMsPortamentoEnd::MouseMove(DRAWSTATE DrawState, CPoint pointMouse, Mo
 	return DrawState;
 }
 
+CMsObject* CMsPortamentoEnd::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+
 void CMsPortamentoEnd::Copy(CMsObject* pSource)
 {
 	CMsObject::Copy(pSource);

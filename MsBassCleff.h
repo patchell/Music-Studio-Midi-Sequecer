@@ -29,5 +29,6 @@ public:
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void Draw(CDC* pDC);
 	virtual StaffMouseStates StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent);
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };
 

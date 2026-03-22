@@ -38,7 +38,7 @@ public:
 	virtual UINT Process(CMsSong* pSong);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
-	virtual CMsObject* MakeANewObject();
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 	//------------------------------------------------------
 	UINT GetBarNumber(void){return m_BarNumber;}
 	void SetBarNumber(UINT Bm) { m_BarNumber = Bm; }

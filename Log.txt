@@ -1,70 +1,517 @@
 -------- MisiSeqMS Start -------
 Player Thread Ready
-		Event -1: Add Object Type Bass Clef Object Event -1 ID=3
-		Event -1: Add Object Type Treble Clef Object Event -1 ID=4
-		Event 0: Add Object Type Tempo Object Event 0 ID=16
-		Event 0: Add Object Type Time Signature Object Event 0 ID=17
-		Event 1: Add Object Type Key Signature Object Event 1 ID=18
-		Event 1: Add Object Type Loudness Object Event 1 ID=19
-	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 6 ID:603
-Change Patch: Track 7, Midi Channel 7, Patch 0, DeviceID 0
-	CComboDropDown::SetCurSel ComboDropDown: <Un Named>, New Selection: 2 ID:604
-		Event 5: Add Object Type Note Object Event 5 ID=20
-		Event 5:**NO Notes
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-     ***********************************
-         Pitch = 76
-     ***********************************
-		Event:5:Remove Object Note From Head ID=20
-		Event 6: Add Object Type Note Object Event 6 ID=20
-		Event 6:**NO Notes
-		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
-		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
-     ***********************************
-         Pitch = 64
-     ***********************************
-		Event:6:Remove Object Note From Head ID=20
-		Event 5: Add Object Type Note Object Event 5 ID=20
-		Event 5:**NO Notes
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-     ***********************************
-         Pitch = 45
-     ***********************************
-		Event:5:Remove Object Note From Head ID=20
-		Event 4: Add Object Type Note Object Event 4 ID=20
+		Event 1:**NO Notes
+         Pitch = 71
+		Event 2:**NO Notes
+         Pitch = 69
+		Event 3:**NO Notes
+         Pitch = 62
 		Event 4:**NO Notes
-		Event 4: Is This Object Note of 1 Events  Object::Event=4 ID=20
-		Event 4: Is This Object Note of 1 Events  Object::Event=4 ID=20
-     ***********************************
-         Pitch = 79
-     ***********************************
-		Event:4:Remove Object Note From Head ID=20
-		Event 5: Add Object Type Note Object Event 5 ID=20
+         Pitch = 59
 		Event 5:**NO Notes
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-		Event 5: Is This Object Note of 1 Events  Object::Event=5 ID=20
-     ***********************************
-         Pitch = 79
-     ***********************************
-		Event:5:Remove Object Note From Head ID=20
-		Event 6: Add Object Type Note Object Event 6 ID=20
+         Pitch = 57
 		Event 6:**NO Notes
-		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
-		Event 6: Is This Object Note of 1 Events  Object::Event=6 ID=20
-     ***********************************
-         Pitch = 79
-     ***********************************
-		Event:6:Remove Object Note From Head ID=20
-		Event 8: Add Object Type Note Object Event 8 ID=20
-		Event 8:**NO Notes
-		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=20
-		Event 8: Is This Object Note of 1 Events  Object::Event=8 ID=20
-     ***********************************
-         Pitch = 77
-     ***********************************
-		Event:8:Remove Object Note From Head ID=20
-		Event 9: Add Object Type Note Object Event 9 ID=20
-		Event 9:**NO Notes
+         Pitch = 62
+		Event 7:**NO Notes
+         Pitch = 64
+		Event 6:**NO Notes
+         Pitch = 57
+         Pitch = 45
+         Pitch = 36
+         Pitch = 36
+		Get Song Position is event 0
+---- PROCESSING EVENT: 0
+		Get Song Position is event 0
+		Get Song Position is event 0
+****
+	---- PLAY QUEUE: OBJECT_DONE Time Signature Event:0 Total Objects:2
+	---- PLAY QUEUE: OBJECT_DONE Tempo Event:0 Total Objects:1
+		Get Song Position is event 0
+Current Event:0 Next event to process is 1 Ticks:1
+		Get Song Position is event 0
+---- PROCESSING EVENT: 1
+		Get Song Position is event 1
+		Get Song Position is event 1
+****
+	---- PLAY QUEUE: OBJECT_DONE Loudness Event:1 Total Objects:2
+	---- PLAY QUEUE: OBJECT_DONE Key Signature Event:1 Total Objects:1
+		Get Song Position is event 1
+Current Event:1 Next event to process is 3 Ticks:2
+		Get Song Position is event 1
+---- PROCESSING EVENT: 3
+		Get Song Position is event 3
+		Get Song Position is event 3
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 3
+Current Event:3 Next event to process is 4 Ticks:50
+		Get Song Position is event 3
+---- PROCESSING EVENT: 4
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:98
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 7 Ticks:146
+		Get Song Position is event 5
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+No more events to process
+****
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+		Event 0:**NO Notes
+         Pitch = 62
+		Get Song Position is event 0
+---- PROCESSING EVENT: 0
+		Get Song Position is event 0
+		Get Song Position is event 0
+****
+	---- PLAY QUEUE: OBJECT_DONE Time Signature Event:0 Total Objects:2
+	---- PLAY QUEUE: OBJECT_DONE Tempo Event:0 Total Objects:1
+		Get Song Position is event 0
+Current Event:0 Next event to process is 1 Ticks:1
+		Get Song Position is event 0
+---- PROCESSING EVENT: 1
+		Get Song Position is event 1
+		Get Song Position is event 1
+****
+	---- PLAY QUEUE: OBJECT_DONE Loudness Event:1 Total Objects:2
+	---- PLAY QUEUE: OBJECT_DONE Key Signature Event:1 Total Objects:1
+		Get Song Position is event 1
+Current Event:1 Next event to process is 3 Ticks:2
+		Get Song Position is event 1
+---- PROCESSING EVENT: 3
+		Get Song Position is event 3
+		Get Song Position is event 3
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 3
+Current Event:3 Next event to process is 4 Ticks:50
+		Get Song Position is event 3
+---- PROCESSING EVENT: 4
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+         Pitch = 86
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:98
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 7 Ticks:146
+		Get Song Position is event 5
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+         Pitch = 83
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+         Pitch = 50
+****
+****
+****
+****
+****
+****
+****
+****
+         Pitch = 36
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+No more events to process
+****
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+         Pitch = 53
+         Pitch = 69
+         Pitch = 81
+		Event 2:**NO Notes
+         Pitch = 84
 ------ Exit MidiSeqMS-------

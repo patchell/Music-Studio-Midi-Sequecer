@@ -124,8 +124,8 @@ bool CMsNote::Create(
 	}
 	else
 		m_BitmapFlag = false;
-	if(pSong == NULL)
-		if (LogFile()) fprintf(LogFile(), "pSong is NULL in CMsNote::Create\n");
+/*	if(pSong == NULL)
+		if (LogFile()) fprintf(LogFile(), "pSong is NULL in CMsNote::Create\n");*/
 	return CMsObject::Create(pSong, pParentEvent);
 }
 
@@ -166,10 +166,10 @@ void CMsNote::Print(FILE *pO, int Indent)
 	char* pIndentString = new char[256];
 
 	theApp.IndentString(pIndentString, 256, Indent);
-	if(pO)fprintf(pO, "%s***********************************\n", pIndentString);
+//	if(pO)fprintf(pO, "%s***********************************\n", pIndentString);
 	CMsObject::Print(pO, Indent+4);
 	GetData().PrintData(pO, GetDataPointer(), Indent+4);
-	if(pO) fprintf(pO, "%s***********************************\n", pIndentString);
+//	if(pO) fprintf(pO, "%s***********************************\n", pIndentString);
 
 	if(pIndentString) delete[] pIndentString;
 }
@@ -716,7 +716,6 @@ void CMsNote::DrawWholeRest(CDC* pDC, int NoteY, COLORREF Color)
 	// up against the line.
 	//----------------------------------
 	CRect rectRest;
-	ExtraLinesLocation Location;
 	int Y = 0;
 
 	Y = NearestLine() + NoteY + 4;
@@ -799,7 +798,11 @@ bool CMsNote::IsDuplicate()
 			else if (Pitch == pNote->GetPitch())
 			{
 				pEv->RemoveObject(pNote);
-				delete pNote;
+				if(pNote) 
+				{ 
+					delete pNote; 
+					pNote = nullptr; 
+				}
 				rV = true;
 			}
 			else
@@ -955,13 +958,15 @@ void CMsNote::NoteOn(int Velocity)
 		DeviceID = GetSong()->GetTrackInfo(GetTrack())->GetMidiOutDeviceID();
 		GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOn(MidiChannel, m_NotePlayed, Loudness);
 		GetSong()->IncNoteOnCount(m_NotePlayed);	// for diagnostics
-		//if (LogFile())
-		//	fprintf(LogFile(),
-		//		"\tNoteOn: Ch=%d Note=%s Vel=%d\n",
-		//		MidiChannel,
-		//		NoteToString(pStr, 256),
-		//		Loudness
-		//	);
+/*		if (LogFile() && GetSong()->IsPlaying())
+			fprintf(LogFile(),
+				"\tNoteOn: Ch=%d Note=%s Vel=%d Ticks =%d Evebt:%d\n",
+				MidiChannel,
+				NoteToString(pStr, 256),
+				Loudness,
+				GetSong()->GetTotalTicks(),
+				GetParentEvent()->GetIndex()
+			);*/
 	}
 	if (pStr) delete[] pStr;
 }
@@ -985,6 +990,17 @@ void CMsNote::NoteOff(int Velocity)
 		GETAPP->GetMidiOutTable()->GetDevice(DeviceID).NoteOff(MidiChannel, NotePitch, Velocity);
 		GetSong()->IncNoteOffCount(m_NotePlayed);	// for diagnostics
 		m_NotePlayed = INVALID_PITCH;
+/*		if (LogFile() && GetSong()->IsPlaying())
+		{
+			fprintf(LogFile(),
+				"\tNoteOff: Ch=%d Note=%s Vel=%d Ticks =%d\n",
+				MidiChannel,
+				NoteToString(pStr, 256),
+				Velocity,
+				GetSong()->GetTotalTicks()
+			);
+
+		}*/
 		//if (LogFile())
 		//	fprintf(LogFile(), "NoteOff: Ch=%d Note=%s Vel=%d\n",
 		//		MidiChannel,
@@ -1016,8 +1032,8 @@ int CMsNote::GetCorrectedPitchWithKeySignature()
 		// current event must be at
 		// Event index 0
 		//-------------------------------
-		if (LogFile()) 
-			fprintf(LogFile(), "pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature\n");
+/*		if (LogFile()) 
+			fprintf(LogFile(), "CMsNote::GetCorrectedPitchWithKeySignature->pKS is NULL in CMsNote::GetCorrectedPitchWithKeySignature\n");*/
 	}
 	return NotePitch;
 }
@@ -1042,11 +1058,11 @@ void CMsNote::Copy(CMsNote* pN)
 {
 	CMsSong* pSong = GetSong();
 
-	if(pSong == NULL)
+/*	if(pSong == NULL)
 	{
 		if (LogFile()) 
 			fprintf(LogFile(), "pSong is NULL in CMsNote::Copy\n");
-	}
+	}*/
 	SetRestBitmap(pN->GetRestBitmap());
 	GetData().CopyData(pN->GetData());
 	SetParentEvent(pN->GetParentEvent());
@@ -1572,6 +1588,10 @@ UINT CMsNote::Process()
 	// object, rather, we just want to keep using
 	// the one that is already there
 	//--------------------------------------------------
+/*	fprintf(LogFile(), "**CMsNote::Process: Enter Note=%d Duration=%d\n",
+		GetPitch(),
+		GetDuration()
+	);*/
 	if (GetAccent())
 		Velocity = 127;
 	else
@@ -1642,6 +1662,11 @@ bool CMsNote::RemoveFromQueue()
 		rB = false;
 	}
 	return rB;
+}
+
+CMsObject* CMsNote::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }
 
 void CMsNote::ObjectRectangle(CRect& rect)

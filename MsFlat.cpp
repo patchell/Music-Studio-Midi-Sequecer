@@ -140,6 +140,11 @@ void CMsFlat::Draw(CDC *pDC, COLORREF c, int x, int y)
 	pDC->SelectObject(oldpen);
 }
 
+CMsObject* CMsFlat::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
+
 UINT CMsFlat::ObjectToString(CString& csString, UINT mode)
 {
 	return 0;

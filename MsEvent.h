@@ -32,6 +32,7 @@ public:
 	CMsEvent();
 	virtual ~CMsEvent();
 	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV);
+	bool CopyObjectsFromEvent(CMsEvent* pEventToCopyFrom);
 	virtual void Draw(CDC *pDC);
 	void DrawStaffLines(CDC* pDC);	
 	//--------------------------------------
@@ -102,10 +103,6 @@ public:
 	int AreObjectsSelected();
 	CMsObject * GetFirstSelectedObject();
 	CMsObject * GetNextSelectedObject(CMsObject * pLastSelectedObject);
-	//--------------------------------------
-	// Flip Note Heads
-	//------------------------------------- 
-	bool FlipNoteHeads();
 	//--------------------------------------
 	// Used for debugging
 	//---------------------------------------

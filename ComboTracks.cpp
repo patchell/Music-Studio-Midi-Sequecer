@@ -35,6 +35,7 @@ bool CComboTracks::Create(
 		AddBitmap(GetTrackBitMap(i));
 
 	}
+	SetName("Tracks");
 	return true;
 }
 

@@ -21,7 +21,7 @@ void* CMsStack::PopFIFO()	//pop from bottom
 		m_pTailObject = pSO->GetPrev();
 		m_pHeadObject->SetNext(0);
 		pDataItem = pSO->GetDataItem();
-		delete pSO;
+		if(pSO) delete pSO;
 	}
 	return pDataItem;
 }
@@ -37,7 +37,7 @@ void* CMsStack::PopLIFO()//pop from top
 		if(m_pHeadObject)
 			m_pHeadObject->SetPrev(0);
 		pDataItem = pSO->GetDataItem();
-		delete pSO;
+		if(pSO) delete pSO;
 	}
 	return pDataItem;
 }

@@ -13,7 +13,8 @@ class CMsTempo : public CMsObject
 public:
 	CMsTempo();
 	virtual ~CMsTempo();
-	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent, UINT Tempo);	//-------------------------------------------------
+	virtual bool Create(CMsSong* pSong, CMsEvent* pEvent);	
+	//-------------------------------------------------
 	// Pure Virtual Methods
 	//-------------------------------------------------
 	virtual UINT Process();
@@ -36,13 +37,14 @@ public:
 	virtual UINT ObjectToString(CString& csString, UINT mode = 0);
 	virtual void ObjectRectangle(CRect& rect, UINT Event);
 	UINT GetQNPM() { return m_Tempo; }
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 	void SetQNPM(UINT t) {
 		if (this)
 		{
 			m_Tempo = t;
 		}
 		else
-			AfxMessageBox(_T("ERROR: EventQueue NULL"), MB_OK);
+			AfxMessageBox(_T("ERROR: Event NULL"), MB_OK);
 	}
 };
 

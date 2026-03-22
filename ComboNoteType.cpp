@@ -28,5 +28,6 @@ bool CComboNoteType::Create(CPoint ptUpperLeft, CWnd* pParentWnd)
 	);
 	for (i = 0; i < nTotalItems; ++i)
 		AddBitmap(GETAPP->bmGetNoteType(i));
+	SetName("Note Type");
 	return true;
 }

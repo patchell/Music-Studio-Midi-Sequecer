@@ -44,10 +44,10 @@ private:
 	// These are the items that you can choose
 	// from whent the combo box is expanded
 	//------------------------------------------
-	CMyRgn** m_apRgnItemControls;	//regions where Items to select are
-	CRect** m_apRectItemControls;	//rectangles of the same
+	CMyRgn** m_ppRgnItemControls;	//regions where Items to select are
+	CRect** m_ppRectItemControls;	//rectangles of the same
 	//-------- BitMaps ------------
-	CMyBitmap** m_apBmItems;
+	CMyBitmap** m_ppBmItems;
 	//-------- Drop Arrow ---------------
 	// This is the arrow you press to
 	// to expand the combo box

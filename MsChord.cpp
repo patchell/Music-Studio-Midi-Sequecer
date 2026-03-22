@@ -16,7 +16,10 @@ CMsChord::CMsChord()
 
 CMsChord::~CMsChord()
 {
-	delete[] m_pIntervals;
+	if (m_pIntervals) {
+		delete[] m_pIntervals;
+		m_pIntervals = nullptr;
+	}
 }
 
 bool CMsChord::Create(CMsSong* pSong, CMsEvent* pEvent)
@@ -402,4 +405,9 @@ void CMsChord::AddInterval(UINT Interval)
 	//----------------------------
 	pCN = new CMsChordNote;
 	pCN->SetPitch(IntervalLUT[Interval].Semitones);
+}
+
+CMsObject* CMsChord::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
 }

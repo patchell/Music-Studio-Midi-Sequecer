@@ -33,5 +33,6 @@ bool CComboDecorations::Create(CPoint ptUpperLeft, CWnd* pParentWnd)
 		AddSelBitmapID(CMidiSeqMSApp::GetDecorationsBmCbIdsSel(i));
 		SetItemFlags(i, GetDecorationFlags(i));
 	}
+	SetName("Decorations");
 	return true;
 }

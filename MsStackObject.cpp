@@ -25,4 +25,5 @@ CMsStackObject::~CMsStackObject()
 {
 	if(m_pNextStackObject)
 		delete m_pNextStackObject;
+	m_pNextStackObject = 0;
 }

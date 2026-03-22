@@ -302,3 +302,8 @@ StaffMouseStates CMsChordNote::StaffTransition(CPoint pointMouse, int NewNote, C
 		State = StaffMouseStates::MOUSE_STAFF_STATE_EVENT_CHANGE;
 	return State;
 }
+
+CMsObject* CMsChordNote::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}

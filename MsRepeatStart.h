@@ -39,5 +39,6 @@ public:
 	int SetupRepeat();
 	CMsRepeatEnd* GetMatchingRepeatEnd() { return m_pMatchingRepeatEnd; }
 	void SetMatchingRepeatEnd(CMsRepeatEnd* pEnd) { m_pMatchingRepeatEnd = pEnd; }
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };
 

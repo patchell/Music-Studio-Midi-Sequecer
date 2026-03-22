@@ -192,6 +192,7 @@
     <ClInclude Include="ChildViewBase.h" />
     <ClInclude Include="ChildViewStaff.h" />
     <ClInclude Include="ChildViewYamahaTX816.h" />
+    <ClInclude Include="CMsListItem.h" />
     <ClInclude Include="ComboAccidentals.h" />
     <ClInclude Include="ComboBlockOps.h" />
     <ClInclude Include="ComboDecorations.h" />
@@ -201,6 +202,9 @@
     <ClInclude Include="ComboTimeSignature.h" />
     <ClInclude Include="ComboTracks.h" />
     <ClInclude Include="DlgGlissandoProperties.h" />
+    <ClInclude Include="ListSong.h" />
+    <ClInclude Include="ListSongItem.h" />
+    <ClInclude Include="MsList.h" />
     <ClInclude Include="Midi.h" />
     <ClInclude Include="MsBassCleff.h" />
     <ClInclude Include="MsEventDirectorItem.h" />
@@ -297,6 +301,7 @@
     <ClCompile Include="ChildViewBase.cpp" />
     <ClCompile Include="ChildViewStaff.cpp" />
     <ClCompile Include="ChildViewYamahaTX816.cpp" />
+    <ClCompile Include="CMsListItem.cpp" />
     <ClCompile Include="ComboAccidentals.cpp" />
     <ClCompile Include="ComboBlockOps.cpp" />
     <ClCompile Include="ComboDecorations.cpp" />
@@ -306,6 +311,9 @@
     <ClCompile Include="ComboTimeSignature.cpp" />
     <ClCompile Include="ComboTracks.cpp" />
     <ClCompile Include="DlgGlissandoProperties.cpp" />
+    <ClCompile Include="ListSong.cpp" />
+    <ClCompile Include="ListSongItem.cpp" />
+    <ClCompile Include="MsList.cpp" />
     <ClCompile Include="Midi.cpp" />
     <ClCompile Include="MsBassCleff.cpp" />
     <ClCompile Include="MsEventDirectorItem.cpp" />

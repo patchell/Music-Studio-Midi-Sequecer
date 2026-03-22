@@ -57,6 +57,6 @@ public:
 	bool IsArpegioDirectionUp() { return (m_ArpegioDirection == false); }
 	bool IsArpegioDirectionDown() { return (m_ArpegioDirection == true); }
 	int GetDuration() const { return 0; /*TODO*/ }
-
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };
 

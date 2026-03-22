@@ -105,5 +105,6 @@ public:
 	int YPosToNotePitch(int YPos);
 	int QuantizeY(int Y);
 	int NeedsLine(int Pitch);
+	virtual CMsObject* MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent);
 };
 

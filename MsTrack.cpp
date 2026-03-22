@@ -99,7 +99,7 @@ bool CMsTrack::Create(
 	else
 		sprintf_s(s, 4, "%d", m_Number);
 	m_csText = CString(s);
-	delete[] s;
+	if(s) delete[] s;
 //	Draw( pDC);
 	return true;
 }

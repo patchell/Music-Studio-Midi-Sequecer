@@ -137,3 +137,8 @@ StaffMouseStates CMsTrebleCleff::StaffTransition(CPoint pointMouse, int NewNote,
 {
 	return StaffMouseStates::MOUSE_STAFF_STATE_NONE;
 }
+
+CMsObject* CMsTrebleCleff::MakeANewObject(CMsSong* pSong, CMsEvent* pPqarentEvent)
+{
+    return nullptr;
+}
