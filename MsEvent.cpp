@@ -528,7 +528,7 @@ CMsNote* CMsEvent::FindNextNote(CMsNote* pPrevNote)
 	return pNote;
 }
 
-void CMsEvent::Draw(CDC *pDC)
+void CMsEvent::Draw(CDC *pDC, bool LastEditEvent)
 {
 	//------------------------------
 	// Draw the event
@@ -590,7 +590,17 @@ void CMsEvent::Draw(CDC *pDC)
 	bm.CreateBitmap(szRect.cx, szRect.cy, 1, 32, 0);
 	memDC.CreateCompatibleDC(pDC);
 	memDC.SelectObject(&bm);
-	if (IsSelected())
+	if(LastEditEvent)
+	{
+		//--------------------
+		// Last Edit Event Color
+		// Used for Indicating
+		// last event that was
+		// edited
+		//--------------------
+		br.CreateSolidBrush(GetSong()->GetColorPalette()->color_LastEventBKG);
+	}
+	else if (IsSelected())
 	{
 		//--------------------
 		// Selected Event Color
@@ -618,12 +628,12 @@ void CMsEvent::Draw(CDC *pDC)
 	ptRect = CPoint(0, 0);
 	szRect = CSize(EVENT_WIDTH, UPPER_DRAW_RECT_HEIGHT);
 	rectRect = CRect(ptRect, szRect);
-	memDC.FillRect(&rectRect, &brBlue);
+	memDC.FillRect(&rectRect, &br);
 
 	ptRect = CPoint(0, UPPER_DRAW_RECT_HEIGHT + EDIT_RECT_HEIGHT);
 	szRect = CSize(EVENT_WIDTH, LOWER_DRAW_RECT_HEIGHT);
 	rectRect = CRect(ptRect, szRect);
-	memDC.FillRect(&rectRect, &brBlue);
+	memDC.FillRect(&rectRect, &br);
 	//------------------------------
 	// Fill in the edit area
 	// Background

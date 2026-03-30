@@ -33,7 +33,7 @@ public:
 	virtual ~CMsEvent();
 	bool Create(CMsSong* pParentSong, CChildViewStaff* pCV);
 	bool CopyObjectsFromEvent(CMsEvent* pEventToCopyFrom);
-	virtual void Draw(CDC *pDC);
+	virtual void Draw(CDC *pDC, bool LastEditEvent);
 	void DrawStaffLines(CDC* pDC);	
 	//--------------------------------------
 	// Object management functions

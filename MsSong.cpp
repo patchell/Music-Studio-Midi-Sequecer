@@ -347,7 +347,7 @@ CMsKeySignature* CMsSong::GetCurrentKeySignature()
 	return pKS;
 }
 
-void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
+void CMsSong::Draw(CDC *pDC, int StartEvent, int MaxEvents,CRect *pRect)
 {
 	//------------------------------------
 	// Draw
@@ -356,6 +356,8 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 	//			  Chain to be drawn
 	//------------------------------------
 	int i = 0;
+	int LastEditEvent = MaxEvents - 2;
+	int LastEvent = MaxEvents - 1;
 	int MaxX = pRect->right;
 	CPen penStaffLines,*oldpen;
 	CMyBitmap bmEvent, *oldBM;
@@ -373,7 +375,7 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 	//-----------------------------
 	// draw clefs
 	//-----------------------------
-	m_pCleffEvent->Draw(&memDCEvent);
+	m_pCleffEvent->Draw(&memDCEvent, false);
 	pDC->BitBlt(
 		0, 
 		0, 
@@ -389,9 +391,9 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 	// music staff
 	//-----------------------------
 	CMsEvent *pEv = GetEventObject(StartEvent);
-	for(i=0;(i<maxevent+1) && pEv;++i,pEv = pEv->GetNext())
+	for(i=0;(i< LastEditEvent) && pEv;++i,pEv = pEv->GetNext())
 	{
-		if(pEv)pEv->Draw(&memDCEvent);
+		if(pEv)pEv->Draw(&memDCEvent, false);
 		pDC->BitBlt(
 			(i + 1) * EVENT_WIDTH, 
 			0, 
@@ -400,6 +402,23 @@ void CMsSong::Draw(CDC *pDC, int StartEvent, int maxevent,CRect *pRect)
 			&memDCEvent, 
 			0, 
 			0, 
+			SRCCOPY
+		);
+	}
+	//--------------------------------
+	// Draw the last displayed event
+	//--------------------------------
+	if (pEv)
+	{
+		pEv->Draw(&memDCEvent, true);
+		pDC->BitBlt(
+			(i + 1) * EVENT_WIDTH,
+			0,
+			EVENT_WIDTH,
+			EVENT_HEIGHT,
+			&memDCEvent,
+			0,
+			0,
 			SRCCOPY
 		);
 	}

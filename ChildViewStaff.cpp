@@ -19,15 +19,15 @@ CSize GetBmDimensions(int ID)
 }
 
 CChildViewStaff::CChildViewStaff()
-	: m_nMidiNotesOn(0)		//number of midi note on events
-	, m_nMidiInputNoteSetup(0)	//setup using midi to enter notes
-	, m_pPgmChng(NULL)			// window to send patch change?
-	, m_nLastSongPosition(0)	// Like it says
-	, m_pRepeatEndSelected(0)	// End of a repeat
-	, m_pRepeatStartSelected(0)	// Start of a repeat
-	, m_UpperSelRect(0, 0, 0, 0)
-	, m_LowerSelRect(0, 0, 0, 0)
 {
+	m_nMidiNotesOn = 0;		//number of midi note on events
+	m_nMidiInputNoteSetup = 0;	//setup using midi to enter notes
+	m_pPgmChng = NULL;			// window to send patch change?
+	m_nLastSongPosition = 0;	// Like it says
+	m_pRepeatEndSelected = 0;	// End of a repeat
+	m_pRepeatStartSelected = 0;	// Start of a repeat
+	m_UpperSelRect = CRect(0, 0, 0, 0);
+	m_LowerSelRect = CRect(0, 0, 0, 0);
 	EnableActiveAccessibility();
 	m_nInsertBlockNumberOfEvents = 0;	// number of events in block to insert
 	m_nMouseState = StaffViewMouseState::STAFFVIEW_MOUSEUP;			// Mouse state machine
@@ -1396,13 +1396,32 @@ int CChildViewStaff::XtoEventIndex(int x)
 	return m_nRawEvent + m_SongScrollPos;
 }
 
+CMsEvent* CChildViewStaff::XtoEvent(int x)
+{
+	CMsEvent* pEv = nullptr;
+	int EventIndex = XtoEventIndex(x);
+
+	if(GetSong())
+		pEv = GetSong()->GetEventObject(EventIndex);
+	return pEv;
+}
+
+CMsEvent* CChildViewStaff::EventIndexToEvent(int EventIndex)
+{
+	CMsEvent* pEv = nullptr;
+
+	if(GetSong())
+		pEv = GetSong()->GetEventObject(EventIndex);
+	return pEv;
+}
+
 int CChildViewStaff::CalcMaxEvents()
 {
 	CRect rect;
 
 	GetClientRect(&rect);
 	int Width = rect.Width();
-	Width -= EVENT_WIDTH;
+//	Width -= EVENT_WIDTH;
 	return Width / EVENT_WIDTH;
 }
 
@@ -1477,10 +1496,10 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 				int Shape;
 				Shape = pN->GetShape();
 				int Id = CMidiSeqMSApp::GetRestBmIdsTypes()[Shape];
-				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), Id);
+				pN->Create(GetSong(), EventIndexToEvent(m_nDrawEvent), Id);
 			}
 			else
-				pN->Create(GetSong(), GetSong()->GetEventObject(m_nDrawEvent), 0);
+				pN->Create(GetSong(), EventIndexToEvent(m_nDrawEvent), 0);
 
 			pN->ObjectToString(csTemp);
 			if(GetSong()->GetEventObject(m_nDrawEvent))
@@ -2529,6 +2548,8 @@ afx_msg LRESULT CChildViewStaff::OnShortMidiMessage(WPARAM wMsg, LPARAM timestam
 
 afx_msg LRESULT CChildViewStaff::OnStaffDispEvent(WPARAM Event, LPARAM cmd)
 {
+	CString csTemp;
+
 	switch (cmd)
 	{
 	case STAFF_DISP_EVENT_NEXT:	//OnStaffDispEvent
@@ -2545,6 +2566,8 @@ afx_msg LRESULT CChildViewStaff::OnStaffDispEvent(WPARAM Event, LPARAM cmd)
 			m_SongScrollPos = Event;
 		UpdateScrollbarInfo(m_pSong->GetTotalEvents());
 		m_nLastSongPosition = Event;
+		csTemp.Format(_T("Playing Event: %d"), Event);
+		GetStatusBar()->SetText(csTemp);
 	}
 	break;
 	case STAFF_DISP_EVENT_END://OnStaffDispEvent
@@ -2612,7 +2635,7 @@ void CChildViewStaff::OnInitialUpdate()
 	// event index will be 
 	// NumberOfEvents - 1
 	//---------------------------------
-	m_MaxEvents = CalcMaxEvents() - 1;
+	m_MaxEvents = CalcMaxEvents();
 	//---------------------------------
 	// Create default song
 	//---------------------------------
@@ -2714,31 +2737,12 @@ void CChildViewStaff::OnInitialUpdate()
 		CPoint(ControlX, 0),
 		this
 	);
+	ControlX += m_Combo_BlockOps.GetTotalWidth();
 	//------------------ Misc Stuff ---------------------
-	itemSize = GETAPP->bmGetMiscType(0)->GetBmDim();
-	itemSize += CSize(4, 4);
-	n = GETAPP->GetNumMisc();
-
 	m_Combo_Misc.Create(
-		4,		//Number of Items to display
-		n,		//Total Items
-		itemSize,	//size of one item
-		CPoint(				//low left corner of combo box
-			clientRect.Width() - itemSize.cx - DROPBOX_ARROW_WIDTH, 
-			clientRect.bottom - STATUS_BAR_HEIGHT
-		),
-		CSize(
-			DROPBOX_ARROW_WIDTH, 
-			itemSize.cy
-		),		// Size of drop arrow
-		this,	//	parrent
-		IDC_COMBO_MISCSTUFF			// ID
+		CPoint(ControlX, 0),
+		this
 	);
-	//------------------ Add bitmaps to misc combo box ---------------------
-	for (i = 0; i < n; ++i)
-	{
-		m_Combo_Misc.AddBitmap(GETAPP->bmGetMiscType(i));
-	}
 
 //----------------------------------------------
 	y = clientRect.bottom - STATUS_BAR_HEIGHT;
@@ -2911,7 +2915,10 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 		//CRect rectLastEvent;
 		//GetEventRect(m_MaxEvents, rectLastEvent);
 		//DCm.FillRect(&rectLastEvent, &brushLastEventBKG);
-		// Draw the staff and all objects
+		
+		//-------------------------------
+		// Draw the events to the edit DC
+		//-------------------------------
 		if (m_pSong)
 		{
 			if (m_EscapeFlag)
@@ -2920,8 +2927,10 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 			}
 			m_pSong->Draw(&DCmEdit, m_SongScrollPos, m_MaxEvents, &rectClient);
 		}
+		//--------------------------------
 		// Draw Special Objects
 		// Draw Tie if needed
+		//-------------------------------
 		if (m_dmDrawMode == DrawMode::TIE && m_dsDrawState == DRAWSTATE::TIE_SECONDNOTE)
 		{
 			CRect r;
@@ -2929,7 +2938,9 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 			r.NormalizeRect();
 			DCm.Arc(r, m_TieStartPoint - CSize(1, 0), m_TieEndPoint - CSize(1, 0));
 		}
-		// Draw the view controls
+		//--------------------------------
+		// Blt the edit DC to the screen DC
+		//--------------------------------
 		DCm.BitBlt(
 			0, 
 			CLIENT_TO_TOP_UPPER_SELECT_RECT,
@@ -2940,6 +2951,9 @@ void CChildViewStaff::OnDraw(CDC* pDC)
 			0, 
 			SRCCOPY
 		);
+		//----------------------------------------
+		// Draw the view controls
+		//----------------------------------------
 		DrawControls(&DCm);
 		pDC->BitBlt(0, 0, rectClient.Width(), rectClient.Height(), &DCm, 0, 0, SRCCOPY);
 		DCm.SelectObject(pOldBM);

@@ -238,7 +238,7 @@ private:
 	CComboRest m_Combo_Rests;
 	CComboAccidentals m_Combo_Accidentals;
 	CComboDecorations m_Combo_Decorations;
-	CComboDropUp m_Combo_Misc;
+	CComboMisc m_Combo_Misc;
 	CComboNoteType m_Combo_NoteType;
 	CComboKeySig m_Combo_KeySig;
 	//--------- View Controls ------------------
@@ -387,8 +387,6 @@ public:
 	//----------------------------------
 	CMsObject* GetDrawObject() { return m_pDrawObject; }
 	void SetDrawObject(CMsObject* pDObj) { m_pDrawObject = pDObj; }
-	int CalcMaxEvents(void);
-	UINT GetRawEventNumber(int x);
 	int IsEventDisplayed(CMsEvent* pEV);
 	MouseRegions MouseInRegion(CPoint p);
 	virtual void OnInitialUpdate();
@@ -399,7 +397,11 @@ public:
 	DrawMode GetDrawMode() const { return m_dmDrawMode; }
 
 	void UpdateScrollbarInfo(int TotalEvents, const char* Title = 0);
+	int CalcMaxEvents(void);
+	UINT GetRawEventNumber(int x);
 	int XtoEventIndex(int x);
+	CMsEvent* XtoEvent(int x);
+	CMsEvent* EventIndexToEvent(int EventIndex);
 	int YtoNote(int y);
 	CString GetSongTitle() {
 		CString rStr;

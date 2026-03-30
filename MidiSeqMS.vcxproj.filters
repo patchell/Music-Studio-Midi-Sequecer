@@ -301,6 +301,9 @@
     <ClCompile Include="ListSongItem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ComboMisc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrmStaff.h">
@@ -622,6 +625,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="ListSongItem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboMisc.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

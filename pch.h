@@ -37,7 +37,7 @@ extern FILE* LogFile();
 //--------------------------------------
 
 struct SColorPalette {
-	COLORREF color_BackGround;
+	COLORREF color_BackGround;	// Background color of Music Studio View
 	COLORREF color_StaffLines;
 	COLORREF color_UpperSelBar;
 	COLORREF color_LowerSelBar;
@@ -55,7 +55,7 @@ struct SColorPalette {
 		color_StaffLines = RGB(127, 127, 127);
 		color_UpperSelBar = RGB(88, 128, 88);
 		color_LowerSelBar = RGB(88, 128, 88);
-		color_LastEventBKG = RGB(60, 100, 224);
+		color_LastEventBKG = RGB(60, 10, 60);
 		color_DefinedEvent = RGB(92, 0, 28);
 		color_EventCursor = RGB(16, 16, 16);
 		color_MeasureBars = RGB(192, 192, 192);
@@ -171,6 +171,7 @@ constexpr auto APP_TX816_NUM_ALG_BITMAPS = 32;
 #include "MsTimeSig.h"
 #include "MsTrebleCleff.h"
 //--------------------------------------
+#include "ComboMisc.h"
 #include "ComboTimeSignature.h"
 #include "ComboNoteType.h"
 #include "ComboRest.h"

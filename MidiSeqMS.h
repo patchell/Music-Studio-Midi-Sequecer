@@ -33,21 +33,21 @@ private:
 		IDB_GLISSANDO
 	};
 	inline static int  BmIdKeySigStringBitmapIDsTab[APP_NUM_KEYSIGNATURES + 1] = {
-		IDB_CB_KEY_CMAJ,	//1X
-		IDB_CB_KEY_GMAJ,	//2X
-		IDB_CB_KEY_DMAJ,	//3X
-		IDB_CB_KEY_AMAJ,	//4X
-		IDB_CB_KEY_EMAJ,	//5X
-		IDB_CB_KEY_BMAJ,	//6X
-		IDB_CB_KEY_FSMAJ,	//7X
-		IDB_CB_KEY_CSMAJ,	//8X
-		IDB_CB_KEY_FMAJ,	//9X
-		IDB_CB_KEY_BFMAJ,	//10X
-		IDB_CB_KEY_EFMAJ,	//11X
-		IDB_CB_KEY_AFMAJ,	//12X
-		IDB_CB_KEY_DFMAJ,	//13X
-		IDB_CB_KEY_GFMAJ,	//14X
-		IDB_CB_KEY_CFMAJ,	//15X
+		IDB_CB_KEY_CMAJ,	//1 Index
+		IDB_CB_KEY_GMAJ,	//2 Index
+		IDB_CB_KEY_DMAJ,	//3 Index
+		IDB_CB_KEY_AMAJ,	//4 Index
+		IDB_CB_KEY_EMAJ,	//5 Index
+		IDB_CB_KEY_BMAJ,	//6 Index
+		IDB_CB_KEY_FSMAJ,	//7 Index
+		IDB_CB_KEY_CSMAJ,	//8 Index
+		IDB_CB_KEY_FMAJ,	//9 Index
+		IDB_CB_KEY_BFMAJ,	//10 Index
+		IDB_CB_KEY_EFMAJ,	//11 Index
+		IDB_CB_KEY_AFMAJ,	//12 Index
+		IDB_CB_KEY_DFMAJ,	//13 Index
+		IDB_CB_KEY_GFMAJ,	//14 Index
+		IDB_CB_KEY_CFMAJ,	//15 Index
 		-1,					// Undefined
 	};
 	inline static int BmIdTimeSigCBbMIDs[APP_NUM_TIMESIG] = {
@@ -135,10 +135,6 @@ private:
 		IDB_CB_ACCIDENTAL_FLAT,
 		IDB_CB_ACCIDENTAL_NATURAL
 	};
-
-
-
-
 	//-------------------------------------------
 	//	Tbles for TX816 Editor
 	//-------------------------------------------

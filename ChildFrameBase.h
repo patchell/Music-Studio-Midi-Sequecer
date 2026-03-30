@@ -2,7 +2,7 @@
 
 
 // CChildFrameBase
-constexpr auto CHILD_FRAME_WIDTH = 520;	
+constexpr auto CHILD_FRAME_WIDTH = 550;	
 constexpr auto CHILD_FRAME_HEIGHT = 468;	//403
 
 class CChildFrameBase : public CMDIChildWnd
