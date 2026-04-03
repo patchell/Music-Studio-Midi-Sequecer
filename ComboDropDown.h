@@ -153,7 +153,7 @@ public:
 	int AddBitmap(CMyBitmap* pBM);
 	void SetCurSel(int nSel, bool bNotify = true);
 	void MoveThumb(int amount);
-	int GetCurSel();
+	int GetCurSel() const;
 	void dblMoveThumb(double amount);
 	int YtoPos(int y);
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
@@ -165,4 +165,5 @@ public:
 	static const char* GetTypeString(ComboDropDownTypes type);
 	const char* GetName() const { return m_pName; }
 	void SetName(const char* name);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

@@ -243,6 +243,7 @@ BEGIN_MESSAGE_MAP(CComboDropDown, CWnd)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSEACTIVATE()
 	ON_WM_KILLFOCUS()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 // CComboDropDown message handlers
@@ -329,16 +330,6 @@ void CComboDropDown::OnLButtonUp(UINT nFlags, CPoint point)
 				Colapse();
 				m_pWndLastFocus->SetFocus();
 				int id = GetDlgCtrlID();
-/*				fprintf(LogFile(), "\t%sSelected item %d in combo box %d\n",
-					GetName(),
-					m_nCurSel, 
-					id
-				);*/
-				GetParent()->PostMessageW(
-					WM_MY_CONTROL_MESSAGES, 
-					id, 
-					m_nCurSel
-				);
 				GetParent()->Invalidate();
 			}
 		}
@@ -523,26 +514,13 @@ void CComboDropDown::SetCurSel(int nSel, bool Notify)
 
 	m = double(m_nItems) / double(m_nTotalItems);
 	oldsel = m_nCurSel;
-	m_nCurSel = nSel;
+	m_nCurSel = nSel;;
 	pos = int(m * double(nSel));
 	MoveThumb(pos);
 	if ((m_nCurSel != oldsel) && Notify)
 	{
-		const char* pNameStr = nullptr;
-
-		if (GetName())
-			pNameStr = GetName();
-		else
-			pNameStr = "<Un Named>";
-
 		int id = GetDlgCtrlID();
-/*		fprintf(LogFile(), "\t%s ComboDropDown: %s, New Selection: %d ID:%d\n", 
-			__FUNCTION__, 
-			pNameStr, 
-			m_nCurSel,
-			id
-		);*/
-		GetParent()->SendMessageW(
+		GetParent()->PostMessageW(
 			WM_MY_CONTROL_MESSAGES,
 			id,
 			m_nCurSel
@@ -552,7 +530,7 @@ void CComboDropDown::SetCurSel(int nSel, bool Notify)
 }
 
 
-int CComboDropDown::GetCurSel()
+int CComboDropDown::GetCurSel() const
 {
 	return m_nCurSel;
 }
@@ -630,6 +608,13 @@ void CComboDropDown::Colapse()
 	m_rectThisControl = m_rectNotSelectedWindow;
 	CWnd::OnSize(SIZE_RESTORED, m_szNotSelectedWindow.cx, m_szClientRecSize.cy);
 	CWnd::MoveWindow(m_rectThisControl, 0);
+	int id = GetDlgCtrlID();
+	GetParent()->PostMessageW(
+		WM_MY_CONTROL_MESSAGES,
+		id,
+		m_nCurSel
+	);
+	GetParent()->Invalidate();
 }
 
 void CComboDropDown::Expand()
@@ -670,7 +655,6 @@ const char* CComboDropDown::GetTypeString(ComboDropDownTypes type)
 
 void CComboDropDown::SetName(const char* name)
 {
-//	int len = 256;
 	int len = strlen(name);
 	if (m_pName)
 	{
@@ -687,4 +671,26 @@ int CComboDropDown::GetTotalWidth()
 	int width;
 	width = m_szItemSize.cx + m_szDropArrow.cx;
 	return width;
+}
+
+BOOL CComboDropDown::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	if (m_State == DROP_DOWN_SELECTED)
+	{
+		if (zDelta > 0)
+		{
+			if (m_Pos > 0)
+				--m_Pos;
+			MoveThumb(m_Pos);
+			GetParent()->Invalidate();
+		}
+		else if (zDelta < 0)
+		{
+			if (m_Pos < (m_nTotalItems - m_nItems))
+				m_Pos += 1;
+			MoveThumb(m_Pos);
+			GetParent()->Invalidate();
+		}
+	}
+	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
 }

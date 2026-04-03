@@ -68,6 +68,8 @@ CChildViewStaff::CChildViewStaff()
 	m_TimerID = 0;
 	m_MouseRegion = MouseRegions::MOUSE_OUTSIDE;
 	m_MouseRegionTransitionState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
+	m_TrackMouseLeave = false;
+	m_TrackMouseEvent = {0};
 }
 
 CChildViewStaff::~CChildViewStaff()
@@ -101,6 +103,8 @@ BEGIN_MESSAGE_MAP(CChildViewStaff, CChildViewBase)
 	ON_UPDATE_COMMAND_UI(MENU_MS_FILE_SAVE_as, &CChildViewStaff::OnUpdateMenuMsFileSaveAs)
 	ON_COMMAND(ID_SETTINGS_TRACKSETTINIGS, &CChildViewStaff::OnSettingsTracksettinigs)
 	ON_UPDATE_COMMAND_UI(ID_SETTINGS_TRACKSETTINIGS, &CChildViewStaff::OnUpdateSettingsTracksettinigs)
+	ON_WM_MOUSELEAVE()
+	ON_WM_NCMOUSELEAVE()
 END_MESSAGE_MAP()
 
 // CChildViewStaff message handlers
@@ -339,14 +343,15 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 	CMsGlissando* pGliss = 0;
 	CMsNote* pN = 0;
 	int note = 0;
-	MouseRegionTransitionState TransitionState;
 
 	m_nMouseState = StaffViewMouseState:: STAFFVIEW_MOUSEUP;
 	m_nDrawEvent = XtoEventIndex(pointMouseLButtUp.x);
 	pEvDraw = m_pSong->GetEventObject(m_nDrawEvent);
-	m_MouseRegionTransitionState = RegionTransition(pointMouseLButtUp);
+
 	Region = MouseInRegion(pointMouseLButtUp);
-	TransitionState = RegionTransition(pointMouseLButtUp);
+	m_MouseRegionTransitionState = RegionTransition(Region);
+	m_MouseRegion = Region;
+
 	switch (Region)
 	{
 	case MouseRegions::MOUSE_OUTSIDE:		//OnLButtonUp
@@ -364,7 +369,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				m_dsDrawState, 
 				pointMouseLButtUp,
 				Region,
-				TransitionState
+				m_MouseRegionTransitionState
 			);;
 			Invalidate();
 			break;
@@ -380,7 +385,7 @@ void CChildViewStaff::OnLButtonUp(UINT nFlags, CPoint pointMouseLButtUp)
 				m_dsDrawState, 
 				pointMouseLButtUp,
 				Region,
-				TransitionState
+				m_MouseRegionTransitionState
 			);
 			break;
 		case DrawMode::TIE:		//OnLButtonUp
@@ -485,7 +490,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 {
 	CMsEvent* pEV = 0;
 	MouseRegions Region;
-	MouseRegionTransitionState TransitionState;
 	int NoteLocation = 0;	// location of note on the stave
 	int NoteEvent = 0;		// event index of note on the stave
 	CString StatusString,csTemp;
@@ -494,11 +498,13 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	int NoteIndex = 0;
 
 	
-	m_MouseRegionTransitionState = RegionTransition(pointMouse);
 	m_nDrawEvent = XtoEventIndex(pointMouse.x);
+
 	Region = MouseInRegion(pointMouse);
-	TransitionState = RegionTransition(pointMouse);
-	switch (TransitionState)
+	m_MouseRegionTransitionState = RegionTransition(Region);
+	m_MouseRegion = Region;
+
+	switch (m_MouseRegionTransitionState)
 	{
 	case MouseRegionTransitionState::MOUSE_TRANSITION_NONE:
 		switch (Region)
@@ -561,11 +567,21 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 		[[fallthrough]]; 
 	case DrawMode::TEMPO:
 		if(GetDrawObject())
-			m_dsDrawState = GetDrawObject()->MouseMove(m_dsDrawState, pointMouse, Region, TransitionState);
+			m_dsDrawState = GetDrawObject()->MouseMove(m_dsDrawState, pointMouse, Region, m_MouseRegionTransitionState);
 		break;
 	}
-	m_MouseRegionTransitionState = TransitionState;
-	m_MouseRegion = Region;
+	if (!m_TrackMouseLeave)
+	{
+		m_TrackMouseEvent.cbSize = sizeof(TRACKMOUSEEVENT);
+		m_TrackMouseEvent.dwFlags = TME_LEAVE; // We want to know when it leaves
+		m_TrackMouseEvent.hwndTrack = m_hWnd;   // Tracking this window
+		m_TrackMouseEvent.dwHoverTime = HOVER_DEFAULT;
+
+		if (::_TrackMouseEvent(&m_TrackMouseEvent))
+		{
+			m_TrackMouseLeave = TRUE;
+		}
+	}
 	CWnd::OnMouseMove(nFlags, pointMouse);
 }
 
@@ -1799,6 +1815,8 @@ MouseRegions CChildViewStaff::MouseInRegion(CPoint p)
 		rV = MouseRegions::MOUSE_IN_LOWERDRAW;
 	else if (m_rgnLowerSelect.PtInRegion(p)) 
 		rV = MouseRegions::MOUSE_IN_LOWERSEL;
+	else if (m_rgnLastEdit.PtInRegion(p))
+		rV = MouseRegions::MOUSE_IN_LASTEDIT;
 	return rV;
 }
 
@@ -2623,7 +2641,11 @@ void CChildViewStaff::OnInitialUpdate()
 
 	//---------------------------------
 	m_TimerID = SetTimer(1000, 60000,NULL);
+	m_TrackMouseEvent.cbSize = sizeof(TRACKMOUSEEVENT);
+	m_TrackMouseEvent.dwFlags = TME_LEAVE;
+	m_TrackMouseEvent.hwndTrack = m_hWnd;
 	GetClientRect(&clientRect);
+	m_rgnClient.CreateRectRgn(&clientRect);
 	x1 = clientRect.left;
 	x2 = clientRect.right;
 	y1 = clientRect.top;
@@ -2743,8 +2765,7 @@ void CChildViewStaff::OnInitialUpdate()
 		CPoint(ControlX, 0),
 		this
 	);
-
-//----------------------------------------------
+	//----------------------------------------------
 	y = clientRect.bottom - STATUS_BAR_HEIGHT;
 	x = 0;
 	m_Status.Create(
@@ -2765,30 +2786,34 @@ void CChildViewStaff::OnInitialUpdate()
 	PrintRec("ChildView UpperRgn", m_UpperSelRect);
 	m_UpperSelRect.NormalizeRect();
 	m_rgnUpperSelect.CreateRectRgn(m_UpperSelRect);
+
 	//-----------Upper Draw Region -------------
 	y += UPPER_SELECTION_BAR_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(EVENT_WIDTH * m_MaxEvents, UPPER_DRAW_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * (m_MaxEvents - 2), UPPER_DRAW_RECT_HEIGHT);
 	m_rectUpperDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView UpperDrawRgn", m_rectUpperDraw);
 	m_rectUpperDraw.NormalizeRect();
 	m_rgnUpperDraw.CreateRectRgn(m_rectUpperDraw);
+
 	//-------------- Edit Region -----
 	y += UPPER_DRAW_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(EVENT_WIDTH * m_MaxEvents, EDIT_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * (m_MaxEvents - 2), EDIT_RECT_HEIGHT);
 	m_rectEdit = CRect(ptRectUL, szRect);
 	PrintRec("ChildView EditRgn", m_rectEdit);
 	m_rectEdit.NormalizeRect();
 	m_rgnEdit.CreateRectRgn(m_rectEdit);
+
 	//------------- Lower Draw Region -------------
 	y += EDIT_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
-	szRect = CSize(EVENT_WIDTH * m_MaxEvents, LOWER_DRAW_RECT_HEIGHT);
+	szRect = CSize(EVENT_WIDTH * (m_MaxEvents - 2), LOWER_DRAW_RECT_HEIGHT);
 	m_rectLowerDraw = CRect(ptRectUL, szRect);
 	PrintRec("ChildView LowerDrawRgn", m_rectLowerDraw);
 	m_rectLowerDraw.NormalizeRect();
 	m_rgnLowerDraw.CreateRectRgn(m_rectLowerDraw);
+
 	//-------------- Lower Selection Bar -----
 	y += LOWER_DRAW_RECT_HEIGHT;
 	ptRectUL = CPoint(EVENT_WIDTH, y);
@@ -2797,7 +2822,16 @@ void CChildViewStaff::OnInitialUpdate()
 	m_LowerSelRect.NormalizeRect();
 	m_rgnLowerSelect.CreateRectRgn(m_LowerSelRect);
 
+	//------------------ Last Edit Event Region ----------------
+	int h = EVENT_HEIGHT + UPPER_DRAW_RECT_HEIGHT + LOWER_DRAW_RECT_HEIGHT;
+	x = EVENT_WIDTH * (m_MaxEvents - 1);
+	y = CLIENT_TO_TOP_UPPER_SELECT_RECT + SELECTION_BAR_HEIGHT;
+	m_rectLastEdit = CRect(CPoint(x, y), CSize(EVENT_WIDTH, h));
+	m_rgnLastEdit.CreateRectRgn(m_rectLastEdit);
+
+	//----------------------------------------
 	//-------------- Button Controls ---------
+	//----------------------------------------
 	itemSize = m_Button_Play.GetButtonSize(IDB_BUTTON_PLAY_UP);
 	m_Button_Play.Create(
 		CPoint(0, clientRect.bottom - itemSize.cy - STATUS_BAR_HEIGHT),
@@ -3578,10 +3612,9 @@ void CChildViewStaff::OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI)
 {
 }
 
-MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
+MouseRegionTransitionState CChildViewStaff::RegionTransition(MouseRegions Region)
 {
 	MouseRegionTransitionState NextState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
-	MouseRegions Region = MouseInRegion(ptMousePos);
 
 	//--------------------------------
 	// RegionTransition
@@ -3598,6 +3631,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 	switch(m_MouseRegion)
 	{
 	case MouseRegions::MOUSE_OUTSIDE:
+		//-------------------------------
+		// Mouse was outside, now check 
+		// where it is Now.
+		//-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3615,6 +3652,9 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPER_DRAW;
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWER_DRAW;
 			break;
@@ -3622,6 +3662,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		break;
 		//--------------------------------
 	case MouseRegions::MOUSE_IN_UPPERSEL:
+		//-------------------------------
+		// Mouse was in upper sel, now check
+		// where it is Now.
+		//-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3639,6 +3683,9 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_UPPER_DRAW;
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_UPPERSEL_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			if (LogFile()) fprintf(LogFile(), "Transitioning from UpperSel to LowerdRAW Not Possible\n");
 			break;
@@ -3646,6 +3693,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		break;
 		//--------------------------------
 	case MouseRegions::MOUSE_IN_LOWERSEL:
+		//-------------------------------
+		// Mouse was in lower sel, now 
+		// check where it is Now.
+		//-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3663,6 +3714,9 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			if (LogFile()) fprintf(LogFile(), "Transitioning from LowerSel to UPPER DRAW Not Possible\n");
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LOWERSEL_TO_LOWER_DRAW;
 			break;
@@ -3670,6 +3724,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		break;
 		//--------------------------------
 	case MouseRegions::MOUSE_IN_EDITREG:
+		//-------------------------------
+		// Mouse was in edit region, now
+		// check where it is Now.
+		//-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3687,6 +3745,9 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW;
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW;
 			break;
@@ -3694,6 +3755,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		break;
 		//--------------------------------
 	case MouseRegions::MOUSE_IN_UPPERDRAW:
+		//-------------------------------
+		 // Mouse was in upper draw, now
+		 // check where it is Now.
+		 //-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3711,6 +3776,9 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			if (LogFile()) fprintf(LogFile(), "Transitioning from Upper Draw to Lower Draw Not Possible\n");
 			break;
@@ -3718,6 +3786,10 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		break;
 		//--------------------------------
 	case MouseRegions::MOUSE_IN_LOWERDRAW:
+		//-------------------------------
+		// Mouse was in lower draw, now
+		// check where it is Now.
+		//-------------------------------
 		switch (Region)
 		{
 		case MouseRegions::MOUSE_OUTSIDE:
@@ -3735,14 +3807,52 @@ MouseRegionTransitionState CChildViewStaff::RegionTransition(CPoint ptMousePos)
 		case MouseRegions::MOUSE_IN_UPPERDRAW:
 			if (LogFile()) fprintf(LogFile(), "Transitioning from Lower Draw to Upper Draw Not Possible\n");
 			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_LAST_EDIT;
+			break;
 		case MouseRegions::MOUSE_IN_LOWERDRAW:
 			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
 			break;
 		}
 		break;
 		//--------------------------------
+	case MouseRegions::MOUSE_IN_LASTEDIT:
+		//-------------------------------
+		// Mouse was in last edit region, now
+		// check where it is Now.
+		//-------------------------------
+		switch (Region)
+		{
+		case MouseRegions::MOUSE_OUTSIDE:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_OUTSIDE;
+			break;
+		case MouseRegions::MOUSE_IN_UPPERSEL:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_UPPER_SEL;
+			break;
+		case MouseRegions::MOUSE_IN_LOWERSEL:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_LOWER_SEL;
+			break;
+		case MouseRegions::MOUSE_IN_EDITREG:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_EDIT;
+			break;
+		case MouseRegions::MOUSE_IN_UPPERDRAW:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_UPPER_DRAW;
+			break;
+		case MouseRegions::MOUSE_IN_LOWERDRAW:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_LOWER_DRAW;
+			break;
+		case MouseRegions::MOUSE_IN_LASTEDIT:
+			NextState = MouseRegionTransitionState::MOUSE_TRANSITION_NONE;
+			break;
+		}
+		break;
 	default:
 		break;
+	}
+	if (NextState != MouseRegionTransitionState::MOUSE_TRANSITION_NONE)
+	{
+		if (LogFile()) fprintf(LogFile(), "Mouse Transition: %s to %s\n", GetMouseRegionName(m_MouseRegion), GetMouseRegionName(Region));
+		printf("Mouse Transition: %s to %s\n", GetMouseRegionName(m_MouseRegion), GetMouseRegionName(Region));
 	}
 	return NextState;
 }
@@ -3866,4 +3976,26 @@ void CChildViewStaff::OnSettingsTracksettinigs()
 void CChildViewStaff::OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI)
 {
 	
+}
+
+void CChildViewStaff::OnMouseLeave()
+{
+	printf("Mouse Leave\n");
+	m_TrackMouseLeave = FALSE;
+	Invalidate();
+	m_MouseRegion = MouseRegions::MOUSE_OUTSIDE;
+	if (m_pDrawObject)
+	{
+		if (m_pDrawObject->Is(CMsObject::MsObjType::NOTE))
+		{
+			CMsNote* pNote = (CMsNote*)m_pDrawObject;
+			pNote->NoteOff(0);
+			if (pNote->GetParentEvent())
+			{
+				pNote->GetParentEvent()->RemoveObject(pNote);
+				Invalidate();
+			}
+		}
+	}
+	CChildViewBase::OnMouseLeave();
 }

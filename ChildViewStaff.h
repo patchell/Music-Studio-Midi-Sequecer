@@ -174,6 +174,7 @@ public:
 		{ MouseRegions::MOUSE_IN_LOWERSEL, "Lower Selection" },
 		{ MouseRegions::MOUSE_IN_UPPERDRAW, "Upper Draw Region" },
 		{ MouseRegions::MOUSE_IN_LOWERDRAW, "Lower Draw Region" },
+		{ MouseRegions::MOUSE_IN_LASTEDIT, "Last Edit Region" },
 		{ MouseRegions::MOUSE_NONE, "Error" }
 	};
 
@@ -199,22 +200,33 @@ public:
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_NONE, "None" },
 		//------------------------------------------
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_OUTSIDE, "UpperDraw to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_LAST_EDIT, "UpperDraw to LastEdit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_EDIT, "UpperDraw to Edit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_UPPER_DRAW_TO_UPPER_SEL, "UpperDraw to UpperSel" },
 		//-----------------------------------------
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_OUTSIDE, "Edit to Outside" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LOWER_DRAW, "Edit to LowerDraw" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_UPPER_DRAW, "Edit to UpperDraw" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_EDIT_TO_LAST_EDIT, "Edit to LastEdit" },
 		//-----------------------------------------
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_EDIT, "LowerDraw to Edit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_OUTSIDE, "LowerDraw to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_LAST_EDIT, "LowerDraw to LastEdit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_LOWER_DRAW_TO_LOWER_SEL, "LowerDraw to LowerSel" },
 		//-----------------------------------------
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWERSEL, "Outside to LowerSel" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPERSEL, "Outside to UpperSel" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LAST_EDIT, "Outside to LastEdit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_EDIT, "Outside to Edit" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_LOWER_DRAW, "Outside to LowerDraw" },
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_OUTSIDE_TO_UPPER_DRAW, "Outside to UpperDraw" },
+		//-----------------------------------------
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_UPPER_SEL, "LastEdit to UpperSel" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_UPPER_DRAW, "LastEdit to UpperDraw" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_OUTSIDE, "LastEdit to Outside" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_EDIT, "LastEdit to Edit" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_LOWER_DRAW, "LastEdit to LowerDraw" },
+		{ MouseRegionTransitionState::MOUSE_TRANSITION_LASTEDIT_TO_LOWER_SEL, "LastEdit to LowerSel" },
 		//-----------------------------------------
 		{ MouseRegionTransitionState::MOUSE_TRANSITION_ERROR, "Error" }
 	};
@@ -265,6 +277,8 @@ private:
 	MouseRegionTransitionState m_MouseRegionTransitionState;
 	int m_MaxEvents;		//maximum number of events that can be displayed
 	CMsSong* m_pSong;
+	TRACKMOUSEEVENT m_TrackMouseEvent;
+	bool m_TrackMouseLeave;
 	// Keeps track of the number of notes pressed down for an event in Midi Input Mode
 	int m_nMidiNotesOn;
 	int m_nMidiInputNoteSetup;
@@ -277,6 +291,8 @@ private:
 //-------------- Mouse ---------------------
 	StaffViewMouseState m_nMouseState;
 //--------- View Regions -------------------
+	CMyRgn m_rgnClient;
+
 	CMyRgn m_rgnUpperSelect;
 	CRect m_UpperSelRect;
 
@@ -291,6 +307,9 @@ private:
 
 	CMyRgn m_rgnLowerSelect;
 	CRect m_LowerSelRect;
+	//------------------ Last Edit Region ----------------
+	CMyRgn m_rgnLastEdit;
+	CRect m_rectLastEdit;
 
 	//----------------Note Object Data  --------------
 	NoteData m_CurrentNoteData;
@@ -388,7 +407,6 @@ public:
 	CMsObject* GetDrawObject() { return m_pDrawObject; }
 	void SetDrawObject(CMsObject* pDObj) { m_pDrawObject = pDObj; }
 	int IsEventDisplayed(CMsEvent* pEV);
-	MouseRegions MouseInRegion(CPoint p);
 	virtual void OnInitialUpdate();
 	int QuantizeY(int y);
 
@@ -469,7 +487,8 @@ public:
 	afx_msg void OnMenuMsFileSaveAs();
 	afx_msg void OnUpdateMenuMsFileSaveAs(CCmdUI* pCmdUI);
 	//-----------------------------
-	MouseRegionTransitionState RegionTransition(CPoint ptMousePos);
+	MouseRegions MouseInRegion(CPoint p);
+	MouseRegionTransitionState RegionTransition(MouseRegions Region);
 	MouseRegionTransitionState GetTransitionState() const {
 		return m_MouseRegionTransitionState;
 	}
@@ -484,4 +503,5 @@ public:
 	static const char* GetTimerIDName(TimerIDs id);
     afx_msg void OnSettingsTracksettinigs();
     afx_msg void OnUpdateSettingsTracksettinigs(CCmdUI* pCmdUI);
+	afx_msg void OnMouseLeave();
 };
