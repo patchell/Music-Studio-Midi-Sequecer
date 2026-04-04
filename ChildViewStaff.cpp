@@ -560,8 +560,6 @@ void CChildViewStaff::OnMouseMove(UINT nFlags, CPoint pointMouse)
 	case DrawMode::KEYSIG:
 	case DrawMode::LOUDNESS:
 	case DrawMode::NOTE:
-	case DrawMode::REPEAT_START:
-	case DrawMode::REPEAT_END:
 	case DrawMode::REST:
 	case DrawMode::TIMESIG:
 		[[fallthrough]]; 
@@ -1619,18 +1617,18 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		csTemp = CString("Draw Tie");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::COPY:		// SetupDrawMode
+	case DrawMode::COPY:		// SetupDrawMode Block Ops
 		m_dmDrawMode = DrawMode::COPY;
 		csTemp = CString("Copy Block");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::MOVE:		// SetupDrawMode
+	case DrawMode::MOVE:		// SetupDrawMode Block Ops
 		m_dmDrawMode = DrawMode::MOVE;
 		m_dsDrawState = DRAWSTATE::CUT;
 		csStatus.Format(_T("Move Block To Event %d"), m_nDrawEvent);
 		m_Status.SetText(csStatus);
 		break;
-	case DrawMode::REPEAT_START:		// SetupDrawMode
+	case DrawMode::REPEAT_START:		// SetupDrawMode Block Ops
 		AddRepeat(v);
 		Invalidate();
 		csTemp = CString("Add Repeat");
@@ -1724,7 +1722,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 	csTemp = CString("Add Loudness");
 	m_Status.SetText(csTemp);
 	break;
-	case DrawMode::INSTCHANGE:		// SetupDrawMode
+	case DrawMode::INSTCHANGE:		// SetupDrawMode Block Ops
 		From = v & 0xf;
 		To = (v >> 4) & 0x0f;
 		ChangeInst(
@@ -1735,7 +1733,7 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		csTemp = CString("Change Instrument in Selection");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::CHANGEDUR:		// SetupDrawMode
+	case DrawMode::CHANGEDUR:		// SetupDrawMode Block Ops
 		From = v & 0x1f;
 		To = (v >> 5) & 0x1f;
 		ChangeDuration(From, To);
@@ -1743,23 +1741,23 @@ void CChildViewStaff::SetupDrawMode(DrawMode Mode,long v)
 		csTemp = CString("Change Duration in Selection");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::INCREASEDUR:		// SetupDrawMode
+	case DrawMode::INCREASEDUR:		// SetupDrawMode Block Ops
 		IncreaseDuration();
 		csTemp = CString("Increase Duration in Selection");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::DECREASEDUR:		// SetupDrawMode
+	case DrawMode::DECREASEDUR:		// SetupDrawMode Block Ops
 		//		DecreaseDuration();  ToDo Add this function
 		csTemp = CString("Decrease Duration in Selection");
 		m_Status.SetText(csTemp);
 		break;
-	case DrawMode::INCRPITCH:
+	case DrawMode::INCRPITCH:		// SetupDrawMode Block Ops
 		IncrementPitch();
 		csTemp = CString("Increase Pitch In Selection");
 		m_Status.SetText(csTemp);
 		Invalidate();
 		break;
-	case DrawMode::DECRPITCH:		// SetupDrawMode
+	case DrawMode::DECRPITCH:		// SetupDrawMode Block Ops
 		DecrementPitch();
 		csTemp = CString("Decrease Pitch in Selection");
 		m_Status.SetText(csTemp);
@@ -1934,7 +1932,11 @@ void CChildViewStaff::AddRepeat(UINT nRepeatCount)
 		pEv = GetSong()->InsertEmptyEvent(pLast, CMsSong::Insert::AFTER);
 		pRepeatEnd = new CMsRepeatEnd;
 		pRepeatEnd->Create(GetSong(), pEv, nRepeatCount);
+		pRepeatStrat->SetMatchingRepeatEnd(pRepeatEnd);
 		pEv->AddObject(pRepeatEnd);
+		GetSong()->RenumberEvents();
+		GetSong()->RenumberMeasureBars();
+		CheckAndDoScroll(CPoint(EVENT_WIDTH, 0));
 	}
 	else
 		MessageBox(_T("Block Not Selected"), _T("Oopsie"));

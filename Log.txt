@@ -9,7 +9,9 @@ Mouse Transition: Edit Region to Lower Draw Region
 Mouse Transition: Lower Draw Region to Lower Selection
 Mouse Transition: Lower Selection to Lower Draw Region
 Mouse Transition: Lower Draw Region to Edit Region
-		Event 5:**NO Notes
+		Event 7:**NO Notes
+         Pitch = 52
+		Event 8:**NO Notes
 Mouse Transition: Edit Region to Upper Draw Region
          Pitch = 86
 Mouse Transition: Upper Draw Region to Upper Selection
@@ -17,65 +19,2492 @@ Mouse Transition: Upper Selection to Outside
 Mouse Transition: Outside to Upper Selection
 Mouse Transition: Upper Selection to Upper Draw Region
 Mouse Transition: Upper Draw Region to Edit Region
+		Event 4:**NO Notes
+         Pitch = 72
 		Event 5:**NO Notes
          Pitch = 64
+		Event 6:**NO Notes
+         Pitch = 71
+		Event 7:**NO Notes
+         Pitch = 60
+		Event 8:**NO Notes
+         Pitch = 59
+		Event 9:**NO Notes
+         Pitch = 55
+		Event 10:**NO Notes
+         Pitch = 53
+		Event 9:**NO Notes
+         Pitch = 40
+		Event 10:**NO Notes
+         Pitch = 36
+         Pitch = 50
+		Event 8:**NO Notes
+         Pitch = 53
+         Pitch = 53
+         Pitch = 53
+         Pitch = 53
 		Event 4:**NO Notes
+         Pitch = 53
+		Event 3:**NO Notes
+         Pitch = 53
+		Event 2:**NO Notes
+         Pitch = 50
+		Event 1:**NO Notes
+         Pitch = 40
+		Event 2:**NO Notes
+         Pitch = 45
+		Event 3:**NO Notes
 Mouse Transition: Edit Region to Lower Draw Region
          Pitch = 36
+Mouse Transition: Lower Draw Region to Lower Selection
+Mouse Transition: Lower Selection to Lower Draw Region
 Mouse Transition: Lower Draw Region to Edit Region
 		Event 4:**NO Notes
-         Pitch = 48
-		Event 5:**NO Notes
-         Pitch = 50
-		Event 6:**NO Notes
-         Pitch = 50
-		Event 7:**NO Notes
-         Pitch = 50
-		Event 8:**NO Notes
-         Pitch = 48
-		Event 9:**NO Notes
-         Pitch = 47
-		Event 10:**NO Notes
-Mouse Transition: Edit Region to Last Edit Region
-         Pitch = 47
-Mouse Transition: Outside to Last Edit Region
-Mouse Transition: Last Edit Region to Edit Region
-		Event 9:**NO Notes
-         Pitch = 48
-		Event 8:**NO Notes
-         Pitch = 50
-		Event 7:**NO Notes
-         Pitch = 48
-		Event 6:**NO Notes
+         Pitch = 38
+         Pitch = 43
+Mouse Transition: Edit Region to Upper Draw Region
+         Pitch = 86
+Mouse Transition: Upper Draw Region to Upper Selection
+Mouse Transition: Upper Selection to Outside
+Mouse Transition: Outside to Upper Selection
+Mouse Transition: Upper Selection to Upper Draw Region
+Mouse Transition: Upper Draw Region to Edit Region
+         Pitch = 55
+		Event 0:**NO Notes
 Mouse Transition: Edit Region to Lower Draw Region
          Pitch = 36
 Mouse Transition: Lower Draw Region to Lower Selection
 Mouse Transition: Lower Selection to Outside
-Mouse Transition: Outside to Last Edit Region
-Mouse Transition: Last Edit Region to Edit Region
-		Event 10:**NO Notes
-         Pitch = 86
-		Event 9:**NO Notes
-         Pitch = 86
+		Get Song Position is event 0
+---- PROCESSING EVENT: 0
+		Get Song Position is event 0
+		Get Song Position is event 0
+****
+	---- PLAY QUEUE: OBJECT_DONE Time Signature Event:0 Total Objects:2
+	---- PLAY QUEUE: OBJECT_DONE Tempo Event:0 Total Objects:1
+		Get Song Position is event 0
+Current Event:0 Next event to process is 1 Ticks:1
+		Get Song Position is event 0
+---- PROCESSING EVENT: 1
+		Get Song Position is event 1
+		Get Song Position is event 1
+****
+	---- PLAY QUEUE: OBJECT_DONE Loudness Event:1 Total Objects:3
+	---- PLAY QUEUE: OBJECT_DONE Key Signature Event:1 Total Objects:2
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 1
+Current Event:1 Next event to process is 2 Ticks:49
+		Get Song Position is event 1
+---- PROCESSING EVENT: 2
+		Get Song Position is event 2
+		Get Song Position is event 2
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 2
+Current Event:2 Next event to process is 3 Ticks:97
+		Get Song Position is event 2
+---- PROCESSING EVENT: 3
+		Get Song Position is event 3
+		Get Song Position is event 3
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 3
+Current Event:3 Next event to process is 4 Ticks:145
+		Get Song Position is event 3
+---- PROCESSING EVENT: 4
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:146
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:194
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:242
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:290
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:291
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:339
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:387
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:435
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:436
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:484
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:532
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:580
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:581
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:629
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:677
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:725
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:726
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:774
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:822
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:870
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:871
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:919
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:967
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1015
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1016
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1064
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1112
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1160
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1161
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1209
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1257
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1305
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1306
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1354
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1402
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1450
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1451
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1499
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1547
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1595
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1596
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1644
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1692
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1740
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 4
+		Get Song Position is event 4
+****
+		Get Song Position is event 4
+Current Event:4 Next event to process is 5 Ticks:1741
+		Get Song Position is event 4
+---- PROCESSING EVENT: 5
+		Get Song Position is event 5
+		Get Song Position is event 5
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 5
+Current Event:5 Next event to process is 6 Ticks:1789
+		Get Song Position is event 5
+---- PROCESSING EVENT: 6
+		Get Song Position is event 6
+		Get Song Position is event 6
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 6
+Current Event:6 Next event to process is 7 Ticks:1837
+		Get Song Position is event 6
+---- PROCESSING EVENT: 7
+		Get Song Position is event 7
+		Get Song Position is event 7
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:2
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 7
+Current Event:7 Next event to process is 8 Ticks:1885
+		Get Song Position is event 7
+---- PROCESSING EVENT: 8
+		Get Song Position is event 8
+		Get Song Position is event 8
+****
+		Get Song Position is event 8
+Current Event:8 Next event to process is 9 Ticks:1886
+		Get Song Position is event 8
+---- PROCESSING EVENT: 9
+		Get Song Position is event 9
+		Get Song Position is event 9
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 9
+Current Event:9 Next event to process is 10 Ticks:1934
+		Get Song Position is event 9
+---- PROCESSING EVENT: 10
+		Get Song Position is event 10
+		Get Song Position is event 10
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+****
+	---- PLAY QUEUE: TIMED_OUT Total Objects:1
+		Get Song Position is event 10
+No more events to process
+****
+		Get Song Position is event 10
+		Get Song Position is event 10
+****
+Mouse Transition: Outside to Lower Selection
+Mouse Transition: Lower Selection to Lower Draw Region
+Mouse Transition: Lower Draw Region to Edit Region
+         Pitch = 36
+         Pitch = 41
+         Pitch = 36
+		Event 0:**NO Notes
+Mouse Transition: Edit Region to Lower Draw Region
+         Pitch = 36
+Mouse Transition: Lower Draw Region to Edit Region
+		Event 0:**NO Notes
+         Pitch = 41
+         Pitch = 40
+         Pitch = 38
+         Pitch = 38
+		Event 4:**NO Notes
+         Pitch = 38
+         Pitch = 40
+         Pitch = 40
+Mouse Transition: Edit Region to Lower Draw Region
+         Pitch = 36
+Mouse Transition: Lower Draw Region to Lower Selection
+Mouse Transition: Lower Selection to Outside
+Mouse Transition: Outside to Lower Selection
+Mouse Transition: Lower Selection to Lower Draw Region
+Mouse Transition: Lower Draw Region to Edit Region
+         Pitch = 40
 		Event 8:**NO Notes
-         Pitch = 72
-		Event 7:**NO Notes
-         Pitch = 53
-		Event 6:**NO Notes
-         Pitch = 50
-		Event 5:**NO Notes
-         Pitch = 57
-		Event 4:**NO Notes
-         Pitch = 65
-		Event 3:**NO Notes
-         Pitch = 79
-		Event 2:**NO Notes
-         Pitch = 59
-		Event 3:**NO Notes
-         Pitch = 53
-		Event 4:**NO Notes
+         Pitch = 48
+         Pitch = 52
+         Pitch = 71
 Mouse Transition: Edit Region to Upper Draw Region
-         Pitch = 84
+         Pitch = 86
 Mouse Transition: Upper Draw Region to Upper Selection
 Mouse Transition: Upper Selection to Outside
 ------ Exit MidiSeqMS-------

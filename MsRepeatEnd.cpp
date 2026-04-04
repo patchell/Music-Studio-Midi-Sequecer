@@ -45,6 +45,10 @@ void CMsRepeatEnd::Draw(CDC *pDC)
 {
 	CPen Light, Heavy, *pOld;
 	LOGBRUSH Lb;
+	COLORREF colorText = RGB(0, 0, 0), colorOLD;
+	CFont fontCountText, * pOldFont = 0;
+	CString csCount;
+
 	if (IsSelected())
 	{
 		Light.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
@@ -71,6 +75,28 @@ void CMsRepeatEnd::Draw(CDC *pDC)
 	pDC->SetPixel(x - 8, TREBLE_TOP_LINE + 60, RGB(0, 0, 0));
 	pDC->SetPixel(x - 8, TREBLE_TOP_LINE + 68, RGB(0, 0, 0));
 	pDC->SelectObject(pOld);
+	csCount.Format(_T("%d"), m_CountDown);
+	colorOLD = pDC->SetTextColor(colorText);
+	fontCountText.CreateFontW(
+		MEASUREBAR_NUMBER_HEIGHT,
+		0,
+		0,
+		0,
+		FW_DONTCARE,
+		false,
+		false,
+		false,
+		ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		DRAFT_QUALITY,
+		DEFAULT_PITCH,
+		_T("Arial")
+	);
+	pOldFont = pDC->SelectObject(&fontCountText);
+	pDC->TextOutW(25, TREBLE_TOP_LINE - 14, csCount);
+	pDC->SelectObject(pOldFont);
+	pDC->SetTextColor(colorOLD);
 }
 
 StaffMouseStates CMsRepeatEnd::StaffTransition(CPoint pointMouse, int NewNote, CMsEvent* pEvent)
@@ -100,7 +126,7 @@ void CMsRepeatEnd::Save(FILE *pO)
 bool CMsRepeatEnd::Create(CMsSong* pSong, CMsEvent* pEvent, int Count)
 {
 	m_Count = Count;
-	m_CountDown = 0;
+	m_CountDown = Count;
 	return CMsObject::Create(pSong, pEvent);
 }
 
@@ -124,6 +150,7 @@ UINT CMsRepeatEnd::Process()
 		// i.e. the Repeat Count is now 0
 		//-------------------------------
 		GetSong()->GetRepeatStack().PopLIFO();
+		m_CountDown = m_Count;	// Reset CountDown for next time this repeat is encountered during playback
 	}
 	else
 	{
@@ -132,6 +159,7 @@ UINT CMsRepeatEnd::Process()
 		//-----------------------------
 		GetSong()->SetSongPosition(pRepeatStartEvent);
 	}
+	printf("Repeat End Processed.  CountDown is now %d\n", GetCountDown());
 	return 0;
 }
 
